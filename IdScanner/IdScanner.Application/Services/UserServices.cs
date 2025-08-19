@@ -39,11 +39,15 @@ namespace IdScanner.Application.Services
             {
                 var user = await _userLoginRepository.GetByEmailAsync(email);
 
-                if (user == null || string.IsNullOrEmpty(user.PasswordSalt))
+                if (user == null || string.IsNullOrEmpty(user.Password))
                 {
                     return null;
                 }
                 //var role = await _userLoginRepository.GetUserWithRoleAsync(user.UserRoleId);
+                if (user.Password != password)
+                {
+                    return null;
+                }
 
                 var token = GenrateJWTToken(user);
 
