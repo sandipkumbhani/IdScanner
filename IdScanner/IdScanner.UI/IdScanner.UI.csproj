@@ -6,4 +6,18 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IdScanner.UI.Application\IdScanner.UI.Application.csproj" />
+    <ProjectReference Include="..\IdScanner.UI.Domain\IdScanner.UI.Domain.csproj" />
+    <ProjectReference Include="..\IdScanner.UI.Infrastructure\IdScanner.UI.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

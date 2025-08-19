@@ -1,6 +1,18 @@
+using Emertec.UI.Application.Extension;
+using IdScanner.Infrastructure.Data;
+using IdScanner.Infrastructure.Extension;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//database connection string
+builder.Services.AddDbContext<AppDbContext>(options =>
+  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddEfcoreInfrastrucureService();
+builder.Services.AddApplicationService();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

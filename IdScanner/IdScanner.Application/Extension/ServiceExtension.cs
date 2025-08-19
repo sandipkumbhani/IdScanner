@@ -1,0 +1,15 @@
+﻿using IdScanner.Application.Interface;
+using IdScanner.Application.Services;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Emertec.UI.Application.Extension
+{
+    public static class ServiceExtension
+    {
+        public static IServiceCollection AddApplicationService(this IServiceCollection services)
+        {
+            services.AddScoped<IUserServices, UserServices>();
+            return services;
+        }
+    }
+}

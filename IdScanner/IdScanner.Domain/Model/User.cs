@@ -10,6 +10,7 @@ namespace IdScanner.Domain.Model
 {
     public class User
     {
+        [Key]   
         public long UserId { get; set; }
         [StringLength(200)]
         public string? Name { get; set; }
