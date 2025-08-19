@@ -1,0 +1,6 @@
+@IdScanner_HostAddress = http://localhost:5049
+
+GET {{IdScanner_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

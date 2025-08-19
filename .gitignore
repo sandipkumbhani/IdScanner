@@ -1,0 +1,24 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/IdScanner/IdScanner/bin/Debug/net8.0
+/IdScanner/IdScanner/obj
+/IdScanner/IdScanner.Application/bin/Debug/net8.0
+/IdScanner/IdScanner.Application/obj
+/IdScanner/IdScanner.Domain/bin/Debug/net8.0
+/IdScanner/IdScanner.Domain/obj
+/IdScanner/IdScanner.Infrastructure/bin/Debug/net8.0
+/IdScanner/IdScanner.Infrastructure/obj
+/IdScanner/IdScanner.UI/bin/Debug/net8.0
+/IdScanner/IdScanner.UI/obj
+/IdScanner/IdScanner.UI.Application/bin/Debug/net8.0
+/IdScanner/IdScanner.UI.Application/obj
+/IdScanner/IdScanner.UI.Domain/bin/Debug/net8.0
+/IdScanner/IdScanner.UI.Domain/obj
+/IdScanner/IdScanner.UI.Infrastructure/bin/Debug/net8.0
+/IdScanner/IdScanner.UI.Infrastructure/obj
+/IdScanner/ldScanner.API/bin/Debug/net8.0
+/IdScanner/ldScanner.API/obj
+/.vs
+/IdScanner/.vs

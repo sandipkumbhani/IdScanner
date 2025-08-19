@@ -1,0 +1,6 @@
+@ldScanner.API_HostAddress = http://localhost:5074
+
+GET {{ldScanner.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
