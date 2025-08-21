@@ -9,6 +9,7 @@ namespace Emertec.UI.Application.Extension
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IMenuMasterService, MenuMasterService>();
             return services;
         }
     }

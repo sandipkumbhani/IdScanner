@@ -14,6 +14,7 @@ namespace IdScanner.Infrastructure.Extension
         public static IServiceCollection AddEfcoreInfrastrucureService(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IMenuMasterRepository, MenuMasterRepository>();
             return services;
         }
     }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdScanner.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250819110604_IdScanner")]
+    [Migration("20250821074725_IdScanner")]
     partial class IdScanner
     {
         /// <inheritdoc />
