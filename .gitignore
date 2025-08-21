@@ -9,7 +9,7 @@
 /IdScanner/IdScanner.Domain/bin/Debug/net8.0
 /IdScanner/IdScanner.Domain/obj
 /IdScanner/IdScanner.Infrastructure/bin/Debug/net8.0
-/IdScanner/IdScanner.Infrastructure/obj
+/IdScanner/IdScanner.Infrastructure/obj/Debug/net8.0
 /IdScanner/IdScanner.UI/bin/Debug/net8.0
 /IdScanner/IdScanner.UI/obj
 /IdScanner/IdScanner.UI.Application/bin/Debug/net8.0
@@ -23,3 +23,4 @@
 /.vs
 /IdScanner/.vs
 /IdScanner/IdScanner.Infrastrure/obj/Release/net8.0
+/IdScanner/IdScanner.Infrastrure/obj/project.nuget.cache
