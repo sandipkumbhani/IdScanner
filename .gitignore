@@ -24,3 +24,5 @@
 /IdScanner/.vs
 /IdScanner/IdScanner.Infrastrure/obj/Release/net8.0
 /IdScanner/IdScanner.Infrastrure/obj/project.nuget.cache
+/IdScanner/IdScanner.Infrastrure/obj
+/IdScanner/IdScanner.Infrastrure/bin

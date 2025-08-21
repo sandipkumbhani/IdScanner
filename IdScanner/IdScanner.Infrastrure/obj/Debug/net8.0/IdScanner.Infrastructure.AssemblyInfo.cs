@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdScanner.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+868ef7e3cf8318b15286124650c2ec1d55f8ef0d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a93f10cc57c4ed0f17bdbcba0ef7da11d604144")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdScanner.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdScanner.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
