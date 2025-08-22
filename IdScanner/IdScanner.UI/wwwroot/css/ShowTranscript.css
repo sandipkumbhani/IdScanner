@@ -1,0 +1,29 @@
+﻿@import url('showtrascript.css');
+
+#chat-tab-pane .chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#chat-tab-pane .chat-message {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    word-break: break-word;
+    display: inline-block;
+    font-size: 18px;
+}
+
+#chat-tab-pane .agent-message {
+    background-color: antiquewhite;
+    align-self: flex-start;
+    text-align: left;
+}
+
+#chat-tab-pane .receiver-message {
+    background-color: #d8eafd;
+    align-self: flex-end;
+    text-align: right;
+}

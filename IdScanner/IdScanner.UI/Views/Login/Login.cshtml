@@ -1,0 +1,119 @@
+﻿@{
+    Layout = null;
+    string LoginMessage = ViewBag.LoginMessage != null ? ViewBag.LoginMessage : "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emertec | Sign In</title>
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="FleetLynk" name="author" />
+
+    <!-- Figtree FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <!-- intl-tel-input CSS -->
+    <link href="~/css/intlTelInput-largeFlags.css" rel="stylesheet" type="text/css" />
+    <!-- Select2 CSS -->
+    <link href="~/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <!-- Datatables css -->
+    <link rel="stylesheet" href="~/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/css/buttons.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/css/responsive.bootstrap5.min.css" />
+    <!-- Dropzone CSS -->
+    <link href="~/css/dropzone.min.css" rel="stylesheet" type="text/css" />
+    <!-- Select2 Bootstrap4 CSS -->
+    <link href="~/css/select2-bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    <!-- Remixicon CSS -->
+    <link href="~/css/remixicon.css" rel="stylesheet" type="text/css" />
+    <!-- SimpleBar CSS -->
+    <link href="~/css/simplebar.css" rel="stylesheet" type="text/css" />
+    <!-- Bootstrap css -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- App css -->
+    <link href="~/css/app-style.css" rel="stylesheet" type="text/css" />
+</head>
+<body data-sidenav-size="default">
+    <div class="wrapper single-page">
+        <div class="sign-inner">
+            <div class="sign-page-center">
+                <div class="sign-left">
+                    <div class="inner-sign-info">
+                        @*  <div class="single-logo">
+                            <img src="images/logo.svg" alt="" />
+                        </div> *@
+                        <div class="login-main">
+                            <form class="theme-form all-custom-class requires-validation" novalidate method="post" action="@Url.Action("Login", "Login")">
+                                <h2>Broadsy</h2>
+                                <div class="item-input">
+                                    <label class="form-label" for="EmailID">Email</label>
+                                    <input class="form-control" type="email" required="" placeholder="admin@example.com" id="EmailID" name="EmailID" ,required />
+                                    <div class="invalid-feedback"><i class="ri-information-line"></i> Please put valid Email Id</div>
+                                </div>
+                                <div class="item-input">
+                                    <label class="form-label" for="password">Password</label>
+                                    <div class="form-input position-relative">
+                                        <input class="form-control" type="password" id="password" name="password" required="" placeholder="" ,required />
+                                        <div class="show-hide">
+                                            <span class="show">
+                                            </span>
+                                        </div>
+                                        <div class="invalid-feedback"><i class="ri-information-line"></i> Password field cannot be blank!</div>
+                                    </div>
+                                </div>
+                                <div class="forget-item">
+                                    <a asp-controller="ForgotPassword" asp-action="ForgotPassword">Forgot Password?</a>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(LoginMessage))
+                                {
+                                    <div class="alert alert-danger mt-3" role="alert">
+                                        @LoginMessage
+                                    </div>
+                                }
+                                <button type="submit" class="login-btns">
+                                    Log In
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="sign-right">
+                    <img src="~/images/truck-driving-city-street-night-bright-lights-tall-buildings-making-its-way-through-with-trailer.jpg" alt="" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery Min JS -->
+    <script src="~/js/jquery.min.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <!-- SimpleBar JS -->
+    <script src="~/js/simplebar.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="~/js/select2.min.js"></script>
+    <!-- intl-tel-input JS -->
+    <script src="~/js/intlTelInput.min.js"></script>
+    <!-- Dropzone JS -->
+    <script src="~/js/dropzone.min.js"></script>
+    <!-- Repeater JS -->
+    <script src="~/js/jquery.repeater.min.js"></script>
+    <!-- Datatables js -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <!-- Datatable Init js -->
+    <script src="~/js/datatable-init.js"></script>
+    <!-- Script App JS -->
+    <script src="~/js/script-app.js"></script>
+</body>
+</html>

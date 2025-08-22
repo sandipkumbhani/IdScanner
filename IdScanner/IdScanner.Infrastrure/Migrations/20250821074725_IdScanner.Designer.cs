@@ -12,7 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdScanner.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
+<<<<<<<< Updated upstream:IdScanner/IdScanner.Infrastrure/Migrations/20250821074725_IdScanner.Designer.cs
     [Migration("20250821074725_IdScanner")]
+========
+    [Migration("20250821071529_IdScanner")]
+>>>>>>>> Stashed changes:IdScanner/IdScanner.Infrastrure/Migrations/20250821071529_IdScanner.Designer.cs
     partial class IdScanner
     {
         /// <inheritdoc />
