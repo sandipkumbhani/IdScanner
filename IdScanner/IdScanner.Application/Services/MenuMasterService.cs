@@ -63,7 +63,7 @@ namespace IdScanner.Application.Services
 
             await _menuMasterRepository.DeleteMenuAsync(deleteMenu);
         }
-        public async Task<MenuMaster> UpdateMenuAsync(int menuid, MenuMaster menuMaster)
+        public async Task<MenuMaster> UpdateMenuAsync(int menuid, MenuMaster modelMenuMaster)
         {
 
             var menuExisting = await _menuMasterRepository.GetMenuById(menuid);
@@ -72,10 +72,10 @@ namespace IdScanner.Application.Services
             {
                 throw new Exception($"Menu Master with ID {menuid} not found.");
             }
-            menuExisting.Name = menuMaster.Name;
-            menuExisting.Description = menuMaster.Description;
-            menuExisting.Icon = menuMaster.Icon;
-            menuExisting.Url = menuMaster.Url;
+            menuExisting.Name = modelMenuMaster.Name;
+            menuExisting.Description = modelMenuMaster.Description;
+            menuExisting.Icon = modelMenuMaster.Icon;
+            menuExisting.Url = modelMenuMaster.Url;
             menuExisting.IsDefault = true;
             menuExisting.IsActive = true;
             menuExisting.InsertBy = 1;

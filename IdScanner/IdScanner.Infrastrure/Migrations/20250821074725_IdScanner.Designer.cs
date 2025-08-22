@@ -273,7 +273,7 @@ namespace IdScanner.Infrastructure.Migrations
                     b.ToTable("UserDatas");
                 });
 
-            modelBuilder.Entity("IdScanner.Domain.Model.UserRole", b =>
+            modelBuilder.Entity("IdScanner.Domain.Model.UserRoleRepository", b =>
                 {
                     b.Property<int>("UserRoleId")
                         .ValueGeneratedOnAdd()
@@ -318,13 +318,13 @@ namespace IdScanner.Infrastructure.Migrations
 
             modelBuilder.Entity("IdScanner.Domain.Model.User", b =>
                 {
-                    b.HasOne("IdScanner.Domain.Model.UserRole", "UserRole")
+                    b.HasOne("IdScanner.Domain.Model.UserRoleRepository", "UserRoleRepository")
                         .WithMany()
                         .HasForeignKey("UserRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserRole");
+                    b.Navigation("UserRoleRepository");
                 });
 
             modelBuilder.Entity("IdScanner.Domain.Model.UserData", b =>
