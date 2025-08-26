@@ -20,8 +20,6 @@ namespace IdScanner.Domain.Model
         public DateTime InsertDate { get; set; }
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
-        public virtual ICollection<Department>? Departments { get; set; }
-        public virtual ICollection<UserData>? UserDatas { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 using Emertec.UI.Application.Extension;
+using Google.Apis.Drive.v3;
 using IdScanner.Infrastructure.Data;
 using IdScanner.Infrastructure.Extension;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 //database connection string
 builder.Services.AddDbContext<AppDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddSingleton(sp =>
+{
+    var credentialPath = Path.Combine(Directory.GetCurrentDirectory(), "GoogleDriveKeys", "client_secret_450198704638-s68uhit4jk57hqpdj7tgpq7jhrq75qca.apps.googleusercontent.com.json");
+
+    return new GoogleDriveService(
+        new[] { DriveService.Scope.DriveFile }, 
+        "Broadsys ID Scanner",                  
+        credentialPath                       
+    );
+});
+
+
 builder.Services.AddEfcoreInfrastrucureService();
 builder.Services.AddApplicationService();
 

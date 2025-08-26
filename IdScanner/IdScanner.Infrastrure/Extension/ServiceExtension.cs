@@ -15,8 +15,10 @@ namespace IdScanner.Infrastructure.Extension
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMenuMasterRepository, MenuMasterRepository>();
-            services.AddScoped<IUserRoleRepository,UserRoleRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<ICompanyMasterRepository, CompanyMasterRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IUserDataRepository, UserDataRepository>();
             return services;
         }
     }

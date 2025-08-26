@@ -12,7 +12,7 @@ namespace IdScanner.Domain.Model
     {
         [Key]
         public long UserDataId { get; set; }
-        public int  CompanyId { get; set; }
+        public int CompanyId { get; set; }
         public int DepartmentId { get; set; }
         [StringLength(200)]
         public string? Name { get; set; }
@@ -33,8 +33,9 @@ namespace IdScanner.Domain.Model
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
         [ForeignKey("CompanyId")]
-        public virtual CompanyMaster? Company { get; set; }
+        public virtual CompanyMaster? CompanyMaster { get; set; }
         [ForeignKey("DepartmentId")]
         public virtual Department? Department { get; set; }
+      
     }
 }

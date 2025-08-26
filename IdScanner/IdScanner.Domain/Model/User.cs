@@ -10,8 +10,9 @@ namespace IdScanner.Domain.Model
 {
     public class User
     {
-        [Key]   
+        [Key]
         public long UserId { get; set; }
+        public int UserRoleId { get; set; }
         [StringLength(200)]
         public string? Name { get; set; }
         [StringLength(500)]
@@ -22,7 +23,6 @@ namespace IdScanner.Domain.Model
         [NotMapped]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string? ConfirmPassword { get; set; }
-        public int UserRoleId { get; set; }
         public bool IsActive { get; set; }
         public long InsertBy { get; set; }
         public DateTime InsertDate { get; set; }

@@ -12,6 +12,8 @@ namespace Emertec.UI.Application.Extension
             services.AddScoped<IMenuMasterService, MenuMasterService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<ICompanyMasterService, CompanyMasterService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IUserDataService, UserDataService>();
             return services;
         }
     }
