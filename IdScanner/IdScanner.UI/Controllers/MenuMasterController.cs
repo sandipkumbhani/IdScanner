@@ -24,7 +24,7 @@ namespace IdScanner.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddMenuMaster(int? id)
         {
-            ViewBag.UserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            //ViewBag.UserRole = User.FindFirst(ClaimTypes.Role)?.Value;
             if(id == null)
             {
                 return View(new MenuMaster());

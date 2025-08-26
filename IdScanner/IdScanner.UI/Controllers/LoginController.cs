@@ -34,28 +34,35 @@ namespace IdScanner.UI.Controllers
                 if(ModelState.IsValid)
                 {
                     var responseToken = await _loginServices.Login(viewModel);
-                    Response.Cookies.Append("jwtToken", responseToken.Token, new
-                        CookieOptions
+                    Response.Cookies.Append("jwtToken", responseToken.Token, new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = true,
                         SameSite = SameSiteMode.Strict,
                         Expires = DateTime.UtcNow.AddHours(24)
                     });
+                    //Response.Cookies.Append("jwtToken", responseToken.Token, new
+                    //    CookieOptions
+                    //{
+                    //    HttpOnly = true,
+                    //    Secure = true,
+                    //    SameSite = SameSiteMode.Strict,
+                    //    Expires = DateTime.UtcNow.AddHours(24)
+                    //});
                     var claims = new List<Claim>
                     {
                         new Claim("UserId",responseToken.UserId.ToString()),
                         new Claim(ClaimTypes.Name, responseToken.UserName),
                         new Claim(ClaimTypes.Email, responseToken.EmailId),
-                        new Claim(ClaimTypes.Role, responseToken.UserRoleName)
+                        //new Claim(ClaimTypes.Role, responseToken.UserRoleName)
                     };
                     var identity = new ClaimsIdentity(claims,
                         CookieAuthenticationDefaults.AuthenticationScheme);
 
                     var principal = new ClaimsPrincipal(identity);
-                    await HttpContext.SignInAsync
-                        (CookieAuthenticationDefaults.AuthenticationScheme, principal);
-                    return Redirect("~/User/UserList");
+                    //await HttpContext.SignInAsync
+                    //    (CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    return Redirect("~/MenuMaster/MenuMasterList");
                 }
                 else
                 {

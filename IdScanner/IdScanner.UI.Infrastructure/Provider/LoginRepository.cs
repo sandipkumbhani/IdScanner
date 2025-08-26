@@ -37,30 +37,31 @@ namespace IdScanner.UI.Infrastructure.Provider
                 var responseData = await response.Content.ReadAsStringAsync();
                 var responseModel = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
 
-                if(response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    if(responseModel != null && responseData != null)
+                    if (responseModel != null && responseModel.Data != null)
                     {
                         var jsonData = JsonConvert.SerializeObject(responseModel.Data);
                         var responseToken = JsonConvert.DeserializeObject<ResponseToken>(jsonData);
-                        if(responseToken != null && !string.IsNullOrEmpty(responseToken.Token))
+                        if (responseToken != null && !string.IsNullOrEmpty(responseToken.Token))
                         {
                             return responseToken;
                         }
 
                     }
                 }
+
                 else
                 {
-                    if(responseModel != null && !string.IsNullOrEmpty(responseModel.ErrorMessage))
+                    if (responseModel != null && !string.IsNullOrEmpty(responseModel.ErrorMessage))
                     {
                         throw new Exception(responseModel.ErrorMessage);
                     }
-                    
+
                 }
                 throw new Exception(responseModel.ErrorMessage);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

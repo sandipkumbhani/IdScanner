@@ -21,6 +21,7 @@
     <ProjectReference Include="..\IdScanner.Application\IdScanner.Application.csproj" />
     <ProjectReference Include="..\IdScanner.Domain\IdScanner.Domain.csproj" />
     <ProjectReference Include="..\IdScanner.Infrastrure\IdScanner.Infrastructure.csproj" />
+    <ProjectReference Include="..\IdScanner.UI.Domain\IdScanner.UI.Domain.csproj" />
   </ItemGroup>
 
 </Project>

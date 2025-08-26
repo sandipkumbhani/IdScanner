@@ -24,7 +24,7 @@ namespace IdScanner.UI.Infrastructure.Provider
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
         }
-
+        
         public async Task<List<MenuMaster>> GetAllMenuAsync()
         {
             var baseUrl = apiCredential.url + "MenuMaster/Get-All-Menu-Master";

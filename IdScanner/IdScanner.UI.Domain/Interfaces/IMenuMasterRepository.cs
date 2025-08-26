@@ -11,7 +11,7 @@ namespace IdScanner.UI.Domain.Interfaces
     {
         Task<List<MenuMaster>> GetAllMenuAsync();
         Task<MenuMaster> GetMenuByIdAsync(int? id);
-        Task<string> AddMenuAsync(MenuMaster menuMaster);
+        Task<string> AddMenuAsync(MenuMaster menuMaster);   
         Task<string> UpdateMenuAsync(MenuMaster menuMaster);
         Task<string> DeleteMenuAsync(int id);
         Task<List<MenuMaster>> GetMenuByUserIdAsync(long userId);

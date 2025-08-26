@@ -2,6 +2,7 @@
 using IdScanner.Application.Services;
 using IdScanner.Domain.DTO;
 using IdScanner.Domain.Model;
+using IdScanner.UI.Domain.Comman;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,10 +29,19 @@ namespace ldScanner.API.Controllers
 
             if (result == null)
             {
-                return Unauthorized(new { message = "Invalid email or password" });
+                return Unauthorized(new CommanResponseDto
+                {
+                    StatusCode = 401,
+                    Message = "Unauthorized",
+                    ErrorMessage = "Invalid Email or password"
+                });
             }
-
-            return Ok(result);
+            return Ok(new CommanResponseDto
+            {
+                StatusCode = 200,
+                Message = "Login successful",
+                Data = result
+            });
         }
 
     }

@@ -20,7 +20,7 @@ namespace IdScanner.UI.Domain.Model
 
     public class ResponseToken
     {
-        public string Token { get; set; } = "";
+        public string Token { get; set; } = string.Empty;
         public long UserId { get; set; }
         public string UserName { get; set; } = "";
         public string? Name { get; set; }
