@@ -22,7 +22,7 @@ namespace IdScanner.UI.Application.Services
             return await _menuMasterRepository.GetAllMenuAsync();
         }
 
-        public async Task<MenuMaster?> GetMenuByIdAsync(int menuId)
+        public async Task<MenuMaster?>  GetMenuByIdAsync(int menuId)
         {
             return await _menuMasterRepository.GetMenuByIdAsync(menuId);
         }

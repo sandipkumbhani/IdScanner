@@ -38,9 +38,10 @@ namespace ldScanner.API.Controllers
             var companyMasters = await _companyMasterService.GetAllCompanyMasterAsync();
             return Ok(companyMasters);
         }
-        [HttpPut("Update-CompanyMaster")]
+        [HttpPut("Update-CompanyMaster/{companyid}")]
         public async Task<IActionResult> UpdateCompanyMasterAsync(int companyid, [FromBody] CompanyMaster companyMaster)
         {
+            var existingCompany = await _companyMasterService.GetCompanyMasterById(companyid);
             if (companyid != companyMaster.CompanyId)
             {
                 return BadRequest("User Company ID mismatch.");

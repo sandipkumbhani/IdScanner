@@ -12,6 +12,8 @@ builder.Services.AddApplicationService();
 builder.Services.AddHttpClient<ILoginRepository, LoginRepository>();
 builder.Services.AddHttpClient<IForgotPasswordRepository, ForgotPasswordRepository>();
 builder.Services.AddHttpClient<IMenuMasterRepository, MenuMasterRepository>();
+builder.Services.AddHttpClient<ICompanyMasterRepository, CompanyMasterRepository>();
+builder.Services.AddHttpClient<IDepartmentMasterRepository, DepartmentMasterRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
