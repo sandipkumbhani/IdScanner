@@ -1,4 +1,4 @@
-﻿using IdScanner.Application.Interface;
+﻿    using IdScanner.Application.Interface;
 using IdScanner.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 

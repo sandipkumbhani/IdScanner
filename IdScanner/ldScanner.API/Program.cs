@@ -14,7 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSingleton(sp =>
 {
-    var credentialPath = Path.Combine(Directory.GetCurrentDirectory(), "GoogleDriveKeys", "client_secret_450198704638-s68uhit4jk57hqpdj7tgpq7jhrq75qca.apps.googleusercontent.com.json");
+    var credentialPath = Path.Combine(Directory.GetCurrentDirectory(), "GoogleDriveKeys", "client_secret.json");
 
     return new GoogleDriveService(
         new[] { DriveService.Scope.DriveFile }, 

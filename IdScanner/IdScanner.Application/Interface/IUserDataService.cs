@@ -10,5 +10,9 @@ namespace IdScanner.Application.Interface
     public interface IUserDataService
     {
         Task<UserData> CreateUserDataAsync(UserData userData);
+        Task<UserData> UpdateUserDataAsync(int id, UserData userData);
+        Task<UserData> GetUserDetailsById(int userid);
+        Task<List<UserData>> GetAllUsersListAsync();
+        Task DeleteUserDataById(int userId);
     }
 }
