@@ -14,13 +14,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="System.Security.Claims" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IdScanner.Application\IdScanner.Application.csproj" />
     <ProjectReference Include="..\IdScanner.Domain\IdScanner.Domain.csproj" />
     <ProjectReference Include="..\IdScanner.Infrastrure\IdScanner.Infrastructure.csproj" />
+    <ProjectReference Include="..\IdScanner.UI.Domain\IdScanner.UI.Domain.csproj" />
   </ItemGroup>
 
 </Project>

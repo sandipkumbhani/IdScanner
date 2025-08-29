@@ -26,338 +26,706 @@ namespace IdScanner.Infrastructure.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("IdScanner.Domain.Model.CompanyMaster", b =>
-                {
-                    b.Property<int>("CompanyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("CompanyId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
 
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("City")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CompanyName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                b.Property<string>("CompanyName")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)");
 
-                    b.Property<long>("InsertBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("InsertBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("InsertDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("InsertDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
 
-                    b.Property<long>("UpdateBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("UpdateBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("UpdateDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("logo")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("logo")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CompanyId");
+                b.HasKey("CompanyId");
 
-                    b.ToTable("CompanyMasters");
-                });
+                b.ToTable("CompanyMasters");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.Department", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("City")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("City")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
+                b.Property<int>("CompanyId")
+                    .HasColumnType("int");
 
-                    b.Property<string>("DepartmentName")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                b.Property<string>("DepartmentName")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)");
 
-                    b.Property<long>("InsertBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("InsertBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("InsertDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("InsertDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
 
-                    b.Property<long>("UpdateBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("UpdateBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("UpdateDate")
+                    .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                b.HasIndex("CompanyId");
 
-                    b.ToTable("Departments");
-                });
+                b.ToTable("Departments");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.MenuMaster", b =>
-                {
-                    b.Property<long>("MenuId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+            {
+                b.Property<long>("MenuId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MenuId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MenuId"));
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                b.Property<string>("Description")
+                    .HasMaxLength(500)
+                    .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Icon")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                b.Property<string>("Icon")
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
 
-                    b.Property<long>("InsertBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("InsertBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("InsertDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("InsertDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
 
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsDefault")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                b.Property<string>("Name")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)");
 
-                    b.Property<long>("UpdateBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("UpdateBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("UpdateDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Url")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("MenuId");
+                b.HasKey("MenuId");
 
-                    b.ToTable("MenuMasters");
-                });
+                b.ToTable("MenuMasters");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.User", b =>
-                {
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+            {
+                b.Property<long>("UserId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"));
 
-                    b.Property<string>("EmailId")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                b.Property<string>("EmailId")
+                    .HasMaxLength(500)
+                    .HasColumnType("nvarchar(500)");
 
-                    b.Property<long>("InsertBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("InsertBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("InsertDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("InsertDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                b.Property<string>("Name")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Password")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                b.Property<string>("Password")
+                    .HasMaxLength(500)
+                    .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("PasswordSalt")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("PasswordSalt")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("UpdateBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("UpdateBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("UpdateDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<int>("UserCount")
-                        .HasColumnType("int");
+                b.Property<int>("UserCount")
+                    .HasColumnType("int");
 
-                    b.Property<int>("UserRoleId")
-                        .HasColumnType("int");
+                b.Property<int>("UserRoleId")
+                    .HasColumnType("int");
 
-                    b.HasKey("UserId");
+                b.HasKey("UserId");
 
-                    b.HasIndex("UserRoleId");
+                b.HasIndex("UserRoleId");
 
-                    b.ToTable("Users");
-                });
+                b.ToTable("Users");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.UserData", b =>
-                {
-                    b.Property<long>("UserDataId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+            {
+                b.Property<long>("UserDataId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserDataId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserDataId"));
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
+                b.Property<int>("CompanyId")
+                    .HasColumnType("int");
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
+                b.Property<int>("DepartmentId")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Designation")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Designation")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdNumber")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("IdNumber")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("IdValidTill")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("IdValidTill")
+                    .HasColumnType("datetime2");
 
-                    b.Property<long>("InsertBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("InsertBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("InsertDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("InsertDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("Licensee")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Licensee")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MedicalCertificateUrl")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("MedicalCertificateUrl")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MobileNumber")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("MobileNumber")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                b.Property<string>("Name")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("PhotoUrl")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("PhotoUrl")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PoliceVerificationCertificateUrl")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("PoliceVerificationCertificateUrl")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StallPfNumber")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("StallPfNumber")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("UpdateBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("UpdateBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("UpdateDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("WorkSlot")
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("WorkSlot")
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserDataId");
+                b.HasKey("UserDataId");
 
-                    b.HasIndex("CompanyId");
+                b.HasIndex("CompanyId");
 
-                    b.HasIndex("DepartmentId");
+                b.HasIndex("DepartmentId");
 
-                    b.ToTable("UserDatas");
-                });
+                b.ToTable("UserDatas");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.UserRoleRepository", b =>
-                {
-                    b.Property<int>("UserRoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int>("UserRoleId")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserRoleId"));
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserRoleId"));
 
-                    b.Property<long>("InsertBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("InsertBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("InsertDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("InsertDate")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                b.Property<string>("Name")
+                    .HasMaxLength(200)
+                    .HasColumnType("nvarchar(200)");
 
-                    b.Property<long>("UpdateBy")
-                        .HasColumnType("bigint");
+                b.Property<long>("UpdateBy")
+                    .HasColumnType("bigint");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("UpdateDate")
+                    .HasColumnType("datetime2");
 
-                    b.HasKey("UserRoleId");
+                b.HasKey("UserRoleId");
 
-                    b.ToTable("UserRoles");
-                });
+                b.ToTable("UserRoles");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.Department", b =>
-                {
-                    b.HasOne("IdScanner.Domain.Model.CompanyMaster", "Company")
-                        .WithMany("Departments")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("IdScanner.Domain.Model.CompanyMaster", "Company")
+                    .WithMany("Departments")
+                    .HasForeignKey("CompanyId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Company");
-                });
+                b.Navigation("Company");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.User", b =>
-                {
-                    b.HasOne("IdScanner.Domain.Model.UserRoleRepository", "UserRoleRepository")
-                        .WithMany()
-                        .HasForeignKey("UserRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("IdScanner.Domain.Model.UserRoleRepository", "UserRoleRepository")
+                    .WithMany()
+                    .HasForeignKey("UserRoleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("UserRoleRepository");
-                });
+                b.Navigation("UserRoleRepository");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.UserData", b =>
-                {
-                    b.HasOne("IdScanner.Domain.Model.CompanyMaster", "Company")
-                        .WithMany("UserDatas")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("IdScanner.Domain.Model.CompanyMaster", "Company")
+                    .WithMany("UserDatas")
+                    .HasForeignKey("CompanyId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("IdScanner.Domain.Model.Department", "Department")
-                        .WithMany("UserDatas")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                b.HasOne("IdScanner.Domain.Model.Department", "Department")
+                    .WithMany("UserDatas")
+                    .HasForeignKey("DepartmentId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
 
-                    b.Navigation("Company");
+                b.Navigation("Company");
 
-                    b.Navigation("Department");
-                });
+                b.Navigation("Department");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.CompanyMaster", b =>
-                {
-                    b.Navigation("Departments");
+            {
+                b.Navigation("Departments");
 
-                    b.Navigation("UserDatas");
-                });
+                b.Navigation("UserDatas");
+            });
 
             modelBuilder.Entity("IdScanner.Domain.Model.Department", b =>
-                {
-                    b.Navigation("UserDatas");
-                });
+            {
+                b.Navigation("UserDatas");
+            });
 #pragma warning restore 612, 618
         }
     }
 }
+
+//// <auto-generated />
+//using System;
+//using IdScanner.Infrastructure.Data;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore.Infrastructure;
+//using Microsoft.EntityFrameworkCore.Metadata;
+//using Microsoft.EntityFrameworkCore.Migrations;
+//using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+//#nullable disable
+
+//namespace IdScanner.Infrastructure.Migrations
+//{
+//    [DbContext(typeof(AppDbContext))]
+//<<<<<<<< Updated upstream:IdScanner/IdScanner.Infrastrure/Migrations/20250821074725_IdScanner.Designer.cs
+//    [Migration("20250821074725_IdScanner")]
+//========
+//    [Migration("20250821071529_IdScanner")]
+//>>>>>>>> Stashed changes:IdScanner/IdScanner.Infrastrure/Migrations/20250821071529_IdScanner.Designer.cs
+//    partial class IdScanner
+//    {
+//        /// <inheritdoc />
+//        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+//        {
+//#pragma warning disable 612, 618
+//            modelBuilder
+//                .HasAnnotation("ProductVersion", "9.0.8")
+//                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+//            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.CompanyMaster", b =>
+//                {
+//                    b.Property<int>("CompanyId")
+//                        .ValueGeneratedOnAdd()
+//                        .HasColumnType("int");
+
+//                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
+
+//                    b.Property<string>("City")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<string>("CompanyName")
+//                        .HasMaxLength(200)
+//                        .HasColumnType("nvarchar(200)");
+
+//                    b.Property<long>("InsertBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("InsertDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<bool>("IsActive")
+//                        .HasColumnType("bit");
+
+//                    b.Property<long>("UpdateBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("UpdateDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<string>("logo")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.HasKey("CompanyId");
+
+//                    b.ToTable("CompanyMasters");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.Department", b =>
+//                {
+//                    b.Property<int>("Id")
+//                        .ValueGeneratedOnAdd()
+//                        .HasColumnType("int");
+
+//                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+//                    b.Property<string>("City")
+//                        .HasMaxLength(100)
+//                        .HasColumnType("nvarchar(100)");
+
+//                    b.Property<int>("CompanyId")
+//                        .HasColumnType("int");
+
+//                    b.Property<string>("DepartmentName")
+//                        .HasMaxLength(200)
+//                        .HasColumnType("nvarchar(200)");
+
+//                    b.Property<long>("InsertBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("InsertDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<bool>("IsActive")
+//                        .HasColumnType("bit");
+
+//                    b.Property<long>("UpdateBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("UpdateDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.HasKey("Id");
+
+//                    b.HasIndex("CompanyId");
+
+//                    b.ToTable("Departments");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.MenuMaster", b =>
+//                {
+//                    b.Property<long>("MenuId")
+//                        .ValueGeneratedOnAdd()
+//                        .HasColumnType("bigint");
+
+//                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MenuId"));
+
+//                    b.Property<string>("Description")
+//                        .HasMaxLength(500)
+//                        .HasColumnType("nvarchar(500)");
+
+//                    b.Property<string>("Icon")
+//                        .HasMaxLength(100)
+//                        .HasColumnType("nvarchar(100)");
+
+//                    b.Property<long>("InsertBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("InsertDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<bool>("IsActive")
+//                        .HasColumnType("bit");
+
+//                    b.Property<bool>("IsDefault")
+//                        .HasColumnType("bit");
+
+//                    b.Property<string>("Name")
+//                        .HasMaxLength(200)
+//                        .HasColumnType("nvarchar(200)");
+
+//                    b.Property<long>("UpdateBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("UpdateDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<string>("Url")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.HasKey("MenuId");
+
+//                    b.ToTable("MenuMasters");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.User", b =>
+//                {
+//                    b.Property<long>("UserId")
+//                        .ValueGeneratedOnAdd()
+//                        .HasColumnType("bigint");
+
+//                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserId"));
+
+//                    b.Property<string>("EmailId")
+//                        .HasMaxLength(500)
+//                        .HasColumnType("nvarchar(500)");
+
+//                    b.Property<long>("InsertBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("InsertDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<bool>("IsActive")
+//                        .HasColumnType("bit");
+
+//                    b.Property<string>("Name")
+//                        .HasMaxLength(200)
+//                        .HasColumnType("nvarchar(200)");
+
+//                    b.Property<string>("Password")
+//                        .HasMaxLength(500)
+//                        .HasColumnType("nvarchar(500)");
+
+//                    b.Property<string>("PasswordSalt")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<long>("UpdateBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("UpdateDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<int>("UserCount")
+//                        .HasColumnType("int");
+
+//                    b.Property<int>("UserRoleId")
+//                        .HasColumnType("int");
+
+//                    b.HasKey("UserId");
+
+//                    b.HasIndex("UserRoleId");
+
+//                    b.ToTable("Users");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.UserData", b =>
+//                {
+//                    b.Property<long>("UserDataId")
+//                        .ValueGeneratedOnAdd()
+//                        .HasColumnType("bigint");
+
+//                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserDataId"));
+
+//                    b.Property<int>("CompanyId")
+//                        .HasColumnType("int");
+
+//                    b.Property<int>("DepartmentId")
+//                        .HasColumnType("int");
+
+//                    b.Property<string>("Designation")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<string>("IdNumber")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<DateTime>("IdValidTill")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<long>("InsertBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("InsertDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<bool>("IsActive")
+//                        .HasColumnType("bit");
+
+//                    b.Property<string>("Licensee")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<string>("MedicalCertificateUrl")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<string>("MobileNumber")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<string>("Name")
+//                        .HasMaxLength(200)
+//                        .HasColumnType("nvarchar(200)");
+
+//                    b.Property<string>("PhotoUrl")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<string>("PoliceVerificationCertificateUrl")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<string>("StallPfNumber")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.Property<long>("UpdateBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("UpdateDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<string>("WorkSlot")
+//                        .HasColumnType("nvarchar(max)");
+
+//                    b.HasKey("UserDataId");
+
+//                    b.HasIndex("CompanyId");
+
+//                    b.HasIndex("DepartmentId");
+
+//                    b.ToTable("UserDatas");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.UserRoleRepository", b =>
+//                {
+//                    b.Property<int>("UserRoleId")
+//                        .ValueGeneratedOnAdd()
+//                        .HasColumnType("int");
+
+//                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserRoleId"));
+
+//                    b.Property<long>("InsertBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("InsertDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.Property<bool>("IsActive")
+//                        .HasColumnType("bit");
+
+//                    b.Property<string>("Name")
+//                        .HasMaxLength(200)
+//                        .HasColumnType("nvarchar(200)");
+
+//                    b.Property<long>("UpdateBy")
+//                        .HasColumnType("bigint");
+
+//                    b.Property<DateTime>("UpdateDate")
+//                        .HasColumnType("datetime2");
+
+//                    b.HasKey("UserRoleId");
+
+//                    b.ToTable("UserRoles");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.Department", b =>
+//                {
+//                    b.HasOne("IdScanner.Domain.Model.CompanyMaster", "Company")
+//                        .WithMany("Departments")
+//                        .HasForeignKey("CompanyId")
+//                        .OnDelete(DeleteBehavior.Cascade)
+//                        .IsRequired();
+
+//                    b.Navigation("Company");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.User", b =>
+//                {
+//                    b.HasOne("IdScanner.Domain.Model.UserRoleRepository", "UserRoleRepository")
+//                        .WithMany()
+//                        .HasForeignKey("UserRoleId")
+//                        .OnDelete(DeleteBehavior.Cascade)
+//                        .IsRequired();
+
+//                    b.Navigation("UserRoleRepository");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.UserData", b =>
+//                {
+//                    b.HasOne("IdScanner.Domain.Model.CompanyMaster", "Company")
+//                        .WithMany("UserDatas")
+//                        .HasForeignKey("CompanyId")
+//                        .OnDelete(DeleteBehavior.Cascade)
+//                        .IsRequired();
+
+//                    b.HasOne("IdScanner.Domain.Model.Department", "Department")
+//                        .WithMany("UserDatas")
+//                        .HasForeignKey("DepartmentId")
+//                        .OnDelete(DeleteBehavior.Restrict)
+//                        .IsRequired();
+
+//                    b.Navigation("Company");
+
+//                    b.Navigation("Department");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.CompanyMaster", b =>
+//                {
+//                    b.Navigation("Departments");
+
+//                    b.Navigation("UserDatas");
+//                });
+
+//            modelBuilder.Entity("IdScanner.Domain.Model.Department", b =>
+//                {
+//                    b.Navigation("UserDatas");
+//                });
+//#pragma warning restore 612, 618
+//        }
+//    }
+//}

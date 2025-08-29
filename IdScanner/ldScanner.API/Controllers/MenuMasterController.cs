@@ -1,9 +1,13 @@
 ﻿using IdScanner.Application.Interface;
 using IdScanner.Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ldScanner.API.Controllers
 {
+    [AllowAnonymous]
+    [Route("api/[controller]")]
+    [ApiController]
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;

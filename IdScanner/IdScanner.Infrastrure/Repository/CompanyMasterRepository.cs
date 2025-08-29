@@ -20,7 +20,8 @@ namespace IdScanner.Infrastructure.Repository
         public async Task<CompanyMaster> AddCompanyMasterAsync(CompanyMaster companyMaster)
         {
             _context.CompanyMasters.Add(companyMaster);
-            _context.SaveChanges();
+            //_context.SaveChanges();
+            await _context.SaveChangesAsync();
             return companyMaster;
 
         }

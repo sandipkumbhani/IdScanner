@@ -23,6 +23,7 @@ namespace IdScanner.Domain.DTO
         public long UpdateBy { get; set; }
 
         public DateTime UpdateDate { get; set; }
-        public string Token { get; set; } = string.Empty;
+        public string? Token { get; set; }// = string.Empty;
+
     }
 }

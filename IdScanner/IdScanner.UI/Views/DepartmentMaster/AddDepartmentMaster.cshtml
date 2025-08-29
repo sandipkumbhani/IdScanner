@@ -1,0 +1,97 @@
+﻿@model IdScanner.Domain.Model.Department
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	IList<IdScanner.Domain.Model.CompanyMaster> CompanyMasterList = ViewBag.CompanyList;
+	string NameMsg = ViewBag.NameMsg;
+	string CityMsg = ViewBag.CityMsg;
+	bool isChecked = Model.IsActive;
+}
+<html>
+<body>
+	<div class="content-page">
+		<div class="content">
+			<div class="main-inner container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="card com-profile-info">
+							<div class="top-details">
+								<h2 class="page-form-title">Department Details</h2>
+								<form class="row all-custom-class" method="post" action="@Url.Action("AddDepartmentMaster", "DepartmentMaster")">
+
+									<!-- Row 1: Company Name + City -->
+									<div class="col-md-6 mb-3">
+										<div class="item-input">
+											<input type="hidden" id="DepartmentId" name="DepartmentId" value="@Model.DepartmentId" />
+											<label for="DepartmentName" class="form-label required fw-semibold fs-6">Department Name</label>
+											<input type="text" class="form-control userinput" id="DepartmentName" name="DepartmentName" value="@Model.DepartmentName">
+											@if (!string.IsNullOrEmpty(NameMsg))
+											{
+												<span class="text-danger">@NameMsg</span>
+											}
+										</div>
+									</div>
+
+									<div class="col-md-6 mb-3">
+										<div class="item-input">
+											<label for="City" class="form-label required fw-semibold fs-6">City</label>
+											<input type="text" class="form-control userinput" id="City" name="City" value="@Model.City">
+											@if (!string.IsNullOrEmpty(CityMsg))
+											{
+												<span class="text-danger">@CityMsg</span>
+											}
+										</div>
+									</div>
+
+									<!-- Row 2: Logo + IsActive -->
+									<div class="col-md-6 mb-3">
+										<div class="item-input">
+											<label for="CompanyId" class="form-label col-form-label required fw-semibold fs-6">Select Company</label>
+											<select class="form-select" id="CompanyId" name="CompanyId">
+												<option value="0" selected="@(Model.CompanyId == 0 ? "selected" : null)">-select-</option>
+												@foreach (var item in CompanyMasterList)
+												{
+													<option value="@item.CompanyId" selected="@(Model.CompanyId == item.CompanyId? "selected" : null)">
+														@item.CompanyName
+													</option>
+												}
+											</select>
+										</div>
+									</div>
+
+									<div class="col-md-6 mb-3 d-flex align-items-center">
+										<input type="checkbox" name="IsActive" id="IsActive" class="form-check-input"
+											   value="true"
+											   @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
+										<label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size: 16px;">Is Active</label>
+									</div>
+
+									<!-- Buttons -->
+									<div class="col-12">
+										<div class="button-main d-flex gap-2 mt-3">
+											<button type="submit" class="card-link">
+												<i class="ri-save-line"></i><span>Save</span>
+											</button>
+											@if (Model.DepartmentId == 0 || Model.DepartmentId == null)
+											{
+												<button type="reset" class="card-link outline-bar">
+													<span>Clear</span>
+												</button>
+											}
+											<a href="@Url.Action("DepartmentMasterList", "DepartmentMaster")" class="card-link outline-bar">
+												<span>View</span>
+											</a>
+										</div>
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+

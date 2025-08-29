@@ -78,7 +78,7 @@ namespace IdScanner.Application.Services
             var Claims = new[]
             {
                   new Claim(JwtRegisteredClaimNames.Sub, users.UserId.ToString()),
-                   new Claim(JwtRegisteredClaimNames.Email, users.EmailId),
+                   new Claim(JwtRegisteredClaimNames.Email, users.EmailId ?? string.Empty),
                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
              };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_JwtKey));
