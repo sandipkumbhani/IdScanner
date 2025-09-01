@@ -7,13 +7,18 @@ using IdScanner.UI.Infrastructure.Provider;
 var builder = WebApplication.CreateBuilder(args);
 var globalClass = new GlobalClass();
 // Add services to the container.
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationService();
-builder.Services.AddHttpClient<ILoginRepository, LoginRepository>();
-builder.Services.AddHttpClient<IForgotPasswordRepository, ForgotPasswordRepository>();
-builder.Services.AddHttpClient<IMenuMasterRepository, MenuMasterRepository>();
-builder.Services.AddHttpClient<ICompanyMasterRepository, CompanyMasterRepository>();
-builder.Services.AddHttpClient<IDepartmentMasterRepository, DepartmentMasterRepository>();
+builder.Services.AddInfrastrucureService();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
+//builder.Services.AddHttpClient<ILoginRepository, LoginRepository>();
+//builder.Services.AddHttpClient<IForgotPasswordRepository, ForgotPasswordRepository>();
+//builder.Services.AddHttpClient<IMenuMasterRepository, MenuMasterRepository>();
+//builder.Services.AddHttpClient<ICompanyMasterRepository, CompanyMasterRepository>();
+//builder.Services.AddHttpClient<IDepartmentMasterRepository, DepartmentMasterRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -33,7 +33,6 @@ namespace ldScanner.API.Controllers
             {
                 return NotFound(ex.Message);
             }
-
         }
         [HttpPost("create")]
         public async Task<IActionResult> CreateUserDataAsync([FromBody] UserData userData)
@@ -55,7 +54,6 @@ namespace ldScanner.API.Controllers
         [HttpPut("Update-UserData/{userid}")]
         public async Task<IActionResult> UpdateUserDataAsync(int userid, [FromBody] UserData userData)
         {
-
             var existingUser = await _userDataService.GetUserDetailsById(userid);
             if (existingUser == null && userid != userData.UserDataId)
             {
