@@ -46,10 +46,23 @@ namespace IdScanner.UI.Controllers
             string DescriptionMsg = string.Empty;
             if(string.IsNullOrEmpty(menuMaster.Description))
             {
-                DescriptionMsg = "Please Enter Description";
+                DescriptionMsg = "Please Enter Description.";
                 ViewBag.DescriptionMsg = DescriptionMsg;
             }
-            if(ViewBag.NameMsg != null || ViewBag.DescriptionMsg != null)
+            string UrlMsg = string.Empty;
+            if(string.IsNullOrEmpty(menuMaster.Url))
+            {
+                UrlMsg = "Please Provide a Valid URL.";
+                ViewBag.UrlMsg = UrlMsg;
+            }
+            string IconMsg = string.Empty;
+            if(string.IsNullOrEmpty(menuMaster.Icon))
+            {
+                IconMsg = "Please Enter Icon Class.";
+                ViewBag.IconMsg = IconMsg;
+            }
+
+            if (ViewBag.NameMsg != null || ViewBag.DescriptionMsg != null || ViewBag.UrlMsg != null || ViewBag.IconMsg != null)
             {
                 return View(menuMaster);
             }

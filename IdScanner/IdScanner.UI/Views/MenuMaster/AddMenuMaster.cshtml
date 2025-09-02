@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string NameMsg = ViewBag.NameMsg;
     string DescriptionMsg = ViewBag.DescriptionMsg;
+    string UrlMsg = ViewBag.UrlMsg;
+	string IconMsg = ViewBag.IconMsg;
     string userRole = ViewBag.UserRole as string ?? "";
     bool isAdmin = string.Equals(userRole, "Admin", StringComparison.OrdinalIgnoreCase);
     bool isNew = Model.MenuId == 0;
@@ -52,10 +54,10 @@
                                         <div class="item-input">
                                             <label for="Url" class="form-label col-form-label required fw-semibold fs-6">Url</label>
                                             <input type="text" class="form-control userinput" id="Url" name="Url" value="@Model.Url">
-                                            @*  @if (!string.IsNullOrEmpty(DescriptionMsg))
+                                            @if (!string.IsNullOrEmpty(UrlMsg))
                                             {
-                                                <span class="text-danger">@DescriptionMsg</span>
-                                            } *@
+                                                <span class="text-danger">@UrlMsg</span>
+                                            }
                                         </div>
                                     </div>
 
@@ -63,12 +65,16 @@
                                         <div class="item-input">
                                             <label for="Icon" class="form-label col-form-label required fw-semibold fs-6">Icon</label>
                                             <input type="text" class="form-control userinput" id="Icon" name="Icon" value="@Model.Icon">
+                                            @if (!string.IsNullOrEmpty(IconMsg))
+                                            {
+                                                <span class="text-danger">@IconMsg</span>
+                                            }
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6" style="margin-top: 2.5%;">
                                         <div class="d-flex align-items-center gap-2">
                                             <input type="checkbox" name="IsDefault" id="IsDefault" class="form-check-input"
-                                                   value="true"
+                                                   value="true" checked="checked"
                                                    @(isChecked ? "checked" : "") style="transform: scale(1.4); margin-top: 2px;" />
                                             <label for="IsDefault" class="form-label col-form-label required fw-semibold mb-0" style="font-size: 16px;">Is Default</label>
                                         </div>

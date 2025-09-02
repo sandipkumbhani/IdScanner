@@ -1,13 +1,14 @@
-﻿using IdScanner.Domain.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using IdScanner.Domain.Model;
 using IdScanner.UI.Domain.Helper;
 using IdScanner.UI.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace IdScanner.UI.Infrastructure.Provider
@@ -31,6 +32,22 @@ namespace IdScanner.UI.Infrastructure.Provider
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<UserData>>(json)!;
+        }
+
+        public async Task<string> UpdateUserAsync(UserData userData)
+        {
+            var baseUrl = apiCredential.url + $"UserData/Update-UserData/{userData.UserDataId}";
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(userData), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(baseUrl, jsonContent);    
+            return await response.Content.ReadAsStringAsync();
+
+        }
+
+        public async Task<string> DeleteUserAsync(int id)
+        {
+            var baseUrl = apiCredential.url + $"UserData/Delete-User-Data?id={id}";
+            var response = await _httpClient.DeleteAsync(baseUrl);
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

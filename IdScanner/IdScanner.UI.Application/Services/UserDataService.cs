@@ -21,5 +21,15 @@ namespace IdScanner.UI.Application.Services
             return await _userDataRepository.GetAllUserDetailsAsync();
         }
 
+        public async Task<string> UpdateUserAsync(UserData userData)
+        {
+            return await _userDataRepository.UpdateUserAsync(userData);
+        }
+
+        public async Task<string> DeleteUserAsync(int id)
+        {
+            return await _userDataRepository.DeleteUserAsync(id);
+        }
+
     }
 }

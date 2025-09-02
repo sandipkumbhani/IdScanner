@@ -48,7 +48,14 @@ namespace IdScanner.UI.Controllers
                 ViewBag.CityMsg = CityMsg;
             }
 
-            if(ViewBag.NameMsg != null ||ViewBag.CityMsg != null)
+            string LogoMsg = string.Empty;
+            if (string.IsNullOrEmpty(companyMaster.logo))
+            {
+                LogoMsg = "Please Upload Company Logo.";
+                ViewBag.LogoMsg = LogoMsg;
+            }
+
+            if (ViewBag.NameMsg != null ||ViewBag.CityMsg != null || ViewBag.LogoMsg != null)
             {
                 return View(companyMaster);
             }
