@@ -14,5 +14,6 @@ namespace IdScanner.Application.Interface
         Task<Department> UpdateDepartmentAsync(int departmentId, Department department);
         Task<List<Department>> GetAllDepartmentAsync();
         Task DeleteDepaetmentById(int id);
+        Task<List<Department>> GetDepartmentsByCompanyIdAsync(int companyId);
     }
 }

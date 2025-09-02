@@ -1,4 +1,4 @@
-﻿    using IdScanner.Application.Interface;
+﻿using IdScanner.Application.Interface;
 using IdScanner.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,7 +54,6 @@ namespace ldScanner.API.Controllers
         [HttpPut("Update-User/{departmentId}")]
         public async Task<IActionResult> UpdateUserAsync(int departmentId, [FromBody] Department department)
         {
-
             var existingDepartment = _departmentService.GetDepartmentDetailsById(departmentId);
             if (existingDepartment == null && departmentId != department.DepartmentId)
             {
@@ -90,5 +89,20 @@ namespace ldScanner.API.Controllers
                 return Ok($"Department with ID {id} not found: {ex.Message}");
             }
         }
+        [HttpGet("GetDepartmentByCompanyId")]
+        public async Task<IActionResult> GetDepartmentsByCompanyId(int companyId)
+        {
+            if (companyId <= 0)
+            {
+                return BadRequest("Invalid company ID.");
+            }
+            var departments = await _departmentService.GetDepartmentsByCompanyIdAsync(companyId);
+            if (departments == null || !departments.Any())
+            {
+                return NotFound("No departments found for this company.");
+            }
+            return Ok(departments);
+        }
+
     }
 }

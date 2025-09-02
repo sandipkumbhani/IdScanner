@@ -47,6 +47,17 @@ namespace IdScanner.Infrastructure.Repository
             _context.Departments.Update(department);
             _context.SaveChanges();
         }
+        public async Task<List<Department>> GetDepartmentsByCompanyIdAsync(int companyId)
+        {
+            return await _context.Departments
+                .Where(d => d.CompanyId == companyId)
+                .Select(d => new Department
+                {
+                    DepartmentId = d.DepartmentId,
+                    DepartmentName = d.DepartmentName
+                })
+                .ToListAsync();
+        }
 
     }
 }

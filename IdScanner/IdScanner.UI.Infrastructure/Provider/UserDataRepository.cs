@@ -1,4 +1,6 @@
-﻿using IdScanner.Domain.Model;
+﻿using Google.Apis.Drive.v3.Data;
+using IdScanner.Domain.Model;
+using IdScanner.UI.Domain.Comman;
 using IdScanner.UI.Domain.Helper;
 using IdScanner.UI.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -32,5 +34,42 @@ namespace IdScanner.UI.Infrastructure.Provider
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<UserData>>(json)!;
         }
+        public async Task<UserData> AddUserDataAsync(UserData userData)
+        {
+            var baseUrl = apiCredential.url + "UserData/create";
+
+            var userJson = JsonConvert.SerializeObject(userData);
+            var requestContent = new StringContent(userJson, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(baseUrl, requestContent);
+            var responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
+                var message = errorResponse?.ErrorMessage
+                              ?? errorResponse?.Message
+                              ?? "Failed to create menu.";
+
+                throw new Exception($"API Error ({response.StatusCode}): {message}");
+            }
+            try
+            {
+                var createdMappings = JsonConvert.DeserializeObject<UserData>(responseData);
+                return createdMappings;
+            }
+            catch (JsonException)
+            {
+                throw new Exception($"Unexpected response format. Raw response: {responseData}");
+            }
+        }
+        public async Task<UserData> GetUserDataByIdAsync(int? userid)
+        {
+            var baseUrl = apiCredential.url + $"UserData/GetByUserDataById?userId={userid}";
+            var response = await _httpClient.GetAsync(baseUrl);
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<UserData>(jsonString)!;
+        }
+
     }
 }

@@ -112,6 +112,10 @@ namespace IdScanner.Application.Services
 
             await _departmentRepository.DeleteDepartmentAsync(deleteUser);
         }
+        public async Task<List<Department>> GetDepartmentsByCompanyIdAsync(int companyId)
+        {
+            return await _departmentRepository.GetDepartmentsByCompanyIdAsync(companyId);
+        }
 
     }
 }
