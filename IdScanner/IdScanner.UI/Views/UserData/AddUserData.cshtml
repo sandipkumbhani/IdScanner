@@ -75,7 +75,7 @@
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
                                             <label for="IdValidTill" class="form-label col-form-label required fw-semibold fs-6">IdValidTill</label>
-                                            <input type="text" class="form-control userinput" id="IdValidTill" name="IdValidTill" value="@Model.IdValidTill">
+                                            <input type="date" class="form-control userinput" id="IdValidTill" name="IdValidTill" value="@Model.IdValidTill" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
@@ -109,18 +109,18 @@
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
                                             <label for="ImageFile" class="form-label col-form-label required fw-semibold fs-6">Profile Image</label>
-                                            <input type="file" class="form-control userinput" id="ImageFile" name="ImageFile" accept="image/*" />
+                                            <input type="file" class="form-control userinput" id="ImageFile" name="ImageFile" accept="image/*" value="@Model.PhotoUrl"/>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
-                                            <label for="policeFile" class="form-label col-form-label required fw-semibold fs-6">Profile Image</label>
+                                            <label for="policeFile" class="form-label col-form-label required fw-semibold fs-6">Police Verification Certificate</label>
                                             <input type="file" class="form-control userinput" id="policeFile" name="policeFile" accept="image/*" />
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
-                                            <label for="medicalFile" class="form-label col-form-label required fw-semibold fs-6">Profile Image</label>
+                                            <label for="medicalFile" class="form-label col-form-label required fw-semibold fs-6">Medical Certificate</label>
                                             <input type="file" class="form-control userinput" id="medicalFile" name="medicalFile" accept="image/*" />
                                         </div>
                                     </div>
@@ -156,14 +156,42 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        document.getElementById("CompanyId").addEventListener("change", function () {
+
+    @* <script type="text/javascript">
+            document.getElementById("CompanyId").addEventListener("change", function () {
+                const selectedCompanyId = this.value;
+                const currentUrl = window.location.origin + window.location.pathname;
+                const url = `${currentUrl}?CompanyId=${selectedCompanyId}`;
+                window.location.href = url;
+            });
+        document.getElementById('ImageFile').addEventListener('change', function () {
+            const file = this.files[0];
+            const maxSize = 100 * 1024;
+            const errorMsg = document.getElementById('fileSizeError');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (file) {
+                if (file.size > maxSize) {
+                    errorMsg.style.display = 'block';
+                    submitBtn.disabled = true; 
+                } else {
+                    errorMsg.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+    </script> *@
+
+    @* <script type="text/javascript">
+                document.getElementById("CompanyId").addEventListener("change", function () {
             const selectedCompanyId = this.value;
+
             fetch(`/UserData/GetDepartmentsByCompany?companyId=${selectedCompanyId}`)
                 .then(response => response.json())
                 .then(data => {
                     const departmentDropdown = document.querySelector("select[name='DepartmentId']");
                     departmentDropdown.innerHTML = '<option value="0">-select-</option>';
+
                     data.forEach(dept => {
                         const option = document.createElement("option");
                         option.value = dept.departmentId;
@@ -173,28 +201,46 @@
                 })
                 .catch(error => console.error("Error:", error));
         });
+    </script> *@
 
-            // document.getElementById("CompanyId").addEventListener("change", function () {
-            //     const selectedCompanyId = this.value;
-            //     const currentUrl = window.location.origin + window.location.pathname;
-            //     const url = `${currentUrl}?CompanyId=${selectedCompanyId}`;
-            //     window.location.href = url;
-            // });
-        // document.getElementById('ImageFile').addEventListener('change', function () {
-        //     const file = this.files[0];
-        //     const maxSize = 100 * 1024;
-        //     const errorMsg = document.getElementById('fileSizeError');
-        //     const submitBtn = document.getElementById('submitBtn');
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const companyDropdown = document.getElementById("CompanyId");
+            const departmentDropdown = document.querySelector("select[name='DepartmentId']");
+            const selectedDeptId = "@Model.DepartmentId";
 
-        //     if (file) {
-        //         if (file.size > maxSize) {
-        //             errorMsg.style.display = 'block';
-        //             submitBtn.disabled = true; 
-        //         } else {
-        //             errorMsg.style.display = 'none';
-        //             submitBtn.disabled = false;
-        //         }
-        //     }
-        // });
+            function loadDepartments(companyId, preselectId = null) {
+                if (!companyId || companyId === "0") {
+                    departmentDropdown.innerHTML = '<option value="0">-select-</option>';
+                    return;
+                }
+
+                fetch(`/UserData/GetDepartmentsByCompany?companyId=${companyId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        departmentDropdown.innerHTML = '<option value="0">-select-</option>';
+                        data.forEach(d => {
+                            const opt = document.createElement("option");
+                            opt.value = d.departmentId;
+                            opt.text = d.departmentName;
+                            if (preselectId && d.departmentId == preselectId) {
+                                opt.selected = true;
+                            }
+                            departmentDropdown.appendChild(opt);
+                        });
+                    });
+            }
+
+            // On page load (for edit)
+            if (companyDropdown.value !== "0") {
+                loadDepartments(companyDropdown.value, selectedDeptId);
+            }
+
+            // On company change
+            companyDropdown.addEventListener("change", function () {
+                loadDepartments(this.value);
+            });
+        });
     </script>
+
 </body>

@@ -75,26 +75,27 @@
                                             <th>Id Number</th>
                                             <th>Moblie</th>
                                             <th>StallPfNumber</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var menuMaster in UserDataList)
+                                        @foreach (var userMaster in UserDataList)
                                         {
                                             <tr>
-                                                <td>@menuMaster.Name</td>
-                                                <td>@menuMaster.IdNumber</td>
-                                                <td>@menuMaster.MobileNumber</td>
-                                                <td>@menuMaster.StallPfNumber</td>
+                                                <td>@userMaster.Name</td>
+                                                <td>@userMaster.IdNumber</td>
+                                                <td>@userMaster.MobileNumber</td>
+                                                <td>@userMaster.StallPfNumber</td>
                                                 <td>
-                                                   @*  <div class="action-items">
-                                                        <a href="@Url.Action("AddMenuMaster", "MenuMaster", new { id = menuMaster.MenuId })" class="icon-btn">
+                                                    <div class="action-items">
+                                                        <a href="@Url.Action("AddUserData", "UserData", new { id = userMaster.UserDataId })" class="icon-btn">
                                                             <i class="ri-edit-2-line"></i>
                                                         </a>
-                                                        <a href="@Url.Action("DeleteMenu", "MenuMaster", new { id = menuMaster.MenuId })" class="icon-btn"
-                                                           onclick="return confirm('Are you sure you want to delete this menu?');">
+                                                        <a href="@Url.Action("DeleteUserData", "UserData", new { id = userMaster.UserDataId })" class="icon-btn"
+                                                           onclick="return confirm('Are you sure you want to delete this user?');">
                                                             <i class="ri-delete-bin-3-line"></i>
                                                         </a>
-                                                    </div> *@
+                                                    </div>
                                                 </td>
                                             </tr>
                                         }

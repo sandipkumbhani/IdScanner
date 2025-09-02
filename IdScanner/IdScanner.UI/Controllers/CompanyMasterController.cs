@@ -32,7 +32,7 @@ namespace IdScanner.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCompanyMaster(CompanyMaster companyMaster)
+        public async Task<IActionResult> AddCompanyMaster(CompanyMaster companyMaster, IFormFile ImageFile)
         {
             string NameMsg = string.Empty;
             if(string.IsNullOrEmpty(companyMaster.CompanyName))
@@ -48,6 +48,19 @@ namespace IdScanner.UI.Controllers
                 ViewBag.CityMsg = CityMsg;
             }
 
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var fileName = Path.GetFileName(ImageFile.FileName);
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "CompanyLogoImages");
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ImageFile.CopyToAsync(stream);
+                }
+
+                companyMaster.logo = filePath;
+            }
             string LogoMsg = string.Empty;
             if (string.IsNullOrEmpty(companyMaster.logo))
             {
@@ -59,7 +72,8 @@ namespace IdScanner.UI.Controllers
             {
                 return View(companyMaster);
             }
-            if(companyMaster.CompanyId == 0)
+
+            if (companyMaster.CompanyId == 0)
             {
                 await _companyMasterService.AddCompanyAsync(companyMaster);
             }
