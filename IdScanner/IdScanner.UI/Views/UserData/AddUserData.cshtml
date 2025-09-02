@@ -2,7 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     IList<IdScanner.Domain.Model.CompanyMaster> CompanyMasterList = ViewBag.CompanyList;
-    IList<IdScanner.Domain.Model.Department> DepartmentList = ViewBag.DepartmentList;
+    // IList<IdScanner.Domain.Model.Department> DepartmentList = ViewBag.DepartmentList;
 
 }
 <style>
@@ -96,13 +96,13 @@
                                         <div class="item-input">
                                             <label for="DE" class="form-label col-form-label required fw-semibold fs-6">Department</label>
                                             <select class="form-select" id="" name="DepartmentId">
-                                                <option value="0" selected="@(Model.DepartmentId == 0 ? "selected" : null)">-select-</option>
+                                              @*   <option value="0" selected="@(Model.DepartmentId == 0 ? "selected" : null)">-select-</option>
                                                 @foreach (var item in DepartmentList)
                                                 {
                                                     <option value="@item.DepartmentId" selected="@(Model.DepartmentId == item.DepartmentId? "selected" : null)">
                                                         @item.DepartmentName
                                                     </option>
-                                                }
+                                                } *@
                                             </select>
                                         </div>
                                     </div>
@@ -124,7 +124,6 @@
                                             <input type="file" class="form-control userinput" id="medicalFile" name="medicalFile" accept="image/*" />
                                         </div>
                                     </div>
-
                                     <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
                                         <button type="submit" class="card-link">
                                             <i class="ri-save-line"></i>
@@ -158,12 +157,29 @@
         </div>
     </div>
     <script type="text/javascript">
-            document.getElementById("CompanyId").addEventListener("change", function () {
-                const selectedCompanyId = this.value;
-                const currentUrl = window.location.origin + window.location.pathname;
-                const url = `${currentUrl}?CompanyId=${selectedCompanyId}`;
-                window.location.href = url;
-            });
+        document.getElementById("CompanyId").addEventListener("change", function () {
+            const selectedCompanyId = this.value;
+            fetch(`/UserData/GetDepartmentsByCompany?companyId=${selectedCompanyId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const departmentDropdown = document.querySelector("select[name='DepartmentId']");
+                    departmentDropdown.innerHTML = '<option value="0">-select-</option>';
+                    data.forEach(dept => {
+                        const option = document.createElement("option");
+                        option.value = dept.departmentId;
+                        option.text = dept.departmentName;
+                        departmentDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error:", error));
+        });
+
+            // document.getElementById("CompanyId").addEventListener("change", function () {
+            //     const selectedCompanyId = this.value;
+            //     const currentUrl = window.location.origin + window.location.pathname;
+            //     const url = `${currentUrl}?CompanyId=${selectedCompanyId}`;
+            //     window.location.href = url;
+            // });
         // document.getElementById('ImageFile').addEventListener('change', function () {
         //     const file = this.files[0];
         //     const maxSize = 100 * 1024;

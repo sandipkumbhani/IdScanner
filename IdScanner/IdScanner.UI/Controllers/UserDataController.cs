@@ -26,16 +26,13 @@ namespace IdScanner.UI.Controllers
             return View("~/Views/UserData/UserDataList.cshtml");
         }
         [HttpGet]
-        public async Task<IActionResult> AddUserData(int? userid, int? CompanyId)
+        public async Task<IActionResult> AddUserData(int? userid)
         {
-            await InitViewBag(CompanyId);
+            await InitViewBag();
             if (userid == null)
             {
                 var model = new UserData();
-                if (CompanyId.HasValue)
-                {
-                    model.CompanyId = CompanyId.Value;
-                }
+               
                 return View(model);
             }
             var user = await _userDataService.GetById(userid.Value);
@@ -44,11 +41,12 @@ namespace IdScanner.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUserData(UserData userData, IFormFile ImageFile, IFormFile policeFile, IFormFile medicalFile)
         {
-            await InitViewBag(userData.CompanyId);
+            await InitViewBag();
             if (ImageFile != null && ImageFile.Length > 0)
             {
                 var fileName = Path.GetFileName(ImageFile.FileName);
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedImages");
+
                 var filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -82,7 +80,6 @@ namespace IdScanner.UI.Controllers
                 {
                     await medicalFile.CopyToAsync(stream);
                 }
-
                 userData.MedicalCertificateUrl = filePath;
             }
 
@@ -112,17 +109,21 @@ namespace IdScanner.UI.Controllers
             //}
             return RedirectToAction("UserDataList");
         }
-        private async Task InitViewBag(int? CompanyId)
+        [HttpGet]
+        public async Task<JsonResult> GetDepartmentsByCompany(int companyId)
+        {
+            var departments = await _departmentMasterService.GetDepartmentByCompanyId(companyId);
+            var result = departments.Select(d => new
+            {
+                departmentId = d.DepartmentId,
+                departmentName = d.DepartmentName
+            });
+            return Json(result);
+        }
+        private async Task InitViewBag()
         {
             IList<CompanyMaster> company = await _companyMasterService.GetAllCompanyMasterAsync();
             ViewBag.CompanyList = company;
-            
-            IList<Department> departments = new List<Department>();
-            if(CompanyId > 0)
-            {
-                departments = await _departmentMasterService.GetDepartmentByCompanyId(CompanyId);
-            }
-            ViewBag.DepartmentList = departments;
         }
 
     }

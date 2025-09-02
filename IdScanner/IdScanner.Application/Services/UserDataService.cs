@@ -71,7 +71,7 @@ namespace IdScanner.Application.Services
                     FileAccess.Read,
                     FileShare.Read);
                 //new FileStream(userData.PoliceVerificationCertificateUrl, FileMode.Open, FileAccess.Read);
-                policeUrl = await _googleDriveService.UploadFileAsync(policeStream, policeFileName, "image/jpeg", folderId);
+                policeUrl = await _googleDriveService.UploadFileAsync(policeStream, policeFileName, mimeType, folderId);
             }
             if (!string.IsNullOrEmpty(userData.MedicalCertificateUrl) && System.IO.File.Exists(userData.MedicalCertificateUrl))
             {
@@ -91,7 +91,7 @@ namespace IdScanner.Application.Services
                     FileAccess.Read,
                     FileShare.Read);
                 //new FileStream(userData.MedicalCertificateUrl, FileMode.Open, FileAccess.Read);
-                medicalUrl = await _googleDriveService.UploadFileAsync(medicalStream, medicalFileName, "image/jpeg", folderId);
+                medicalUrl = await _googleDriveService.UploadFileAsync(medicalStream, medicalFileName, mimeType, folderId);
             }
 
             var newData = new UserData

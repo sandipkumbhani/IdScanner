@@ -27,7 +27,6 @@ namespace IdScanner.Infrastructure.Migrations
                 principalColumn: "DepartmentId",
                 onDelete: ReferentialAction.NoAction);
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

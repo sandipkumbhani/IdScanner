@@ -27,6 +27,10 @@ namespace IdScanner.Domain.Model
         public string? PhotoUrl { get; set; }
         public string? PoliceVerificationCertificateUrl { get; set; }
         public string? MedicalCertificateUrl { get; set; }
+        public string? QRCodeText { get; set; }
+        public string? AadhaarCardNumber { get; set; }
+        public string? BloodGroup { get; set; }
+        public string? SignatureUrl { get; set; }
         public bool IsActive { get; set; }
         public long InsertBy { get; set; }
         public DateTime InsertDate { get; set; }
