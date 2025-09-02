@@ -10,6 +10,8 @@ namespace IdScanner.UI.Domain.Interfaces
     public interface IUserDataRepository
     {
         Task<List<UserData>> GetAllUserDetailsAsync();
+        Task<UserData> AddUserDataAsync(UserData userData);
+        Task<UserData> GetUserDataByIdAsync(int? userid);
         Task<string> UpdateUserAsync(UserData userData);
         Task<string> DeleteUserAsync(int id);
     }

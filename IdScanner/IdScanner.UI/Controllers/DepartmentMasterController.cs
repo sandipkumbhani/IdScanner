@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IdScanner.UI.Controllers
 {
-    public class DepartmentController : Controller
+    public class DepartmentMasterController : Controller
     {
         private readonly IDepartmentMasterService _departmentMasterService;
         private readonly ICompanyMasterService _companyMasterService;
-        public DepartmentController(IDepartmentMasterService departmentMasterService, ICompanyMasterService companyMasterService)
+        public DepartmentMasterController(IDepartmentMasterService departmentMasterService, ICompanyMasterService companyMasterService)
         {
             _departmentMasterService = departmentMasterService
                 ?? throw new ArgumentNullException(nameof(departmentMasterService));

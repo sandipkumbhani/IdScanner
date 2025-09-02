@@ -14,6 +14,6 @@ namespace IdScanner.Domain.Interface
         Department GetDepartmentById(int id);
         Task DeleteDepartmentAsync(Department department);
         Task UpdateDepartmentAsync(Department department);
-
+        Task<List<Department>> GetDepartmentsByCompanyIdAsync(int companyId);
     }
 }

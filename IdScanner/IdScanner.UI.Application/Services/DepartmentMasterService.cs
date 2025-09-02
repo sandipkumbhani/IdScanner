@@ -40,5 +40,10 @@ namespace IdScanner.UI.Application.Services
         {
             return await _departmentMasterRepository.DeleteDepartmentAsync(id);
         }
+        public async Task<List<Department>> GetDepartmentByCompanyId(int? companyId)
+        {
+            return await _departmentMasterRepository.GetDepartmentByCompanyId(companyId);
+        }
+
     }
 }

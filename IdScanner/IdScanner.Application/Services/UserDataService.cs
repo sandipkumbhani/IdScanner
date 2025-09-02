@@ -52,7 +52,7 @@ namespace IdScanner.Application.Services
                     FileAccess.Read,
                     FileShare.Read);
 
-                photoUrl = await _googleDriveService.UploadFileAsync(photoStream, photoFileName, "image/jpeg", folderId);
+                photoUrl = await _googleDriveService.UploadFileAsync(photoStream, photoFileName, mimeType, folderId);
             }
             if (!string.IsNullOrEmpty(userData.PoliceVerificationCertificateUrl) && System.IO.File.Exists(userData.PoliceVerificationCertificateUrl))
             {

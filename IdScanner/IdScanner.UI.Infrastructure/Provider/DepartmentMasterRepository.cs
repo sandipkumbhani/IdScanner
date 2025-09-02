@@ -58,7 +58,6 @@ namespace IdScanner.UI.Infrastructure.Provider
             }
             return "Department Added Successfully.";
         }
-
         public async Task<string> UpdateDepartmentAsync(Department departmentMaster)
         {
             var baseUrl = apiCredential.url + $"Department/Update-User/{departmentMaster.DepartmentId}";
@@ -66,12 +65,19 @@ namespace IdScanner.UI.Infrastructure.Provider
             var response = await _httpClinet.PutAsync(baseUrl, jsonContent);
             return await response.Content.ReadAsStringAsync();
         }
-
         public async Task<string> DeleteDepartmentAsync(int id)
         {
             var baseUrl = apiCredential.url + $"Department/Delete-department?id={id}";
             var response = await _httpClinet.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
+        }
+        public async Task<List<Department>> GetDepartmentByCompanyId(int? companyId)
+        {
+            var baseUrl = apiCredential.url + $"Department/GetDepartmentByCompanyId?companyId={companyId}";
+            var response = await _httpClinet.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Department>>(jsonString)!;
         }
     }
 }
