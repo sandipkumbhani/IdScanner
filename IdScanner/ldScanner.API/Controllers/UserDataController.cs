@@ -77,16 +77,16 @@ namespace ldScanner.API.Controllers
             }
         }
         [HttpDelete("Delete-User-Data")]
-        public async Task<IActionResult> Delete(int userId)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                await _userDataService.DeleteUserDataById(userId);
-                return Ok($"User with ID {userId} has been deleted successfully.");
+                await _userDataService.DeleteUserDataById(id);
+                return Ok($"User with ID {id} has been deleted successfully.");
             }
             catch (KeyNotFoundException ex)
             {
-                return Ok($"User with ID {userId} not found: {ex.Message}");
+                return Ok($"User with ID {id} not found: {ex.Message}");
             }
         }
 

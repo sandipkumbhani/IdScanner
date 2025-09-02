@@ -24,4 +24,8 @@
     <ProjectReference Include="..\IdScanner.UI.Infrastructure\IdScanner.UI.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\CompanyLogoImages\" />
+  </ItemGroup>
+
 </Project>

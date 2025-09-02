@@ -20,7 +20,7 @@
 						<div class="card com-profile-info">
 							<div class="top-details">
 								<h2 class="page-form-title">Company Details</h2>
-								<form class="row all-custom-class" method="post" action="@Url.Action("AddCompanyMaster", "CompanyMaster")">
+								<form class="row all-custom-class" method="post" action="@Url.Action("AddCompanyMaster", "CompanyMaster")" enctype="multipart/form-data">
 
 									<!-- Row 1: Company Name + City -->
 									<div class="col-md-6 mb-3">
@@ -50,7 +50,7 @@
 									<div class="col-md-6 mb-3">
 										<div class="item-input">
 											<label for="Logo" class="form-label required fw-semibold fs-6">Logo</label>
-											<input type="file" class="form-control userinput" id="Logo" name="Logo" value="@Model.logo">
+											<input type="file" class="form-control userinput" id="ImageFile" name="ImageFile" accept="image/*" />
 											@if (!string.IsNullOrEmpty(LogoMsg))
 											{
 												<span class="text-danger">@LogoMsg</span>

@@ -26,10 +26,10 @@ namespace IdScanner.UI.Controllers
             return View("~/Views/UserData/UserDataList.cshtml");
         }
         [HttpGet]
-        public async Task<IActionResult> AddUserData(int? userid, int? CompanyId)
+        public async Task<IActionResult> AddUserData(int? id, int? CompanyId)
         {
             await InitViewBag(CompanyId);
-            if (userid == null)
+            if (id == null)
             {
                 var model = new UserData();
                 if (CompanyId.HasValue)
@@ -38,7 +38,7 @@ namespace IdScanner.UI.Controllers
                 }
                 return View(model);
             }
-            var user = await _userDataService.GetById(userid.Value);
+            var user = await _userDataService.GetById(id.Value);
             return View("~/Views/UserData/AddUserData.cshtml", user);
         }
         [HttpPost]
@@ -106,11 +106,25 @@ namespace IdScanner.UI.Controllers
             {
                 await _userDataService.AddUserDataAsync(userData);
             }
-            //else
-            //{
-            //    await _userDataService.UpdateMenuAsync(userData);
-            //}
+            else
+            {
+                await _userDataService.UpdateUserAsync(userData);
+            }
             return RedirectToAction("UserDataList");
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeleteUserData(int id)
+        {
+            try
+            {
+                await _userDataService.DeleteUserAsync(id);
+                return RedirectToAction("UserDataList");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"User with ID {id} not found: {ex.Message}";
+                return View("Error");
+            }
         }
         private async Task InitViewBag(int? CompanyId)
         {
@@ -125,5 +139,17 @@ namespace IdScanner.UI.Controllers
             ViewBag.DepartmentList = departments;
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetDepartmentsByCompany(int companyId)
+        {
+            var departments = await _departmentMasterService.GetDepartmentByCompanyId(companyId);
+            var result = departments.Select(d => new
+            {
+                departmentId = d.DepartmentId,
+                departmentName = d.DepartmentName
+            });
+
+            return Json(result);
+        }
     }
 }
