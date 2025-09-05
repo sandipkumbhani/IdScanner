@@ -19,6 +19,7 @@ namespace IdScanner.UI.Application.Extension
             services.AddScoped<ICompanyMasterService, CompanyMasterService>();
             services.AddScoped<IDepartmentMasterService, DepartmentMasterService>();
             services.AddScoped<IUserDataService, UserDataService>();
+            services.AddScoped<IQrCodeService, QrCodeService>();
             return services;
         }
     }

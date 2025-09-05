@@ -92,5 +92,6 @@ namespace IdScanner.UI.Infrastructure.Provider
             return JsonConvert.DeserializeObject<UserData>(jsonString)!;
         }
 
+
     }
 }

@@ -53,7 +53,7 @@ namespace ldScanner.API.Controllers
         }
         [HttpPut("Update-UserData/{userid}")]
         public async Task<IActionResult> UpdateUserDataAsync(int userid, [FromBody] UserData userData)
-        {
+         {
             var existingUser = await _userDataService.GetUserDetailsById(userid);
             if (existingUser == null && userid != userData.UserDataId)
             {

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static GoogleDriveService;
 
 namespace IdScanner.Application.Services
 {
@@ -30,6 +31,10 @@ namespace IdScanner.Application.Services
             string photoUrl = null;
             string policeUrl = null;
             string medicalUrl = null;
+            DriveFileResult photoResult = null;
+            DriveFileResult policeResult = null;
+            DriveFileResult medicalResult = null;
+
 
             var idNumber = Generate12Digit();
             string folderId = await _googleDriveService.CreateFolderAsync(idNumber);
@@ -52,7 +57,7 @@ namespace IdScanner.Application.Services
                     FileAccess.Read,
                     FileShare.Read);
 
-                photoUrl = await _googleDriveService.UploadFileAsync(photoStream, photoFileName, mimeType, folderId);
+                photoResult = await _googleDriveService.UploadFileAsync(photoStream, photoFileName, mimeType, folderId);
             }
             if (!string.IsNullOrEmpty(userData.PoliceVerificationCertificateUrl) && System.IO.File.Exists(userData.PoliceVerificationCertificateUrl))
             {
@@ -71,7 +76,7 @@ namespace IdScanner.Application.Services
                     FileAccess.Read,
                     FileShare.Read);
                 //new FileStream(userData.PoliceVerificationCertificateUrl, FileMode.Open, FileAccess.Read);
-                policeUrl = await _googleDriveService.UploadFileAsync(policeStream, policeFileName, mimeType, folderId);
+                policeResult = await _googleDriveService.UploadFileAsync(policeStream, policeFileName, mimeType, folderId);
             }
             if (!string.IsNullOrEmpty(userData.MedicalCertificateUrl) && System.IO.File.Exists(userData.MedicalCertificateUrl))
             {
@@ -91,11 +96,12 @@ namespace IdScanner.Application.Services
                     FileAccess.Read,
                     FileShare.Read);
                 //new FileStream(userData.MedicalCertificateUrl, FileMode.Open, FileAccess.Read);
-                medicalUrl = await _googleDriveService.UploadFileAsync(medicalStream, medicalFileName, mimeType, folderId);
+                medicalResult = await _googleDriveService.UploadFileAsync(medicalStream, medicalFileName, mimeType, folderId);
             }
 
             var newData = new UserData
             {
+                UserDataId = userData.UserDataId,
                 CompanyId = userData.CompanyId,
                 DepartmentId = userData.DepartmentId,
                 Name = userData.Name,
@@ -106,9 +112,12 @@ namespace IdScanner.Application.Services
                 Licensee = userData.Licensee,
                 WorkSlot = userData.WorkSlot,
                 IdValidTill = userData.IdValidTill,
-                PhotoUrl = photoUrl,
-                PoliceVerificationCertificateUrl = policeUrl,
-                MedicalCertificateUrl = medicalUrl,
+                PhotoFileName = photoResult.FileName,
+                PhotoUrl = photoResult.FileUrl,
+                PoliceVerificationCertificateFileName = policeResult.FileName,
+                PoliceVerificationCertificateUrl = policeResult.FileUrl,
+                MedicalCertificateFileName = medicalResult.FileName,
+                MedicalCertificateUrl = medicalResult.FileUrl,
                 IsActive = true,
                 InsertBy = 1,
                 InsertDate = DateTime.Now,
@@ -128,14 +137,15 @@ namespace IdScanner.Application.Services
             string newPolice = userData.PoliceVerificationCertificateUrl;
             string newMedical = userData.MedicalCertificateUrl;
             string folderId = userExisting.IdNumber;
-            string photoUrl = userExisting.PhotoUrl;
-            string policeUrl = userExisting.PoliceVerificationCertificateUrl;
-            string medicalUrl = userExisting.MedicalCertificateUrl;
+            string photoUrl = userExisting.PhotoFileName;
+            string policeUrl = userExisting.PoliceVerificationCertificateFileName;
+            string medicalUrl = userExisting.MedicalCertificateFileName;
 
-            photoUrl = await CreateOrUpdateFileOnDrive(photoUrl, folderId, newphotoUrl);
-            policeUrl = await CreateOrUpdateFileOnDrive(policeUrl, folderId, newPolice);
-            medicalUrl = await CreateOrUpdateFileOnDrive(medicalUrl, folderId, newMedical);
-            
+            var photoresult = await CreateOrUpdateFileOnDrive(photoUrl, folderId, newphotoUrl);
+            var  policeresult = await CreateOrUpdateFileOnDrive(policeUrl, folderId, newPolice);
+            var medicalresult = await CreateOrUpdateFileOnDrive(medicalUrl, folderId, newMedical);
+
+            userExisting.UserDataId = userData.UserDataId;
             userExisting.CompanyId = userData.CompanyId;
             userExisting.DepartmentId = userData.DepartmentId;
             userExisting.Name = userData.Name;
@@ -144,9 +154,13 @@ namespace IdScanner.Application.Services
             userExisting.Licensee = userData.Licensee;
             userExisting.WorkSlot = userData.WorkSlot;
             userExisting.IdValidTill = userData.IdValidTill;
-            userExisting.PhotoUrl = photoUrl;
-            userExisting.PoliceVerificationCertificateUrl = policeUrl;
-            userExisting.MedicalCertificateUrl = medicalUrl;
+            userExisting.PhotoFileName = photoresult.FileName;
+            userExisting.PhotoUrl = photoresult.FileUrl;
+            userExisting.PoliceVerificationCertificateFileName = policeresult.FileName;
+            userExisting.PoliceVerificationCertificateUrl = policeresult.FileUrl;
+            userExisting.MedicalCertificateUrl = medicalresult.FileUrl;
+            userExisting.MedicalCertificateFileName = medicalresult.FileName;
+            userExisting.QRCodeUrl = userData.QRCodeUrl;
             userExisting.IsActive = true;
             userExisting.UpdateBy = 1; 
             userExisting.UpdateDate = DateTime.Now;
@@ -209,12 +223,13 @@ namespace IdScanner.Application.Services
             string randomPart = new Random().Next(100, 999).ToString(); 
             return tickPart + randomPart;
         }
-        private async Task<string> CreateOrUpdateFileOnDrive(string ImageURL, string FolderId, string NewphotoUrl)
+        private async Task<DriveFileResult> CreateOrUpdateFileOnDrive(string existingFileName, string folderId, string newFilePath)
         {
-            string FileName = "";
-            if (!string.IsNullOrEmpty(NewphotoUrl) && System.IO.File.Exists(NewphotoUrl))
+            DriveFileResult driveFileResult = null;
+
+            if (!string.IsNullOrEmpty(newFilePath) && System.IO.File.Exists(newFilePath))
             {
-                string fileExtension = Path.GetExtension(NewphotoUrl)?.ToLower();
+                string fileExtension = Path.GetExtension(newFilePath)?.ToLower();
                 string mimeType = fileExtension switch
                 {
                     ".jpg" or ".jpeg" => "image/jpeg",
@@ -222,27 +237,30 @@ namespace IdScanner.Application.Services
                     ".pdf" => "application/pdf",
                     _ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
                 };
-                var FileNameWithExtenstion = $"{FolderId}_photo{fileExtension}";
 
-                using var FileStream = new FileStream(
-                    NewphotoUrl,
+                var fileNameWithExtension = $"{folderId}_{Guid.NewGuid()}{fileExtension}";
+
+                using var fileStream = new FileStream(
+                    newFilePath,
                     FileMode.Open,
                     FileAccess.Read,
                     FileShare.Read);
 
-                string existingFileId = await _googleDriveService.GetFileIdByNameAsync(FolderId, ImageURL);
+                string existingFileId = await _googleDriveService.GetFileIdByNameAsync(folderId, existingFileName);
+
                 if (!string.IsNullOrEmpty(existingFileId))
                 {
-                    FileName = await _googleDriveService.UpdateFileAsync(existingFileId, FileStream, mimeType);
+                    driveFileResult = await _googleDriveService.UpdateFileAsync(existingFileId, fileStream, mimeType);
                 }
                 else
                 {
-                    FileName = await _googleDriveService.UploadFileAsync(FileStream, FileNameWithExtenstion, mimeType, FolderId);
+                    driveFileResult = await _googleDriveService.UploadFileAsync(fileStream, fileNameWithExtension, mimeType, folderId);
                 }
-
             }
-            return FileName;
+
+            return driveFileResult;
         }
-        
+
+
     }
 }

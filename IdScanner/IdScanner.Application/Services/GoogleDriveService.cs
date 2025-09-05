@@ -57,9 +57,36 @@ public class GoogleDriveService
         return folder.Id;
     }
 
-    public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string mimeType, string folderId)
+    //public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string mimeType, string folderId)
+    //{
+    //    await InitializeDriveServiceAsync(); 
+
+    //    var fileMetadata = new Google.Apis.Drive.v3.Data.File
+    //    {
+    //        Name = fileName,
+    //        Parents = new List<string> { folderId }
+    //    };
+
+    //    var request = _driveService.Files.Create(fileMetadata, fileStream, mimeType);
+    //    request.Fields = "id";
+    //    var result = await request.UploadAsync();
+
+    //    if (result.Status == UploadStatus.Completed)
+    //    {
+    //        return fileName;
+    //    }
+
+    //    throw new Exception("Upload failed: " + result.Exception?.Message);
+    //}
+    public class DriveFileResult
     {
-        await InitializeDriveServiceAsync(); 
+        public string FileName { get; set; }
+        public string FileUrl { get; set; }
+    }
+
+    public async Task<DriveFileResult> UploadFileAsync(Stream fileStream, string fileName, string mimeType, string folderId)
+    {
+        await InitializeDriveServiceAsync();
 
         var fileMetadata = new Google.Apis.Drive.v3.Data.File
         {
@@ -68,16 +95,76 @@ public class GoogleDriveService
         };
 
         var request = _driveService.Files.Create(fileMetadata, fileStream, mimeType);
-        request.Fields = "id";
+        request.Fields = "id, name";
         var result = await request.UploadAsync();
 
-        if (result.Status == UploadStatus.Completed)
-        {
-            return fileName;
-        }
+        if (result.Status != UploadStatus.Completed)
+            throw new Exception("Upload failed: " + result.Exception?.Message);
 
-        throw new Exception("Upload failed: " + result.Exception?.Message);
+        string fileId = request.ResponseBody.Id;
+
+        // Set permission
+        var permission = new Google.Apis.Drive.v3.Data.Permission
+        {
+            Type = "anyone",
+            Role = "reader"
+        };
+        await _driveService.Permissions.Create(permission, fileId).ExecuteAsync();
+
+        return new DriveFileResult
+        {
+            FileName = request.ResponseBody.Name,   
+            FileUrl = $"https://drive.google.com/uc?id={fileId}"
+        };
     }
+
+    //public async Task<string> GetFileIdByNameAsync(string folderId, string fileName)
+    //{
+    //    await InitializeDriveServiceAsync();
+    //    try
+    //    {
+    //        string FileId = "";
+    //        FilesResource.ListRequest listRequest = _driveService.Files.List();
+    //        listRequest.Fields = "files(id, name)";
+    //        var files = await listRequest.ExecuteAsync();
+    //        var file = files.Files.FirstOrDefault(x => x.Name == fileName);
+    //        FileId = file != null ? file.Id : "";
+    //        return FileId;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine("Error: " + ex.Message);
+    //        throw;
+    //    }
+    //}
+    //public async Task<string> UpdateFileAsync(string fileId, Stream fileStream, string mimeType)
+    //{
+    //    await InitializeDriveServiceAsync();
+
+    //    var fileMetadata = new Google.Apis.Drive.v3.Data.File();
+    //    var updateRequest = _driveService.Files.Update(fileMetadata, fileId, fileStream, mimeType);
+    //    updateRequest.Fields = "id, webViewLink";
+
+    //    var result = await updateRequest.UploadAsync();
+    //    if (result.Status == Google.Apis.Upload.UploadStatus.Completed)
+    //    {
+    //        var updatedFile = await _driveService.Files.Get(fileId).ExecuteAsync();
+
+    //        // Ensure file is public
+    //        var permission = new Google.Apis.Drive.v3.Data.Permission
+    //        {
+    //            Type = "anyone",
+    //            Role = "reader"
+    //        };
+    //        await _driveService.Permissions.Create(permission, fileId).ExecuteAsync();
+
+    //        // Return direct sharable link
+    //        return $"https://drive.google.com/uc?id={fileId}";
+    //    }
+
+    //    throw new Exception($"File update failed: {result.Exception?.Message}");
+    //}
+
 
     public async Task<string> GetFileIdByNameAsync(string folderId, string fileName)
     {
@@ -98,22 +185,44 @@ public class GoogleDriveService
             throw;
         }
     }
-    public async Task<string> UpdateFileAsync(string fileId, Stream fileStream, string mimeType)
+    public async Task<DriveFileResult> UpdateFileAsync(string fileId, Stream fileStream, string mimeType)
     {
         await InitializeDriveServiceAsync();
 
         var fileMetadata = new Google.Apis.Drive.v3.Data.File();
         var updateRequest = _driveService.Files.Update(fileMetadata, fileId, fileStream, mimeType);
-        updateRequest.Fields = "id, webViewLink";
+        updateRequest.Fields = "id, name, webViewLink";
 
         var result = await updateRequest.UploadAsync();
         if (result.Status == Google.Apis.Upload.UploadStatus.Completed)
         {
             var updatedFile = await _driveService.Files.Get(fileId).ExecuteAsync();
-            return updatedFile.Name ?? throw new Exception("File updated but Name is null.");
+
+            return new DriveFileResult
+            {
+                FileName = updatedFile.Name,
+                FileUrl = $"https://drive.google.com/uc?id={updatedFile.Id}"
+            };
         }
 
         throw new Exception($"File update failed: {result.Exception?.Message}");
     }
+    //public async Task<string> UpdateFileAsync(string fileId, Stream fileStream, string mimeType)
+    //{
+    //    await InitializeDriveServiceAsync();
+
+    //    var fileMetadata = new Google.Apis.Drive.v3.Data.File();
+    //    var updateRequest = _driveService.Files.Update(fileMetadata, fileId, fileStream, mimeType);
+    //    updateRequest.Fields = "id, webViewLink";
+
+    //    var result = await updateRequest.UploadAsync();
+    //    if (result.Status == Google.Apis.Upload.UploadStatus.Completed)
+    //    {
+    //        var updatedFile = await _driveService.Files.Get(fileId).ExecuteAsync();
+    //        return updatedFile.Name ?? throw new Exception("File updated but Name is null.");
+    //    }
+
+    //    throw new Exception($"File update failed: {result.Exception?.Message}");
+    //}
 
 }
