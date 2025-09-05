@@ -3,6 +3,7 @@ using IdScanner.UI.Application.Interface;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Office.Interop.Excel;
+using QRCoder;
 using System.ComponentModel.Design;
 using System.Reflection;
 
@@ -52,6 +53,11 @@ namespace IdScanner.UI.Controllers
 
                 var fileName = Path.GetFileName(ImageFile.FileName);
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedImages");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
                 var filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -71,7 +77,10 @@ namespace IdScanner.UI.Controllers
             {
                 var fileName = Path.GetFileName(policeFile.FileName);
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedImages");
-
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
                 var filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -90,6 +99,10 @@ namespace IdScanner.UI.Controllers
             {
                 var fileName = Path.GetFileName(medicalFile.FileName);
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedImages");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
 
                 var filePath = Path.Combine(folderPath, fileName);
 
@@ -97,10 +110,8 @@ namespace IdScanner.UI.Controllers
                 {
                     await medicalFile.CopyToAsync(stream);
                 }
-
                 userData.MedicalCertificateUrl = filePath;
             }
-
             string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(userData.Name))
             {
@@ -163,14 +174,59 @@ namespace IdScanner.UI.Controllers
             }
             if (userData.UserDataId == 0)
             {
-                await _userDataService.AddUserDataAsync(userData);
+                userData= await _userDataService.AddUserDataAsync(userData);
             }
             else
             {
                 await _userDataService.UpdateUserAsync(userData);
             }
+            string qrUrl = $"http://localhost:5201/UserData/Details/{userData.UserDataId}";
+
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
+            using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
+            {
+                byte[] qrBytes = qrCode.GetGraphic(10);
+                var qrFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "QRCodes");
+                if (!Directory.Exists(qrFolder))
+                {
+                    Directory.CreateDirectory(qrFolder);
+                }
+                var qrFileName = $"{userData.UserDataId}_qr.png";
+                var qrPath = Path.Combine(qrFolder, qrFileName);
+
+                await System.IO.File.WriteAllBytesAsync(qrPath, qrBytes);
+                userData.QRCodeUrl = qrPath;
+                await _userDataService.UpdateUserAsync(userData);
+            }
             return RedirectToAction("UserDataList");
         }
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var userData = await _userDataService.GetById(id);
+            if (userData == null)
+            {
+                return NotFound("User not found");
+            }
+            if (!string.IsNullOrEmpty(userData.CompanyMaster.logo))
+            {
+                var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+                userData.CompanyMaster.logo = userData.CompanyMaster.logo
+                    .Replace(wwwrootPath, "", StringComparison.OrdinalIgnoreCase)
+                    .Replace("\\", "/");
+
+                if (!userData.CompanyMaster.logo.StartsWith("/"))
+                {
+                    userData.CompanyMaster.logo = "/" + userData.CompanyMaster.logo;
+                }
+            }
+            var photoUrl = userData.PhotoUrl.Replace("uc?", "thumbnail?");
+            ViewBag.photoUrl = photoUrl + "&sz=32";
+            return View("~/Views/UserData/UserDetails.cshtml", userData); 
+        }
+
         [HttpGet]
         public async Task<IActionResult> DeleteUserData(int id)
         {
@@ -190,7 +246,6 @@ namespace IdScanner.UI.Controllers
             IList<CompanyMaster> company = await _companyMasterService.GetAllCompanyMasterAsync();
             ViewBag.CompanyList = company;
         }
-
         [HttpGet]
         public async Task<JsonResult> GetDepartmentsByCompany(int companyId)
         {
@@ -200,8 +255,9 @@ namespace IdScanner.UI.Controllers
                 departmentId = d.DepartmentId,
                 departmentName = d.DepartmentName
             });
-
             return Json(result);
         }
+
+
     }
 }

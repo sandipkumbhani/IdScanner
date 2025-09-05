@@ -1,0 +1,78 @@
+﻿@model IdScanner.Domain.Model.UserData
+@{
+    Layout = null;
+    string photoUrl = ViewBag.photoUrl;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card</title>
+    <link href="~/css/userdetails.css" rel="stylesheet" />
+    <style>
+        .userPhoto{
+            background-image: url(@photoUrl);
+            width:100px;
+            height:100px;
+        }
+    </style>
+</head>
+<body>
+        <div class="id-card">
+            <div class="header approved-text">APPROVED</div>
+
+            <div class="company-info">
+                <div class="company-logo">
+                    <img src="@Model.CompanyMaster.logo" alt="Logo">
+                </div>
+                <div class="company-text">
+                    <strong>@Model.CompanyMaster.CompanyName</strong><br>
+                    <br>@Model.Department.DepartmentName<br />
+                </div>
+            </div>
+        <div class="id-bar">
+            CATG / ID No: 100002 / Stn: SBC
+        </div>
+            <div class="photo">
+                @* <img src="@Model.PhotoUrl" alt="User Photo"> *@
+            <div class="userPhoto"></div>
+            </div>
+        @* <div class="photo">
+            <iframe src="@Model.PhotoUrl" alt="photo" width="150" height="180"></iframe>
+        </div> *@
+            <div class="details">
+                <p class="name">@Model.Name</p>
+                <p><strong>Designation:</strong> @Model.Designation</p>
+                <p><strong>ID Number:</strong> @Model.IdNumber</p>
+                <p><strong>Mob No:</strong> @Model.MobileNumber</p>
+                <p><strong>STALL/PF No:</strong> @Model.StallPfNumber</p>
+                <p><strong>Licensee:</strong>@Model.Licensee</p>
+                <p><strong>Work Slot:</strong>@Model.WorkSlot</p>
+                <p><strong>ID Valid Till:</strong>@Model.IdValidTill</p>
+            </div>
+            <div class="links">
+                <a href="@Model.PoliceVerificationCertificateUrl" target="_blank">Police Verification Certificate</a>
+                <a href="@Model.MedicalCertificateUrl" target="_blank">Medical Certificate</a>
+            </div>
+
+            <div class="verified">
+                <img src="CHECK_ICON_URL_HERE" alt="Approved" class="icon">
+                Digitally approved on 26.07.2025 by Navin Testing<br>
+                ACM SBC (Testing)
+            </div>
+
+            <div class="footer">
+                <span>Powered by</span> <img src="POWERED_BY_LOGO_HERE" class="powered-logo">
+            </div>
+    </div>
+
+</body>
+</html>
+
+@* <div style="text-align:center; margin-top:50px;">
+    <h1>@ViewBag.Message</h1>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Mobile:</strong> @Model.MobileNumber</p>
+</div>
+ *@

@@ -4,6 +4,7 @@ using IdScanner.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdScanner.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250902103002_AddNewFields")]
+    partial class AddNewFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,9 +242,6 @@ namespace IdScanner.Infrastructure.Migrations
                     b.Property<string>("Licensee")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MedicalCertificateFileName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("MedicalCertificateUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -252,22 +252,13 @@ namespace IdScanner.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("PhotoFileName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PhotoUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PoliceVerificationCertificateFileName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PoliceVerificationCertificateUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("QRCodeUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SignatureFileName")
+                    b.Property<string>("QRCodeText")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SignatureUrl")

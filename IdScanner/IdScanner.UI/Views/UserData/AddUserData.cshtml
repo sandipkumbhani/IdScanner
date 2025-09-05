@@ -9,6 +9,10 @@
 	string WorkSlotMsg = ViewBag.WorkSlotMsg;
 	string LicenseeMsg = ViewBag.LicenseeMsg;
 	string MobileMsg = string.Empty;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IList<IdScanner.Domain.Model.CompanyMaster> CompanyMasterList = ViewBag.CompanyList;
+    // IList<IdScanner.Domain.Model.Department> DepartmentList = ViewBag.DepartmentList;
+
 }
 <style>
 	.content-page {

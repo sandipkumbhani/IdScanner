@@ -49,7 +49,6 @@ namespace IdScanner.UI.Infrastructure.Provider
             return await response.Content.ReadAsStringAsync();
 
         }
-
         public async Task<string> DeleteUserAsync(int id)
         {
             var baseUrl = apiCredential.url + $"UserData/Delete-User-Data?id={id}";
@@ -92,6 +91,7 @@ namespace IdScanner.UI.Infrastructure.Provider
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<UserData>(jsonString)!;
         }
+
 
     }
 }
