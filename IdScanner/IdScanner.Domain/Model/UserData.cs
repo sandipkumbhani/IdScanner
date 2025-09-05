@@ -23,7 +23,7 @@ namespace IdScanner.Domain.Model
         public string? StallPfNumber { get; set; }
         public string? Licensee { get; set; }
         public string? WorkSlot { get; set; }
-        public DateTime IdValidTill { get; set; }
+        public DateTime? IdValidTill { get; set; }
         public string? PhotoUrl { get; set; }
         public string? PoliceVerificationCertificateUrl { get; set; }
         public string? MedicalCertificateUrl { get; set; }

@@ -50,8 +50,12 @@ namespace IdScanner.UI.Controllers
                 CityMsg = "Please Enter City";
                 ViewBag.CityMsg = CityMsg;
             }
+            if (departmentMaster.CompanyId == 0)
+            {
+                ViewBag.CompanyMsg = "Please Select Company.";
+            }
 
-            if (ViewBag.NameMsg != null || ViewBag.CityMsg != null)
+            if (ViewBag.NameMsg != null || ViewBag.CityMsg != null || ViewBag.CompanyMsg != null)
             {
                 return View(departmentMaster);
             }

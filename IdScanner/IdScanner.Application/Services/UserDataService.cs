@@ -135,7 +135,8 @@ namespace IdScanner.Application.Services
             photoUrl = await CreateOrUpdateFileOnDrive(photoUrl, folderId, newphotoUrl);
             policeUrl = await CreateOrUpdateFileOnDrive(policeUrl, folderId, newPolice);
             medicalUrl = await CreateOrUpdateFileOnDrive(medicalUrl, folderId, newMedical);
-            
+
+            userExisting.UserDataId = userData.UserDataId;
             userExisting.CompanyId = userData.CompanyId;
             userExisting.DepartmentId = userData.DepartmentId;
             userExisting.Name = userData.Name;

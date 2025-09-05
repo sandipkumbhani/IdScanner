@@ -26,16 +26,12 @@ namespace IdScanner.UI.Controllers
             return View("~/Views/UserData/UserDataList.cshtml");
         }
         [HttpGet]
-        public async Task<IActionResult> AddUserData(int? id, int? CompanyId)
+        public async Task<IActionResult> AddUserData(int? id)
         {
-            await InitViewBag(CompanyId);
+            await InitViewBag();
             if (id == null)
             {
                 var model = new UserData();
-                if (CompanyId.HasValue)
-                {
-                    model.CompanyId = CompanyId.Value;
-                }
                 return View(model);
             }
             var user = await _userDataService.GetById(id.Value);
@@ -44,9 +40,16 @@ namespace IdScanner.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUserData(UserData userData, IFormFile ImageFile, IFormFile policeFile, IFormFile medicalFile)
         {
-            await InitViewBag(userData.CompanyId);
+            await InitViewBag();
+
+            if (ImageFile == null || ImageFile.Length == 0)
+            {
+                ViewBag.ImageFileRequiredMsg = "Profile Image is required.";
+            }
+
             if (ImageFile != null && ImageFile.Length > 0)
             {
+
                 var fileName = Path.GetFileName(ImageFile.FileName);
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedImages");
                 var filePath = Path.Combine(folderPath, fileName);
@@ -58,6 +61,12 @@ namespace IdScanner.UI.Controllers
 
                 userData.PhotoUrl = filePath;
             }
+
+            if (policeFile == null || policeFile.Length == 0)
+            {
+                ViewBag.policeFileRequiredMsg = "Police File is required.";
+            }
+
             if (policeFile != null && policeFile.Length > 0)
             {
                 var fileName = Path.GetFileName(policeFile.FileName);
@@ -71,6 +80,12 @@ namespace IdScanner.UI.Controllers
                 }
                 userData.PoliceVerificationCertificateUrl = filePath;
             }
+
+            if (medicalFile == null || medicalFile.Length == 0)
+            {
+                ViewBag.medicalFileFileRequiredMsg = "Medical File is required.";
+            }
+
             if (medicalFile != null && medicalFile.Length > 0)
             {
                 var fileName = Path.GetFileName(medicalFile.FileName);
@@ -95,10 +110,54 @@ namespace IdScanner.UI.Controllers
             string MobileNumberMsg = string.Empty;
             if (string.IsNullOrEmpty(userData.MobileNumber))
             {
-                MobileNumberMsg = "Please Enter.";
-                ViewBag.DescriptionMsg = MobileNumberMsg;
+                MobileNumberMsg = "Please Enter Mobile No.";
+                ViewBag.MobileNumberMsg = MobileNumberMsg;
             }
-            if (ViewBag.NameMsg != null || ViewBag.DescriptionMsg != null)
+
+            string DesignationMsg = string.Empty;
+            if (string.IsNullOrEmpty(userData.Designation))
+            {
+                DesignationMsg = "Please Enter Designation.";
+                ViewBag.DesignationMsg = DesignationMsg;
+            }
+
+            string StallPfNumberMsg = string.Empty;
+            if (string.IsNullOrEmpty(userData.StallPfNumber))
+            {
+                StallPfNumberMsg = "Please Enter StallPfNumber.";
+                ViewBag.StallPfNumberMsg = StallPfNumberMsg;
+            }
+
+            string WorkSlotMsg = string.Empty;
+            if (string.IsNullOrEmpty(userData.WorkSlot))
+            {
+                WorkSlotMsg = "Please Enter WorkSlot.";
+                ViewBag.WorkSlotMsg = WorkSlotMsg;
+            }
+
+            string LicenseeMsg = string.Empty;
+            if (string.IsNullOrEmpty(userData.Licensee))
+            {
+                LicenseeMsg = "Please Enter Licensee.";
+                ViewBag.LicenseeMsg = LicenseeMsg;
+            }
+
+            if (userData.IdValidTill == null || userData.IdValidTill == DateTime.MinValue)
+            {
+                ViewBag.IdValidTillMsg = "Please select a valid date.";
+            }
+
+            if (userData.CompanyId == 0)
+            {
+                ViewBag.CompanyMsg = "Please Select Company.";
+            }
+
+            if (userData.DepartmentId == 0)
+            {
+                ViewBag.DepartmentMsg = "Please Select Department.";
+            }
+
+            if (ViewBag.NameMsg != null || ViewBag.MobileNumberMsg != null || ViewBag.DesignationMsg != null || ViewBag.StallPfNumberMsg != null || ViewBag.WorkSlotMsg != null || ViewBag.LicenseeMsg != null || ViewBag.IdValidTillMsg != null || ViewBag.CompanyMsg != null || ViewBag.DepartmentMsg != null || ViewBag.ImageFileRequiredMsg != null || ViewBag.policeFileRequiredMsg != null || ViewBag.medicalFileFileRequiredMsg != null)
             {
                 return View(userData);
             }
@@ -126,17 +185,10 @@ namespace IdScanner.UI.Controllers
                 return View("Error");
             }
         }
-        private async Task InitViewBag(int? CompanyId)
+        private async Task InitViewBag()
         {
             IList<CompanyMaster> company = await _companyMasterService.GetAllCompanyMasterAsync();
             ViewBag.CompanyList = company;
-            
-            IList<Department> departments = new List<Department>();
-            if(CompanyId > 0)
-            {
-                departments = await _departmentMasterService.GetDepartmentByCompanyId(CompanyId);
-            }
-            ViewBag.DepartmentList = departments;
         }
 
         [HttpGet]
