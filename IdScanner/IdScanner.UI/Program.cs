@@ -13,6 +13,8 @@ builder.Services.AddApplicationService();
 builder.Services.AddInfrastrucureService();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
+builder.Services.AddCors(option => option.AddPolicy("AllowSpecificOrigin",builder => builder.WithOrigins("https://drive.google.com").AllowAnyMethod()
+.AllowAnyHeader()));
 //builder.Services.AddHttpClient<ILoginRepository, LoginRepository>();
 //builder.Services.AddHttpClient<IForgotPasswordRepository, ForgotPasswordRepository>();
 //builder.Services.AddHttpClient<IMenuMasterRepository, MenuMasterRepository>();
@@ -27,6 +29,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    app.UseCors();
 }
 //builder.Services.AddAuthentication("Cookies")
 //    .AddCookie("Cookies", options =>

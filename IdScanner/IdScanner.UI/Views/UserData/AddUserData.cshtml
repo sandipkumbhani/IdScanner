@@ -10,8 +10,6 @@
 	string LicenseeMsg = ViewBag.LicenseeMsg;
 	string MobileMsg = string.Empty;
     Layout = "~/Views/Shared/_Layout.cshtml";
-    IList<IdScanner.Domain.Model.CompanyMaster> CompanyMasterList = ViewBag.CompanyList;
-    // IList<IdScanner.Domain.Model.Department> DepartmentList = ViewBag.DepartmentList;
 
 }
 <style>
@@ -172,7 +170,14 @@
 											<span id="medicalFileError" class="text-danger"></span>
 										</div>
 									</div>
-
+									<div class="col-xl-4 col-lg-6">
+										<div class="item-input">
+											<label for="signatureFile" class="form-label col-form-label required fw-semibold fs-6">Signature</label>
+											<input type="file" class="form-control userinput" id="signatureFile" name="signatureFile" accept="image/*" />
+											<span class="text-danger">@ViewBag.signatureFileFileRequiredMsg</span>
+											<span id="signatureFileFileError" class="text-danger"></span>
+										</div>
+									</div>
 									<div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
 										<button type="submit" class="card-link">
 											<i class="ri-save-line"></i>
@@ -297,6 +302,24 @@
 			  this.value = "";
 			}
 		  }
+		});
+		document.getElementById("signatureFile").addEventListener("change", function () {
+			const file = this.files[0];
+			const errorSpan = document.getElementById("signatureFileFileError");
+			errorSpan.textContent = "";
+
+			if (file) {
+				const allowedExtensions = /\.(jpg|jpeg|png|pdf)$/i;
+				const maxSize = 200 * 1024;
+
+				if (!allowedExtensions.exec(file.name)) {
+					errorSpan.textContent = "Only .jpg, .jpeg, .png, .pdf files are allowed for Image.";
+					this.value = "";
+				} else if (file.size > maxSize) {
+					errorSpan.textContent = "Image file size should not exceed 200 KB.";
+					this.value = "";
+				}
+			}
 		});
 
 			function validateMobile(input) {

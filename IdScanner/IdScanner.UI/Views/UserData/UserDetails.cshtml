@@ -3,76 +3,90 @@
     Layout = null;
     string photoUrl = ViewBag.photoUrl;
 }
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Card</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Indian Railways ID – Approved</title>
+    <link rel="stylesheet" href="styles.css" />
     <link href="~/css/userdetails.css" rel="stylesheet" />
-    <style>
-        .userPhoto{
-            background-image: url(@photoUrl);
-            width:100px;
-            height:100px;
-        }
-    </style>
 </head>
 <body>
-        <div class="id-card">
-            <div class="header approved-text">APPROVED</div>
-
-            <div class="company-info">
-                <div class="company-logo">
-                    <img src="@Model.CompanyMaster.logo" alt="Logo">
-                </div>
-                <div class="company-text">
-                    <strong>@Model.CompanyMaster.CompanyName</strong><br>
-                    <br>@Model.Department.DepartmentName<br />
-                </div>
+    <main class="card">
+        <div class="status approved">APPROVED</div>
+        <header class="header">
+            <div class="logo-box">
+                <img class="logo" src="@Model.CompanyMaster.logo" alt="Company Logo" />
             </div>
-        <div class="id-bar">
-            CATG / ID No: 100002 / Stn: SBC
+            <div class="header-text">
+                <h1>@Model.CompanyMaster.CompanyName</h1>
+                <p class="sub">Bengaluru Division</p>
+                <p class="dept">@Model.Department.DepartmentName</p>
+            </div>
+        </header>
+        <div class="info-bar">
+            <span>CATG / ID No: <strong>100002</strong> / Stn: <strong>SBC</strong></span>
         </div>
-            <div class="photo">
-                @* <img src="@Model.PhotoUrl" alt="User Photo"> *@
-            <div class="userPhoto"></div>
-            </div>
-        @* <div class="photo">
-            <iframe src="@Model.PhotoUrl" alt="photo" width="150" height="180"></iframe>
-        </div> *@
+        <section class="photo-wrap">
+            <img class="photo" src="@photoUrl" alt="User Photograph" />
+            @* <div class="userPhoto photo"></div> *@
+        </section>
+        <h2 class="name">@Model.Name</h2>
+        <section class="main-section">
             <div class="details">
-                <p class="name">@Model.Name</p>
-                <p><strong>Designation:</strong> @Model.Designation</p>
-                <p><strong>ID Number:</strong> @Model.IdNumber</p>
-                <p><strong>Mob No:</strong> @Model.MobileNumber</p>
-                <p><strong>STALL/PF No:</strong> @Model.StallPfNumber</p>
-                <p><strong>Licensee:</strong>@Model.Licensee</p>
-                <p><strong>Work Slot:</strong>@Model.WorkSlot</p>
-                <p><strong>ID Valid Till:</strong>@Model.IdValidTill</p>
+                <div class="row">
+                    <span class="label">Designation:</span>
+                    <span class="value">@Model.Designation</span>
+                </div>
+                <div class="row">
+                    <span class="label">ID Number:</span>
+                    <span class="value">@Model.IdNumber</span>
+                </div>
+                <div class="row">
+                    <span class="label">Mob No:</span>
+                    <span class="value">@Model.MobileNumber</span>
+                </div>
+                <div class="row">
+                    <span class="label">STALL/PF No:</span>
+                    <span class="value">@Model.StallPfNumber</span>
+                </div>
+                <div class="row">
+                    <span class="label">Licensee:</span>
+                    <span class="value">@Model.Licensee</span>
+                </div>
+                <div class="row">
+                    <span class="label">Work Slot:</span>
+                    <span class="value">@Model.WorkSlot</span>
+                </div>
+                <div class="row">
+                    <span class="label">ID Valid Till:</span>
+                    <span class="value">@($"{Model.IdValidTill:yyyy-MM-dd}")</span>
+                </div>
             </div>
+            <div class="approval">
+                <img class="shield" src="@Model.CompanyMaster.logo" alt="Approval Shield" />
+                <div class="approval-text">
+                    <p>
+                        Digitally approved<br />
+                        on 26.07.2025 by<br />
+                        <strong>Navin Testing</strong><br />
+                        <span><strong>ACM SBC (Testing)</strong></span>
+                    </p>
+                </div>
+            </div>
+        </section>
+        <section class="bottom-section">
+            <!-- Links -->
             <div class="links">
-                <a href="@Model.PoliceVerificationCertificateUrl" target="_blank">Police Verification Certificate</a>
-                <a href="@Model.MedicalCertificateUrl" target="_blank">Medical Certificate</a>
+                <a href="@Model.PoliceVerificationCertificateUrl" class="doc-link" target="_blank">Police Verification Certificate</a>
+                <a href="@Model.MedicalCertificateUrl" class="doc-link" target="_blank">Medical Certificate</a>
             </div>
-
-            <div class="verified">
-                <img src="CHECK_ICON_URL_HERE" alt="Approved" class="icon">
-                Digitally approved on 26.07.2025 by Navin Testing<br>
-                ACM SBC (Testing)
-            </div>
-
             <div class="footer">
-                <span>Powered by</span> <img src="POWERED_BY_LOGO_HERE" class="powered-logo">
+                <p class="powered">Powered By</p>
+                <img class="brand" src="@Model.CompanyMaster.logo" alt="mobile offize logo" />
             </div>
-    </div>
-
+        </section>
+    </main>
 </body>
 </html>
-
-@* <div style="text-align:center; margin-top:50px;">
-    <h1>@ViewBag.Message</h1>
-    <p><strong>Name:</strong> @Model.Name</p>
-    <p><strong>Mobile:</strong> @Model.MobileNumber</p>
-</div>
- *@

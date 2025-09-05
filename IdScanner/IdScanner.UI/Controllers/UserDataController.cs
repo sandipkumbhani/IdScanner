@@ -39,7 +39,7 @@ namespace IdScanner.UI.Controllers
             return View("~/Views/UserData/AddUserData.cshtml", user);
         }
         [HttpPost]
-        public async Task<IActionResult> AddUserData(UserData userData, IFormFile ImageFile, IFormFile policeFile, IFormFile medicalFile)
+        public async Task<IActionResult> AddUserData(UserData userData, IFormFile ImageFile, IFormFile policeFile, IFormFile medicalFile, IFormFile signatureFile)
         {
             await InitViewBag();
 
@@ -112,7 +112,31 @@ namespace IdScanner.UI.Controllers
                 }
                 userData.MedicalCertificateUrl = filePath;
             }
-            string NameMsg = string.Empty;
+			if (signatureFile == null || signatureFile.Length == 0)
+			{
+				ViewBag.signatureFileFileRequiredMsg = "Signature File is required.";
+			}
+
+			if (signatureFile != null && signatureFile.Length > 0)
+			{
+
+				var fileName = Path.GetFileName(signatureFile.FileName);
+				var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedImages");
+				if (!Directory.Exists(folderPath))
+				{
+					Directory.CreateDirectory(folderPath);
+				}
+
+				var filePath = Path.Combine(folderPath, fileName);
+
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					await signatureFile.CopyToAsync(stream);
+				}
+
+				userData.SignatureUrl = filePath;
+			}
+			string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(userData.Name))
             {
                 NameMsg = "Please Enter Name.";
@@ -168,7 +192,7 @@ namespace IdScanner.UI.Controllers
                 ViewBag.DepartmentMsg = "Please Select Department.";
             }
 
-            if (ViewBag.NameMsg != null || ViewBag.MobileNumberMsg != null || ViewBag.DesignationMsg != null || ViewBag.StallPfNumberMsg != null || ViewBag.WorkSlotMsg != null || ViewBag.LicenseeMsg != null || ViewBag.IdValidTillMsg != null || ViewBag.CompanyMsg != null || ViewBag.DepartmentMsg != null || ViewBag.ImageFileRequiredMsg != null || ViewBag.policeFileRequiredMsg != null || ViewBag.medicalFileFileRequiredMsg != null)
+            if (ViewBag.NameMsg != null || ViewBag.MobileNumberMsg != null || ViewBag.DesignationMsg != null || ViewBag.StallPfNumberMsg != null || ViewBag.WorkSlotMsg != null || ViewBag.LicenseeMsg != null || ViewBag.IdValidTillMsg != null || ViewBag.CompanyMsg != null || ViewBag.DepartmentMsg != null || ViewBag.ImageFileRequiredMsg != null || ViewBag.policeFileRequiredMsg != null || ViewBag.medicalFileFileRequiredMsg != null || ViewBag.signatureFileFileRequiredMsg != null)
             {
                 return View(userData);
             }
@@ -187,6 +211,7 @@ namespace IdScanner.UI.Controllers
             using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
             {
                 byte[] qrBytes = qrCode.GetGraphic(10);
+
                 var qrFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "QRCodes");
                 if (!Directory.Exists(qrFolder))
                 {
@@ -194,9 +219,8 @@ namespace IdScanner.UI.Controllers
                 }
                 var qrFileName = $"{userData.UserDataId}_qr.png";
                 var qrPath = Path.Combine(qrFolder, qrFileName);
-
                 await System.IO.File.WriteAllBytesAsync(qrPath, qrBytes);
-                userData.QRCodeUrl = qrPath;
+                userData.QRCodeUrl = "/QRCodes/" + qrFileName;
                 await _userDataService.UpdateUserAsync(userData);
             }
             return RedirectToAction("UserDataList");
@@ -209,21 +233,8 @@ namespace IdScanner.UI.Controllers
             {
                 return NotFound("User not found");
             }
-            if (!string.IsNullOrEmpty(userData.CompanyMaster.logo))
-            {
-                var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
-                userData.CompanyMaster.logo = userData.CompanyMaster.logo
-                    .Replace(wwwrootPath, "", StringComparison.OrdinalIgnoreCase)
-                    .Replace("\\", "/");
-
-                if (!userData.CompanyMaster.logo.StartsWith("/"))
-                {
-                    userData.CompanyMaster.logo = "/" + userData.CompanyMaster.logo;
-                }
-            }
             var photoUrl = userData.PhotoUrl.Replace("uc?", "thumbnail?");
-            ViewBag.photoUrl = photoUrl + "&sz=32";
+            ViewBag.photoUrl = photoUrl + "&sz=s220";
             return View("~/Views/UserData/UserDetails.cshtml", userData); 
         }
 
@@ -257,6 +268,22 @@ namespace IdScanner.UI.Controllers
             });
             return Json(result);
         }
+        public async Task<IActionResult> UserIdCardList()
+        {
+            IList<UserData> UserDataList = await _userDataService.GetAllUserDetailsAsync();
+
+            foreach (var user in UserDataList)
+            {
+                if (!string.IsNullOrEmpty(user.PhotoUrl))
+                {
+                    user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
+                }
+            }
+
+            ViewBag.UserDataList = UserDataList;
+            return View("~/Views/UserData/ViewUserIdCard.cshtml");
+        }
+
 
 
     }

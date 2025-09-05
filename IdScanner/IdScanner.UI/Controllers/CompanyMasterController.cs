@@ -53,13 +53,15 @@ namespace IdScanner.UI.Controllers
                 var fileName = Path.GetFileName(ImageFile.FileName);
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "CompanyLogoImages");
                 var filePath = Path.Combine(folderPath, fileName);
-
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ImageFile.CopyToAsync(stream);
                 }
-
-                companyMaster.logo = filePath;
+                companyMaster.logo = "/CompanyLogoImages/" + fileName;
             }
             string LogoMsg = string.Empty;
             if (string.IsNullOrEmpty(companyMaster.logo))

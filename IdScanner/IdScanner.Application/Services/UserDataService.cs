@@ -31,74 +31,16 @@ namespace IdScanner.Application.Services
             string photoUrl = null;
             string policeUrl = null;
             string medicalUrl = null;
-            DriveFileResult photoResult = null;
-            DriveFileResult policeResult = null;
-            DriveFileResult medicalResult = null;
-
-
+            string signatureUrl = null;
+            //DriveFileResult photoResult = null;
+            //DriveFileResult policeResult = null;
+            //DriveFileResult medicalResult = null;
             var idNumber = Generate12Digit();
             string folderId = await _googleDriveService.CreateFolderAsync(idNumber);
-
-            if (!string.IsNullOrEmpty(userData.PhotoUrl) && System.IO.File.Exists(userData.PhotoUrl))
-            {
-                string fileExtension = Path.GetExtension(userData.PhotoUrl)?.ToLower();
-                string mimeType = fileExtension switch
-                {
-                    ".jpg" or ".jpeg" => "image/jpeg",
-                    ".png" => "image/png",
-                    ".pdf" => "application/pdf",
-                    _ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
-                };
-                var photoFileName = $"{idNumber}_photo{fileExtension}"; 
-
-                using var photoStream = new FileStream(
-                    userData.PhotoUrl,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read);
-
-                photoResult = await _googleDriveService.UploadFileAsync(photoStream, photoFileName, mimeType, folderId);
-            }
-            if (!string.IsNullOrEmpty(userData.PoliceVerificationCertificateUrl) && System.IO.File.Exists(userData.PoliceVerificationCertificateUrl))
-            {
-                string fileExtension = Path.GetExtension(userData.PoliceVerificationCertificateUrl)?.ToLower();
-                string mimeType = fileExtension switch
-                {
-                    ".jpg" or ".jpeg" => "image/jpeg",
-                    ".png" => "image/png",
-                    ".pdf" => "application/pdf",
-                    _ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
-                };
-                var policeFileName = $"{idNumber}_police{fileExtension}";
-                using var policeStream = new FileStream(
-                    userData.PoliceVerificationCertificateUrl,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read);
-                //new FileStream(userData.PoliceVerificationCertificateUrl, FileMode.Open, FileAccess.Read);
-                policeResult = await _googleDriveService.UploadFileAsync(policeStream, policeFileName, mimeType, folderId);
-            }
-            if (!string.IsNullOrEmpty(userData.MedicalCertificateUrl) && System.IO.File.Exists(userData.MedicalCertificateUrl))
-            {
-                string fileExtension = Path.GetExtension(userData.MedicalCertificateUrl)?.ToLower();
-                string mimeType = fileExtension switch
-                {
-                    ".jpg" or ".jpeg" => "image/jpeg",
-                    ".png" => "image/png",
-                    ".pdf" => "application/pdf",
-                    _ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
-                };
-                var medicalFileName = $"{idNumber}_medical{fileExtension}"; ;
-
-                using var medicalStream = new FileStream(
-                    userData.MedicalCertificateUrl,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read);
-                //new FileStream(userData.MedicalCertificateUrl, FileMode.Open, FileAccess.Read);
-                medicalResult = await _googleDriveService.UploadFileAsync(medicalStream, medicalFileName, mimeType, folderId);
-            }
-
+            var photoResult = await UploadFileIfExistsAsync(userData.PhotoUrl, $"{idNumber}_photo",folderId );
+            var policeResult = await UploadFileIfExistsAsync(userData.PoliceVerificationCertificateUrl, $"{idNumber}_police", folderId);
+            var medicalResult = await UploadFileIfExistsAsync(userData.MedicalCertificateUrl, $"{idNumber}_medical", folderId);
+            var signatureResult = await UploadFileIfExistsAsync(userData.SignatureUrl, $"{idNumber}_signature", folderId);
             var newData = new UserData
             {
                 UserDataId = userData.UserDataId,
@@ -118,6 +60,9 @@ namespace IdScanner.Application.Services
                 PoliceVerificationCertificateUrl = policeResult.FileUrl,
                 MedicalCertificateFileName = medicalResult.FileName,
                 MedicalCertificateUrl = medicalResult.FileUrl,
+                SignatureFileName = signatureResult.FileName,
+                SignatureUrl = signatureResult.FileUrl,
+
                 IsActive = true,
                 InsertBy = 1,
                 InsertDate = DateTime.Now,
@@ -136,14 +81,17 @@ namespace IdScanner.Application.Services
             string newphotoUrl = userData.PhotoUrl;
             string newPolice = userData.PoliceVerificationCertificateUrl;
             string newMedical = userData.MedicalCertificateUrl;
+            string newSign = userData.SignatureUrl;
             string folderId = userExisting.IdNumber;
             string photoUrl = userExisting.PhotoFileName;
             string policeUrl = userExisting.PoliceVerificationCertificateFileName;
             string medicalUrl = userExisting.MedicalCertificateFileName;
+            string signUrl = userExisting.SignatureFileName;
 
             var photoresult = await CreateOrUpdateFileOnDrive(photoUrl, folderId, newphotoUrl);
             var  policeresult = await CreateOrUpdateFileOnDrive(policeUrl, folderId, newPolice);
             var medicalresult = await CreateOrUpdateFileOnDrive(medicalUrl, folderId, newMedical);
+            var signResult = await CreateOrUpdateFileOnDrive(signUrl, folderId, newSign);
 
             userExisting.UserDataId = userData.UserDataId;
             userExisting.CompanyId = userData.CompanyId;
@@ -160,6 +108,8 @@ namespace IdScanner.Application.Services
             userExisting.PoliceVerificationCertificateUrl = policeresult.FileUrl;
             userExisting.MedicalCertificateUrl = medicalresult.FileUrl;
             userExisting.MedicalCertificateFileName = medicalresult.FileName;
+            userExisting.SignatureFileName = medicalresult.FileName;
+            userExisting.SignatureUrl = medicalresult.FileUrl;
             userExisting.QRCodeUrl = userData.QRCodeUrl;
             userExisting.IsActive = true;
             userExisting.UpdateBy = 1; 
@@ -261,6 +211,25 @@ namespace IdScanner.Application.Services
             return driveFileResult;
         }
 
+        private async Task<DriveFileResult> UploadFileIfExistsAsync(string filePath, string filePrefix, string folderId)
+        {
+            if (string.IsNullOrEmpty(filePath) || !System.IO.File.Exists(filePath))
+                return null;
+
+            string fileExtension = Path.GetExtension(filePath)?.ToLower();
+            string mimeType = fileExtension switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".pdf" => "application/pdf",
+                _ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
+            };
+
+            var fileName = $"{filePrefix}{fileExtension}";
+
+            using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return await _googleDriveService.UploadFileAsync(fileStream, fileName, mimeType, folderId);
+        }
 
     }
 }

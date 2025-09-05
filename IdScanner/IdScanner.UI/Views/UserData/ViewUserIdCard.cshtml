@@ -1,0 +1,69 @@
+﻿@model IdScanner.Domain.Model.UserData
+
+@{
+    Layout = null;
+    IList<IdScanner.Domain.Model.UserData> UserDataList = ViewBag.UserDataList;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Front & Back</title>
+    <link href="~/css/viewicard.css" rel="stylesheet" />
+</head>
+<body>
+    @foreach (var user in UserDataList)
+    {
+        <div class="id-row">
+            <div class="id-card id-front">
+                <div class="id-header">
+                    @user.UserDataId
+                    <img src="@user.CompanyMaster.logo" alt="Logo" />
+                    <h2>@user.CompanyMaster.CompanyName</h2>
+                    <h4>@user.Department.DepartmentName</h4>
+                    <p>ID Card No @user.IdNumber</p>
+                </div>
+
+                <div class="id-photo">
+                    <img src="@user.PhotoUrl" alt="Profile Photo" />
+                </div>
+
+
+                <div class="id-signature">@user.SignatureUrl</div>
+                <div class="id-name">@user.Name</div>
+
+                <div class="id-footer">
+                    <span class="approved">✔ Digitally Approved</span><br />
+                   @*  @user.IssuedBy <br /> *@
+                    ACM SBC (Testing)
+                </div>
+            </div>
+
+            <!-- BACK SIDE -->
+            <div class="id-card id-back">
+                <div class="qr">
+                    <img src="@user.QRCodeUrl" alt="QR Code" />
+                </div>
+
+                <div class="blood-group">@user.BloodGroup</div>
+                <div class="highlight">@user.Department.DepartmentName</div>
+
+                <div class="contact">
+                    @user.MobileNumber <br />
+                    @user.AadhaarCardNumber
+                </div>
+
+                <div class="footer-note">
+                    If found, please surrender to issuing authority<br />
+                    <strong>Indian Railways</strong>
+                </div>
+
+                <div class="logo">
+                    <img src="~/images/partner.png" alt="Powered By Logo" />
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>
