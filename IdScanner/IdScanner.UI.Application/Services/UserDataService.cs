@@ -39,6 +39,11 @@ namespace IdScanner.UI.Application.Services
         {
             return await _userDataRepository.DeleteUserAsync(id);
         }
+        public async Task<string> UpdateQrCodeAsync(long userid,string qrCodeUrl)
+        {
+            return await _userDataRepository.UpdateQrCodeAsync(userid, qrCodeUrl);
+        }
 
-    }
+
+	}
 }

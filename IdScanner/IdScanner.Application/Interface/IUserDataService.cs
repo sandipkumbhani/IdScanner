@@ -14,5 +14,7 @@ namespace IdScanner.Application.Interface
         Task<UserData> GetUserDetailsById(int userid);
         Task<List<UserData>> GetAllUsersListAsync();
         Task DeleteUserDataById(int userId);
-    }
+        Task UpdateQrCodeAsync(long userId, string qrCodeUrl);
+
+	}
 }

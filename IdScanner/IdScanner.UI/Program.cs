@@ -13,13 +13,13 @@ builder.Services.AddApplicationService();
 builder.Services.AddInfrastrucureService();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
-builder.Services.AddCors(option => option.AddPolicy("AllowSpecificOrigin",builder => builder.WithOrigins("https://drive.google.com").AllowAnyMethod()
-.AllowAnyHeader()));
-//builder.Services.AddHttpClient<ILoginRepository, LoginRepository>();
-//builder.Services.AddHttpClient<IForgotPasswordRepository, ForgotPasswordRepository>();
-//builder.Services.AddHttpClient<IMenuMasterRepository, MenuMasterRepository>();
-//builder.Services.AddHttpClient<ICompanyMasterRepository, CompanyMasterRepository>();
-//builder.Services.AddHttpClient<IDepartmentMasterRepository, DepartmentMasterRepository>();
+//builder.Services.AddCors(option => option.AddPolicy("AllowSpecificOrigin", builder => builder.WithOrigins("https://drive.google.com").AllowAnyMethod()
+//.AllowAnyHeader()));
+builder.Services.AddCors(option =>
+	option.AddPolicy("AllowSpecificOrigin", builder =>
+		builder.WithOrigins("https://drive.google.com")
+			   .AllowAnyMethod()
+			   .AllowAnyHeader()));
 
 var app = builder.Build();
 
