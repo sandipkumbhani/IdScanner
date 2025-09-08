@@ -30,8 +30,18 @@ namespace IdScanner.Infrastructure.Repository
                 .Include(e => e.Department)
                 .FirstOrDefaultAsync(e => e.UserDataId == id && e.IsActive);
         }
+		public async Task UpdateQrCodeAsync(long userId, string qrCodeUrl)
+		{
+			var user = await _context.UserDatas.FindAsync(userId);
+			if (user != null)
+			{
+				user.QRCodeUrl = qrCodeUrl;
+				_context.UserDatas.Update(user);
+				await _context.SaveChangesAsync();
+			}
+		}
 
-        public async Task<List<UserData>> GetAllUserDataAsync()
+		public async Task<List<UserData>> GetAllUserDataAsync()
         {
             return await _context.UserDatas.Include(u => u.CompanyMaster)
                 .Include(u => u.Department)

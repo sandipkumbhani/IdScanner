@@ -91,7 +91,19 @@ namespace IdScanner.UI.Infrastructure.Provider
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<UserData>(jsonString)!;
         }
+		public async Task<string> UpdateQrCodeAsync(long userId, string qrCodeUrl)
+		{
+			var baseUrl = apiCredential.url + $"UserData/{userId}/qrcode";
+			var jsonContent = new StringContent(
+				JsonConvert.SerializeObject(qrCodeUrl),
+				Encoding.UTF8,
+				"application/json"
+			);
+			var response = await _httpClient.PutAsync(baseUrl, jsonContent);
+			return await response.Content.ReadAsStringAsync();
+		}
 
 
-    }
+
+	}
 }

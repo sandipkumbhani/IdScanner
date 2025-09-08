@@ -18,7 +18,6 @@
         <div class="id-row">
             <div class="id-card id-front">
                 <div class="id-header">
-                    @user.UserDataId
                     <img src="@user.CompanyMaster.logo" alt="Logo" />
                     <h2>@user.CompanyMaster.CompanyName</h2>
                     <h4>@user.Department.DepartmentName</h4>
@@ -40,10 +39,9 @@
                 </div>
             </div>
 
-            <!-- BACK SIDE -->
             <div class="id-card id-back">
                 <div class="qr">
-                    <img src="@user.QRCodeUrl" alt="QR Code" />
+                    <img src="@Url.Content(user.QRCodeUrl)" alt="QR Code" />
                 </div>
 
                 <div class="blood-group">@user.BloodGroup</div>
@@ -51,6 +49,7 @@
 
                 <div class="contact">
                     @user.MobileNumber <br />
+
                     @user.AadhaarCardNumber
                 </div>
 

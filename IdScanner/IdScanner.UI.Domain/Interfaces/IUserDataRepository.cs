@@ -14,6 +14,8 @@ namespace IdScanner.UI.Domain.Interfaces
         Task<UserData> GetUserDataByIdAsync(int? userid);
         Task<string> UpdateUserAsync(UserData userData);
         Task<string> DeleteUserAsync(int id);
-    }
+        Task<string> UpdateQrCodeAsync(long userId, string qrCodeUrl);
+
+	}
 }
     

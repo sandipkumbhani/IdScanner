@@ -62,7 +62,8 @@ namespace IdScanner.Application.Services
                 MedicalCertificateUrl = medicalResult.FileUrl,
                 SignatureFileName = signatureResult.FileName,
                 SignatureUrl = signatureResult.FileUrl,
-
+                BloodGroup = userData.BloodGroup,
+                AadhaarCardNumber = userData.AadhaarCardNumber,
                 IsActive = true,
                 InsertBy = 1,
                 InsertDate = DateTime.Now,
@@ -110,11 +111,11 @@ namespace IdScanner.Application.Services
             userExisting.MedicalCertificateFileName = medicalresult.FileName;
             userExisting.SignatureFileName = medicalresult.FileName;
             userExisting.SignatureUrl = medicalresult.FileUrl;
-            userExisting.QRCodeUrl = userData.QRCodeUrl;
+            userExisting.AadhaarCardNumber = userData.AadhaarCardNumber;
+            userExisting.BloodGroup = userData.BloodGroup;
             userExisting.IsActive = true;
             userExisting.UpdateBy = 1; 
             userExisting.UpdateDate = DateTime.Now;
-
             await _userDataRepository.UpdateUserDataAsync(userExisting);
             return userExisting;
         }
@@ -147,6 +148,9 @@ namespace IdScanner.Application.Services
                 PhotoUrl = User.PhotoUrl,
                 PoliceVerificationCertificateUrl = User.PoliceVerificationCertificateUrl,
                 MedicalCertificateUrl = User.MedicalCertificateUrl,
+                QRCodeUrl = User.QRCodeUrl,
+                AadhaarCardNumber = User.AadhaarCardNumber,
+                BloodGroup = User.BloodGroup,
                 IsActive = User.IsActive,
                 InsertBy = User.InsertBy,
                 InsertDate = User.InsertDate,
@@ -230,6 +234,11 @@ namespace IdScanner.Application.Services
             using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             return await _googleDriveService.UploadFileAsync(fileStream, fileName, mimeType, folderId);
         }
+        public async Task UpdateQrCodeAsync(long userId, string qrCodeUrl)
+        {
+             await _userDataRepository.UpdateQrCodeAsync(userId, qrCodeUrl);
+        }
 
-    }
+
+	}
 }

@@ -1,4 +1,5 @@
-﻿using IdScanner.Domain.Model;
+﻿using Google.Apis.Drive.v3.Data;
+using IdScanner.Domain.Model;
 using IdScanner.UI.Application.Interface;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
@@ -199,28 +200,10 @@ namespace IdScanner.UI.Controllers
             if (userData.UserDataId == 0)
             {
                 userData= await _userDataService.AddUserDataAsync(userData);
-            }
+                await updatedQrAsync(userData.UserDataId);
+			}
             else
             {
-                await _userDataService.UpdateUserAsync(userData);
-            }
-            string qrUrl = $"http://localhost:5201/UserData/Details/{userData.UserDataId}";
-
-            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
-            using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
-            {
-                byte[] qrBytes = qrCode.GetGraphic(10);
-
-                var qrFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "QRCodes");
-                if (!Directory.Exists(qrFolder))
-                {
-                    Directory.CreateDirectory(qrFolder);
-                }
-                var qrFileName = $"{userData.UserDataId}_qr.png";
-                var qrPath = Path.Combine(qrFolder, qrFileName);
-                await System.IO.File.WriteAllBytesAsync(qrPath, qrBytes);
-                userData.QRCodeUrl = "/QRCodes/" + qrFileName;
                 await _userDataService.UpdateUserAsync(userData);
             }
             return RedirectToAction("UserDataList");
@@ -257,6 +240,27 @@ namespace IdScanner.UI.Controllers
             IList<CompanyMaster> company = await _companyMasterService.GetAllCompanyMasterAsync();
             ViewBag.CompanyList = company;
         }
+        private async Task updatedQrAsync(long userid)
+        {
+			string qrUrl = $"http://localhost:5201/UserData/Details/{userid}";
+
+			using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+			using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
+			using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
+			{
+				byte[] qrBytes = qrCode.GetGraphic(10);
+
+				var qrFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "QRCodes");
+				if (!Directory.Exists(qrFolder))
+				{
+					Directory.CreateDirectory(qrFolder);
+				}
+				var qrFileName = $"{userid}_qr.png";
+				var qrPath = Path.Combine(qrFolder, qrFileName);
+				await System.IO.File.WriteAllBytesAsync(qrPath, qrBytes);
+				await _userDataService.UpdateQrCodeAsync(userid, "/QRCodes/" + qrFileName);
+			}
+		}
         [HttpGet]
         public async Task<JsonResult> GetDepartmentsByCompany(int companyId)
         {
