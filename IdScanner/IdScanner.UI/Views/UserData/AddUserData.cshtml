@@ -7,9 +7,10 @@
 	string DesignationMsg = ViewBag.DesignationMsg;
 	string StallPfNumberMsg = ViewBag.StallPfNumberMsg;
 	string WorkSlotMsg = ViewBag.WorkSlotMsg;
+	string AadhaarCardNumberMsg = ViewBag.AadharNumberMsg;
 	string LicenseeMsg = ViewBag.LicenseeMsg;
 	string MobileMsg = string.Empty;
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
 <style>
@@ -18,9 +19,9 @@
 	}
 </style>
 <html>
-   <head>
-		<title>IdScanner | Add User Data</title>
-   </head>
+<head>
+	<title>IdScanner | Add User Data</title>
+</head>
 <body>
 	<div class="content-page">
 		<div class="content">
@@ -94,12 +95,14 @@
 									<div class="col-xl-4 col-lg-6">
 										<div class="item-input">
 											<label for="AadhaarCardNumber" class="form-label col-form-label required fw-semibold fs-6">AadhaarCardNumber</label>
-											<input type="text" class="form-control userinput" id="AadhaarCardNumber" name="AadhaarCardNumber" value="@Model.AadhaarCardNumber">
-
-										@* 	@if (!string.IsNullOrEmpty(WorkSlotMsg))
+											<input type="number" class="form-control userinput" id="AadhaarCardNumber" name="AadhaarCardNumber" value="@Model.AadhaarCardNumber"
+												   oninput="if(this.value.length > 12) this.value = this.value.slice(0, 12);"
+												   onblur="validateAadharNumber(this)">
+											@if (!string.IsNullOrEmpty(AadhaarCardNumberMsg))
 											{
-												<span class="text-danger">@WorkSlotMsg</span>
-											} *@
+												<span class="text-danger">@AadhaarCardNumberMsg</span>
+											}
+											<span id="AadharNumberMsg" class="text-danger"></span>
 										</div>
 									</div>
 									<div class="col-xl-4 col-lg-6">
@@ -116,7 +119,9 @@
 												<option value="AB+">AB+</option>
 												<option value="AB-">AB-</option>
 											</select>
-											<span class="text-danger">@ViewBag.CompanyMsg</span>
+
+
+											<span class="text-danger">@ViewBag.BloodGroupMsg</span>
 										</div>
 									</div>
 
@@ -172,7 +177,7 @@
                                                     </option>
                                                 } *@
 											</select>
-											<span class="text-danger">@ViewBag.CompanyMsg</span>
+											<span class="text-danger">@ViewBag.DepartmentMsg</span>
 										</div>
 									</div>
 									<div class="col-xl-4 col-lg-6">
@@ -276,6 +281,25 @@
 			});
 		});
 
+				document.addEventListener("DOMContentLoaded", function () {
+			const bloodGroupDropdown = document.getElementById("BloodGroup");
+
+			const hasError = document.querySelector(".text-danger");
+
+			if (hasError && hasError.textContent.trim() !== "") {
+				const savedValue = localStorage.getItem("BloodGroup");
+				if (savedValue) {
+					bloodGroupDropdown.value = savedValue;
+				}
+			} else {
+				localStorage.removeItem("BloodGroup");
+			}
+			bloodGroupDropdown.addEventListener("change", function () {
+				localStorage.setItem("BloodGroup", this.value);
+			});
+		});
+
+
 		  document.getElementById("ImageFile").addEventListener("change", function () {
 		  const file = this.files[0];
 		  const errorSpan = document.getElementById("ImageFileError");
@@ -356,6 +380,15 @@
 			if (input.value.length !== 10) {
 				msg.textContent = "Please enter exactly 10 digits";
 				input.value = "";
+			} else {
+				msg.textContent = "";
+			}
+		}
+
+				function validateAadharNumber(input) {
+			const msg = document.getElementById("AadharNumberMsg");
+			if (input.value.length !== 12) {
+				msg.textContent = "Aadhar number must be exactly 12 digits.";
 			} else {
 				msg.textContent = "";
 			}

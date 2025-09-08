@@ -1,12 +1,13 @@
-﻿using Google.Apis.Drive.v3.Data;
+﻿using System.ComponentModel.Design;
+using System.Reflection;
+using Google.Apis.Drive.v3.Data;
 using IdScanner.Domain.Model;
 using IdScanner.UI.Application.Interface;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Office.Interop.Excel;
 using QRCoder;
-using System.ComponentModel.Design;
-using System.Reflection;
+using ZXing.QrCode.Internal;
 
 namespace IdScanner.UI.Controllers
 {
@@ -171,6 +172,13 @@ namespace IdScanner.UI.Controllers
                 ViewBag.WorkSlotMsg = WorkSlotMsg;
             }
 
+            string AadharNumberMsg = string.Empty;
+            if (string.IsNullOrEmpty(userData.AadhaarCardNumber))
+            {
+                AadharNumberMsg = "Please Enter Adhar No.";
+                ViewBag.AadharNumberMsg = AadharNumberMsg;
+            }
+
             string LicenseeMsg = string.Empty;
             if (string.IsNullOrEmpty(userData.Licensee))
             {
@@ -182,7 +190,10 @@ namespace IdScanner.UI.Controllers
             {
                 ViewBag.IdValidTillMsg = "Please select a valid date.";
             }
-
+            if (string.IsNullOrEmpty(userData.BloodGroup))
+            {
+                ViewBag.BloodGroupMsg = "Please select a valid Blood Group.";
+            }
             if (userData.CompanyId == 0)
             {
                 ViewBag.CompanyMsg = "Please Select Company.";
@@ -193,7 +204,7 @@ namespace IdScanner.UI.Controllers
                 ViewBag.DepartmentMsg = "Please Select Department.";
             }
 
-            if (ViewBag.NameMsg != null || ViewBag.MobileNumberMsg != null || ViewBag.DesignationMsg != null || ViewBag.StallPfNumberMsg != null || ViewBag.WorkSlotMsg != null || ViewBag.LicenseeMsg != null || ViewBag.IdValidTillMsg != null || ViewBag.CompanyMsg != null || ViewBag.DepartmentMsg != null || ViewBag.ImageFileRequiredMsg != null || ViewBag.policeFileRequiredMsg != null || ViewBag.medicalFileFileRequiredMsg != null || ViewBag.signatureFileFileRequiredMsg != null)
+            if (ViewBag.NameMsg != null || ViewBag.MobileNumberMsg != null || ViewBag.DesignationMsg != null || ViewBag.StallPfNumberMsg != null || ViewBag.WorkSlotMsg != null || ViewBag.LicenseeMsg != null || ViewBag.IdValidTillMsg != null || ViewBag.CompanyMsg != null || ViewBag.DepartmentMsg != null || ViewBag.ImageFileRequiredMsg != null || ViewBag.policeFileRequiredMsg != null || ViewBag.medicalFileFileRequiredMsg != null || ViewBag.signatureFileFileRequiredMsg != null || ViewBag.BloodGroupMsg != null || ViewBag.AadharNumberMsg != null)
             {
                 return View(userData);
             }

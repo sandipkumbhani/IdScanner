@@ -57,7 +57,7 @@ public class GoogleDriveService
         return folder.Id;
     }
 
-        //public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string mimeType, string folderId)
+    //public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string mimeType, string folderId)
     //{
     //    await InitializeDriveServiceAsync(); 
 
@@ -113,7 +113,7 @@ public class GoogleDriveService
 
         return new DriveFileResult
         {
-            FileName = request.ResponseBody.Name,   
+            FileName = request.ResponseBody.Name,
             FileUrl = $"https://drive.google.com/uc?id={fileId}"
         };
     }

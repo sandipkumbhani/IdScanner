@@ -28,12 +28,12 @@
                 </div>
 
                 <div class="photo">
-                    <img src="@user.CompanyMaster.logo" alt="User Photo" />
+                    <img src="@user.PhotoUrl" alt="User Photo" />
                 </div>
 
                 <div class="signature">
-					@* <img src="@user.SignatureUrl" alt="Signature" /> *@
-                    <img src="~/images\signature_image.png" />
+					<img src="@user.SignatureUrl" alt="Signature" />
+                    @* <img src="~/images\signature_image.png" /> *@
                 </div>
 
                 <div class="name">@user.Name</div>
@@ -57,22 +57,26 @@
                     <div class="qr">
                         <img src="@Url.Content(user.QRCodeUrl)" alt="QR Code" />
                     </div>
-                    <div class="blood">AB+</div>
+                    <div class="blood">@user.BloodGroup</div>
                 </div>
 
                 <div class="highlight">@user.Department.DepartmentName</div>
 
                 <div class="contact">
-                    <p>@user.MobileNumber</p>
-                    <p class="masked">@user.AadhaarCardNumber</p>
+                    <p class="mobile_number">@user.MobileNumber</p>
+                    <p class="aadhar_number">
+                        @("XXXX-XXXX-" + user.AadhaarCardNumber?.Substring(user.AadhaarCardNumber.Length - 4))
+                    </p>
                 </div>
 
-                <div class="note">
-                    IMPORTANT: Please surrender to issuing authority in case of misplacement of ID card.
-                </div>
-
-                <div class="logo">
-                    <img src="~/images/partner.png" alt="Footer Logo" />
+                <div class="footer-bottom">
+                    <div class="note">
+                        IMPORTANT: Please surrender to issuing authority on completion/termination of contractual service.
+                    </div>
+                    <div class="logo">
+                        <span>power by</span>
+                        <img src="@user.CompanyMaster.logo" alt="Footer Logo" />
+                    </div>
                 </div>
             </div>
         </div>

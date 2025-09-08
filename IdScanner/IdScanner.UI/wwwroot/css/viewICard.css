@@ -1,5 +1,5 @@
 ﻿body {
-    font-family: Arial, sans-serif;
+    "Times New Roman", Georgia, serif;
     background: #f5f5f5;
     padding: 20px;
 }
@@ -37,18 +37,18 @@
 
     .header h3 {
         margin: 0;
-        font-size: 16px;
+        font-size: 19px;
         color: #004080;
     }
 .department_text {
     margin: 0;
-    font-size: 12px;
+    font-size: 13px;
     color: #004080;
 }
 .id-num {
     margin: 0;
-    font-size: 11px;
-    color: #666;
+    font-size: 12px;
+    color: #1e1919;
 }
 
 .rail-logo {
@@ -120,45 +120,83 @@
 }
 
 .qr img {
-    width: 127px;
-    height: 127px;
+    width: 140px;
+    height: 140px;
 }
 
 .blood {
-    height: 62px;
-    width: 88px;
+    margin-right: 4px;
+    margin-bottom: 1px;
+    height: 72px;
+    width: 94px;
     border: 1px solid #000;
     padding: 20px;
-    font-size: 22px;
+    font-size: 40px;
     font-weight: bold;
+    display: flex; /* enable flexbox */
+    justify-content: center; /* horizontal center */
+    align-items: center; /* vertical center */
+    text-align: center;
 }
 
 .highlight {
     background: yellow;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 30px;
     margin: 12px 0;
     padding: 5px;
+    height: 42px;
+    display: flex; /* enable flexbox */
+    justify-content: center; /* horizontal center */
+    align-items: center; /* vertical center */
+    text-align: center;
 }
 
 .contact {
-    font-size: 14px;
+   
 }
 
-    .contact p {
-        margin: 2px 0;
-    }
+.mobile_number {
+    margin-top: 2px;
+    font-size: 30px;
+    font-weight: 500;
+    font-stretch: 105%;
+    text-shadow: 0.3px 0 0 currentColor;
+    letter-spacing: 0.7px;
+}
+.aadhar_number {
+    margin-top: -16px;
+    font-size: 28px;
+    font-weight: 500;
+    font-stretch: 105%;
+    text-shadow: 0.3px 0 0 currentColor;
+    letter-spacing: 0.7px;
+}
 
 .masked {
     letter-spacing: 2px;
+}
+.footer-bottom {
+    display: flex;
+    justify-content: space-between; /* push note left, logo right */
+    align-items: center; /* vertical alignment */
+    margin-top: 10px;
 }
 
 .note {
     font-size: 11px;
     color: red;
-    margin: 10px 0;
     text-align: left;
+    max-width: 70%;
+    line-height: 1.1;
 }
 
 .logo img {
     width: 80px;
+    height: auto;
+}
+.logo span {
+    font-size: 11px;
+    text-align:left;
+    padding-left:8px;
 }

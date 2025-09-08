@@ -37,7 +37,7 @@ namespace IdScanner.Application.Services
             //DriveFileResult medicalResult = null;
             var idNumber = Generate12Digit();
             string folderId = await _googleDriveService.CreateFolderAsync(idNumber);
-            var photoResult = await UploadFileIfExistsAsync(userData.PhotoUrl, $"{idNumber}_photo",folderId );
+            var photoResult = await UploadFileIfExistsAsync(userData.PhotoUrl, $"{idNumber}_photo", folderId);
             var policeResult = await UploadFileIfExistsAsync(userData.PoliceVerificationCertificateUrl, $"{idNumber}_police", folderId);
             var medicalResult = await UploadFileIfExistsAsync(userData.MedicalCertificateUrl, $"{idNumber}_medical", folderId);
             var signatureResult = await UploadFileIfExistsAsync(userData.SignatureUrl, $"{idNumber}_signature", folderId);
@@ -90,7 +90,7 @@ namespace IdScanner.Application.Services
             string signUrl = userExisting.SignatureFileName;
 
             var photoresult = await CreateOrUpdateFileOnDrive(photoUrl, folderId, newphotoUrl);
-            var  policeresult = await CreateOrUpdateFileOnDrive(policeUrl, folderId, newPolice);
+            var policeresult = await CreateOrUpdateFileOnDrive(policeUrl, folderId, newPolice);
             var medicalresult = await CreateOrUpdateFileOnDrive(medicalUrl, folderId, newMedical);
             var signResult = await CreateOrUpdateFileOnDrive(signUrl, folderId, newSign);
 
@@ -114,7 +114,7 @@ namespace IdScanner.Application.Services
             userExisting.AadhaarCardNumber = userData.AadhaarCardNumber;
             userExisting.BloodGroup = userData.BloodGroup;
             userExisting.IsActive = true;
-            userExisting.UpdateBy = 1; 
+            userExisting.UpdateBy = 1;
             userExisting.UpdateDate = DateTime.Now;
             await _userDataRepository.UpdateUserDataAsync(userExisting);
             return userExisting;
@@ -128,8 +128,8 @@ namespace IdScanner.Application.Services
             }
 
             return userDetails;
-        }   
-    public async Task<List<UserData>> GetAllUsersListAsync()
+        }
+        public async Task<List<UserData>> GetAllUsersListAsync()
         {
             var users = await _userDataRepository.GetAllUserDataAsync();
             return users.Select(User => new UserData
@@ -158,7 +158,6 @@ namespace IdScanner.Application.Services
                 UpdateDate = User.UpdateDate,
                 CompanyMaster = User.CompanyMaster,
                 Department = User.Department,
-                QRCodeUrl = User.QRCodeUrl,
             }).ToList();
         }
         public async Task DeleteUserDataById(int userId)
@@ -172,9 +171,9 @@ namespace IdScanner.Application.Services
         }
         private static string Generate12Digit()
         {
-            long ticks = DateTime.UtcNow.Ticks; 
+            long ticks = DateTime.UtcNow.Ticks;
             string tickPart = ticks.ToString().Substring(ticks.ToString().Length - 9);
-            string randomPart = new Random().Next(100, 999).ToString(); 
+            string randomPart = new Random().Next(100, 999).ToString();
             return tickPart + randomPart;
         }
         private async Task<DriveFileResult> CreateOrUpdateFileOnDrive(string existingFileName, string folderId, string newFilePath)
@@ -236,9 +235,9 @@ namespace IdScanner.Application.Services
         }
         public async Task UpdateQrCodeAsync(long userId, string qrCodeUrl)
         {
-             await _userDataRepository.UpdateQrCodeAsync(userId, qrCodeUrl);
+            await _userDataRepository.UpdateQrCodeAsync(userId, qrCodeUrl);
         }
 
 
-	}
+    }
 }
