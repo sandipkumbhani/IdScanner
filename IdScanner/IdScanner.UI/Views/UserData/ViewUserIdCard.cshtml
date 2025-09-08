@@ -9,58 +9,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Card Front & Back</title>
+    <title>ID Card</title>
     <link href="~/css/viewicard.css" rel="stylesheet" />
 </head>
 <body>
     @foreach (var user in UserDataList)
     {
         <div class="id-row">
-            <div class="id-card id-front">
-                <div class="id-header">
-                    @user.UserDataId
-                    <img src="@user.CompanyMaster.logo" alt="Logo" />
-                    <h2>@user.CompanyMaster.CompanyName</h2>
-                    <h4>@user.Department.DepartmentName</h4>
-                    <p>ID Card No @user.IdNumber</p>
+            <!-- FRONT SIDE -->
+            <div class="id-card front">
+                <div class="header">
+                    <img src="@user.CompanyMaster.logo" class="rail-logo" alt="Logo" />
+                    <div>
+                        <h3>@user.CompanyMaster.CompanyName</h3>
+                        <p class="department_text">@user.Department.DepartmentName</p>
+                        <p class="id-num">ID Card No: @user.IdNumber</p>
+                    </div>
                 </div>
 
-                <div class="id-photo">
-                    <img src="@user.PhotoUrl" alt="Profile Photo" />
+                <div class="photo">
+                    <img src="@user.CompanyMaster.logo" alt="User Photo" />
                 </div>
 
+                <div class="signature">
+					@* <img src="@user.SignatureUrl" alt="Signature" /> *@
+                    <img src="~/images\signature_image.png" />
+                </div>
 
-                <div class="id-signature">@user.SignatureUrl</div>
-                <div class="id-name">@user.Name</div>
+                <div class="name">@user.Name</div>
 
-                <div class="id-footer">
-                    <span class="approved">✔ Digitally Approved</span><br />
-                   @*  @user.IssuedBy <br /> *@
-                    ACM SBC (Testing)
+                <div class="footer">
+                    <div class="approved">
+                        <img src="@user.CompanyMaster.logo" />
+                        <span>Digitally <br> Approved</span>
+                    </div>
+                    <div class="authority">
+                        <strong>Navin Testing</strong><br />
+                        ACM SBC (Testing)<br />
+                        Issuing Authority
+                    </div>
                 </div>
             </div>
 
             <!-- BACK SIDE -->
-            <div class="id-card id-back">
-                <div class="qr">
-                    <img src="@user.QRCodeUrl" alt="QR Code" />
+            <div class="id-card back">
+                <div class="top">
+                    <div class="qr">
+                        <img src="@Url.Content(user.QRCodeUrl)" alt="QR Code" />
+                    </div>
+                    <div class="blood">AB+</div>
                 </div>
 
-                <div class="blood-group">@user.BloodGroup</div>
                 <div class="highlight">@user.Department.DepartmentName</div>
 
                 <div class="contact">
-                    @user.MobileNumber <br />
-                    @user.AadhaarCardNumber
+                    <p>@user.MobileNumber</p>
+                    <p class="masked">@user.AadhaarCardNumber</p>
                 </div>
 
-                <div class="footer-note">
-                    If found, please surrender to issuing authority<br />
-                    <strong>Indian Railways</strong>
+                <div class="note">
+                    IMPORTANT: Please surrender to issuing authority in case of misplacement of ID card.
                 </div>
 
                 <div class="logo">
-                    <img src="~/images/partner.png" alt="Powered By Logo" />
+                    <img src="~/images/partner.png" alt="Footer Logo" />
                 </div>
             </div>
         </div>

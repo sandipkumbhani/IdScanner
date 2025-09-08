@@ -62,6 +62,7 @@ namespace IdScanner.Application.Services
                 MedicalCertificateUrl = medicalResult.FileUrl,
                 SignatureFileName = signatureResult.FileName,
                 SignatureUrl = signatureResult.FileUrl,
+                QRCodeUrl = userData.QRCodeUrl,
 
                 IsActive = true,
                 InsertBy = 1,
@@ -153,8 +154,8 @@ namespace IdScanner.Application.Services
                 UpdateBy = User.UpdateBy,
                 UpdateDate = User.UpdateDate,
                 CompanyMaster = User.CompanyMaster,
-                Department = User.Department 
-
+                Department = User.Department,
+                QRCodeUrl = User.QRCodeUrl,
             }).ToList();
         }
         public async Task DeleteUserDataById(int userId)

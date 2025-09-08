@@ -7,103 +7,158 @@
 .id-row {
     display: flex;
     justify-content: center;
-    gap: 30px; /* space between front and back */
-    margin-bottom: 40px; /* gap between one user and next user */
+    gap: 30px;
+    margin-bottom: 40px;
 }
 
+/* Common card */
 .id-card {
     width: 280px;
     height: 420px;
     background: #fff;
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     padding: 15px;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     text-align: center;
 }
 
-.id-header img {
-    width: 60px;
+/* ---------- Front Side ---------- */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    line-height: 18px;
 }
 
-.id-photo {
-    margin: 12px auto;
-    width: 120px;
-    height: 140px;
-    border: 2px solid #ccc;
-    border-radius: 6px;
+    .header h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #004080;
+    }
+.department_text {
+    margin: 0;
+    font-size: 12px;
+    color: #004080;
+}
+.id-num {
+    margin: 0;
+    font-size: 11px;
+    color: #666;
+}
+
+.rail-logo {
+    width: 69px;
+    height: 63px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.photo {
+    margin: 10px auto;
+    width: 150px;
+    height: 180px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
     overflow: hidden;
 }
 
-    .id-photo img {
+    .photo img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-.id-signature {
-    margin: 8px 0;
-    font-style: italic;
-    font-weight: bold;
-    font-size: 14px;
+.signature img {
+    width: 255px;
+    height: 38px;
+    margin: 5px 0;
+    object-fit: cover;
 }
 
-.id-name {
+.name {
     font-size: 16px;
     font-weight: bold;
     color: #003366;
-    margin-bottom: 8px;
 }
 
-.id-footer {
-    position: absolute;
-    bottom: 12px;
-    left: 0;
-    right: 0;
-    font-size: 12px;
+.footer {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 11px;
+    text-align: left;
+    gap: 10px;
 }
 
-.qr {
-    margin: 0 auto;
-    width: 120px;
-    height: 120px;
-    border: 2px solid #ccc;
-}
-
-    .qr img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    .footer .approved {
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
-.blood-group {
-    border: 2px solid #000;
-    margin: 10px auto;
-    padding: 6px 20px;
-    font-size: 20px;
+        .footer .approved img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+    .footer .authority {
+        text-align: left;
+        padding-top: 4px;
+    }
+
+/* ---------- Back Side ---------- */
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.qr img {
+    width: 127px;
+    height: 127px;
+}
+
+.blood {
+    height: 62px;
+    width: 88px;
+    border: 1px solid #000;
+    padding: 20px;
+    font-size: 22px;
     font-weight: bold;
 }
 
 .highlight {
     background: yellow;
     font-weight: bold;
-    padding: 3px 8px;
-    display: inline-block;
-    margin: 10px 0;
+    margin: 12px 0;
+    padding: 5px;
 }
 
 .contact {
     font-size: 14px;
-    margin-bottom: 10px;
 }
 
-.footer-note {
+    .contact p {
+        margin: 2px 0;
+    }
+
+.masked {
+    letter-spacing: 2px;
+}
+
+.note {
     font-size: 11px;
     color: red;
-    text-align: center;
-    margin-top: 8px;
+    margin: 10px 0;
+    text-align: left;
 }
 
 .logo img {
-    width: 100px;
+    width: 80px;
 }
