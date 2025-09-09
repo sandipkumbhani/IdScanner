@@ -13,6 +13,7 @@
     <link href="~/css/viewicard.css" rel="stylesheet" />
 </head>
 <body>
+    
     @foreach (var user in UserDataList)
     {
         <div class="id-row">
@@ -28,12 +29,13 @@
                 </div>
 
                 <div class="photo">
-                    <img src="@user.PhotoUrl" alt="User Photo" />
+                    @* <img src="@user.PhotoUrl" alt="User Photo" /> *@
+                    <img src="/drive/image/@user.PhotoUrl" alt="Drive Image" />
                 </div>
 
                 <div class="signature">
-					<img src="@user.SignatureUrl" alt="Signature" />
-                    @* <img src="~/images\signature_image.png" /> *@
+                    @* <img src="@user.SignatureUrl" alt="Signature" /> *@
+                    <img src="/drive/image/@user.SignatureUrl" alt="Drive Image" />
                 </div>
 
                 <div class="name">@user.Name</div>

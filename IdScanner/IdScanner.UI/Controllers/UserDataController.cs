@@ -227,8 +227,13 @@ namespace IdScanner.UI.Controllers
             {
                 return NotFound("User not found");
             }
-            var photoUrl = userData.PhotoUrl.Replace("uc?", "thumbnail?");
-            ViewBag.photoUrl = photoUrl + "&sz=s220";
+            //var photoUrl = userData.PhotoUrl.Replace("uc?", "thumbnail?");
+            //ViewBag.photoUrl = photoUrl + "&sz=s220";
+            if (!string.IsNullOrEmpty(userData.PhotoUrl))
+            {
+                //user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
+                userData.PhotoUrl = ExtractFileId(userData.PhotoUrl);
+            }
             return View("~/Views/UserData/UserDetails.cshtml", userData); 
         }
 
@@ -291,7 +296,13 @@ namespace IdScanner.UI.Controllers
             {
                 if (!string.IsNullOrEmpty(user.PhotoUrl))
                 {
-                    user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
+                    //user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
+                    user.PhotoUrl = ExtractFileId(user.PhotoUrl);
+                }
+                if (!string.IsNullOrEmpty(user.SignatureUrl))
+                {
+                    //user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
+                    user.SignatureUrl = ExtractFileId(user.SignatureUrl);
                 }
             }
 
@@ -299,7 +310,25 @@ namespace IdScanner.UI.Controllers
             return View("~/Views/UserData/ViewUserIdCard.cshtml");
         }
 
+        private string ExtractFileId(string url)
+        {
+            if (url.Contains("id="))
+            {
+                // For URLs like https://drive.google.com/open?id=FILE_ID
+                var index = url.IndexOf("id=") + 3;
+                return url.Substring(index);
+            }
+            else if (url.Contains("/d/"))
+            {
+                // For URLs like https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+                var start = url.IndexOf("/d/") + 3 + 1;
+                var end = url.IndexOf("/view");
+                return url.Substring(start, end - start);
+            }
 
+            // Fallback: assume the entire string is the ID
+            return url;
+        }
 
     }
 }

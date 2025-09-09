@@ -148,6 +148,7 @@ namespace IdScanner.Application.Services
                 PhotoUrl = User.PhotoUrl,
                 PoliceVerificationCertificateUrl = User.PoliceVerificationCertificateUrl,
                 MedicalCertificateUrl = User.MedicalCertificateUrl,
+                SignatureUrl = User.SignatureUrl,   
                 QRCodeUrl = User.QRCodeUrl,
                 AadhaarCardNumber = User.AadhaarCardNumber,
                 BloodGroup = User.BloodGroup,
