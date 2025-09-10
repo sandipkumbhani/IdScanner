@@ -134,24 +134,13 @@
         <script src="~/js/dropzone.min.js"></script>
         <!-- Repeater JS -->
         <script src="~/js/jquery.repeater.min.js"></script>
-        <!-- Datatables js -->
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-        <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-        <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-        <!-- Datatable Init js -->
-        <script src="~/js/datatable-init.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"> </script>
         <!-- Script App JS -->
         <script src="~/js/script-app.js"></script>
         @RenderSection("Scripts", required: false)
     </body>
     <footer class="border-top footer text-muted mt-3">
-        <div class="container">
-            &copy; 2025 - IdScanner - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container" style="text-align:center;">
+            © <span id="year"></span> Copyrights by Broadsy Technologies Pvt.Ltd. All Rights Reserved.
         </div>
     </footer>
 
@@ -161,6 +150,9 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 @* 
 <ul id="leftside-menu-container" class="side-nav" style="padding:initial;">
 	<li class="side-nav-item">

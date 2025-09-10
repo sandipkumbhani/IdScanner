@@ -107,8 +107,8 @@
 									</div>
 									<div class="col-xl-4 col-lg-6">
 										<div class="item-input">
-											<label for="BloodGroup" class="form-label col-form-label required fw-semibold fs-6">Blood Group</label>
-											<select class="form-select" id="BloodGroup" name="BloodGroup" value="@Model.BloodGroup">
+											@* <label for="BloodGroup" class="form-label col-form-label required fw-semibold fs-6">Blood Group</label>
+											<select class="form-select" id="BloodGroup" name="BloodGroup">
 												<option value="">-- Select Blood Group --</option>
 												<option value="A+">A+</option>
 												<option value="A-">A-</option>
@@ -121,7 +121,26 @@
 											</select>
 
 
+											<span class="text-danger">@ViewBag.BloodGroupMsg</span> *@
+
+											<label for="BloodGroup" class="form-label col-form-label required fw-semibold fs-6">Blood Group</label>
+											<select class="form-select" id="BloodGroup" name="BloodGroup">
+												<option value="" selected="@(string.IsNullOrEmpty(Model.BloodGroup) ? "selected" : null)">
+													-- Select Blood Group --
+												</option>
+
+												<option value="A+" selected="@(Model.BloodGroup == "A+" ? "selected" : null)">A+</option>
+												<option value="A-" selected="@(Model.BloodGroup == "A-" ? "selected" : null)">A-</option>
+												<option value="B+" selected="@(Model.BloodGroup == "B+" ? "selected" : null)">B+</option>
+												<option value="B-" selected="@(Model.BloodGroup == "B-" ? "selected" : null)">B-</option>
+												<option value="O+" selected="@(Model.BloodGroup == "O+" ? "selected" : null)">O+</option>
+												<option value="O-" selected="@(Model.BloodGroup == "O-" ? "selected" : null)">O-</option>
+												<option value="AB+" selected="@(Model.BloodGroup == "AB+" ? "selected" : null)">AB+</option>
+												<option value="AB-" selected="@(Model.BloodGroup == "AB-" ? "selected" : null)">AB-</option>
+											</select>
+
 											<span class="text-danger">@ViewBag.BloodGroupMsg</span>
+
 										</div>
 									</div>
 
@@ -183,7 +202,17 @@
 									<div class="col-xl-4 col-lg-6">
 										<div class="item-input">
 											<label for="ImageFile" class="form-label col-form-label required fw-semibold fs-6">Profile Image</label>
+
+											@* Show previously uploaded file if it exists *@
+
 											<input type="file" class="form-control userinput" id="ImageFile" name="ImageFile" accept="image/*" />
+											@* @if (!string.IsNullOrEmpty(Model.PhotoFileName))
+											{
+												<p>
+													Current file:
+													<a href="@Url.Content(Model.PhotoUrl)" target="_blank">@Model.PhotoFileName</a>
+												</p>
+											} *@
 											<span class="text-danger">@ViewBag.ImageFileRequiredMsg</span>
 											<span id="ImageFileError" class="text-danger"></span>
 										</div>

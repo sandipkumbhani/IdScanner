@@ -296,12 +296,10 @@ namespace IdScanner.UI.Controllers
             {
                 if (!string.IsNullOrEmpty(user.PhotoUrl))
                 {
-                    //user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
                     user.PhotoUrl = ExtractFileId(user.PhotoUrl);
                 }
                 if (!string.IsNullOrEmpty(user.SignatureUrl))
                 {
-                    //user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
                     user.SignatureUrl = ExtractFileId(user.SignatureUrl);
                 }
             }
@@ -313,20 +311,16 @@ namespace IdScanner.UI.Controllers
         private string ExtractFileId(string url)
         {
             if (url.Contains("id="))
-            {
-                // For URLs like https://drive.google.com/open?id=FILE_ID
+            { 
                 var index = url.IndexOf("id=") + 3;
                 return url.Substring(index);
             }
             else if (url.Contains("/d/"))
             {
-                // For URLs like https://drive.google.com/file/d/FILE_ID/view?usp=sharing
                 var start = url.IndexOf("/d/") + 3 + 1;
                 var end = url.IndexOf("/view");
                 return url.Substring(start, end - start);
             }
-
-            // Fallback: assume the entire string is the ID
             return url;
         }
 

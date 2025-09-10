@@ -58,7 +58,7 @@
                                     <label class="form-label" for="password">Password</label>
                                     <div class="form-input position-relative">
                                         <input class="form-control" type="password" id="password" name="password" required="" placeholder="" ,required />
-                                        <div class="show-hide">
+                                        <div class="show-hide" onclick="togglePassword()">
                                             <span class="show">
                                             </span>
                                         </div>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div class="sign-right">
-                    <img src="~/images/truck-driving-city-street-night-bright-lights-tall-buildings-making-its-way-through-with-trailer.jpg" alt="" />
+                    <img src="~/images/loginpageimage.png" alt="" />
                 </div>
             </div>
         </div>
@@ -117,3 +117,14 @@
     <script src="~/js/script-app.js"></script>
 </body>
 </html>
+<script>
+    function togglePassword() {
+        const password = document.getElementById("password");
+
+        if (password.type === "password") {
+            password.type = "text";
+        } else {
+            password.type = "password";
+        }
+    }
+</script>

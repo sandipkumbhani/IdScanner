@@ -89,7 +89,25 @@ namespace IdScanner.UI.Infrastructure.Provider
             var baseUrl = apiCredential.url + $"UserData/GetByUserDataById?userId={userid}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<UserData>(jsonString)!;
+
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new Exception($"User with ID {userid} was not found.");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"API Error ({response.StatusCode}): {jsonString}");
+            }
+            try
+            {
+                return JsonConvert.DeserializeObject<UserData>(jsonString);
+            }
+            catch (JsonException)
+            {
+                throw new Exception($"Unexpected response format. Raw response: {jsonString}");
+            }
         }
 		public async Task<string> UpdateQrCodeAsync(long userId, string qrCodeUrl)
 		{

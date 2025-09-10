@@ -1,5 +1,5 @@
 ﻿body {
-    "Times New Roman", Georgia, serif;
+    font-family:"Times New Roman", Georgia, serif;
     background: #f5f5f5;
     padding: 20px;
 }
@@ -51,12 +51,32 @@
     color: #1e1919;
 }
 
-.rail-logo {
+.company-logo-container {
+    width: 80px; 
+    height: 80px;
+    border-radius: 50%; 
+    overflow: hidden; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff; 
+}
+
+    .company-logo-container img {
+        max-width: 90%; 
+        max-height: 90%;
+        object-fit: cover; 
+        display: block;
+    }
+
+/*.company-logo {
     width: 69px;
     height: 63px;
     border-radius: 50%;
     object-fit: cover;
-}
+    display: block;
+    overflow: hidden;
+}*/
 
 .photo {
     margin: 10px auto;
@@ -74,8 +94,12 @@
     }
 
 .signature img {
-    width: 255px;
-    height: 38px;
+    /*    width: 255px;
+    height: 38px;*/
+    max-width: 255px;
+    max-height: 50px;
+    width: auto;
+    height: auto;
     margin: 5px 0;
     object-fit: cover;
 }
@@ -133,9 +157,9 @@
     padding: 20px;
     font-size: 40px;
     font-weight: bold;
-    display: flex; /* enable flexbox */
-    justify-content: center; /* horizontal center */
-    align-items: center; /* vertical center */
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
     text-align: center;
 }
 
@@ -146,9 +170,9 @@
     margin: 12px 0;
     padding: 5px;
     height: 42px;
-    display: flex; /* enable flexbox */
-    justify-content: center; /* horizontal center */
-    align-items: center; /* vertical center */
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
     text-align: center;
 }
 
@@ -178,8 +202,8 @@
 }
 .footer-bottom {
     display: flex;
-    justify-content: space-between; /* push note left, logo right */
-    align-items: center; /* vertical alignment */
+    justify-content: space-between; 
+    align-items: center; 
     margin-top: 10px;
 }
 
@@ -200,3 +224,32 @@
     text-align:left;
     padding-left:8px;
 }
+@media print {
+    body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        font-size: 12px; 
+        line-height: 1.2; 
+    }
+
+    @page {
+        margin: 15mm; 
+    }
+
+    .no-print,
+    .no-print * {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+  
+    table {
+        border-collapse: collapse;
+    }
+
+        table td, table th {
+            padding: 4px; 
+        }
+}
+
+
