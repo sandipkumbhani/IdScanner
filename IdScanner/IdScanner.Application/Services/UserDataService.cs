@@ -181,55 +181,53 @@ namespace IdScanner.Application.Services
         {
             DriveFileResult driveFileResult = null;
 
-            if (!string.IsNullOrEmpty(newFilePath) && System.IO.File.Exists(newFilePath))
-            {
-                string fileExtension = Path.GetExtension(newFilePath)?.ToLower();
-                string mimeType = fileExtension switch
-                {
-                    ".jpg" or ".jpeg" => "image/jpeg",
-                    ".png" => "image/png",
-                    ".pdf" => "application/pdf",
-                    _ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
-                };
+			if (!string.IsNullOrEmpty(newFilePath) && System.IO.File.Exists(newFilePath))
+			{
+				string fileExtension = Path.GetExtension(newFilePath)?.ToLower();
+				string mimeType = fileExtension switch
+				{
+					".jpg" or ".jpeg" => "image/jpeg",
+					".png" => "image/png",
+					".pdf" => "application/pdf",
+					_ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
+				};
+				var fileNameWithExtension = $"{folderId}_{Guid.NewGuid()}{fileExtension}";
 
-                var fileNameWithExtension = $"{folderId}_{Guid.NewGuid()}{fileExtension}";
+				using var fileStream = new FileStream(
+					newFilePath,
+					FileMode.Open,
+					FileAccess.Read,
+					FileShare.Read);
 
-                using var fileStream = new FileStream(
-                    newFilePath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read);
+				string existingFileId = await _googleDriveService.GetFileIdByNameAsync(folderId, existingFileName);
 
-                string existingFileId = await _googleDriveService.GetFileIdByNameAsync(folderId, existingFileName);
+				if (!string.IsNullOrEmpty(existingFileId))
+				{
+					driveFileResult = await _googleDriveService.UpdateFileAsync(existingFileId, fileStream, mimeType);
+				}
+				else
+				{
+					driveFileResult = await _googleDriveService.UploadFileAsync(fileStream, fileNameWithExtension, mimeType, folderId);
+				}
+			}
+			return driveFileResult;
+		}
 
-                if (!string.IsNullOrEmpty(existingFileId))
-                {
-                    driveFileResult = await _googleDriveService.UpdateFileAsync(existingFileId, fileStream, mimeType);
-                }
-                else
-                {
-                    driveFileResult = await _googleDriveService.UploadFileAsync(fileStream, fileNameWithExtension, mimeType, folderId);
-                }
-            }
+		private async Task<DriveFileResult> UploadFileIfExistsAsync(string filePath, string filePrefix, string folderId)
+		{
+			if (string.IsNullOrEmpty(filePath) || !System.IO.File.Exists(filePath))
+				return null;
 
-            return driveFileResult;
-        }
+			string fileExtension = Path.GetExtension(filePath)?.ToLower();
+			string mimeType = fileExtension switch
+			{
+				".jpg" or ".jpeg" => "image/jpeg",
+				".png" => "image/png",
+				".pdf" => "application/pdf",
+				_ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
+			};
 
-        private async Task<DriveFileResult> UploadFileIfExistsAsync(string filePath, string filePrefix, string folderId)
-        {
-            if (string.IsNullOrEmpty(filePath) || !System.IO.File.Exists(filePath))
-                return null;
-
-            string fileExtension = Path.GetExtension(filePath)?.ToLower();
-            string mimeType = fileExtension switch
-            {
-                ".jpg" or ".jpeg" => "image/jpeg",
-                ".png" => "image/png",
-                ".pdf" => "application/pdf",
-                _ => throw new NotSupportedException($"Unsupported file type: {fileExtension}")
-            };
-
-            var fileName = $"{filePrefix}{fileExtension}";
+			var fileName = $"{filePrefix}{fileExtension}";
 
             using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             return await _googleDriveService.UploadFileAsync(fileStream, fileName, mimeType, folderId);

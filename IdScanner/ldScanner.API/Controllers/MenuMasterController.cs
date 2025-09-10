@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ldScanner.API.Controllers
 {
-    [AllowAnonymous]
+   
     [Route("api/[controller]")]
     [ApiController]
     public class MenuMasterController : Controller

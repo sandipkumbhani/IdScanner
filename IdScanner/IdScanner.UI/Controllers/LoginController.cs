@@ -31,7 +31,7 @@ namespace IdScanner.UI.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var responseToken = await _loginServices.Login(viewModel);
                     Response.Cookies.Append("jwtToken", responseToken.Token, new CookieOptions
@@ -41,14 +41,6 @@ namespace IdScanner.UI.Controllers
                         SameSite = SameSiteMode.Strict,
                         Expires = DateTime.UtcNow.AddHours(24)
                     });
-                    //Response.Cookies.Append("jwtToken", responseToken.Token, new
-                    //    CookieOptions
-                    //{
-                    //    HttpOnly = true,
-                    //    Secure = true,
-                    //    SameSite = SameSiteMode.Strict,
-                    //    Expires = DateTime.UtcNow.AddHours(24)
-                    //});
                     var claims = new List<Claim>
                     {
                         new Claim("UserId",responseToken.UserId.ToString()),
@@ -60,8 +52,15 @@ namespace IdScanner.UI.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme);
 
                     var principal = new ClaimsPrincipal(identity);
-                    //await HttpContext.SignInAsync
-                    //    (CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    await HttpContext.SignInAsync(
+               CookieAuthenticationDefaults.AuthenticationScheme,
+               principal,
+               new AuthenticationProperties
+                {
+                   IsPersistent = true,
+                   ExpiresUtc = DateTime.UtcNow.AddHours(24)
+                });
+
                     return Redirect("~/MenuMaster/MenuMasterList");
                 }
                 else
@@ -70,7 +69,7 @@ namespace IdScanner.UI.Controllers
                     return View(viewModel);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ViewBag.LoginMessage = ex.Message;
                 return View(viewModel);

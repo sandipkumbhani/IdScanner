@@ -1,5 +1,6 @@
 ﻿using IdScanner.Domain.Model;
 using IdScanner.UI.Application.Interface;
+using IdScanner.UI.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdScanner.UI.Controllers
@@ -7,14 +8,20 @@ namespace IdScanner.UI.Controllers
     public class CompanyMasterController : Controller
     {
         private readonly ICompanyMasterService _companyMasterService;
-        public CompanyMasterController(ICompanyMasterService companyMasterService)
+        private GlobalClass _globalClass;
+        public CompanyMasterController(ICompanyMasterService companyMasterService, GlobalClass globalClass)
         {
             _companyMasterService = companyMasterService
                 ?? throw new ArgumentNullException(nameof(companyMasterService));
+            _globalClass = globalClass;
         }
 
         public async Task<IActionResult> CompanyMasterList()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             IList<CompanyMaster> CompanyMasterList = await _companyMasterService.GetAllCompanyMasterAsync();
             ViewBag.CompanyMasterList = CompanyMasterList;
             return View("~/Views/CompanyMaster/CompanyMasterList.cshtml");
@@ -23,6 +30,10 @@ namespace IdScanner.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddCompanyMaster(int? id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             if (id == null)
             {
                 return View(new CompanyMaster());
@@ -34,15 +45,18 @@ namespace IdScanner.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCompanyMaster(CompanyMaster companyMaster, IFormFile ImageFile)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             string NameMsg = string.Empty;
-            if(string.IsNullOrEmpty(companyMaster.CompanyName))
+            if (string.IsNullOrEmpty(companyMaster.CompanyName))
             {
                 NameMsg = "Please Enter Name.";
                 ViewBag.NameMsg = NameMsg;
             }
-
             string CityMsg = string.Empty;
-            if(string.IsNullOrEmpty(companyMaster.City))
+            if (string.IsNullOrEmpty(companyMaster.City))
             {
                 CityMsg = "Please Enter City";
                 ViewBag.CityMsg = CityMsg;
@@ -70,7 +84,7 @@ namespace IdScanner.UI.Controllers
                 ViewBag.LogoMsg = LogoMsg;
             }
 
-            if (ViewBag.NameMsg != null ||ViewBag.CityMsg != null || ViewBag.LogoMsg != null)
+            if (ViewBag.NameMsg != null || ViewBag.CityMsg != null || ViewBag.LogoMsg != null)
             {
                 return View(companyMaster);
             }
@@ -90,12 +104,16 @@ namespace IdScanner.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteCompanyMaster(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _companyMasterService.DeleteCompanyAsync(id);
                 return RedirectToAction("CompanyMasterList");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ViewBag.ErrorMessage = $"Company with ID {id} not found: {ex.Message}";
                 return View("Error");

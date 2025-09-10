@@ -3,6 +3,7 @@ using IdScanner.Application.Services;
 using IdScanner.Domain.DTO;
 using IdScanner.Domain.Model;
 using IdScanner.UI.Domain.Comman;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 

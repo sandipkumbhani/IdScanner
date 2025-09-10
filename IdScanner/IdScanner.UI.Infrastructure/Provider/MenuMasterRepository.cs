@@ -17,7 +17,6 @@ namespace IdScanner.UI.Infrastructure.Provider
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
-
         public MenuMasterRepository(HttpClient httpCleint, IConfiguration configuration)
         {
             _httpClient = httpCleint;

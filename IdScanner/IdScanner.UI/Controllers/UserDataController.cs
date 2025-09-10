@@ -3,11 +3,13 @@ using System.Reflection;
 using Google.Apis.Drive.v3.Data;
 using IdScanner.Domain.Model;
 using IdScanner.UI.Application.Interface;
+using IdScanner.UI.Domain.Model;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Office.Interop.Excel;
 using QRCoder;
 using ZXing.QrCode.Internal;
+using GlobalClass = IdScanner.UI.Domain.Model.GlobalClass;
 
 namespace IdScanner.UI.Controllers
 {
@@ -16,11 +18,13 @@ namespace IdScanner.UI.Controllers
         private readonly IUserDataService _userDataService;
         private readonly ICompanyMasterService _companyMasterService;
         private readonly IDepartmentMasterService _departmentMasterService;
-        public UserDataController(IUserDataService userDataService, ICompanyMasterService companyMasterService,IDepartmentMasterService departmentMasterService)
+        private GlobalClass _globalClass;
+        public UserDataController(IUserDataService userDataService, ICompanyMasterService companyMasterService,IDepartmentMasterService departmentMasterService,GlobalClass globalClass)
         {
             _userDataService = userDataService;
             _companyMasterService = companyMasterService;
             _departmentMasterService = departmentMasterService;
+            _globalClass = globalClass;
         }
         public async Task<IActionResult> UserDataList()
         {
@@ -31,6 +35,10 @@ namespace IdScanner.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddUserData(int? id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             await InitViewBag();
             if (id == null)
             {
@@ -43,6 +51,10 @@ namespace IdScanner.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUserData(UserData userData, IFormFile ImageFile, IFormFile policeFile, IFormFile medicalFile, IFormFile signatureFile)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             await InitViewBag();
 
             if (ImageFile == null || ImageFile.Length == 0)
@@ -164,7 +176,6 @@ namespace IdScanner.UI.Controllers
                 StallPfNumberMsg = "Please Enter StallPfNumber.";
                 ViewBag.StallPfNumberMsg = StallPfNumberMsg;
             }
-
             string WorkSlotMsg = string.Empty;
             if (string.IsNullOrEmpty(userData.WorkSlot))
             {
@@ -227,8 +238,6 @@ namespace IdScanner.UI.Controllers
             {
                 return NotFound("User not found");
             }
-            //var photoUrl = userData.PhotoUrl.Replace("uc?", "thumbnail?");
-            //ViewBag.photoUrl = photoUrl + "&sz=s220";
             if (!string.IsNullOrEmpty(userData.PhotoUrl))
             {
                 //user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
@@ -236,10 +245,13 @@ namespace IdScanner.UI.Controllers
             }
             return View("~/Views/UserData/UserDetails.cshtml", userData); 
         }
-
         [HttpGet]
         public async Task<IActionResult> DeleteUserData(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _userDataService.DeleteUserAsync(id);
@@ -291,7 +303,6 @@ namespace IdScanner.UI.Controllers
         public async Task<IActionResult> UserIdCardList()
         {
             IList<UserData> UserDataList = await _userDataService.GetAllUserDetailsAsync();
-
             foreach (var user in UserDataList)
             {
                 if (!string.IsNullOrEmpty(user.PhotoUrl))
@@ -301,7 +312,6 @@ namespace IdScanner.UI.Controllers
                 }
                 if (!string.IsNullOrEmpty(user.SignatureUrl))
                 {
-                    //user.PhotoUrl = user.PhotoUrl.Replace("uc?", "thumbnail?") + "&sz=s220";
                     user.SignatureUrl = ExtractFileId(user.SignatureUrl);
                 }
             }
@@ -309,24 +319,13 @@ namespace IdScanner.UI.Controllers
             ViewBag.UserDataList = UserDataList;
             return View("~/Views/UserData/ViewUserIdCard.cshtml");
         }
-
         private string ExtractFileId(string url)
         {
             if (url.Contains("id="))
             {
-                // For URLs like https://drive.google.com/open?id=FILE_ID
                 var index = url.IndexOf("id=") + 3;
                 return url.Substring(index);
             }
-            else if (url.Contains("/d/"))
-            {
-                // For URLs like https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-                var start = url.IndexOf("/d/") + 3 + 1;
-                var end = url.IndexOf("/view");
-                return url.Substring(start, end - start);
-            }
-
-            // Fallback: assume the entire string is the ID
             return url;
         }
 

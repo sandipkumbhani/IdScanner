@@ -19,6 +19,9 @@ namespace IdScanner.Infrastructure.Extension
             services.AddScoped<ICompanyMasterRepository, CompanyMasterRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IUserDataRepository, UserDataRepository>();
+            services.AddScoped<IGetLoginUserNameRepository, GetLoginUserNameRepository>();
+            services.AddScoped<IForgotPasswordDbRepository,ForgotPasswordDbRepository>();
+            
             return services;
         }
     }

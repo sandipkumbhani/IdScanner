@@ -3,6 +3,7 @@
 @{
     Layout = null;
     IList<IdScanner.Domain.Model.UserData> UserDataList = ViewBag.UserDataList;
+    string photoUrl = ViewBag.photoUrl;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +18,6 @@
     @foreach (var user in UserDataList)
     {
         <div class="id-row">
-            <!-- FRONT SIDE -->
             <div class="id-card front">
                 <div class="header">
                     <img src="@user.CompanyMaster.logo" class="rail-logo" alt="Logo" />
@@ -32,12 +32,10 @@
                     @* <img src="@user.PhotoUrl" alt="User Photo" /> *@
                     <img src="/drive/image/@user.PhotoUrl" alt="Drive Image" />
                 </div>
-
                 <div class="signature">
                     @* <img src="@user.SignatureUrl" alt="Signature" /> *@
                     <img src="/drive/image/@user.SignatureUrl" alt="Drive Image" />
                 </div>
-
                 <div class="name">@user.Name</div>
 
                 <div class="footer">

@@ -48,10 +48,7 @@ namespace IdScanner.Application.Services
                 {
                     return null;
                 }
-
                 var token = GenrateJWTToken(user);
-
-
                 return new LoginUserDTO
                 {
                     UserId = user.UserId,

@@ -1,6 +1,7 @@
 ﻿using IdScanner.Application.Interface;
 using IdScanner.Application.Services;
 using IdScanner.Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ldScanner.API.Controllers
@@ -17,7 +18,6 @@ namespace ldScanner.API.Controllers
 		[HttpGet("Get-All-User-Data")]
 		public async Task<IActionResult> GetAllUserDataAsync()
 		{
-
 			var users = await _userDataService.GetAllUsersListAsync();
 			return Ok(users);
 		}
@@ -34,6 +34,7 @@ namespace ldScanner.API.Controllers
 				return NotFound(ex.Message);
 			}
 		}
+		[Authorize]
 		[HttpPost("create")]
 		public async Task<IActionResult> CreateUserDataAsync([FromBody] UserData userData)
 		{
@@ -51,7 +52,8 @@ namespace ldScanner.API.Controllers
 				return Ok($"This User is not registered.");
 			}
 		}
-		[HttpPut("Update-UserData/{userid}")]
+        [Authorize]
+        [HttpPut("Update-UserData/{userid}")]
 		public async Task<IActionResult> UpdateUserDataAsync(int userid, [FromBody] UserData userData)
 		{
 			var existingUser = await _userDataService.GetUserDetailsById(userid);
@@ -76,7 +78,8 @@ namespace ldScanner.API.Controllers
 				}
 			}
 		}
-		[HttpDelete("Delete-User-Data")]
+        [Authorize]
+        [HttpDelete("Delete-User-Data")]
 		public async Task<IActionResult> Delete(int id)
 		{
 			try
@@ -89,6 +92,7 @@ namespace ldScanner.API.Controllers
 				return Ok($"User with ID {id} not found: {ex.Message}");
 			}
 		}
+
 		[HttpPut("{userId}/qrcode")]
 		public async Task<IActionResult> UpdateQrAsync(long userId, [FromBody] string qrCodeUrl)
 		{

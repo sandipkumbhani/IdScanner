@@ -1,12 +1,14 @@
 ﻿using IdScanner.Application.Interface;
 using IdScanner.Application.Services;
 using IdScanner.Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ldScanner.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CompanyMasterController : Controller
     {
         private readonly ICompanyMasterService _companyMasterService;
@@ -30,7 +32,6 @@ namespace ldScanner.API.Controllers
             {
                 return Ok($"someting Went Wrong");
             }
-
         }
         [HttpGet("get-all-CompanyMaster")]
         public async Task<IActionResult> GetAllCompanyMaster()

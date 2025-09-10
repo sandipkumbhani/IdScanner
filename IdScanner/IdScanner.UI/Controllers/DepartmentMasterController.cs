@@ -1,5 +1,6 @@
 ﻿using IdScanner.Domain.Model;
 using IdScanner.UI.Application.Interface;
+using IdScanner.UI.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdScanner.UI.Controllers
@@ -8,15 +9,21 @@ namespace IdScanner.UI.Controllers
     {
         private readonly IDepartmentMasterService _departmentMasterService;
         private readonly ICompanyMasterService _companyMasterService;
-        public DepartmentMasterController(IDepartmentMasterService departmentMasterService, ICompanyMasterService companyMasterService)
+        private GlobalClass _globalClass;
+        public DepartmentMasterController(IDepartmentMasterService departmentMasterService, ICompanyMasterService companyMasterService, GlobalClass globalClass)
         {
             _departmentMasterService = departmentMasterService
                 ?? throw new ArgumentNullException(nameof(departmentMasterService));
 
             _companyMasterService = companyMasterService;
+            _globalClass = globalClass;
         }
         public async Task<IActionResult> DepartmentMasterList()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             IList<Department> DepartmentMasterList = await _departmentMasterService.GetAllDepartmentMasterAsync();
             ViewBag.DepartmentMasterList = DepartmentMasterList;
             return View("~/Views/DepartmentMaster/DepartmentMasterList.cshtml");
@@ -24,6 +31,10 @@ namespace IdScanner.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddDepartmentMaster(int? id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             await InitViewBag();
             if (id == null)
             {
@@ -36,6 +47,10 @@ namespace IdScanner.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddDepartmentMaster(Department departmentMaster)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             await InitViewBag();
             string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(departmentMaster.DepartmentName))
@@ -74,6 +89,10 @@ namespace IdScanner.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteDepartmentMaster(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _departmentMasterService.DeleteDepartmentAsync(id);

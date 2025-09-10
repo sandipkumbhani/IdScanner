@@ -16,6 +16,7 @@ using IdScanner.UI.Domain.Helper;
 using IdScanner.UI.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using IdScanner.UI.Domain.Model;
 
 
 namespace IdScanner.UI.Infrastructure.Provider
@@ -25,12 +26,14 @@ namespace IdScanner.UI.Infrastructure.Provider
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
+        private GlobalClass _globalClass;
 
-        public UserDataRepository(HttpClient httpCleint, IConfiguration configuration)
+        public UserDataRepository(HttpClient httpCleint, IConfiguration configuration,GlobalClass globalClass)
         {
             _httpClient = httpCleint;
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
+            _globalClass = globalClass;
         }
         public async Task<List<UserData>> GetAllUserDetailsAsync()
         {
@@ -43,6 +46,7 @@ namespace IdScanner.UI.Infrastructure.Provider
 
         public async Task<string> UpdateUserAsync(UserData userData)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"UserData/Update-UserData/{userData.UserDataId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(userData), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);    
@@ -51,12 +55,14 @@ namespace IdScanner.UI.Infrastructure.Provider
         }
         public async Task<string> DeleteUserAsync(int id)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"UserData/Delete-User-Data?id={id}";
             var response = await _httpClient.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
         }
         public async Task<UserData> AddUserDataAsync(UserData userData)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "UserData/create";
 
             var userJson = JsonConvert.SerializeObject(userData);

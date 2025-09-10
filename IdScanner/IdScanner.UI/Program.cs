@@ -3,16 +3,17 @@ using IdScanner.UI.Domain.Interfaces;
 using IdScanner.UI.Domain.Model;
 using IdScanner.UI.Infrastructure.Extension;
 using IdScanner.UI.Infrastructure.Provider;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 var globalClass = new GlobalClass();
 // Add services to the container.
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationService();
 builder.Services.AddInfrastrucureService();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton<GlobalClass>();
 //builder.Services.AddCors(option => option.AddPolicy("AllowSpecificOrigin", builder => builder.WithOrigins("https://drive.google.com").AllowAnyMethod()
 //.AllowAnyHeader()));
 builder.Services.AddCors(option =>
@@ -20,6 +21,16 @@ builder.Services.AddCors(option =>
 		builder.WithOrigins("https://drive.google.com")
 			   .AllowAnyMethod()
 			   .AllowAnyHeader()));
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login/Login";
+        options.AccessDeniedPath = "/Home/Denied";
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromHours(24);
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -31,35 +42,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
     app.UseCors();
 }
-//builder.Services.AddAuthentication("Cookies")
-//    .AddCookie("Cookies", options =>
-//    {
-//        options.LoginPath = "/Login/Login";       // where to redirect if not logged in
-//        options.LogoutPath = "/Account/Logout";     // logout endpoint
-//        options.AccessDeniedPath = "/Login/AccessDenied"; // if unauthorized
-//        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-//    });
-//app.Use(async (context, next) =>
-//{
-//    // Read a specific cookie
-//    var token = context.Request.Cookies["jwtToken"];
-//    globalClass.Token = token;
-//    //if(token != null)
-//    //{
-//    //    globalClass.Token = token;
-//    //}
-//    //else
-//    //{
-//    //    globalClass.Token = token;
-//    //}
-//    await next.Invoke();
-//});
+app.Use(async (context, next) =>
+{
+    var globalClass = context.RequestServices.GetRequiredService<GlobalClass>();
+    var token = context.Request.Cookies["jwtToken"];
+    globalClass.Token = token;
+    await next.Invoke();
+});
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-//app.UseAuthentication();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

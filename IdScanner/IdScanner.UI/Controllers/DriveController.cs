@@ -12,12 +12,13 @@ namespace IdScanner.UI.Controllers
             _http = factory.CreateClient();
         }
 
-        // GET /drive/image/{id}
         [HttpGet("image/{id}")]
         public async Task<IActionResult> Image(string id)
         {
             if (string.IsNullOrEmpty(id))
+            {
                 return BadRequest("Missing file id");
+            }
 
             var url = $"https://drive.google.com/uc?export=download&id={id}";
             var response = await _http.GetAsync(url);

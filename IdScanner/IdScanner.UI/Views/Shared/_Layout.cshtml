@@ -29,6 +29,8 @@
     <!-- App css -->
     <link href="~/css/app-style.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
     <header>
@@ -39,22 +41,27 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @* @await Component.InvokeAsync("UserName") *@
+                <a class="nav-link dropdown-toggle nav-user" href="#" id="userDropdown"
+                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="account-user-avatar">
+                        <img src="~/images/avatar-1.png" alt="user-image" width="40" class="rounded-circle">
+                    </span>
+                    <span class="ms-2">@await Component.InvokeAsync("UserName")</span>
+                </a>
 
-                @* <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div> *@
+                <div class="dropdown-menu dropdown-menu-end profile-dropdown" aria-labelledby="userDropdown">
+                    <div class="dropdown-header noti-title">
+                        <h6 class="text-overflow m-0">Welcome !</h6>
+                    </div>
+                    <form asp-controller="Logout" asp-action="Logout" method="post">
+                        <button type="submit" class="dropdown-item">
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </nav>
     </header>
-
     <body data-sidenav-size="default" style="background:#F2F5F9;">
         <div class="wrapper">
 

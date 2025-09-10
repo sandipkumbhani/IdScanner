@@ -7,6 +7,7 @@ using IdScanner.Domain.Model;
 using IdScanner.UI.Domain.Comman;
 using IdScanner.UI.Domain.Helper;
 using IdScanner.UI.Domain.Interfaces;
+using IdScanner.UI.Domain.Model;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -17,16 +18,19 @@ namespace IdScanner.UI.Infrastructure.Provider
         private readonly HttpClient _httpClinet;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
+        private GlobalClass _globalClass;
 
-        public DepartmentMasterRepository(HttpClient httpClient, IConfiguration configuration)
+        public DepartmentMasterRepository(HttpClient httpClient, IConfiguration configuration, GlobalClass globalClass)
         {
             _httpClinet = httpClient;
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
+            _globalClass = globalClass;
         }
 
         public async Task<List<Department>> GetAllDepartmentAsync()
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Department/get-all-departments";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -35,6 +39,7 @@ namespace IdScanner.UI.Infrastructure.Provider
         }
         public async Task<Department> GetDepartmentByIdAsync(int? id)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Department/GetById?departmentId={id}";
             var response = await _httpClinet.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -42,6 +47,7 @@ namespace IdScanner.UI.Infrastructure.Provider
         }
         public async Task<string> AddDepartmentAsync(Department departmentMaster)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Department/create";
             var departmentJson = JsonConvert.SerializeObject(departmentMaster);
             var requestContent = new StringContent(departmentJson, Encoding.UTF8, "application/json");
@@ -60,6 +66,7 @@ namespace IdScanner.UI.Infrastructure.Provider
         }
         public async Task<string> UpdateDepartmentAsync(Department departmentMaster)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Department/Update-User/{departmentMaster.DepartmentId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(departmentMaster), Encoding.UTF8, "application/json");
             var response = await _httpClinet.PutAsync(baseUrl, jsonContent);
@@ -67,12 +74,14 @@ namespace IdScanner.UI.Infrastructure.Provider
         }
         public async Task<string> DeleteDepartmentAsync(int id)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Department/Delete-department?id={id}";
             var response = await _httpClinet.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
         }
         public async Task<List<Department>> GetDepartmentByCompanyId(int? companyId)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Department/GetDepartmentByCompanyId?companyId={companyId}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
