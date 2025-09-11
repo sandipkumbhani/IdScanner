@@ -26,3 +26,11 @@
 /IdScanner/IdScanner.Infrastrure/obj/project.nuget.cache
 /IdScanner/IdScanner.Infrastrure/obj
 /IdScanner/IdScanner.Infrastrure/bin
+/IdScanner/SocPass.API/obj
+/IdScanner/SocPass.API/bin/Debug/net8.0
+/IdScanner/SocPass.Application/bin/Debug/net8.0
+/IdScanner/SocPass.Application/obj
+/IdScanner/SocPass.Domain/bin/Debug/net8.0
+/IdScanner/SocPass.Domain/obj
+/IdScanner/SocPass.Infrastructure/bin/Debug/net8.0
+/IdScanner/SocPass.Infrastructure/obj
