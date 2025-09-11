@@ -13,8 +13,7 @@ namespace SocPass.Application.Extension
     {
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
-            services.AddScoped<ILoginService, LoginService>()
-;            
+            services.AddScoped<ILoginService, LoginService>();           
             return services;
         }
     }
