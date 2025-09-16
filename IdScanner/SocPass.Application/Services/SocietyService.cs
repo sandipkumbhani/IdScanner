@@ -81,7 +81,5 @@ namespace SocPass.Application.Services
             await _societyRepository.DeleteSocietyAsync(deleteSociety);
         }
 
-
-
     }
 }

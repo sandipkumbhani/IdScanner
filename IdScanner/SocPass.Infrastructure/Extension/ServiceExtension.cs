@@ -13,10 +13,10 @@ namespace SocPass.Infrastructure.Extension
     {
         public static IServiceCollection AddInfrastrucureService(this IServiceCollection services)
         {
-            services.AddScoped<ILoginRepository,LoginRepository >();
+            services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<ISocietyRepository, SocietyRepository>();
-            services.AddScoped<IBlockReposityory, BlockReposityory>();
-;            return services;
+            services.AddScoped<IBlockRepository, BlockRepository>();
+            return services;
         }
     }
 }

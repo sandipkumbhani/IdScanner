@@ -16,7 +16,7 @@ namespace SocPass.API.Controllers
 
         }
         [HttpGet("GetSocietyById")]
-        public async Task<IActionResult> GetById(int societyId)
+        public async Task<IActionResult> GetSocietyById(int societyId)
         {
             try
             {
@@ -29,13 +29,13 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpGet("getAllSociety")]
-        public async Task<IActionResult> GetAllCompanyMaster()
+        public async Task<IActionResult> GetAllSociety()
         {
             var societies = await _societyService.GetAllSocietyAsync();
             return Ok(societies);
         }
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] Society society)
+        public async Task<IActionResult> CreateSociety([FromBody] Society society)
         {
             if (!ModelState.IsValid)
             {
@@ -52,9 +52,14 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpPut("Update-society/{societyId}")]
-        public async Task<IActionResult> UpdateCompanyMasterAsync(int societyId, [FromBody] Society society)
+        public async Task<IActionResult> UpdateSocietyAsync(int societyId, [FromBody] Society society)
         {
             var existingSociety = await _societyService.GetById(societyId);
+            if (existingSociety == null)
+            {
+                return NotFound($"Society with ID {societyId} not found.");
+            }
+
             if (societyId != society.SocietyId)
             {
                 return BadRequest("Society ID mismatch.");
@@ -70,7 +75,7 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpDelete("Delete-Society")]
-        public async Task<IActionResult> DeleteAsync(int societyId)
+        public async Task<IActionResult> DeleteSocietyAsync(int societyId)
         {
             try
             {
