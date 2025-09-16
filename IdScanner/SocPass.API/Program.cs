@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 //database connection string
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddApplicationService();
+builder.Services.AddInfrastrucureService();
 // Add services to the container.
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
 
