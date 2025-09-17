@@ -3,11 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "ldScanner.API\\ldScanner.API.csproj",
+        "Path": "SocPass.API\\SocPass.API.csproj",
         "Action": "Start"
       },
       {
-        "Path": "IdScanner.UI\\IdScanner.UI.csproj",
+        "Path": "SocPass.UI\\SocPass.UI.csproj",
         "Action": "Start"
       }
     ]

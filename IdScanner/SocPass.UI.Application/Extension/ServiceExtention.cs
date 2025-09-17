@@ -13,6 +13,7 @@ namespace SocPass.UI.Application.Extension
             services.AddScoped<IMenuMasterService, MenuMasterService>();
             services.AddScoped<IGetUserNameByIdService, GetUserNameByIdService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
+            services.AddScoped<ISocietyService, SocietyService>();
             return services;
         }
     }
