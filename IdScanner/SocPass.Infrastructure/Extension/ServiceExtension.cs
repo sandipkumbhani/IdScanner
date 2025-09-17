@@ -15,13 +15,12 @@ namespace SocPass.Infrastructure.Extension
         {
             services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<ISocietyRepository, SocietyRepository>();
-            services.AddScoped<IBlockReposityory, BlockReposityory>();
+            services.AddScoped<IBlockRepository, BlockRepository>();
             services.AddScoped<IFlatRepository, FlatRepository>();
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IMenuMasterRepository, MenuMasterRepository>();
             services.AddScoped<IForgotPasswordDbRepository, ForgotPasswordDbRepository>();
-;            return services;
-            services.AddScoped<IBlockRepository, BlockRepository>();
+;          
             return services;
         }
     }
