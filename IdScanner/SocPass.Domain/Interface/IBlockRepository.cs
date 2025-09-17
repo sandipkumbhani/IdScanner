@@ -5,14 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using SocPass.Domain.Model;
 
-namespace SocPass.Application.Interface
+namespace SocPass.Domain.Interface
 {
-    public interface IBlockService
+    public interface IBlockRepository
     {
         Task<Block> CreateBlockAsync(Block block);
         Task<List<Block>> GetAllBlockAsync();
         Task<Block> GetBlockByIdAsync(int blockid);
-        Task<Block> UpdateBlockAsync(int blockid, Block block);
-        Task DeleteBlockByIdAsync(int blockid);
+        Task UpdateBlockAsync(Block block);
+        Task DeleteBlockAsync(Block block);
+
     }
 }

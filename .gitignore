@@ -42,3 +42,8 @@
 /IdScanner/SocPass.UI.Domain/obj
 /IdScanner/SocPass.UI.Infrastructure/bin/Debug/net8.0
 /IdScanner/SocPass.UI.Infrastructure/obj
+/IdScanner
+/IdScanner/SocPass.UI
+/IdScanner/SocPass.UI.Application
+/IdScanner/SocPass.UI.Domain
+/IdScanner/SocPass.UI.Infrastructure
