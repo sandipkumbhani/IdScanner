@@ -18,6 +18,8 @@ namespace SocPass.Infrastructure.Data
         public DbSet<Block>blocks { get; set; }
         public DbSet<Flat>flats { get; set; }
         public DbSet<Member>members { get; set; }
-      
+        public DbSet<MenuMaster> MenuMasters {  get; set; }
+
+
     }
 }

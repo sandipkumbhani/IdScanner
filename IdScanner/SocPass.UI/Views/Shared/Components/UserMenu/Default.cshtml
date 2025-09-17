@@ -1,0 +1,16 @@
+﻿@using SocPass.Domain.Model
+@model List<MenuMaster>
+
+@foreach (var menu in Model)
+{
+    if (!string.IsNullOrEmpty(menu.Url))
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="@menu.Url"
+               @(menu.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase))>
+                <i class="@menu.Icon" style="display:flow"></i>
+                <span>@menu.Name</span>
+            </a>
+        </li>
+    }
+}

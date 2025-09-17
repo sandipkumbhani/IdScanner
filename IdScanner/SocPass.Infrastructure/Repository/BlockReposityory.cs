@@ -9,5 +9,6 @@ namespace SocPass.Infrastructure.Repository
 {
     public class BlockReposityory : IBlockReposityory
     {
+
     }
 }
