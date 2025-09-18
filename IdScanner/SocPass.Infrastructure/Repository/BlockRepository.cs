@@ -27,12 +27,13 @@ namespace SocPass.Infrastructure.Repository
 
         public async Task<List<Block>> GetAllBlockAsync()
         {
-            return await _context.blocks.Include(e => e.Society).ToListAsync();
+            return await _context.blocks.Where(x => x.IsActive == true).Include(e => e.Society).ToListAsync();
         }
 
         public async Task<Block> GetBlockByIdAsync(int blockid)
         {
-            return await _context.blocks.Include(e => e.Society).FirstOrDefaultAsync(e => e.BlockId == blockid);
+            return await _context.blocks.Include(e => e.Society)
+                  .Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.BlockId == blockid);
         }
 
         public async Task UpdateBlockAsync(Block block)

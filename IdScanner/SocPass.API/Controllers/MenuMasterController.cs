@@ -5,7 +5,6 @@ using SocPass.Domain.Model;
 
 namespace SocPass.API.Controllers
 {
-   
     [Route("api/[controller]")]
     [ApiController]
     public class MenuMasterController : Controller

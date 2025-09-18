@@ -1,0 +1,31 @@
+﻿using SocPass.Domain.DTO;
+using SocPass.Domain.Model;
+using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SocPass.UI.Application.Services
+{
+    public class MemberService : IMemberService
+    {
+        private readonly IMemberRepository _memberRepository;
+        public MemberService(IMemberRepository memberRepository)
+        {
+            _memberRepository = memberRepository;
+        }
+        public async Task<List<Member>> GetAllMember(int flatId)
+        {
+            var result = await _memberRepository.GetAllMemberAsync(flatId);
+            return result ?? new List<Member>();
+        }
+        public async Task<string> AddMemberAsync(MemberCreateRequest memberCreateRequest)
+        {
+            var result = await _memberRepository.AddMemberAsync(memberCreateRequest);
+            return result;
+        }
+    }
+}

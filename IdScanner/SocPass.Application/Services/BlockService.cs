@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SocPass.Application.Services
 {
@@ -22,7 +23,13 @@ namespace SocPass.Application.Services
             var newBlock = new Block
             {
                 BlockNumber = block.BlockNumber,
-                SocietyId = block.SocietyId
+                SocietyId = block.SocietyId,
+                IsActive = true,
+                InsertBy = 1,
+                InsertDate = DateTime.Now,
+                UpdateBy = 1,
+                UpdateDate = DateTime.Now
+
             };
             return await _blockRepository.CreateBlockAsync(newBlock);
         }
@@ -52,6 +59,9 @@ namespace SocPass.Application.Services
             }
             blockexisting.BlockNumber = block.BlockNumber;
             blockexisting.SocietyId = block.SocietyId;
+            blockexisting.IsActive = true;
+            blockexisting.UpdateBy = 1;
+            blockexisting.UpdateDate = DateTime.Now;
 
             await _blockRepository.UpdateBlockAsync(blockexisting);
             return block;
