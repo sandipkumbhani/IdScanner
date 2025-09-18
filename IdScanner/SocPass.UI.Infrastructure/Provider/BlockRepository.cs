@@ -1,15 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Net.Http;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
-using System.Text;
 
 
 namespace SocPass.UI.Infrastructure.Provider
 {
-    public class BlockRepository : SocPass.UI.Domain.Interfaces.IBlockRepository
+    public class BlockRepository : IBlockRepository
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
@@ -68,5 +69,13 @@ namespace SocPass.UI.Infrastructure.Provider
             var response = await _httpClient.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
         }
+        public async Task<List<Block>> GetBlockBySocietyId(int? societyId)
+        {
+            var baseUrl = apiCredential.url + $"Block/GetBlocksBySocietyId?societyId={societyId}";
+            var response = await _httpClient.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Block>>(jsonString)!;
+        }   
     }
 }

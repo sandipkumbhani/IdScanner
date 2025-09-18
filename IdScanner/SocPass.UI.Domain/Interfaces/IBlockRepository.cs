@@ -14,5 +14,6 @@ namespace SocPass.UI.Domain.Interfaces
         Task<string> AddBlockAsync(Block block);
         Task<Block> GetBlockByIdAsync(int? blockid);
         Task<string> UpdateBlockAsync(Block block);
+        Task<List<Block>> GetBlockBySocietyId(int? societyId);
     }
 }

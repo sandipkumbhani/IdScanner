@@ -51,6 +51,17 @@ namespace SocPass.Infrastructure.Repository
                 await _context.SaveChangesAsync();
             }
         }
-       
+        public async Task<List<Block>> GetBlocksBySocietyIdAsync(int societyId)
+        {
+            return await _context.blocks
+                .Where(d => d.SocietyId == societyId)
+                .Select(d => new Block
+                {
+                    BlockId = d.BlockId,
+                    BlockNumber = d.BlockNumber
+                })
+                .ToListAsync();
+        }
+
     }
 }

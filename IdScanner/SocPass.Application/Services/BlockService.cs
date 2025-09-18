@@ -76,5 +76,10 @@ namespace SocPass.Application.Services
             }
             await _blockRepository.DeleteBlockAsync(blockexisting);
         }
+
+        public async Task<List<Block>> GetBlocksBySocietyIdAsync(int societyId)
+        {
+            return await _blockRepository.GetBlocksBySocietyIdAsync(societyId);
+        }
     }
 }

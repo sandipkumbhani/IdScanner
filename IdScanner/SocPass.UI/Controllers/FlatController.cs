@@ -10,8 +10,9 @@ namespace SocPass.UI.Controllers
     {
         private readonly IFlatService _flatRepository;
         private readonly ISocietyService _societyService;
+        private readonly IBlockService _blockService;
         private GlobalClass _globalClass;
-        public FlatController(IFlatService flatRepository, GlobalClass globalClass, ISocietyService societyService)
+        public FlatController(IFlatService flatRepository, GlobalClass globalClass, ISocietyService societyService, IBlockService blockService)
         {
             _flatRepository = flatRepository
                 ?? throw new ArgumentNullException(nameof(flatRepository));
@@ -19,6 +20,7 @@ namespace SocPass.UI.Controllers
             _societyService = societyService
                 ?? throw new ArgumentNullException(nameof(societyService));
             _globalClass = globalClass;
+            _blockService = blockService;
         }
 
         public async Task<IActionResult> FlatList()
@@ -38,6 +40,9 @@ namespace SocPass.UI.Controllers
             //{
             //    return RedirectToAction("Login", "Login");
             //}
+            var societies = await _societyService.GetAllSocietyAsync();
+            ViewBag.SocietyList = societies;
+
 
             if (societyId == null || blockId == 0)
             {
@@ -54,6 +59,9 @@ namespace SocPass.UI.Controllers
             //    return RedirectToAction("Login", "Login");
             //}
 
+            var societies = await _societyService.GetAllSocietyAsync();
+            ViewBag.SocietyList = societies;
+
             if (flat.SocietyId == 0 || flat.BlockId == 0)
             {
                 await _flatRepository.AddFlatAsync(flat);
@@ -65,5 +73,16 @@ namespace SocPass.UI.Controllers
             return RedirectToAction("FlatList");
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetBlocksBySociety(int societyId)
+        {
+            var blocks = await _blockService.GetBlockBySocietyId(societyId);
+            var result = blocks.Select(d => new
+            {
+                blockId = d.BlockId,
+                blockNumber = d.BlockNumber
+            });
+            return Json(result);
+        }
     }
 }

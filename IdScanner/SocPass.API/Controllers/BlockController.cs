@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace SocPass.API.Controllers
 {
@@ -85,5 +86,19 @@ namespace SocPass.API.Controllers
             return Ok($"Block with ID {blockid} deleted successfully.");
         }
 
+        [HttpGet("GetBlocksBySocietyId")]
+        public async Task<IActionResult> GetBlocksBySocietyId(int societyId)
+        {
+            if (societyId <= 0)
+            {
+                return BadRequest("Invalid society ID.");
+            }
+            var blocks = await _blockService.GetBlocksBySocietyIdAsync(societyId);
+            if (blocks == null || !blocks.Any())
+            {
+                return NotFound("No societys found for this company.");
+            }
+            return Ok(blocks);
+        }
     }
 }

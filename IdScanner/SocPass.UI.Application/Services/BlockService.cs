@@ -32,6 +32,10 @@ namespace SocPass.UI.Application.Services
         {
             return await _blockRepository.UpdateBlockAsync(block);
         }
+        public async Task<List<Block>> GetBlockBySocietyId(int? societyId)
+        {
+            return await _blockRepository.GetBlockBySocietyId(societyId);
+        }
 
     }
 }
