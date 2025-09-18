@@ -14,6 +14,7 @@ namespace SocPass.UI.Infrastructure.Extension
             services.AddScoped<IResetPasswordRepossitory,ResetPasswordRepossitory>();
             services.AddScoped<IMenuMasterRepository, MenuMasterRepository>();
             services.AddScoped<ISocietyRepository, SocietyRepository>();
+            services.AddScoped<IFlatRepository, FlatRepository>();
             return services;
         }
     }

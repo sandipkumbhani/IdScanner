@@ -38,7 +38,6 @@ namespace SocPass.UI.Controllers
             //{
             //    return RedirectToAction("Login", "Login");
             //}
-            await LoadDropdowns();
 
             if (societyId == null || blockId == 0)
             {
@@ -55,12 +54,6 @@ namespace SocPass.UI.Controllers
             //    return RedirectToAction("Login", "Login");
             //}
 
-            if (!ModelState.IsValid)
-            {
-                await LoadDropdowns(flat.SocietyId);
-                return View(flat);
-            }
-
             if (flat.SocietyId == 0 || flat.BlockId == 0)
             {
                 await _flatRepository.AddFlatAsync(flat);
@@ -70,11 +63,6 @@ namespace SocPass.UI.Controllers
                 await _flatRepository.UpdateFlatAsync(flat);
             }
             return RedirectToAction("FlatList");
-        }
-        private async Task LoadDropdowns(int? selectedSocietyId = null)
-        {
-            var societies = await _societyService.GetAllSocietyAsync();
-            ViewBag.Societies = new SelectList(societies, "SocietyId", "SocietyName", selectedSocietyId);
         }
 
     }
