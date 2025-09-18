@@ -14,7 +14,9 @@ namespace SocPass.UI.Application.Extension
             services.AddScoped<IGetUserNameByIdService, GetUserNameByIdService>();
             services.AddScoped<IResetPasswordService, ResetPasswordService>();
             services.AddScoped<ISocietyService, SocietyService>();
-            return services;
+            services.AddScoped<IBlockService, BlockService>();
+            services.AddScoped<IMemberService, MemberService>();
+;            return services;
         }
     }
 }

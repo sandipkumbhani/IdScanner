@@ -23,7 +23,7 @@ namespace SocPass.API.Controllers
             return Ok(guest);
         }
         [HttpPut("Update-Guest")]
-        public async Task<IActionResult> UpdateGuestAsync([FromBody] MemberCreateRequest request)
+        public async Task<IActionResult> CreateAndUpdateGuestAsync([FromBody] MemberCreateRequest request)
         {
             try
             {
@@ -40,8 +40,8 @@ namespace SocPass.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-        [HttpPut("Update-member")]
-        public async Task<IActionResult> UpdateMemberAsync([FromBody] MemberCreateRequest request)
+        [HttpPut("add-update-member")]
+        public async Task<IActionResult> CreateAndUpdateMemberAsync([FromBody] MemberCreateRequest request)
         {
             try
             {
