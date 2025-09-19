@@ -28,5 +28,10 @@ namespace SocPass.UI.Application.Services
             var result = await _memberRepository.AddMemberAsync(memberCreateRequest);
             return result;
         }
+        public async Task<List<Member>> GetAllMemberAsync(int flatId)
+        {
+            var result = await _memberRepository.GetAllMemberAsync(flatId);
+            return result ?? new List<Member>();
+        }
     }
 }

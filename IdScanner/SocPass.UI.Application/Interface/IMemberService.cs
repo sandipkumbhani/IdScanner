@@ -13,5 +13,6 @@ namespace SocPass.UI.Application.Interface
     {
         Task<List<Member>> GetAllMember(int flatId);
         Task<string> AddMemberAsync(MemberCreateRequest memberCreateRequest);
+        Task<List<Member>> GetAllMemberAsync(int flatId);
     }
 }
