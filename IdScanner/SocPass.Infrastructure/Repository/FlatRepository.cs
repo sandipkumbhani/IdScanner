@@ -36,11 +36,6 @@ namespace SocPass.Infrastructure.Repository
                 .Where(x => x.IsActive == true)
                 .FirstOrDefaultAsync(x => x.FlatId == flatId);
         }
-        //public async Task UpdateAsync(Flat flat)
-        //{
-        //    _context.flats.Update(flat);
-        //    _context.SaveChanges();
-        //}
         public async Task<Flat?> GetFlatByPositionAsync(int societyId, int blockId)
         {
             return await _context.flats
@@ -82,12 +77,6 @@ namespace SocPass.Infrastructure.Repository
                 await _context.SaveChangesAsync();
             }
         }
-        //public async Task DeleteFlatAsync(Flat flat)
-        //{
-        //    _context.flats.Remove(flat);
-        //    await _context.SaveChangesAsync();
-        //}
-
         public async Task<List<Flat>> GetFlatsByBlockAsync(int societyId, int blockId)
         {
             return await _context.flats
@@ -104,6 +93,18 @@ namespace SocPass.Infrastructure.Repository
                 await _context.SaveChangesAsync();
             };
         }
+        public async Task<List<Flat>> GetFlatByBlockIdAsync(int blockid)
+        {
+            return await _context.flats
+                .Where(d => d.BlockId == blockid)
+                .Select(d => new Flat
+                {
+                    FlatId = d.FlatId,
+                    FlatNumber = d.FlatNumber
+                })
+                .ToListAsync();
+        }
+
 
     }
 }

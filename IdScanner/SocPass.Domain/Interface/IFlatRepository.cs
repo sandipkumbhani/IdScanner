@@ -20,5 +20,6 @@ namespace SocPass.Domain.Interface
         Task<Flat> GetFlatByNumberAsync(int societyId, int blockId, int flatNumber);
         Task DeleteFlatAsync(int flatId);
         Task<List<Flat>> GetFlatsByBlockAsync(int societyId, int blockId);
+        Task<List<Flat>> GetFlatByBlockIdAsync(int blockid);
     }
 }
