@@ -37,6 +37,7 @@ namespace SocPass.Domain.Model
         public virtual Society? Society { get; set; }
         [ForeignKey("BlockId")]
         public virtual Block? Block { get; set; }
-       
+        public ICollection<Member> Members { get; set; } = new List<Member>();
+
     }
 }

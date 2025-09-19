@@ -1,4 +1,5 @@
 ﻿using SocPass.Application.Interface;
+using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using System;
@@ -251,6 +252,10 @@ namespace SocPass.Application.Services
         public async Task<List<Flat>>   GetFlatByBlockID(int blockid)
         {
             return await _flatRepository.GetFlatByBlockIdAsync(blockid);
+        }
+        public async Task<List<FlatWithMembersDto>> getqr(int blockid)
+        {
+            return await _flatRepository.getqr(blockid);
         }
     }
 }

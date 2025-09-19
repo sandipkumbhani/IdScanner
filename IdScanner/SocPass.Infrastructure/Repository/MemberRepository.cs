@@ -17,10 +17,10 @@ namespace SocPass.Infrastructure.Repository
         {
             _context = context;
         }
-        public async Task<Member>AddMemberAsync(Member member)
+        public async Task<Member> AddMemberAsync(Member member)
         {
             _context.members.Add(member);
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
             return member;
         }
         public async Task UpdateQrCodeAsync(int memberId, string qrCodeUrl)
@@ -51,7 +51,7 @@ namespace SocPass.Infrastructure.Repository
         public async Task UpdateMemberAsync(Member member)
         {
             _context.members.Update(member);
-            await _context.SaveChangesAsync();  
+            await _context.SaveChangesAsync();
         }
         public async Task DeleteMemberAsync(int memberId)
         {
@@ -62,5 +62,34 @@ namespace SocPass.Infrastructure.Repository
                 await _context.SaveChangesAsync();
             };
         }
+        public async Task<bool> AddPassDateAsync(int blockId, DateTime passDate)
+        {
+            var flatIds = await _context.flats
+                                        .Where(f => f.BlockId == blockId)
+                                        .Select(f => f.FlatId)
+                                        .ToListAsync();
+
+            if (!flatIds.Any())
+                return false;
+
+            var members = await _context.members
+                                        .Where(m => flatIds.Contains(m.FlatId) && m.IsActive == true)
+                                        .ToListAsync();
+
+            if (!members.Any())
+            {
+                return false;
+            }
+
+            foreach (var member in members)
+            {
+                member.PassDate = DateOnly.FromDateTime(passDate);
+                member.UpdateDate = DateTime.Now;
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
+
+        

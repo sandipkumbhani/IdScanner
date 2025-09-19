@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using SocPass.Infrastructure.Data;
@@ -107,7 +108,28 @@ namespace SocPass.Infrastructure.Repository
                 })
                 .ToListAsync();
         }
+        public async Task<List<FlatWithMembersDto>> getqr(int blockid)
+        {
+            var result = await _context.flats
+                .Where(f => f.BlockId == blockid)
+                .Select(f => new FlatWithMembersDto
+                {
+                    FlatId = f.FlatId,
+                    FlatNumber = f.FlatNumber,
+                    TotalMember = f.TotalMember,
+                    Members = f.Members
+                               .Where(m => m.IsActive)
+                               .Select(m => new MemberDto
+                               {
+                                   MemberId = m.MemberId,
+                                   QRCodeUrl = m.QRCodeUrl
+                               })
+                               .ToList()  
+                })
+                .ToListAsync();
 
+            return result;
+        }
 
     }
 }

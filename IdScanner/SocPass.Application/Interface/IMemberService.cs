@@ -13,5 +13,6 @@ namespace SocPass.Application.Interface
         Task CreateAndUpdateGuestAsync(int flatId, int numberOfAdults, List<int> childAges);
         Task CreateAndUpdateMemberAsync(int flatId, int numberOfAdults, List<int> childAges);
         Task<List<Member>> GetMemberByIdAsync(int flatId);
+        Task<bool> AddPassDateAsync(int blockId, DateTime passDate);
     }
 }
