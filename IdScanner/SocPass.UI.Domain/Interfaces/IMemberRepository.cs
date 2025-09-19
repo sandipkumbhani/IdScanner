@@ -1,5 +1,5 @@
-﻿using SocPass.Domain.DTO;
-using SocPass.Domain.Model;
+﻿using SocPass.Domain.Model;
+using SocPass.UI.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

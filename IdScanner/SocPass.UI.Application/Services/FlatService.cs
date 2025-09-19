@@ -32,10 +32,11 @@ namespace SocPass.UI.Application.Services
         {
             return await _FlatRepository.UpdateFlatAsync(flat);
         }
-        public async Task<List<Flat>> GetFlatByBlockId(int flatId)
+        public async Task<List<Flat>> GetFlatByBlockId(int blockid)
         {
-            var result = await _FlatRepository.GetFlatByBlockId(flatId);
-            return result ?? new List<Flat>();
+            var result = await _FlatRepository.GetFlatByBlockId(blockid);
+            return result;
         }
     }
 }
+

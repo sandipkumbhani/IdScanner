@@ -13,6 +13,6 @@ namespace SocPass.UI.Domain.Interfaces
         Task<List<Flat?>> GetFlatByIdAsync(int? societyId, int blockId);
         Task<List<Flat>> AddFlatAsync(Flat flat);
         Task<List<Flat>> UpdateFlatAsync(Flat flat);
-        Task<List<Flat>> GetFlatByBlockId(int flatId);
+        Task<List<Flat>> GetFlatByBlockId(int blockid);
     }
 }
