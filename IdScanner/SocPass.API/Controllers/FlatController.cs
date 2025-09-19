@@ -53,8 +53,8 @@ namespace SocPass.API.Controllers
         }
         [HttpPut("Update-flat")]
         public async Task<IActionResult> UpdateFlatAsync([FromBody] Flat flat)
-       {
-            if(flat == null)
+        {
+            if (flat == null)
             {
                 return NotFound("Id Not found");
             }
@@ -81,6 +81,19 @@ namespace SocPass.API.Controllers
                 return NotFound("No BlockId found for this company.");
             }
             return Ok(flats);
+        }
+        [HttpGet("GetQR")]
+        public async Task<IActionResult> GetQR(int blockid)
+        {
+            try
+            {
+                var result = await _flatService.getqr(blockid);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

@@ -41,7 +41,7 @@
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
-                                            <label for="" class="form-label required fw-semibold fs-6">Select Society</label>
+                                            <label for="" class="form-label required fw-semibold fs-6">Select Block</label>
                                             <select id="Block" name="BlockId" class="form-select">
                                                 <option value="">-- Select Block --</option>
                                             </select>
@@ -51,21 +51,6 @@
                                         <label class="form-label required fw-semibold fs-6">Flats</label>
                                         <div id="flatContainer"></div>
                                     </div>
-
-
-                                    @* <div class="col-md-4">
-                                    <label asp-for="NumberOfAdults" class="form-label">Number of Adults</label>
-                                    <input asp-for="NumberOfAdults" class="form-control" type="number" min="0" />
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                    <label class="form-label">Total Children</label>
-                                    <input id="totalChildren" class="form-control" type="number" min="0" />
-                                    </div>
-
-                                    <div class="col-md-12 mb-3">
-                                    <label>Children Ages</label>
-                                    <div id="childAgeContainer"></div>
-                                    </div> *@
                                     <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
                                         <button type="submit" class="card-link">
                                             <i class="ri-save-line"></i>
@@ -101,7 +86,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            // When Society changes
             $("#Society").change(function () {
                 var societyId = $(this).val();
                 $("#Block").empty().append('<option value="">-- Select Block --</option>');
@@ -118,7 +102,7 @@
             $("#Block").change(function () {
                 var blockId = $(this).val();
                 var container = $("#flatContainer");
-                container.empty(); // Clear previous flats
+                container.empty(); 
 
                 if (blockId) {
                     $.getJSON('@Url.Action("GetFlatsByBlock", "Member")', { blockId: blockId }, function (data) {

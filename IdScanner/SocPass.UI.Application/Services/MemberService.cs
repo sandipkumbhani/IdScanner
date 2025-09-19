@@ -27,6 +27,11 @@ namespace SocPass.UI.Application.Services
         {
             var result = await _memberRepository.AddMemberAsync(memberCreateRequest);
             return result;
+        
+        }
+        public async Task<string>GeneratePass(int blockId, DateTime passDate)
+        {
+            return await _memberRepository.GeneratePass(blockId, passDate);
         }
     }
 }

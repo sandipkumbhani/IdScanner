@@ -1,4 +1,5 @@
-﻿using SocPass.Domain.Model;
+﻿using SocPass.Domain.DTO;
+using SocPass.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace SocPass.Application.Interface
         //Task<List<Flat>> UpdateAsync(int societyId, int blockId, Flat flat);
         Task<List<Flat>> UpdateFlatAsync(Flat flat);
         Task<List<Flat>> GetFlatByBlockID(int blockid);
+        Task<List<FlatWithMembersDto>> getqr(int blockid);
 
     }
 }

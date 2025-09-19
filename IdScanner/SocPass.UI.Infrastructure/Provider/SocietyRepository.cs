@@ -79,5 +79,6 @@ namespace SocPass.UI.Infrastructure.Provider
             var response = await _httpClinet.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
         }
+
     }
 }

@@ -64,5 +64,11 @@ namespace SocPass.API.Controllers
             var members = await _memberService.GetMemberByIdAsync(flatId);
             return Ok(members);
         }
+        [HttpPut("AddPassdate")]
+        public async Task<IActionResult> AddPassDate(int blockId, DateTime passDate)
+        {
+            var result = await _memberService.AddPassDateAsync(blockId, passDate);
+            return Ok(result);
+        }
     }
 }

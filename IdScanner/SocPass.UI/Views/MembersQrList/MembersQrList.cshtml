@@ -1,5 +1,145 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<html>
+<head>
+    <title>SocPass | GenerateQr</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="content-page">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h1 class="page-title">GenerateQr</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Add Block Details</h2>
+                                <form method="post" action="@Url.Action("GeneratePass", "MembersQrList")">
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="col-xl-4 col-lg-6">
+                                            <div class="item-input">
+                                                <label for="" class="form-label required fw-semibold fs-6">Select Society</label>
+                                                <select id="Society" name="SocietyId" class="form-select">
+                                                    <option value="">-- Select Society --</option>
+                                                    @if (ViewBag.Societies != null)
+                                                    {
+                                                        foreach (var society in ViewBag.Societies)
+                                                        {
+                                                            <option value="@society.SocietyId">@society.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-6">
+                                            <div class="item-input">
+                                                <label for="" class="form-label required fw-semibold fs-6">Select Block</label>
+                                                <select id="Block" name="BlockId" class="form-select">
+                                                    <option value="">-- Select Block --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-6">
+                                            <div class="item-input">
+                                                <label for="PassDate" class="form-label col-form-label required fw-semibold fs-6">PassDate</label>
+                                                <input type="date" class="form-control userinput"
+                                                       id="PassDate" name="PassDate"
+                                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                            </div>
+                                        </div>
+                                        <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
+                                            <button type="submit" class="card-link">
+                                                <i class="ri-save-line"></i>
+                                                <span>
+                                                    Save
+                                                </span>
+                                            </button>
+                                            @* @if (Model.BlockId == 0 || Model.BlockId == null)
+                                            {
+                                            <button type="reset" class="card-link outline-bar">
+                                            <svg width="16" height="16" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19.8166 18.6828L18.6779 12.1172H19.0625C19.3719 12.1172 19.6211 11.868 19.6211 11.5586V7.43359C19.6211 7.12422 19.3719 6.875 19.0625 6.875H13.7773V2.96484C13.7773 2.65547 13.5281 2.40625 13.2188 2.40625H9.78125C9.47188 2.40625 9.22266 2.65547 9.22266 2.96484V6.875H3.9375C3.62813 6.875 3.37891 7.12422 3.37891 7.43359V11.5586C3.37891 11.868 3.62813 12.1172 3.9375 12.1172H4.32207L3.1834 18.6828C3.17695 18.715 3.1748 18.7473 3.1748 18.7773C3.1748 19.0867 3.42402 19.3359 3.7334 19.3359H19.2666C19.2988 19.3359 19.3311 19.3338 19.3611 19.3273C19.6662 19.2758 19.8703 18.9857 19.8166 18.6828ZM4.88281 8.37891H10.7266V3.91016H12.2734V8.37891H18.1172V10.6133H4.88281V8.37891ZM14.9375 17.832V14.4805C14.9375 14.3859 14.8602 14.3086 14.7656 14.3086H13.7344C13.6398 14.3086 13.5625 14.3859 13.5625 14.4805V17.832H9.4375V14.4805C9.4375 14.3859 9.36016 14.3086 9.26562 14.3086H8.23438C8.13984 14.3086 8.0625 14.3859 8.0625 14.4805V17.832H4.85703L5.82598 12.2461H17.1719L18.1408 17.832H14.9375Z" fill="#0466C8" />
+                                            </svg>
+                                            <span>Clear</span>
+                                            </button>
+                                            }
+                                            <a href="@Url.Action("MenuMasterList", "MenuMaster")" class="card-link outline-bar" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                                            </svg>
+                                            <span>View</span> *@
+                                        </div>
+                                    <div id="qrContainer" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#Society").change(function () {
+                var societyId = $(this).val();
+                $("#Block").empty().append('<option value="">-- Select Block --</option>');
+                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+
+                if (societyId) {
+                    $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
+                        $.each(data, function (i, block) {
+                            $("#Block").append($('<option>', { value: block.blockId, text: block.blockName }));
+                        });
+                    });
+                }
+            });
+            $("#Block").change(function () {
+                var blockId = $(this).val();
+                var container = $("#flatContainer");
+                container.empty();
+
+                if (blockId) {
+                    $.getJSON('@Url.Action("GetFlatsByBlock", "MembersQrList")', { blockId: blockId }, function (data) {
+                        $.each(data, function (i, flat) {
+                            var flatRow = $(`
+                            <div class="flat-row mb-3 p-2 border rounded"
+                                 style="display:flex; flex-direction:column; gap:10px;">
+                                <div><strong>Flat:</strong> ${flat.flatNumber}</div>
+                                <div><strong>Total Members:</strong> ${flat.totalMember}</div>
+                                <div class="qr-row" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+                            </div>
+                        `);
+
+                            // Add QR Codes for each member
+                            var qrRow = flatRow.find(".qr-row");
+                            $.each(flat.members, function (j, member) {
+                                if (member.qrCodeUrl) {
+                                    qrRow.append(`<img src="${member.qrCodeUrl}"
+                                                alt="QR" width="100" height="100"
+                                                style="border:1px solid #ccc; border-radius:8px;">`);
+                                }
+                            });
+
+                            container.append(flatRow);
+                        });
+                    });
+                }
+            });
+
+
+
+        });
+    </script>
+</body>
+</html>

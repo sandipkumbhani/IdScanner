@@ -218,6 +218,10 @@ namespace SocPass.Application.Services
                 }
             }
         }
+        public async Task<bool> AddPassDateAsync(int blockId, DateTime passDate)
+        {
+            return await _memberRepository.AddPassDateAsync(blockId, passDate);
+        }
         private async Task updatedQrAsync(int memberid, bool isChild)
         {
             string qrUrl = $"http://localhost:5201/Member/Details/{memberid}";

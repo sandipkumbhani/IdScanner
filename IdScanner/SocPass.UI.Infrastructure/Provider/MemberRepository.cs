@@ -7,6 +7,7 @@ using SocPass.UI.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,6 +45,14 @@ namespace SocPass.UI.Infrastructure.Provider
             var baseUrl = apiCredential.url + $"Member/add-update-member";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(memberCreateRequest), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> GeneratePass(int blockId, DateTime passDate)
+        {
+            var baseUrl = $"{apiCredential.url}Member/AddPassdate?blockId={blockId}&passDate={passDate:O}";
+            var response = await _httpClient.PutAsync(baseUrl, null); // no body needed
+            response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
     }
