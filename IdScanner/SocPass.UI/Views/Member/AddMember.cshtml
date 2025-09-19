@@ -1,1 +1,92 @@
-﻿
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<html>
+<head>
+	<title>SocPass | Add Member</title>
+</head>
+<body>
+	<div class="content-page">
+		<div class="content">
+			<div class="main-inner container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="page-title-box">
+							<h1 class="page-title">Add User Data</h1>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+                    <div class="form-group">
+                        <label for="Society">Society</label>
+                        <select id="Society" class="form-control">
+                            <option value="">-- Select Society --</option>
+                            @foreach (var society in ViewBag.Societies)
+                            {
+                                <option value="@society.SocietyId">@society.SocietyName</option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Block">Block</label>
+                        <select id="Block" class="form-control">
+                            <option value="">-- Select Block --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Flat">Flat</label>
+                        <select id="Flat" class="form-control">
+                            <option value="">-- Select Flat --</option>
+                        </select>
+                    </div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+        $(document).ready(function () {
+
+            // When society changes, load blocks
+            $("#Society").change(function () {
+                var societyId = $(this).val();
+                $("#Block").empty().append('<option value="">-- Select Block --</option>');
+                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+
+                if (societyId) {
+                    $.getJSON('/YourController/GetBlocks', { societyId: societyId }, function (data) {
+                        $.each(data, function (i, block) {
+                            $("#Block").append($('<option>', {
+                                value: block.blockId,
+                                text: block.blockName
+                            }));
+                        });
+                    });
+                }
+            });
+
+            // When block changes, load flats
+            $("#Block").change(function () {
+                var blockId = $(this).val();
+                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+
+                if (blockId) {
+                    $.getJSON('/YourController/GetFlats', { blockId: blockId }, function (data) {
+                        $.each(data, function (i, flat) {
+                            $("#Flat").append($('<option>', {
+                                value: flat.flatId,
+                                text: flat.flatNumber
+                            }));
+                        });
+                    });
+                }
+            });
+        });
+
+	</script>
+
+</body>
+</html>

@@ -224,5 +224,9 @@ namespace SocPass.Application.Services
 
             return updatedFlats;
         }
+        public async Task<List<Flat>> GetFlatByBlockID(int blockid)
+        {
+            return await _flatRepository.GetFlatByBlockIdAsync(blockid);
+        }
     }
 }

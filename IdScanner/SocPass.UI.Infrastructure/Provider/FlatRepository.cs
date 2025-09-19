@@ -68,5 +68,13 @@ namespace SocPass.UI.Infrastructure.Provider
             var responseData = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Flat>>(responseData)!;
         }
+        public async Task<List<Flat>> GetFlatByBlockId(int flatId)
+        {
+            var baseUrl = apiCredential.url + "Flat/GetFlatByBlockid?flatId={flatId}";
+            var response = await _httpClinet.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Flat>>(json)!;
+        }
     }
 }

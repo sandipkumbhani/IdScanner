@@ -68,5 +68,19 @@ namespace SocPass.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+        [HttpGet("GetFlatByBlockid")]
+        public async Task<IActionResult> GetFlatByBlockid(int blockid)
+        {
+            if (blockid <= 0)
+            {
+                return BadRequest("Invalid BlockId ID.");
+            }
+            var flats = await _flatService.GetFlatByBlockID(blockid);
+            if (flats == null)
+            {
+                return NotFound("No BlockId found for this company.");
+            }
+            return Ok(flats);
+        }
     }
 }
