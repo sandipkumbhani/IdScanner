@@ -25,7 +25,7 @@
 										<div class="item-input">
 											<input type="hidden" id="FlatId" name="FlatId" value="@Model.FlatId" />
 											<label for="SocietyId" class="form-label required fw-semibold fs-6">Society Name</label>
-											<select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput">
+											<select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class=" form-select form-control userinput">
 												<option value="0">-- Select Society --</option>
 											</select>
 										</div>
@@ -34,8 +34,53 @@
 									<div class="col-md-6 mb-3">
 										<div class="item-input">
 											<label for="SocietyId" class="form-label required fw-semibold fs-6">Block Name</label>
-											<select class="form-select" id="" name="DepartmentId">
+											<select class="form-select form-control userinput" id="BlockId" name="BlockId">
 											</select>
+										</div>
+									</div>
+
+									<div class="col-md-12 mb-3">
+										<label class="form-label required fw-semibold fs-6">Flat Entry Mode</label>
+										<div class="d-flex gap-4">
+											<div class="form-check">
+												<input type="radio" class="form-check-input" id="RangeMode" name="EntryMode" value="Range" />
+												<label class="form-check-label" for="RangeMode">Range</label>
+											</div>
+											<div class="form-check">
+												<input type="radio" class="form-check-input" id="ManualMode" name="EntryMode" value="Manual" />
+												<label class="form-check-label" for="ManualMode">Manual</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- Range Fields -->
+									<div id="rangeFields" class="row" style="display:none;">
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Start Range</label>
+											<input type="number" name="StartFlatNumber" class="form-control" />
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">End Range</label>
+											<input type="number" name="EndFlatNumber" class="form-control" />
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Flats Per Floor</label>
+											<input type="number" name="NumberOfFlats" class="form-control" />
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Floor Number</label>
+											<input type="number" name="FloorNumber" class="form-control" />
+										</div>
+									</div>
+
+									<div id="manualFields" class="row" style="display:none;">
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Floor Number</label>
+											<input type="number" name="FloorNumber" class="form-control" />
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Flat Number</label>
+											<input type="number" name="FlatNumber" class="form-control" />
 										</div>
 									</div>
 
@@ -75,7 +120,7 @@
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function () {
 			const companyDropdown = document.getElementById("SocietyId");
-			const departmentDropdown = document.querySelector("select[name='DepartmentId']");
+			const departmentDropdown = document.querySelector("select[name='BlockId']");
 			const selectedDeptId = "@Model.BlockId";
 
 			function loadDepartments(companyId, preselectId = null) {
@@ -108,6 +153,33 @@
 			companyDropdown.addEventListener("change", function () {
 				loadDepartments(this.value);
 			});
+		});
+
+					document.addEventListener("DOMContentLoaded", function () {
+			const rangeMode = document.getElementById("RangeMode");
+			const manualMode = document.getElementById("ManualMode");
+			const rangeFields = document.getElementById("rangeFields");
+			const manualFields = document.getElementById("manualFields");
+
+					function toggleFields() {
+			if (rangeMode.checked) {
+				rangeFields.style.display = "flex";
+				manualFields.style.display = "none";
+				rangeFields.querySelectorAll("input").forEach(i => i.disabled = false);
+				manualFields.querySelectorAll("input").forEach(i => i.disabled = true);
+			} else if (manualMode.checked) {
+				rangeFields.style.display = "none";
+				manualFields.style.display = "flex";
+				rangeFields.querySelectorAll("input").forEach(i => i.disabled = true);
+				manualFields.querySelectorAll("input").forEach(i => i.disabled = false);
+			}
+		}
+
+			rangeMode.addEventListener("change", toggleFields);
+			manualMode.addEventListener("change", toggleFields);
+
+			// initialize
+			toggleFields();
 		});
 	</script>
 </body>
