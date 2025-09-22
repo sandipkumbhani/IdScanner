@@ -1,28 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
 
 namespace SocPass.UI.Controllers
 {
     public class MemberDetailsController : Controller
     {
-        [HttpPost]
-        public async Task<IActionResult> IsVisited(int memberId)
+        private readonly IMemberDetailsService _memberDetailsService;
+        private readonly IMemberService _memberService;
+        private GlobalClass _globalClass;
+        public MemberDetailsController(IMemberDetailsService memberDetailsService, IMemberService memberService, GlobalClass globalClass)
         {
-            if (string.IsNullOrWhiteSpace(memberId))
+            _memberDetailsService = memberDetailsService;
+            _memberService = memberService;
+            _globalClass = globalClass;
+        }
+        [HttpGet("MemberDetails/GetDetails/{memberId}")]
+        public async Task<IActionResult> GetDetails(int memberid)
+        {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var result = await _memberService.GetMemberByMemberId(memberid);
+            return View("~/Views/MemberDetails/MemberDetails.cshtml", result);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> IsVisited(int memberid)
+        {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            if (memberid == 0)
             {
                 return BadRequest("Member Id is not found.");
             }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            long.TryParse(userIdClaim, out long loggedInUserId);
-            bool success = await _showTranscriptServices.MarkIsTranscriptAsync(filename, loggedInUserId);
+            int.TryParse(userIdClaim, out int loggedInUserId);
+            bool success = await _memberDetailsService.IsVisitedAsync(memberid, loggedInUserId);
             if (success)
             {
-                return RedirectToAction("ShowTranscript", "ShowTranscript");
+                ViewBag.Message = "Member marked as visited successfully.";
+                ViewBag.AlertType = "success";
             }
             else
             {
-                TempData["Error"] = "File not found or already marked.";
-                return RedirectToAction("FileList", "ShowTranscript");
+                ViewBag.Message = "Something went wrong. Please try again.";
+                ViewBag.AlertType = "danger";
             }
+            return View("MemberDetails");
         }
     }
 }

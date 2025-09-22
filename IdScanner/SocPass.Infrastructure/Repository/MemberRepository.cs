@@ -62,15 +62,67 @@ namespace SocPass.Infrastructure.Repository
                 await _context.SaveChangesAsync();
             };
         }
+        public async Task<Member> GetMemberByMemberIdAsync(int memberId)
+        {
+            return await _context.members
+                .Where(x => x.MemberId == memberId && x.IsActive)
+                .Select(m => new Member
+                {
+                    MemberId = m.MemberId,
+                    IsChild = m.IsChild,
+                    ChildAge = m.ChildAge,
+                    IsGuest = m.IsGuest,
+                    FlatId = m.FlatId,
+                    Flat = m.Flat != null ? new Flat
+                    {
+                        FlatId = m.Flat.FlatId,
+                        FlatNumber = m.Flat.FlatNumber,
+                        TotalMember = m.Flat.TotalMember,
+                        NumberOfChild = m.Flat.NumberOfChild,
+                        NumberOfAdult = m.Flat.NumberOfAdult,
+                        Block = m.Flat.Block != null ? new Block
+                        {
+                            BlockId = m.Flat.Block.BlockId,
+                            BlockNumber = m.Flat.Block.BlockNumber
+                        } : null,
+                        Society = m.Flat.Society != null ? new Society
+                        {
+                            SocietyId = m.Flat.Society.SocietyId,
+                            Name = m.Flat.Society.Name
+                        } : null
+                    } : null
+                })
+                .FirstOrDefaultAsync();
+        }
+
+
+        public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
+        {
+            var entity = await _context.members
+                .FirstOrDefaultAsync(x => x.MemberId == memberid && x.Visited == false);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Visited = true;
+            entity.UpdateDate = DateTime.Now;
+            entity.UpdateBy = loggedInUserId;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> AddPassDateAsync(int blockId, DateTime passDate)
         {
             var flatIds = await _context.flats
-                                        .Where(f => f.BlockId == blockId)
+                                        .Where(f => f.BlockId == blockId && f.IsActive==true)
                                         .Select(f => f.FlatId)
                                         .ToListAsync();
 
             if (!flatIds.Any())
+            {
                 return false;
+            }
 
             var members = await _context.members
                                         .Where(m => flatIds.Contains(m.FlatId) && m.IsActive == true)

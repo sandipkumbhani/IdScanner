@@ -14,5 +14,6 @@ namespace SocPass.UI.Application.Interface
         Task<List<Member>> GetAllMember(int flatId);
         Task<string> AddMemberAsync(MemberCreateRequest memberCreateRequest);
         Task<string> GeneratePass(int blockId, DateTime passDate);
+        Task<Member> GetMemberByMemberId(int memberId);
     }
 }

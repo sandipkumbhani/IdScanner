@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SocPass.UI.Application.Interface
 {
-    internal interface IMemberDetailsService
+    public interface IMemberDetailsService
     {
+        Task<bool> IsVisitedAsync(int memberid, int loggedInUserId);
     }
 }

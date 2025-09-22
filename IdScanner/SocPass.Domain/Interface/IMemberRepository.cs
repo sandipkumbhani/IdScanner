@@ -16,5 +16,7 @@ namespace SocPass.Domain.Interface
         Task<List<Member>> GetById(int flatId);
         Task DeleteMemberAsync(int memberId);
         Task<bool> AddPassDateAsync(int blockId, DateTime passDate);
+        Task<Member> GetMemberByMemberIdAsync(int memberId);
+        Task<bool> IsVisitedAsync(int memberid, int loggedInUserId);
     }
 }

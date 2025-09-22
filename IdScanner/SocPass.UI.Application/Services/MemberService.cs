@@ -33,5 +33,9 @@ namespace SocPass.UI.Application.Services
         {
             return await _memberRepository.GeneratePass(blockId, passDate);
         }
+        public async Task<Member> GetMemberByMemberId(int memberId)
+        {
+           return await _memberRepository.GetMemberByMemberId(memberId);
+        }
     }
 }

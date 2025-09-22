@@ -24,8 +24,4 @@
     <ProjectReference Include="..\SocPass.Infrastructure\SocPass.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
 </Project>
