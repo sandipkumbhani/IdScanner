@@ -111,7 +111,7 @@ namespace SocPass.Infrastructure.Repository
         public async Task<List<FlatWithMembersDto>> getqr(int blockid)
         {
             var result = await _context.flats
-                .Where(f => f.BlockId == blockid)
+                .Where(f => f.BlockId == blockid &&f.IsActive == true)
                 .Select(f => new FlatWithMembersDto
                 {
                     FlatId = f.FlatId,

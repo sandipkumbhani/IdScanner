@@ -32,7 +32,7 @@ namespace SocPass.UI.Controllers
             if (blockId <= 0 || passDate == default)
             {
                 ViewBag.Error = "Invalid block or date";
-                ViewBag.Societies = await _societyService.GetAllSocietyAsync(); // For dropdown
+                ViewBag.Societies = await _societyService.GetAllSocietyAsync();
                 return View();
             }
             await _memberService.GeneratePass(blockId, passDate);

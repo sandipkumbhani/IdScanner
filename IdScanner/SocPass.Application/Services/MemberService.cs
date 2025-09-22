@@ -222,9 +222,23 @@ namespace SocPass.Application.Services
         {
             return await _memberRepository.AddPassDateAsync(blockId, passDate);
         }
+        public async Task<Member> GetMemberByMemberId(int memberId)
+        {
+            var getMember = await _memberRepository.GetMemberByMemberIdAsync(memberId);
+            if (getMember == null)
+            {
+                throw new KeyNotFoundException($"Member with ID {memberId} not found.");
+            }
+
+            return getMember;
+        }
+        public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
+        {
+            return await _memberRepository.IsVisitedAsync(memberid, loggedInUserId);
+        }
         private async Task updatedQrAsync(int memberid, bool isChild)
         {
-            string qrUrl = $"http://localhost:5201/Member/Details/{memberid}";
+            string qrUrl = $"http://localhost:5109/MemberDetails/GetDetails/{memberid}";
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
             using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
             using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
@@ -251,7 +265,7 @@ namespace SocPass.Application.Services
                             new RectangleF(rectX, rectY, rectWidth, rectHeight),
                             new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
                     }
-                    var qrFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "QRCodes");
+                    var qrFolder = Path.Combine(@"D:\\Broadsy\\Projects\\IdScanner\\IdScanner\\SocPass.UI", "wwwroot", "QRCodes");
                     if (!Directory.Exists(qrFolder))
                         Directory.CreateDirectory(qrFolder);
                     var qrFileName = $"{memberid}_qr.png";

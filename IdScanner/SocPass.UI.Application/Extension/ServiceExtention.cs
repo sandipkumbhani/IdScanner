@@ -17,6 +17,7 @@ namespace SocPass.UI.Application.Extension
             services.AddScoped<IFlatService, FlatService>();
             services.AddScoped<IBlockService, BlockService>();
             services.AddScoped<IMemberService, MemberService>();
+            services.AddScoped<IMemberDetailsService, MemberDetailsService>();
             return services;
         }
     }

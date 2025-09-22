@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SocPass.UI.Application.Extension;
+using SocPass.UI.Domain.Model;
 using SocPass.UI.Infrastructure.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
+var globalClass = new GlobalClass();
 builder.Services.AddControllersWithViews()
     .AddViewOptions(options =>
     {
@@ -36,6 +38,13 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.Use(async (context, next) =>
+{
+    var globalClass = context.RequestServices.GetRequiredService<GlobalClass>();
+    var token = context.Request.Cookies["jwtToken"];
+    globalClass.Token = token;
+    await next.Invoke();
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
