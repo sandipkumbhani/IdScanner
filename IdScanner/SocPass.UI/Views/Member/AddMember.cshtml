@@ -6,6 +6,17 @@
 <head>
     <title>SocPass | Add Member</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 2px;
+        }
+
+        .is-invalid {
+            border-color: red !important;
+        }
+    </style>
 </head>
 <body>
     <div class="content-page">
@@ -14,7 +25,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box">
-                            <h1 class="page-title">Add Block</h1>
+                            <h1 class="page-title">Add Members</h1>
                         </div>
                     </div>
                 </div>
@@ -22,11 +33,11 @@
                     <div class="col-12">
                         <div class="card com-profile-info">
                             <div class="top-details">
-                                <h2 class="page-form-title">Add Block Details</h2>
-                                <form method="post" action="@Url.Action("AddMember", "Member")">
+                                <h2 class="page-form-title">Add Members Details</h2>
+                                <form method="post" action="@Url.Action("AddMember", "Member")" id="memberForm">
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
-                                            <label for="" class="form-label required fw-semibold fs-6">Select Society</label>
+                                            <label class="form-label required fw-semibold fs-6">Select Society</label>
                                             <select id="Society" name="SocietyId" class="form-select">
                                                 <option value="">-- Select Society --</option>
                                                 @if (ViewBag.Societies != null)
@@ -37,42 +48,26 @@
                                                     }
                                                 }
                                             </select>
+                                            <div class="error-message" id="societyError"></div>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
-                                            <label for="" class="form-label required fw-semibold fs-6">Select Block</label>
+                                            <label class="form-label required fw-semibold fs-6">Select Block</label>
                                             <select id="Block" name="BlockId" class="form-select">
                                                 <option value="">-- Select Block --</option>
                                             </select>
+                                            <div class="error-message" id="blockError"></div>
                                         </div>
                                     </div>
                                     <div class="col-xl-12 col-lg-12">
-                                        <label class="form-label required fw-semibold fs-6">Flats</label>
+                                        <label id="flatsLabel" class="form-label required fw-semibold fs-6" style="display:none;">Flats</label>
                                         <div id="flatContainer"></div>
                                     </div>
-                                    <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
-                                        <button type="submit" class="card-link">
-                                            <i class="ri-save-line"></i>
-                                            <span>
-                                                Save
-                                            </span>
-                                        </button>
-                                        @* @if (Model.BlockId == 0 || Model.BlockId == null)
-                                        {
-                                        <button type="reset" class="card-link outline-bar">
-                                        <svg width="16" height="16" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.8166 18.6828L18.6779 12.1172H19.0625C19.3719 12.1172 19.6211 11.868 19.6211 11.5586V7.43359C19.6211 7.12422 19.3719 6.875 19.0625 6.875H13.7773V2.96484C13.7773 2.65547 13.5281 2.40625 13.2188 2.40625H9.78125C9.47188 2.40625 9.22266 2.65547 9.22266 2.96484V6.875H3.9375C3.62813 6.875 3.37891 7.12422 3.37891 7.43359V11.5586C3.37891 11.868 3.62813 12.1172 3.9375 12.1172H4.32207L3.1834 18.6828C3.17695 18.715 3.1748 18.7473 3.1748 18.7773C3.1748 19.0867 3.42402 19.3359 3.7334 19.3359H19.2666C19.2988 19.3359 19.3311 19.3338 19.3611 19.3273C19.6662 19.2758 19.8703 18.9857 19.8166 18.6828ZM4.88281 8.37891H10.7266V3.91016H12.2734V8.37891H18.1172V10.6133H4.88281V8.37891ZM14.9375 17.832V14.4805C14.9375 14.3859 14.8602 14.3086 14.7656 14.3086H13.7344C13.6398 14.3086 13.5625 14.3859 13.5625 14.4805V17.832H9.4375V14.4805C9.4375 14.3859 9.36016 14.3086 9.26562 14.3086H8.23438C8.13984 14.3086 8.0625 14.3859 8.0625 14.4805V17.832H4.85703L5.82598 12.2461H17.1719L18.1408 17.832H14.9375Z" fill="#0466C8" />
-                                        </svg>
-                                        <span>Clear</span>
-                                        </button>
-                                        }
-                                        <a href="@Url.Action("MenuMasterList", "MenuMaster")" class="card-link outline-bar" />
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                                        </svg>
-                                        <span>View</span> *@
+                                    <div class="button-main d-flex gap-2 mt-3">
+                                    <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
+                                        <span>View</span>
+                                    </a>
                                     </div>
                                 </form>
                             </div>
@@ -86,10 +81,38 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            // --- validate Society & Block dropdowns ---
+            function validateDropdowns() {
+                let isValid = true;
+
+                if ($("#Society").val() === "") {
+                    $("#societyError").text("Please select a society.");
+                    $("#Society").addClass("is-invalid");
+                    isValid = false;
+                } else {
+                    $("#societyError").text("");
+                    $("#Society").removeClass("is-invalid");
+                }
+
+                if ($("#Block").val() === "") {
+                    $("#blockError").text("Please select a block.");
+                    $("#Block").addClass("is-invalid");
+                    isValid = false;
+                } else {
+                    $("#blockError").text("");
+                    $("#Block").removeClass("is-invalid");
+                }
+
+                return isValid;
+            }
+
+            $("#Society, #Block").change(validateDropdowns);
+
+            // --- when society changes, load blocks ---
             $("#Society").change(function () {
                 var societyId = $(this).val();
                 $("#Block").empty().append('<option value="">-- Select Block --</option>');
-                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                $("#flatContainer").empty();
 
                 if (societyId) {
                     $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
@@ -99,13 +122,20 @@
                     });
                 }
             });
+
+            // --- when block changes, load flats ---
             $("#Block").change(function () {
                 var blockId = $(this).val();
                 var container = $("#flatContainer");
-                container.empty(); 
+                container.empty();
 
+                 $("#flatsLabel").hide();
                 if (blockId) {
                     $.getJSON('@Url.Action("GetFlatsByBlock", "Member")', { blockId: blockId }, function (data) {
+                         if (data.length > 0) {
+                // show label only if rows fetched
+                $("#flatsLabel").show();
+            }
                         $.each(data, function (i, flat) {
                             var flatRow = $(`
                     <div class="flat-row mb-3 p-2 border rounded"
@@ -117,53 +147,97 @@
 
                         <div style="flex:1; min-width:120px;">
                             <input type="number" class="form-control adults" min="0" placeholder="Adults" />
+                            <div class="error-message adultsError"></div>
                         </div>
 
                         <div style="flex:1; min-width:120px;">
                             <input type="number" class="form-control flatChildren"
                                    data-flatid="${flat.flatId}" min="0" placeholder="Children" />
+                            <div class="error-message childrenError"></div>
                         </div>
 
                         <div class="childAgesContainer" style="flex:1; min-width:200px;"></div>
 
                         <div>
                             <button type="button" class="btn btn-primary saveFlatBtn" data-flatid="${flat.flatId}">
-                                Save
+                                Add Members
                             </button>
                         </div>
                     </div>
                 `);
 
-
                             container.append(flatRow);
                         });
 
-                        $(".flatChildren").on("input change", function () {
+                        // handle children input -> generate age fields
+                        container.on("input change", ".flatChildren", function () {
                             var childCount = parseInt($(this).val()) || 0;
                             var flatId = $(this).data("flatid");
-                            var container = $(this).closest(".mb-3").find(".childAgesContainer");
-                            container.empty();
+                            var containerAges = $(this).closest(".flat-row").find(".childAgesContainer");
+                            containerAges.empty();
 
                             for (var i = 0; i < childCount; i++) {
-                                var html = `<input type="number" name="ChildAges[${flatId}][${i}]" class="form-control mb-1" min="0" max="17" placeholder="Child ${i + 1} Age" />`;
-                                container.append(html);
+                                var html = `
+                                    <div>
+                                        <input type="number" class="form-control childAge mb-1"
+                                               data-flatid="${flatId}" min="0" max="17"
+                                               placeholder="Child ${i + 1} Age" />
+                                        <div class="error-message ageError"></div>
+                                    </div>`;
+                                containerAges.append(html);
                             }
                         });
+
+                        // handle save button
                         container.on("click", ".saveFlatBtn", function () {
                             var flatId = $(this).data("flatid");
-                            var row = $(this).closest(".flat-row"); // now works
+                            var row = $(this).closest(".flat-row");
+                            var isValid = true;
 
-                            var adults = parseInt(row.find(".adults").val() || 0);
+                            // validate dropdowns first
+                            if (!validateDropdowns()) return;
 
+                            // validate adults
+                            var adults = row.find(".adults").val();
+                            if (adults === "" || parseInt(adults) < 0) {
+                                row.find(".adultsError").text("Please enter valid number of adults.");
+                                row.find(".adults").addClass("is-invalid");
+                                isValid = false;
+                            } else {
+                                row.find(".adultsError").text("");
+                                row.find(".adults").removeClass("is-invalid");
+                            }
+
+                            // validate children ages
                             var childAges = [];
-                            row.find(".childAgesContainer input").each(function () {
-                                var age = parseInt($(this).val());
-                                if (!isNaN(age)) childAges.push(age);
+                            var childrenInput = row.find(".flatChildren").val();
+                            if (childrenInput === "" || parseInt(childrenInput) < 0) {
+                                row.find(".childrenError").text("Please enter valid number of children.");
+                                row.find(".flatChildren").addClass("is-invalid");
+                                isValid = false;
+                            } else {
+                                row.find(".childrenError").text("");
+                                row.find(".flatChildren").removeClass("is-invalid");
+                            }
+
+                            row.find(".childAge").each(function () {
+                                var age = $(this).val();
+                                if (age === "" || parseInt(age) < 0 || parseInt(age) > 17) {
+                                    $(this).next(".ageError").text("Enter valid age (0–17).");
+                                    $(this).addClass("is-invalid");
+                                    isValid = false;
+                                } else {
+                                    $(this).next(".ageError").text("");
+                                    $(this).removeClass("is-invalid");
+                                    childAges.push(parseInt(age));
+                                }
                             });
+
+                            if (!isValid) return; // stop if invalid
 
                             var memberCreateRequest = {
                                 FlatId: flatId,
-                                NumberOfAdults: adults,
+                                NumberOfAdults: parseInt(adults),
                                 ChildAges: childAges
                             };
 
@@ -173,10 +247,11 @@
                                 data: JSON.stringify(memberCreateRequest),
                                 contentType: 'application/json; charset=utf-8',
                                 success: function () {
-                                    alert("Flat " + flatId + " saved successfully!");
+                                    // instead of alert, show success inline
+                                    row.append(`<div class="text-success mt-2">Saved successfully!</div>`);
                                 },
                                 error: function () {
-                                    alert("Error saving Flat " + flatId);
+                                    row.append(`<div class="text-danger mt-2">Error saving flat.</div>`);
                                 }
                             });
                         });
@@ -184,8 +259,6 @@
                     });
                 }
             });
-
-
         });
     </script>
 </body>

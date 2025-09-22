@@ -3,6 +3,12 @@ using SocPass.UI.Application.Extension;
 using SocPass.UI.Infrastructure.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews()
+    .AddViewOptions(options =>
+    {
+        // Enabling client-side validation
+        options.HtmlHelperOptions.ClientValidationEnabled = true;
+    });
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationService();
 builder.Services.AddInfrastrucureService();

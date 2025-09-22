@@ -8,7 +8,7 @@
 }
 <html>
 <head>
-	<title>IdScanner | Add Company</title>
+	<title>SocPass | Add Society</title>
 </head>
 <body>
 	<div class="content-page">
@@ -19,74 +19,74 @@
 						<div class="card com-profile-info">
 							<div class="top-details">
 								<h2 class="page-form-title">Society Details</h2>
-								<form class="row all-custom-class" method="post" action="@Url.Action("AddSociety", "Society")" enctype="multipart/form-data">
-
-									<!-- Row 1: Company Name + City -->
-									<div class="col-md-6 mb-3">
-										<div class="item-input">
-											<input type="hidden" id="SocietyId" name="SocietyId" value="@Model.SocietyId" />
-											<label for="Name" class="form-label required fw-semibold fs-6">Society Name</label>
-											<input type="text" class="form-control userinput" id="Name" name="Name" value="@Model.Name">
-										</div>
-									</div>
-
 							
+								<form asp-action="AddSociety" asp-controller="Society" method="post" enctype="multipart/form-data" class="row all-custom-class">
+									@* Hidden primary key *@
+									<input type="hidden" asp-for="SocietyId" />
 
 									<div class="col-md-6 mb-3">
 										<div class="item-input">
-											<label for="Email" class="form-label required fw-semibold fs-6">Email</label>
-											<input type="text" class="form-control userinput" id="Email" name="Email" value="@Model.Email">
-										</div>
-									</div>
-
-									<!-- Row 2: Logo + IsActive -->
-									<div class="col-md-6 mb-3">
-										<div class="item-input">
-											<label for="Address" class="form-label required fw-semibold fs-6">Address</label>
-											<input type="text" class="form-control userinput" id="Address" name="Address" value="@Model.Address" />
+											<label asp-for="Name" class="form-label required fw-semibold fs-6"></label>
+											<input asp-for="Name" class="form-control userinput" />
+											<span asp-validation-for="Name" class="text-danger"></span>
 										</div>
 									</div>
 
 									<div class="col-md-6 mb-3">
 										<div class="item-input">
-											<label for="Contact" class="form-label required fw-semibold fs-6">Contact No.1</label>
-											<input type="text" class="form-control userinput" id="Contact" name="Contact" value="@Model.Contact" />
+											<label asp-for="Email" class="form-label required fw-semibold fs-6"></label>
+											<input asp-for="Email" class="form-control userinput" />
+											<span asp-validation-for="Email" class="text-danger"></span>
 										</div>
 									</div>
 
 									<div class="col-md-6 mb-3">
 										<div class="item-input">
-											<label for="Contact2" class="form-label required fw-semibold fs-6">Contact No.2</label>
-											<input type="text" class="form-control userinput" id="Contact2" name="Contact2" value="@Model.Contact2" />
+											<label asp-for="Address" class="form-label required fw-semibold fs-6"></label>
+											<textarea asp-for="Address" class="form-control userinput" rows="3"></textarea>
+											<span asp-validation-for="Address" class="text-danger"></span>
+										</div>
+									</div>
+
+									<div class="col-md-6 mb-3">
+										<div class="item-input">
+											<label asp-for="Contact" class="form-label required fw-semibold fs-6"></label>
+											<input asp-for="Contact" class="form-control userinput" />
+											<span asp-validation-for="Contact" class="text-danger"></span>
+										</div>
+									</div>
+
+									<div class="col-md-6 mb-3">
+										<div class="item-input">
+											<label asp-for="Contact2" class="form-label required fw-semibold fs-6"></label>
+											<input asp-for="Contact2" class="form-control userinput" />
+											<span asp-validation-for="Contact2" class="text-danger"></span>
 										</div>
 									</div>
 
 									<div class="col-md-6 mb-3 d-flex align-items-center">
-										<input type="checkbox" name="IsActive" id="IsActive" class="form-check-input"
-											   value="true" checked="checked"
-											   @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
-										<label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size: 16px;">Is Active</label>
+										<input asp-for="IsActive" class="form-check-input" checked style="transform: scale(1.3); margin-top: 2px;" />
+										<label asp-for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size: 16px;"></label>
 									</div>
 
-									<!-- Buttons -->
 									<div class="col-12">
 										<div class="button-main d-flex gap-2 mt-3">
 											<button type="submit" class="card-link">
 												<i class="ri-save-line"></i><span>Save</span>
 											</button>
-											@if (Model.SocietyId == 0 || Model.SocietyId == null)
+											@if (Model.SocietyId == 0)
 											{
 												<button type="reset" class="card-link outline-bar">
 													<span>Clear</span>
 												</button>
 											}
-											<a href="@Url.Action("SocietyList", "Society")" class="card-link outline-bar">
+											<a asp-action="SocietyList" asp-controller="Society" class="card-link outline-bar">
 												<span>View</span>
 											</a>
 										</div>
 									</div>
-
 								</form>
+
 							</div>
 						</div>
 					</div>

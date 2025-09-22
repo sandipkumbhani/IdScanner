@@ -18,7 +18,7 @@
     <link href="~/css/app-style.css" rel="stylesheet" />
     <link rel="StyleSheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <title>IdScanner | CompanyList</title>
+    <title>SocPass | FlatsList</title>
 </head>
 <body>
     <div class="content-page" style="margin:35px 0 0 0">
@@ -36,7 +36,7 @@
                                         <i class="ri-add-line"></i> <span>Add Flats</span>
                                     </a>
                                     <br/>
-                                    <a href="@Url.Action("AddMember", "Member")"
+                                    <a href="@Url.Action("AddMember", "Member")">
                                       <i class="ri-add-line"></i> <span>Add Member</span>
                                     </a>
                                 </div>
@@ -72,7 +72,7 @@
                                             <th>Total Member</th>
                                             <th>Number Of Adult</th>
                                             <th>Number Of Child</th>
-                                            <th>Action</th>
+                                            <th>IsActive</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -87,17 +87,6 @@
 												<td>@flat.NumberOfAdult</td>
 												<td>@flat.NumberOfChild</td>
                                                 <td>@flat.IsActive</td>
-                                                <td>
-                                                    <div class="action-items">
-                                                        <a href="@Url.Action("AddFlat", "Flat", new { societyId = flat.Society.SocietyId, blockId = flat.BlockId })" class="icon-btn">
-                                                            <i class="ri-edit-2-line"></i>
-                                                        </a>
-                                                        @* <a href="@Url.Action("DeleteSociety", "Society", new { flatId = flat.FlatId })" class="icon-btn"
-                                                           onclick="return confirm('Are you sure you want to delete this Flats?');">
-                                                            <i class="ri-delete-bin-3-line"></i>
-                                                        </a> *@
-                                                    </div>
-                                                </td>
                                             </tr>
                                         }
                                     </tbody>
