@@ -72,6 +72,7 @@ namespace SocPass.Infrastructure.Repository
                     IsChild = m.IsChild,
                     ChildAge = m.ChildAge,
                     IsGuest = m.IsGuest,
+                    Visited = m.Visited,
                     FlatId = m.FlatId,
                     Flat = m.Flat != null ? new Flat
                     {
@@ -98,18 +99,34 @@ namespace SocPass.Infrastructure.Repository
 
         public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
         {
-            var entity = await _context.members
-                .FirstOrDefaultAsync(x => x.MemberId == memberid && x.Visited == false);
-            if (entity == null)
-            {
-                return false;
-            }
+            //var entity = await _context.members
+            //    .FirstOrDefaultAsync(x => x.MemberId == memberid && x.Visited == false);
+            //if (entity == null)
+            //{
+            //    return false;
+            //}
 
-            entity.Visited = true;
-            entity.UpdateDate = DateTime.Now;
-            entity.UpdateBy = loggedInUserId;
-            await _context.SaveChangesAsync();
+            //entity.Visited = true;
+            //entity.UpdateDate = DateTime.Now;
+            //entity.UpdateBy = loggedInUserId;
+            //await _context.SaveChangesAsync();
+            //return true;
+
+            var entity = await _context.members
+    .FirstOrDefaultAsync(x => x.MemberId == memberid);
+
+            if (entity == null)
+                return false;
+
+            if (!entity.Visited) // update only if not visited
+            {
+                entity.Visited = true;
+                entity.UpdateDate = DateTime.Now;
+                entity.UpdateBy = loggedInUserId;
+                await _context.SaveChangesAsync();
+            }
             return true;
+
         }
 
         public async Task<bool> AddPassDateAsync(int blockId, DateTime passDate)
