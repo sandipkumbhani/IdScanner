@@ -12,7 +12,7 @@ namespace SocPass.Infrastructure.Repository
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public async Task<User> GetUserNameAsync(long userid)
+        public async Task<User> GetUserNameAsync(int userid)
         {
             var userName = await _context.users
             .Where(u => u.UserId == userid)

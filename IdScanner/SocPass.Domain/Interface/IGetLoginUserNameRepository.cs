@@ -5,6 +5,6 @@ namespace SocPass.Domain.Interface
 {
     public interface IGetLoginUserNameRepository
     {
-        Task<User> GetUserNameAsync(long userid);
+        Task<User> GetUserNameAsync(int userid);
     }
 }

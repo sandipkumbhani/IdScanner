@@ -22,6 +22,7 @@ namespace SocPass.Application.Extension
             services.AddScoped<IMenuMasterService, MenuMasterService>();
             services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IGetLoginUserNameService,GetLoginUserNameService>();
             
             
             services.AddScoped<ILoginService, LoginService>();           

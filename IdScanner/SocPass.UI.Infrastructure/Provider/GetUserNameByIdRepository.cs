@@ -22,7 +22,7 @@ namespace SocPass.UI.Infrastructure.Provider
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
         }
-        public async Task<User> GetUserNameAsync(long userId)
+        public async Task<User> GetUserNameAsync(int userId)
         {
             var baseUrl = apiCredential.url + $"GetUserName/get-user-name?userId={userId}";
             var response = await _httpClient.GetAsync(baseUrl);

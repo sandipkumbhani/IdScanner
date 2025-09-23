@@ -1,4 +1,5 @@
 ﻿using SocPass.Application.Interface;
+using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 
 namespace SocPass.Application.Services
@@ -10,7 +11,7 @@ namespace SocPass.Application.Services
         {
             _getLoginUserNameRepository = getLoginUserNameRepository;
         }
-        public async Task<User> GetLoginUserNameAsync(long userId)
+        public async Task<User> GetLoginUserNameAsync(int userId)
         {
             return await _getLoginUserNameRepository.GetUserNameAsync(userId);
         }

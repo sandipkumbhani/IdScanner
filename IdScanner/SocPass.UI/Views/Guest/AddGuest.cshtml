@@ -17,7 +17,7 @@
                     <div class="card com-profile-info">
                         <iv class="top-details">
                             <h2 class="page-form-title">Add Block Details</h2>
-                            <form method="post" action="@Url.Action("AddMember", "Member")">
+                            <form method="post" action="@Url.Action("AddGuest", "Member")">
                                 <div class="col-xl-4 col-lg-6">
                                     <div class="item-input">
                                         <label for="" class="form-label required fw-semibold fs-6">Select Society</label>
@@ -150,7 +150,6 @@
                 }
             });
         });
-
         $("#flatInputsContainer").on("click", ".saveFlatBtn", function () {
             var flatId = $(this).data("flatid");
             var row = $(this).closest(".card");

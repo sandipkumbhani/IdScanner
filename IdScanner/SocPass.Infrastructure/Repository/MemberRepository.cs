@@ -94,8 +94,6 @@ namespace SocPass.Infrastructure.Repository
                 })
                 .FirstOrDefaultAsync();
         }
-
-
         public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
         {
             var entity = await _context.members
