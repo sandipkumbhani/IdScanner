@@ -218,9 +218,13 @@ namespace SocPass.Application.Services
                 }
             }
         }
-        public async Task<bool> AddPassDateAsync(int blockId, DateTime passDate)
+        public async Task<bool> AddMemberPassDateAsync(int blockId, DateTime passDate)
         {
-            return await _memberRepository.AddPassDateAsync(blockId, passDate);
+            return await _memberRepository.AddMemberPassDateAsync(blockId, passDate);
+        }
+        public async Task<bool> AddGuestPassDateAsync(int blockId, DateTime passDate)
+        {
+            return await _memberRepository.AddGuestPassDateAsync(blockId, passDate);
         }
         public async Task<Member> GetMemberByMemberId(int memberId)
         {

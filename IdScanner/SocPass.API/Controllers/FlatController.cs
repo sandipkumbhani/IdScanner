@@ -87,7 +87,20 @@ namespace SocPass.API.Controllers
         {
             try
             {
-                var result = await _flatService.getqr(blockid);
+                var result = await _flatService.GetMemberQr(blockid);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+        [HttpGet("GetGuestQR")]
+        public async Task<IActionResult> GetGuestQR(int blockid)
+        {
+            try
+            {
+                var result = await _flatService.GetGuestQr(blockid);
                 return Ok(result);
             }
             catch (KeyNotFoundException ex)

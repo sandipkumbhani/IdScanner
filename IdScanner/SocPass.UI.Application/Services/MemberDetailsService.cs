@@ -20,5 +20,6 @@ namespace SocPass.UI.Application.Services
         {
             return await _memberDetailsRepository.IsVisitedAsync(memberid, loggedInUserId);
         }
+
     }
 }
