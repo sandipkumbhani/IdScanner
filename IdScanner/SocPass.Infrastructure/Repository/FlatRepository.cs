@@ -101,7 +101,10 @@ namespace SocPass.Infrastructure.Repository
                 .Select(d => new Flat
                 {
                     FlatId = d.FlatId,
-                    FlatNumber = d.FlatNumber
+                    FlatNumber = d.FlatNumber,
+                    NumberOfAdult = d.NumberOfAdult,
+                    NumberOfChild = d.NumberOfChild,
+                    TotalMember = d.TotalMember
                 })
                 .ToListAsync();
         }

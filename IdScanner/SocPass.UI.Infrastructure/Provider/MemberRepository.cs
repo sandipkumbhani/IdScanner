@@ -36,9 +36,9 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<Member>> GetAllMemberAsync(int flatId)
         {
-            var baseUrl = apiCredential.url + "Member/GetMemberByid?flatId={flatId}";
+            var baseUrl = apiCredential.url + $"Member/GetMemberByid?flatId={flatId}";
             var response = await _httpClient.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Member>>(json)!;
         }

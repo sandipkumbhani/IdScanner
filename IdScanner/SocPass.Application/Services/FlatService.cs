@@ -21,6 +21,30 @@ namespace SocPass.Application.Services
         public async Task<List<Flat>> CreateFlatAsync(Flat flat)
         {
             var createdFlats = new List<Flat>();
+
+            if (flat.StartFlatNumber == 0 && flat.EndFlatNumber == 0 && flat.NumberOfFlats == 0)
+            {
+                var newFlat = new Flat
+                {
+                    SocietyId = flat.SocietyId,
+                    BlockId = flat.BlockId,
+                    FlatNumber = flat.FlatNumber.ToString(),
+                    FloorNumber = flat.FloorNumber,
+                    TotalMember = flat.TotalMember,
+                    NumberOfAdult = flat.NumberOfAdult,
+                    NumberOfChild = flat.NumberOfChild,
+                    IsActive = true,
+                    InsertBy = 1,
+                    InsertDate = DateTime.Now,
+                    UpdateBy = 1,
+                    UpdateDate = DateTime.Now
+                };
+
+                var result = await _flatRepository.CreateFlatAsync(newFlat);
+                createdFlats.Add(result);
+                return createdFlats;
+            }
+
             if (flat.EndFlatNumber < flat.StartFlatNumber)
             {
                 throw new ArgumentException("End flat number must be >= start flat number.");
@@ -115,8 +139,8 @@ namespace SocPass.Application.Services
                 throw new ArgumentException("End flat number must be >= start flat number.");
             }
 
-            var existingFlats = await _flatRepository.GetFlatsByBlockAsync(flat.SocietyId, flat.BlockId);
-            var orderedExisting = existingFlats.OrderBy(f => f.FlatId).ToList();
+            var existingFlatsManual = await _flatRepository.GetFlatsByBlockAsync(flat.SocietyId, flat.BlockId);
+            var orderedExisting = existingFlatsManual.OrderBy(f => f.FlatId).ToList();
 
             if (flat.StartFlatNumber >= 1 && flat.StartFlatNumber <= 99)
             {
@@ -225,7 +249,7 @@ namespace SocPass.Application.Services
 
             return updatedFlats;
         }
-        public async Task<List<Flat>> GetFlatByBlockID(int blockid)
+        public async Task<List<Flat>>   GetFlatByBlockID(int blockid)
         {
             return await _flatRepository.GetFlatByBlockIdAsync(blockid);
         }

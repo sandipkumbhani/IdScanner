@@ -110,7 +110,8 @@ namespace SocPass.API.Controllers
             }
             else
             {
-                return NotFound(new { Message = "No matching record found or already transacted." });
+                //return NotFound(new { Message = "No matching record found or already transacted." });
+                return Ok(new { Message = "Member is already visiting visiting." });
             }
         }
 

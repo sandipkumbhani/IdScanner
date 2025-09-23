@@ -1,19 +1,26 @@
 ﻿@model SocPass.Domain.Model.Member
-
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Member Details";
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
+
             <!-- Card -->
             <div class="card shadow-lg rounded-3">
-                <div class="card-header bg-primary text-white text-center">
+                <div class="card-header text-white text-center" style="background-color:#0466C8;">
                     <h3 class="mb-0">Member Details</h3>
                 </div>
+
                 <div class="card-body">
+                    @if (!string.IsNullOrEmpty(ViewBag.Message))
+                    {
+                        <div class="alert alert-@ViewBag.AlertType text-center">
+                            @ViewBag.Message
+                        </div>
+                    }
+
                     <table class="table table-striped table-bordered align-middle mb-4">
                         <tbody>
                             <tr>
@@ -28,18 +35,21 @@
                                 <th scope="row">Flat Number</th>
                                 <td>@Model.Flat?.FlatNumber</td>
                             </tr>
-                          
                             <tr>
                                 <th scope="row">Total Members</th>
                                 <td>@Model.Flat?.TotalMember</td>
                             </tr>
                             <tr>
-                                <th scope="row" class="w-50">Is Child</th>
-                                <td>@(Model.IsChild ? "Yes" : "No")</td>
+                                <th scope="row" class="w-50">Category</th>
+                                <td>@(Model.IsChild ? "Child" : "Adult")</td>
                             </tr>
                             <tr>
                                 <th scope="row">Number of Children</th>
                                 <td>@Model.Flat?.NumberOfChild</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="w-50">Member Type</th>
+                                <td>@(Model.IsGuest ? "Guest" : "Resident")</td>
                             </tr>
                             <tr>
                                 <th scope="row" class="w-50">Visited</th>
@@ -47,11 +57,25 @@
                             </tr>
                         </tbody>
                     </table>
-                    <form asp-action="IsVisited" asp-controller="MemberDetails" asp-route-memberid="@Model.MemberId" method="post" class="text-center">
-                        <button type="submit" class="btn btn-success btn-lg px-5">
-                            <i class="bi bi-check-circle-fill"></i> Mark as Visited
-                        </button>
-                    </form>
+
+                    @if (!Model.Visited)
+                    {
+                        <form asp-action="IsVisited"
+                              asp-controller="MemberDetails"
+                              asp-route-memberId="@Model.MemberId"
+                              method="post"
+                              class="text-center">
+                            <button type="submit" class="btn btn-success btn-lg px-5">
+                                <i class="bi bi-check-circle-fill"></i> Mark as Visited
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info text-center mt-3">
+                            <i class="bi bi-info-circle-fill"></i> This member has already visited.
+                        </div>
+                    }
                 </div>
             </div>
         </div>

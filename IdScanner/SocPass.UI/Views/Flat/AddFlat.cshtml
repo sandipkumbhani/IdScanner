@@ -8,7 +8,14 @@
 }
 <html>
 <head>
-	<title>IdScanner | Add Company</title>
+	<title>SocPass | Add Flats</title>
+	<style>
+		.field-error {
+			color: red;
+			font-size: 0.875rem;
+			display: none;
+		}
+	</style>
 </head>
 <body>
 	<div class="content-page">
@@ -25,17 +32,77 @@
 										<div class="item-input">
 											<input type="hidden" id="FlatId" name="FlatId" value="@Model.FlatId" />
 											<label for="SocietyId" class="form-label required fw-semibold fs-6">Society Name</label>
-											<select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput">
+											<select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))"
+													class="form-select form-control userinput"
+													data-required-message="Please select a society.">
 												<option value="0">-- Select Society --</option>
 											</select>
+											<span class="field-error"></span>
 										</div>
 									</div>
 
 									<div class="col-md-6 mb-3">
 										<div class="item-input">
-											<label for="SocietyId" class="form-label required fw-semibold fs-6">Block Name</label>
-											<select class="form-select" id="" name="DepartmentId">
+											<label for="BlockId" class="form-label required fw-semibold fs-6">Block Name</label>
+											<select class="form-select form-control userinput" id="BlockId" name="BlockId"
+													data-required-message="Please select a block.">
 											</select>
+											<span class="field-error"></span>
+										</div>
+									</div>
+
+									<div class="col-md-12 mb-3">
+										<label class="form-label required fw-semibold fs-6">Flat Entry Mode</label>
+										<div class="d-flex gap-4" id="entryModeContainer">
+											<div class="form-check">
+												<input type="radio" class="form-check-input" id="RangeMode" name="EntryMode" value="Range"
+													   data-required-message="Please select a flat entry mode." />
+												<label class="form-check-label" for="RangeMode">Range</label>
+											</div>
+											<div class="form-check">
+												<input type="radio" class="form-check-input" id="ManualMode" name="EntryMode" value="Manual"
+													   data-required-message="Please select a flat entry mode." />
+												<label class="form-check-label" for="ManualMode">Manual</label>
+											</div>
+										</div>
+										<span class="field-error"></span>
+									</div>
+
+									<!-- Range Fields -->
+									<div id="rangeFields" class="row" style="display:none;">
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Start Range</label>
+											<input type="number" name="StartFlatNumber" class="form-control" data-required-message="Start range is required." />
+											<span class="field-error"></span>
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">End Range</label>
+											<input type="number" name="EndFlatNumber" class="form-control" data-required-message="End range is required." />
+											<span class="field-error"></span>
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Flats Per Floor</label>
+											<input type="number" name="NumberOfFlats" class="form-control" data-required-message="Flats per floor is required." />
+											<span class="field-error"></span>
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Floor Number</label>
+											<input type="number" name="FloorNumberRange" class="form-control" data-required-message="Floor number is required." />
+											<span class="field-error"></span>
+										</div>
+									</div>
+
+									<!-- Manual Fields -->
+									<div id="manualFields" class="row" style="display:none;">
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Floor Number</label>
+											<input type="number" name="FloorNumberManual" class="form-control" data-required-message="Floor number is required." />
+											<span class="field-error"></span>
+										</div>
+										<div class="col-md-3 mb-3">
+											<label class="form-label">Flat Number</label>
+											<input type="number" name="FlatNumber" class="form-control" data-required-message="Flat number is required." />
+											<span class="field-error"></span>
 										</div>
 									</div>
 
@@ -72,10 +139,12 @@
 			</div>
 		</div>
 	</div>
+
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function () {
+			// === Load Blocks dynamically ===
 			const companyDropdown = document.getElementById("SocietyId");
-			const departmentDropdown = document.querySelector("select[name='DepartmentId']");
+			const departmentDropdown = document.getElementById("BlockId");
 			const selectedDeptId = "@Model.BlockId";
 
 			function loadDepartments(companyId, preselectId = null) {
@@ -83,34 +152,87 @@
 					departmentDropdown.innerHTML = '<option value="0">-select-</option>';
 					return;
 				}
-
-					fetch(`/Flat/GetBlocksBySociety?societyId=${companyId}`)
-		.then(res => res.json())
-		.then(data => {
-			departmentDropdown.innerHTML = '<option value="0">-select-</option>';
-			data.forEach(d => {
-				const opt = document.createElement("option");
-				opt.value = d.blockId;        // corrected property
-				opt.text = d.blockNumber;     // corrected property
-				if (preselectId && d.blockId == preselectId) {
-					opt.selected = true;
-				}
-				departmentDropdown.appendChild(opt);
-			});
-		});
-
+				fetch(`/Flat/GetBlocksBySociety?societyId=${companyId}`)
+					.then(res => res.json())
+					.then(data => {
+						departmentDropdown.innerHTML = '<option value="0">-select-</option>';
+						data.forEach(d => {
+							const opt = document.createElement("option");
+							opt.value = d.blockId;
+							opt.text = d.blockNumber;
+							if (preselectId && d.blockId == preselectId) opt.selected = true;
+							departmentDropdown.appendChild(opt);
+						});
+					});
 			}
 
-			if (companyDropdown.value !== "0") {
-				loadDepartments(companyDropdown.value, selectedDeptId);
-			}
-
+			if (companyDropdown.value !== "0") loadDepartments(companyDropdown.value, selectedDeptId);
 			companyDropdown.addEventListener("change", function () {
 				loadDepartments(this.value);
+			});
+
+			// === Toggle Range/Manual Fields ===
+			const rangeMode = document.getElementById("RangeMode");
+			const manualMode = document.getElementById("ManualMode");
+			const rangeFields = document.getElementById("rangeFields");
+			const manualFields = document.getElementById("manualFields");
+
+			function toggleFields() {
+				if (rangeMode.checked) {
+					rangeFields.style.display = "flex";
+					manualFields.style.display = "none";
+					rangeFields.querySelectorAll("input").forEach(i => i.disabled = false);
+					manualFields.querySelectorAll("input").forEach(i => i.disabled = true);
+				} else if (manualMode.checked) {
+					rangeFields.style.display = "none";
+					manualFields.style.display = "flex";
+					rangeFields.querySelectorAll("input").forEach(i => i.disabled = true);
+					manualFields.querySelectorAll("input").forEach(i => i.disabled = false);
+				} else {
+					rangeFields.style.display = "none";
+					manualFields.style.display = "none";
+				}
+			}
+
+			rangeMode.addEventListener("change", toggleFields);
+			manualMode.addEventListener("change", toggleFields);
+			toggleFields();
+
+			// === Form Validation ===
+			const form = document.querySelector("form");
+			form.addEventListener("submit", function(event) {
+				let isValid = true;
+
+				// Clear previous messages
+				form.querySelectorAll(".field-error").forEach(span => span.style.display = "none");
+
+				// Validate visible required fields
+				const requiredFields = Array.from(form.querySelectorAll("[data-required-message]"))
+					.filter(f => f.offsetParent !== null);
+
+				requiredFields.forEach(field => {
+					if (!field.value || field.value === "0") {
+						const errorSpan = field.nextElementSibling;
+						if (errorSpan) {
+							errorSpan.textContent = field.getAttribute("data-required-message");
+							errorSpan.style.display = "block";
+						}
+						isValid = false;
+					}
+				});
+
+				// Validate entry mode radio
+				const entryModeSelected = document.querySelector('input[name="EntryMode"]:checked');
+				const radioErrorSpan = document.querySelector("#entryModeContainer + .field-error");
+				if (!entryModeSelected && radioErrorSpan) {
+					radioErrorSpan.textContent = "Please select a flat entry mode.";
+					radioErrorSpan.style.display = "block";
+					isValid = false;
+				}
+
+				if (!isValid) event.preventDefault();
 			});
 		});
 	</script>
 </body>
 </html>
-
-
