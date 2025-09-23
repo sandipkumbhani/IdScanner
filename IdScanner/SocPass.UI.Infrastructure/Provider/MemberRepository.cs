@@ -49,11 +49,25 @@ namespace SocPass.UI.Infrastructure.Provider
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
             return await response.Content.ReadAsStringAsync();
         }
+        public async Task<string> AddAndUpdateGuestAsync(MemberCreateRequest memberCreateRequest)
+        {
+            var baseUrl = apiCredential.url + $"Member/Update-Guest";
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(memberCreateRequest), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(baseUrl, jsonContent);
+            return await response.Content.ReadAsStringAsync();
+        }
 
         public async Task<string> GeneratePass(int blockId, DateTime passDate)
         {
             var baseUrl = $"{apiCredential.url}Member/AddPassdate?blockId={blockId}&passDate={passDate:O}";
             var response = await _httpClient.PutAsync(baseUrl, null); 
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+        public async Task<string> GenerateGuestPass(int blockId, DateTime passDate)
+        {
+            var baseUrl = $"{apiCredential.url}Member/AddGuestPassdate?blockId={blockId}&passDate={passDate:O}";
+            var response = await _httpClient.PutAsync(baseUrl, null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }

@@ -40,7 +40,27 @@ namespace SocPass.UI.Controllers
 
             return View("/Views/MembersQrList/QrList.cshtml", QRlist);
         }
+        [HttpGet]
+        public async Task<IActionResult> GuestQrList()
+        {
+            var societies = await _societyService.GetAllSocietyAsync();
+            ViewBag.Societies = societies;
+            return View("/Views/GuestQrList/GuestQrList.cshtml");
+        }
+        [HttpPost]
+        public async Task<IActionResult> GenerateGuestPass(int blockId, DateTime passDate)
+        {
+            if (blockId <= 0 || passDate == default)
+            {
+                ViewBag.Error = "Invalid block or date";
+                ViewBag.Societies = await _societyService.GetAllSocietyAsync();
+                return View();
+            }
+            await _memberService.GenerateGuestPass(blockId, passDate);
+            var QRlist = await _flatRepository.GetGuestQR(blockId);
 
+            return View("/Views/GuestQrList/GuestQr.cshtml", QRlist);
+        }
 
         [HttpGet]
         public async Task<JsonResult> GetBlocksBySociety(int societyId)

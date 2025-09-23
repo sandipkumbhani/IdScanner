@@ -84,5 +84,13 @@ namespace SocPass.UI.Infrastructure.Provider
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Flat>>(json)!;
         }
+        public async Task<List<Flat>> GetGuestQR(int blockid)
+        {
+            var baseUrl = $"{apiCredential.url}Flat/GetGuestQR?blockid={blockid}";
+            var response = await _httpClinet.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Flat>>(json)!;
+        }
     }
 }

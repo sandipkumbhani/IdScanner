@@ -72,6 +72,32 @@ namespace SocPass.UI.Controllers
             });
             return Json(result);
         }
+        [HttpGet]
+        public async Task<IActionResult> AddGuest()
+        {
+            var societies = await _societyService.GetAllSocietyAsync();
+            ViewBag.Societies = societies;
+            var model = new MemberCreateRequest();
+            return View("/Views/Guest/AddGuest.cshtml", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddGuest([FromBody] MemberCreateRequest memberCreateRequest)
+        {
+            if (memberCreateRequest == null)
+            {
+                return BadRequest("Invalid data");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View("AddGuest", memberCreateRequest);
+            }
+
+            await _memberService.AddAndUpdateGuestAsync(memberCreateRequest);
+
+            return RedirectToAction("FlatList", "Flat");
+        }
 
 
 

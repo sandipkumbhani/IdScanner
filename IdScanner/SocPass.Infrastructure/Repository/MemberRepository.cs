@@ -129,7 +129,7 @@ namespace SocPass.Infrastructure.Repository
 
         }
 
-        public async Task<bool> AddPassDateAsync(int blockId, DateTime passDate)
+        public async Task<bool> AddMemberPassDateAsync(int blockId, DateTime passDate)
         {
             var flatIds = await _context.flats
                                         .Where(f => f.BlockId == blockId && f.IsActive==true)
@@ -142,7 +142,36 @@ namespace SocPass.Infrastructure.Repository
             }
 
             var members = await _context.members
-                                        .Where(m => flatIds.Contains(m.FlatId) && m.IsActive == true)
+                                        .Where(m => flatIds.Contains(m.FlatId) && m.IsActive == true &&m.IsGuest == false)
+                                        .ToListAsync();
+
+            if (!members.Any())
+            {
+                return false;
+            }
+
+            foreach (var member in members)
+            {
+                member.PassDate = DateOnly.FromDateTime(passDate);
+                member.UpdateDate = DateTime.Now;
+            }
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> AddGuestPassDateAsync(int blockId, DateTime passDate)
+        {
+            var flatIds = await _context.flats
+                                        .Where(f => f.BlockId == blockId && f.IsActive == true)
+                                        .Select(f => f.FlatId)
+                                        .ToListAsync();
+
+            if (!flatIds.Any())
+            {
+                return false;
+            }
+
+            var members = await _context.members
+                                        .Where(m => flatIds.Contains(m.FlatId) && m.IsActive == true && m.IsGuest == true)
                                         .ToListAsync();
 
             if (!members.Any())

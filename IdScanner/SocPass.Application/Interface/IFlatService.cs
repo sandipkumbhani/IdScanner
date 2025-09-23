@@ -18,7 +18,8 @@ namespace SocPass.Application.Interface
         //Task<List<Flat>> UpdateAsync(int societyId, int blockId, Flat flat);
         Task<List<Flat>> UpdateFlatAsync(Flat flat);
         Task<List<Flat>> GetFlatByBlockID(int blockid);
-        Task<List<FlatWithMembersDto>> getqr(int blockid);
+        Task<List<FlatWithMembersDto>> GetMemberQr(int blockid);
+        Task<List<FlatWithMembersDto>> GetGuestQr(int blockid);
 
     }
 }
