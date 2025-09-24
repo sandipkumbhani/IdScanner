@@ -66,6 +66,10 @@ namespace SocPass.UI.Controllers
             {
                 await _flatRepository.AddFlatAsync(flat);
             }
+            else if (flat.FlatId == 0)
+            {
+                await _flatRepository.AddFlatAsync(flat);
+            }
             else
             {
                 await _flatRepository.UpdateFlatAsync(flat);

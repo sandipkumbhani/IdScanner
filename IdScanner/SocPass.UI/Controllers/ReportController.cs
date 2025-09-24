@@ -22,7 +22,6 @@ namespace SocPass.UI.Controllers
             _memberService = memberService;
         }
 
-        // GET: Member Report Page
         [HttpGet]
         public async Task<IActionResult> MemberReport()
         {
@@ -30,7 +29,6 @@ namespace SocPass.UI.Controllers
             return View("/Views/Report/ReportDataList.cshtml");
         }
 
-        // AJAX: Get Blocks by Society
         [HttpGet]
         public async Task<JsonResult> GetBlocksBySociety(int societyId)
         {
@@ -61,7 +59,10 @@ namespace SocPass.UI.Controllers
 
                 int visitedAdults = filteredMembers.Count(m => m.Visited && !m.IsChild);
                 int visitedChildren = filteredMembers.Count(m => m.Visited && m.IsChild);
+         
                 int pending = f.TotalMember - (visitedAdults + visitedChildren);
+
+                
 
                 flatReports.Add(new
                 {
@@ -72,6 +73,7 @@ namespace SocPass.UI.Controllers
                     f.TotalMember,
                     VisitedAdults = visitedAdults,
                     VisitedChildren = visitedChildren,
+                  
                     Pending = pending,
                     HasMembersForDate = filteredMembers.Any()
                 });

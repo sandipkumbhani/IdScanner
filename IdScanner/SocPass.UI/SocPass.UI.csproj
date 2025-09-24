@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SocPass.Domain\SocPass.Domain.csproj" />
     <ProjectReference Include="..\SocPass.UI.Application\SocPass.UI.Application.csproj" />
     <ProjectReference Include="..\SocPass.UI.Domain\SocPass.UI.Domain.csproj" />

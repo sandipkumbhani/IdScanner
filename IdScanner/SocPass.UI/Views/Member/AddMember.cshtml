@@ -34,7 +34,7 @@
 						<div class="card com-profile-info">
 							<div class="top-details">
 								<h2 class="page-form-title">Add Members Details</h2>
-								<form method="post" action="@Url.Action("AddMember", "Member")" id="memberForm">
+								@* <form method="post" action="@Url.Action("AddMember", "Member")" id="memberForm"> *@
 									<div class="row">
 										<div class="col-xl-4 col-lg-6">
 											<div class="item-input">
@@ -63,6 +63,32 @@
 											</div>
 										</div>
 									</div>
+
+									<div class="col-xl-12 col-lg-12 mt-4" id="excelSection" style="display:none;">
+										<h4 class="fw-semibold fs-5 mb-2">Bulk Upload Members (Excel)</h4>
+
+										<!-- Download Template -->
+										<a id="downloadExcelBtn" class="btn btn-outline-primary mb-3" target="_blank">
+											Download Excel Template
+										</a>
+
+										<!-- Upload Filled Excel -->
+										<form asp-action="UploadMembers" asp-controller="Member"
+											  method="post" enctype="multipart/form-data">
+
+											<div class="mb-3">
+												<label for="file" class="form-label">Choose Excel File</label>
+												<input type="file" class="form-control" id="file" name="file" accept=".xlsx" required />
+											</div>
+
+											<div class="d-flex gap-3 mt-3">
+												<button type="submit" class="btn btn-success">Upload</button>
+												<a href="@Url.Action("FlatList", "Flat")" class="btn btn-secondary">Back to List</a>
+											</div>
+
+										</form>
+									</div>
+
 									<div class="col-xl-12 col-lg-12">
 										<label id="flatsLabel" class="form-label required fw-semibold fs-6" style="display:none;">Flats</label>
 										<div id="flatContainer"></div>
@@ -79,7 +105,7 @@
 										</div>
 									</div>
 
-								</form>
+								@* </form> *@
 							</div>
 
 						</div>
@@ -277,6 +303,19 @@
 			$("#flatsLabel").hide();
 			$(".error-message").text("");
 			$(".is-invalid").removeClass("is-invalid");
+		});
+
+				$("#Block").change(function () {
+			var societyId = $("#Society").val();
+			var blockId = $(this).val();
+
+			if (societyId && blockId) {
+				$("#excelSection").show();
+				$("#downloadExcelBtn").attr("href",
+					`/Member/DownloadTemplate?societyId=${societyId}&blockId=${blockId}`);
+			} else {
+				$("#excelSection").hide();
+			}
 		});
 
 	</script>

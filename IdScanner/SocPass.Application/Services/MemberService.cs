@@ -269,7 +269,7 @@ namespace SocPass.Application.Services
                             new RectangleF(rectX, rectY, rectWidth, rectHeight),
                             new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
                     }
-                    var qrFolder = Path.Combine(@"D:\\Broadsy\\Projects\\IdScanner\\IdScanner\\SocPass.UI", "wwwroot", "QRCodes");
+                    var qrFolder = Path.Combine(@"D:\Broadsy\Project\IdScanner\SocPass.UI", "wwwroot", "QRCodes");
                     if (!Directory.Exists(qrFolder))
                         Directory.CreateDirectory(qrFolder);
                     var qrFileName = $"{memberid}_qr.png";

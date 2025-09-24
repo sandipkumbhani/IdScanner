@@ -87,7 +87,7 @@ namespace SocPass.Infrastructure.Repository
 
         public async Task DeleteFlatAsync(int flatId)
         {
-            var member = await _context.members.FindAsync(flatId);
+            var member = await _context.flats.FindAsync(flatId);
             if (member != null)
             {
                 member.IsActive = false;
@@ -97,7 +97,7 @@ namespace SocPass.Infrastructure.Repository
         public async Task<List<Flat>> GetFlatByBlockIdAsync(int blockid)
         {
             return await _context.flats
-                .Where(d => d.BlockId == blockid)
+                .Where(d => d.BlockId == blockid && d.IsActive == true)
                 .Select(d => new Flat
                 {
                     FlatId = d.FlatId,

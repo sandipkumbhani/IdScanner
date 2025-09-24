@@ -153,6 +153,7 @@ namespace SocPass.Infrastructure.Repository
             foreach (var member in members)
             {
                 member.PassDate = DateOnly.FromDateTime(passDate);
+                member.Visited = false;
                 member.UpdateDate = DateTime.Now;
             }
             await _context.SaveChangesAsync();
@@ -182,6 +183,7 @@ namespace SocPass.Infrastructure.Repository
             foreach (var member in members)
             {
                 member.PassDate = DateOnly.FromDateTime(passDate);
+                member.Visited = false;
                 member.UpdateDate = DateTime.Now;
             }
             await _context.SaveChangesAsync();
