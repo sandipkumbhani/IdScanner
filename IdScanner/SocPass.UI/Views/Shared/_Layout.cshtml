@@ -45,7 +45,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @* <a class="nav-link dropdown-toggle nav-user" href="#" id="userDropdown"
+                 <a class="nav-link dropdown-toggle nav-user" href="#" id="userDropdown"
                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="account-user-avatar">
                         <img src="~/images/avatar-1.png" alt="user-image" width="40" class="rounded-circle">
@@ -62,7 +62,7 @@
                             <span>Logout</span>
                         </button>
                     </form>
-                </div> *@
+                </div>
             </div>
         </nav>
     </header>
@@ -105,11 +105,9 @@
                 <div class="leftbar custom-scroll">
                     <div class="left-sidebar-wrap">
                         <div class="sidebar-menu-area">
-                            <!--- Sidemenu -->
                             <ul id="leftside-menu-container" class="side-nav" style="padding:initial;">
                                 @await Component.InvokeAsync("UserMenu")
                             </ul>
-                            <!--- End Sidemenu -->
                             <div class="clearfix"></div>
                         </div>
                     </div>
@@ -180,63 +178,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-@*
-<ul id="leftside-menu-container" class="side-nav" style="padding:initial;">
-	<li class="side-nav-item">
-		<a class="nav-link" asp-controller="User" asp-action="UserList">
-			<i class="ri-time-line"></i>
-			<i class="ri-time-fill"></i>
-			<span> Users </span>
-		</a>
-	</li>
-	<li class="side-nav-item">
-		<a class="nav-link" asp-controller="MenuMaster" asp-action="MenuMasterList">
-			<i class="ri-time-line"></i>
-			<i class="ri-time-fill"></i>
-			<span> Menu Master </span>
-		</a>
-	</li>
-	<li class="side-nav-item">
-		<a class="nav-link" asp-controller="MenuMapping" asp-action="MenuMappingList">
-			<i class="ri-time-line"></i>
-			<i class="ri-time-fill"></i>
-			<span> User MenuMapping </span>
-		</a>
-	</li>
-	<li class="side-nav-item">
-		<a class="nav-link" asp-controller="ShowTranscript" asp-action="ShowTranscript">
-			<i class="ri-time-line"></i>
-			<i class="ri-time-fill"></i>
-			<span> Show Transcript </span>
-		</a>
-	</li>
-
-
-</ul> *@
-
-@* <div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-2 bg-light border-end" style="min-height: 100vh;">
-            <h5 class="p-3">Menu</h5>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="User" asp-action="UserList">Users</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="MenuMaster" asp-action="MenuMasterList">Menu Master</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="MenuMapping" asp-action="MenuMappingList">User MenuMapping</a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-md-10">
-            <main role="main" class="pt-3">
-                @RenderBody()
-            </main>
-        </div>
-    </div>
-</div> *@

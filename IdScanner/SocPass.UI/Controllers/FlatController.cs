@@ -62,18 +62,8 @@ namespace SocPass.UI.Controllers
             var societies = await _societyService.GetAllSocietyAsync();
             ViewBag.SocietyList = societies;
 
-            if (flat.SocietyId == 0 || flat.BlockId == 0)
-            {
-                await _flatRepository.AddFlatAsync(flat);
-            }
-            else if (flat.FlatId == 0)
-            {
-                await _flatRepository.AddFlatAsync(flat);
-            }
-            else
-            {
-                await _flatRepository.UpdateFlatAsync(flat);
-            }
+            await _flatRepository.UpdateFlatAsync(flat);
+
             return RedirectToAction("FlatList");
         }
 

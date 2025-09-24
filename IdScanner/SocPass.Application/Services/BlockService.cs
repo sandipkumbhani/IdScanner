@@ -1,12 +1,6 @@
 ﻿using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SocPass.Application.Services
 {
@@ -33,7 +27,6 @@ namespace SocPass.Application.Services
             };
             return await _blockRepository.CreateBlockAsync(newBlock);
         }
-
         public async Task<List<Block>> GetAllBlockAsync()
         {
             var newBlock = await _blockRepository.GetAllBlockAsync();
@@ -49,7 +42,6 @@ namespace SocPass.Application.Services
             }
             return block;
         }
-
         public async Task<Block> UpdateBlockAsync(int blockid,Block block)
         {
             var blockexisting = await _blockRepository.GetBlockByIdAsync(blockid);
@@ -66,7 +58,6 @@ namespace SocPass.Application.Services
             await _blockRepository.UpdateBlockAsync(blockexisting);
             return block;
         }
-
         public async Task DeleteBlockByIdAsync(int blockid)
         {
             var blockexisting = await _blockRepository.GetBlockByIdAsync(blockid);
@@ -76,7 +67,6 @@ namespace SocPass.Application.Services
             }
             await _blockRepository.DeleteBlockAsync(blockexisting);
         }
-
         public async Task<List<Block>> GetBlocksBySocietyIdAsync(int societyId)
         {
             return await _blockRepository.GetBlocksBySocietyIdAsync(societyId);

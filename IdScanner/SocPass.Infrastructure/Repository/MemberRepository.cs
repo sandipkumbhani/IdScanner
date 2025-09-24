@@ -95,8 +95,6 @@ namespace SocPass.Infrastructure.Repository
                 })
                 .FirstOrDefaultAsync();
         }
-
-
         public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
         {
             //var entity = await _context.members
@@ -118,7 +116,7 @@ namespace SocPass.Infrastructure.Repository
             if (entity == null)
                 return false;
 
-            if (!entity.Visited) // update only if not visited
+            if (!entity.Visited)
             {
                 entity.Visited = true;
                 entity.UpdateDate = DateTime.Now;
@@ -128,11 +126,10 @@ namespace SocPass.Infrastructure.Repository
             return true;
 
         }
-
         public async Task<bool> AddMemberPassDateAsync(int blockId, DateTime passDate)
         {
             var flatIds = await _context.flats
-                                        .Where(f => f.BlockId == blockId && f.IsActive==true)
+                                        .Where(f => f.BlockId == blockId && f.IsActive == true)
                                         .Select(f => f.FlatId)
                                         .ToListAsync();
 
@@ -142,7 +139,7 @@ namespace SocPass.Infrastructure.Repository
             }
 
             var members = await _context.members
-                                        .Where(m => flatIds.Contains(m.FlatId) && m.IsActive == true &&m.IsGuest == false)
+                                        .Where(m => flatIds.Contains(m.FlatId) && m.IsActive == true && m.IsGuest == false)
                                         .ToListAsync();
 
             if (!members.Any())
@@ -192,4 +189,4 @@ namespace SocPass.Infrastructure.Repository
     }
 }
 
-        
+

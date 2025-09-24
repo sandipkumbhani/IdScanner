@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
@@ -90,14 +91,14 @@ namespace SocPass.Infrastructure.Repository
             var member = await _context.flats.FindAsync(flatId);
             if (member != null)
             {
-                member.IsActive = false;
+                _context.flats.Remove(member);
                 await _context.SaveChangesAsync();
-            };
+            }
         }
         public async Task<List<Flat>> GetFlatByBlockIdAsync(int blockid)
         {
             return await _context.flats
-                .Where(d => d.BlockId == blockid && d.IsActive == true)
+                .Where(d => d.BlockId == blockid && d.IsActive==true)
                 .Select(d => new Flat
                 {
                     FlatId = d.FlatId,
@@ -127,7 +128,6 @@ namespace SocPass.Infrastructure.Repository
                                .ToList()  
                 })
                 .ToListAsync();
-
             return result;
         }
         public async Task<List<FlatWithMembersDto>> GetGuestQr(int blockid)

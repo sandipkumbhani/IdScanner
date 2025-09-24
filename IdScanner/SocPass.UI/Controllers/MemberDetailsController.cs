@@ -24,14 +24,20 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> GetDetails(int memberId)
         {
             if (string.IsNullOrEmpty(_globalClass.Token))
+            {
                 return RedirectToAction("Login", "Login");
+            }
 
             if (memberId == 0)
+            {
                 return BadRequest("Member Id is not found.");
+            }
 
             var result = await _memberService.GetMemberByMemberId(memberId);
             if (result == null)
+            {
                 return NotFound();
+            }
 
             ViewBag.Message = TempData["Message"];
             ViewBag.AlertType = TempData["AlertType"];
@@ -43,10 +49,14 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> IsVisited(int memberId)
         {
             if (string.IsNullOrEmpty(_globalClass.Token))
+            {
                 return RedirectToAction("Login", "Login");
+            }
 
             if (memberId == 0)
+            {
                 return BadRequest("Member Id is not found.");
+            }
 
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int loggedInUserId);
