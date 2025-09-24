@@ -14,14 +14,12 @@ namespace SocPass.API.Controllers
         {
             _blockService = blockService;
         }
-
         [HttpGet("GetAllBlock")]
         public async Task<IActionResult> GetAllBlock()
         {
             var blocks = await _blockService.GetAllBlockAsync();
             return Ok(blocks);
         }
-
         [HttpPost("Create-Block")]
         public async Task<IActionResult> CreateBlock([FromBody] Block block)
         {
@@ -53,7 +51,6 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpPut("Update-Block/{blockid}")]
         public async Task<IActionResult> UpdateBlockAsync(int blockid, [FromBody] Block block)
         {
@@ -62,7 +59,6 @@ namespace SocPass.API.Controllers
             {
                 return NotFound($"Block with ID {blockid} not found.");
             }
-
             try
             {
                 var UpdatedBlock = await _blockService.UpdateBlockAsync(blockid, block);

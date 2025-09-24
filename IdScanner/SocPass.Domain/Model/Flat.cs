@@ -22,8 +22,8 @@ namespace SocPass.Domain.Model
         [NotMapped]
         public int EndFlatNumber { get; set; }
 
-        [NotMapped]
-        public int FlatsPerFloor { get; set; }
+        //[NotMapped]
+        //public int FlatsPerFloor { get; set; }
         public int FloorNumber { get; set; }
         public int TotalMember {  get; set; }
         public int NumberOfAdult { get; set; }  

@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
-using SocPass.Application.Services;
 using SocPass.Domain.DTO;
-using SocPass.Domain.Model;
-using System.Net.Sockets;
 
 namespace SocPass.API.Controllers
 {

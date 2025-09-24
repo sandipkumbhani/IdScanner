@@ -25,7 +25,7 @@ namespace SocPass.Application.Services
             if (flat.StartFlatNumber == 0 && flat.EndFlatNumber == 0 && flat.NumberOfFlats == 0)
             {
                 var newFlat = new Flat
-                {
+                { 
                     SocietyId = flat.SocietyId,
                     BlockId = flat.BlockId,
                     FlatNumber = flat.FlatNumber.ToString(),
@@ -44,7 +44,6 @@ namespace SocPass.Application.Services
                 createdFlats.Add(result);
                 return createdFlats;
             }
-
             if (flat.EndFlatNumber < flat.StartFlatNumber)
             {
                 throw new ArgumentException("End flat number must be >= start flat number.");
@@ -191,6 +190,28 @@ namespace SocPass.Application.Services
                     }
                 }
             }
+            else if (flat.StartFlatNumber == 0 && flat.EndFlatNumber == 0 && flat.NumberOfFlats == 0)
+            {
+                var newFlat = new Flat
+                {
+                    SocietyId = flat.SocietyId,
+                    BlockId = flat.BlockId,
+                    FlatNumber = flat.FlatNumber.ToString(),
+                    FloorNumber = flat.FloorNumber,
+                    TotalMember = flat.TotalMember,
+                    NumberOfAdult = flat.NumberOfAdult,
+                    NumberOfChild = flat.NumberOfChild,
+                    IsActive = true,
+                    InsertBy = 1,
+                    InsertDate = DateTime.Now,
+                    UpdateBy = 1,
+                    UpdateDate = DateTime.Now
+                };
+
+                var result = await _flatRepository.CreateFlatAsync(newFlat);
+                updatedFlats.Add(result);
+                return updatedFlats;
+            }
             else
             {
                 int digitLength = flat.StartFlatNumber.ToString().Length - 1;
@@ -246,7 +267,6 @@ namespace SocPass.Application.Services
                     }
                 }
             }
-
             return updatedFlats;
         }
         public async Task<List<Flat>>   GetFlatByBlockID(int blockid)

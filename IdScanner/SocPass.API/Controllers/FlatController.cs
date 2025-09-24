@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
-using SocPass.Application.Services;
 using SocPass.Domain.Model;
 
 namespace SocPass.API.Controllers
