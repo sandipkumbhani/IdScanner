@@ -13,8 +13,6 @@ namespace SocPass.Domain.Model
         [Key]
         public int SocietyId { get; set; }
 
-        public int UserId { get; set; }
-
         [Required(ErrorMessage = "Society Name is required")]
         public string? Name { get; set; }
 
@@ -42,9 +40,6 @@ namespace SocPass.Domain.Model
         public DateTime InsertDate { get; set; }
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
-
-        [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
     }
 
 }

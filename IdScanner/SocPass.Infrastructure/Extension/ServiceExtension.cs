@@ -20,7 +20,9 @@ namespace SocPass.Infrastructure.Extension
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IMenuMasterRepository, MenuMasterRepository>();
             services.AddScoped<IForgotPasswordDbRepository, ForgotPasswordDbRepository>();
-            services.AddScoped<IGetLoginUserNameRepository, GetLoginUserNameRepository>();  
+            services.AddScoped<IGetLoginUserNameRepository, GetLoginUserNameRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();  
 ;          
             return services;
         }

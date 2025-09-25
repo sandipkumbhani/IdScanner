@@ -12,6 +12,8 @@ namespace SocPass.Domain.Model
     {
         [Key]
         public int UserId { get; set; }
+        public int SocietyId { get; set; }
+        public int UserRoleId { get; set; }
         [StringLength(200)]
         public string? Name { get; set; }
         [StringLength(500)]
@@ -26,6 +28,10 @@ namespace SocPass.Domain.Model
         public DateTime InsertDate { get; set; }
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
+        [ForeignKey("SocietyId")]
+        public virtual Society? Society { get; set; }
+        [ForeignKey("UserRoleId")]
+        public virtual UserRole? UserRole { get; set; }
     }
 }
 

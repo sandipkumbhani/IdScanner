@@ -50,9 +50,9 @@ namespace SocPass.UI.Controllers
             //{
             //    return RedirectToAction("Login", "Login");
             //}
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            long.TryParse(userIdClaim, out long userId);
-            society.UserId = (int)userId;
+            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            //long.TryParse(userIdClaim, out long userId);
+            //society.UserId = (int)userId;
             if (society.SocietyId == 0)
             {
                 await _societyService.AddSocietyAsync(society);

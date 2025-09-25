@@ -25,7 +25,6 @@ namespace SocPass.Application.Services
                 Email = society.Email,
                 Contact = society.Contact,
                 Contact2 = society.Contact2,
-                UserId = society.UserId,
                 IsActive = true,
                 InsertBy = 1,
                 InsertDate = DateTime.Now,
