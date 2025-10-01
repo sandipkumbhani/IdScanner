@@ -21,9 +21,7 @@ namespace SocPass.API.Controllers
             {
                 return BadRequest(new { message = "Email and Password are required" });
             }
-
             var result = await _loginService.LoginAsync(request.EmailId, request.Password);
-
             if (result == null)
             {
                 return Unauthorized(new CommanResponseDto

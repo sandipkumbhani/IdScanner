@@ -1,0 +1,110 @@
+﻿    @model SocPass.Domain.Model.Subscription
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var SubScriptionList = ViewBag.SubScriptionList;
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/css/stylesheet.css" rel="stylesheet" />
+    <link href="~/css/addpagination.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.rtl.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.rtl.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/wwwroot/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/wwwroot/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/app-style.css" rel="stylesheet" />
+    <link rel="StyleSheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>SocPass | MenuMasterList</title>
+</head>
+<body>
+    <div class="content-page" style="margin:35px 0 0 0">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <div class="col-12">
+                            <div class="page-title-box add">
+                                <h1 class="page-title">Subscription</h1>
+
+                                <div class="add-btn">
+                                    <a href="#" id="btnAddMenu">
+                                        <i class="ri-add-line"></i> <span>Add Subscription</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <!-- Top Header -->
+                            <div class="table-top-header">
+                                <h4>List of SubScription</h4>
+                            </div>
+                            <div class="table-responsive">
+                                <table id="franchiseTable" class="table dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th class="dt-orderable-asc dt-orderable-desc">Society Name</th>
+                                            <th>Starting Date</th>
+                                            <th>Ending Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var subscription in SubScriptionList)
+                                        {
+                                            <tr>
+                                                <td>@subscription.Society.Name</td>
+                                                <td>@subscription.StartFrom</td>
+                                                <td>@subscription.EndTo</td>
+                                                <td>
+                                                    <div class="action-items">
+                                                        <a href="@Url.Action("AddSubScription", "Subscription", new { subscriptionId = subscription.SubscriptionId })" class="icon-btn">
+                                                            <i class="ri-edit-2-line"></i>
+                                                        </a>
+                                                        <a href="@Url.Action("DeleteSubscription", "Subscription", new { subscriptionId = subscription.SubscriptionId })" class="icon-btn"
+                                                           onclick="return confirm('Are you sure you want to delete this menu?');">
+                                                            <i class="ri-delete-bin-3-line"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <!-- Bottom Area -->
+                                <div class="datatable-footer-bottom">
+                                    <div class="totle-left">
+                                        <span id="totalRecords">Total Reminders: 3</span>
+                                    </div>
+                                    <div id="pagination" class="dataTables_paginate paging_simple_numbers"></div>
+                                    <div class="show-page">
+                                        <span>Show per page:</span>
+                                        <select id="rowsPerPage" class="form-select">
+                                            <option value="5">5 </option>
+                                            <option value="10" selected>10 </option>
+                                            <option value="25">25</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).on("click", "#btnAddMenu", AddSubScription);
+
+        function AddSubScription() {
+            window.location.href = "/Subscription/AddSubScription";
+        }
+    </script>
+</body>
+</html>
+<script src="~/js/addpagination.js"></script>

@@ -37,7 +37,6 @@ namespace SocPass.API.Controllers
                 return Ok($"Something Went Wrong");
             }
         }
-
         [HttpGet("GetBlockById")]
         public async Task<IActionResult> GetBlockById(int blockid)
         {

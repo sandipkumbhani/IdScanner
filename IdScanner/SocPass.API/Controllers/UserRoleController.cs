@@ -4,6 +4,8 @@ using SocPass.Domain.Model;
 
 namespace SocPass.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UserRoleController : Controller
     {
         private readonly IUserRoleService _userRoleService;

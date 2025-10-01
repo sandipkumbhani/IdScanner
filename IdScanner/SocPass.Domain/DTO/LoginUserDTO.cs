@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace SocPass.Domain.DTO
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
         public string? Token { get; set; }
+        public string? UserRoleName { get; set; }
 
     }
 }

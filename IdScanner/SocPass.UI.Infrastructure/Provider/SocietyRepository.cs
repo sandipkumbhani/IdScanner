@@ -27,30 +27,31 @@ namespace SocPass.UI.Infrastructure.Provider
             apiCredential = new APICredential(configuration);
             _globalClass = globalClass;
         }
-
-        public async Task<List<Society>> GetAllSocietyAsync()
+        public async Task<List<Society>> GetAllSocietyAsync(int userId)
         {
-            var baseUrl = apiCredential.url + "Society/getAllSociety";
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+            var baseUrl = apiCredential.url + $"Society/getAllSociety?userId={userId}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Society>>(jsonString)!;
         }
-
         public async Task<Society> GetSocietyByIdAsync(int? societyId)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Society/GetSocietyById?societyId={societyId}";
             var response = await _httpClinet.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Society>(jsonString)!;
         }
-        public async Task<string> AddSocietyAsync(Society society) 
+        public async Task<string> AddSocietyAsync(Society society)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Society/create";
             var societyJson = JsonConvert.SerializeObject(society);
             var requestContent = new StringContent(societyJson, Encoding.UTF8, "application/json");
             var response = await _httpClinet.PostAsync(baseUrl, requestContent);
-            var responseData = await response.Content.ReadAsStringAsync(); 
+            var responseData = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
@@ -65,7 +66,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<string> UpdateSocietyAsync(Society society)
         {
-            //_httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Society/Update-society/{society.SocietyId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(society), Encoding.UTF8, "application/json");
             var response = await _httpClinet.PutAsync(baseUrl, jsonContent);
@@ -74,7 +75,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<string> DeleteSocietyAsync(int societyId)
         {
-            //_httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Society/Delete-Society?societyId={societyId}";
             var response = await _httpClinet.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();

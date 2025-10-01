@@ -198,7 +198,6 @@ namespace SocPass.Application.Services
                     child.UpdateDate = DateTime.Now;
                     await _memberRepository.UpdateMemberAsync(child);
                 }
-            
                 for (int i = existingChildren.Count; i < childAges.Count; i++)
                 {
                     var newChild = new Member

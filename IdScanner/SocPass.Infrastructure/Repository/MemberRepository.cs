@@ -46,8 +46,6 @@ namespace SocPass.Infrastructure.Repository
                 .Where(x => x.IsActive && !x.IsGuest && x.FlatId == flatId)
                 .ToListAsync();
         }
-
-
         public async Task UpdateMemberAsync(Member member)
         {
             _context.members.Update(member);

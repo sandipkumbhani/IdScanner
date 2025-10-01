@@ -10,7 +10,7 @@ namespace SocPass.Domain.Model
     public class Subscription
     {
         public int SubscriptionId { get; set; }
-        public int UserId { get; set; }
+        public int SocietyId { get; set; }
         public DateTime StartFrom { get; set; }
         public DateTime EndTo { get; set; }
         public bool IsActive { get; set; }
@@ -19,8 +19,8 @@ namespace SocPass.Domain.Model
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
 
-        [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
+        [ForeignKey("SocietyId")]
+        public virtual Society? Society { get; set; }
 
     }
 }

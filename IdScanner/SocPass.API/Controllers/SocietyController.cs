@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
 
@@ -6,6 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class SocietyController : Controller
     {
         private readonly ISocietyService _societyService;
@@ -28,9 +30,10 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpGet("getAllSociety")]
-        public async Task<IActionResult> GetAllSociety()
+        public async Task<IActionResult> GetAllSociety(int userId)
         {
-            var societies = await _societyService.GetAllSocietyAsync();
+
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             return Ok(societies);
         }
         [HttpPost("create")]

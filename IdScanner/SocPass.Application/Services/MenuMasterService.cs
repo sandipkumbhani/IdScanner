@@ -82,10 +82,7 @@ namespace SocPass.Application.Services
             menuExisting.InsertDate = DateTime.UtcNow;
             menuExisting.UpdateBy = 1;
             menuExisting.UpdateDate = DateTime.UtcNow;
-
-
             await _menuMasterRepository.UpdatMenuAsync(menuExisting);
-
             return menuExisting;
         }
         public async Task<MenuMaster> GetMenuMsaterById(int id)

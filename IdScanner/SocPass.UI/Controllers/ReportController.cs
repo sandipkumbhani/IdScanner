@@ -25,7 +25,9 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> MemberReport()
         {
-            ViewBag.Societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
             return View("/Views/Report/ReportDataList.cshtml");
         }
 

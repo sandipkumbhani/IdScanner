@@ -22,8 +22,9 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddBlock(int? blockid)
         {
-            // Always populate society list
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = societies;
 
             if (blockid == null)
@@ -38,7 +39,9 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBlock(Block block)
         {
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = societies;
             string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(block.BlockNumber))

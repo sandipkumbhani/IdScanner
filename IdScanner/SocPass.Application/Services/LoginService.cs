@@ -23,8 +23,8 @@ namespace SocPass.Application.Services
         private readonly string _JwtIssuer;
         private readonly string _JwtAudience;
         private readonly int _JwtExpiry;
-
-        public LoginService(ILoginRepository loginRepository, IConfiguration configuration)
+        private readonly IUserRoleRepository _userRoleRepository;
+        public LoginService(ILoginRepository loginRepository, IConfiguration configuration, IUserRoleRepository userRoleRepository)
         {
             _loginRepository = loginRepository;
             _configuration = configuration;
@@ -32,7 +32,7 @@ namespace SocPass.Application.Services
             _JwtIssuer = _configuration["Jwt:Issuer"];
             _JwtAudience = _configuration["Jwt:Audience"];
             _JwtExpiry = int.Parse(_configuration["Jwt:ExpiryMinutes"] ?? "60");
-
+            _userRoleRepository = userRoleRepository;
         }
         public async Task<LoginUserDTO?> LoginAsync(string email, string password)
         {
@@ -48,12 +48,15 @@ namespace SocPass.Application.Services
                 {
                     return null;
                 }
-                var token = GenerateJwtToken(user);
+                var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
+
+                var token = GenerateJwtToken(user, role.Name);
                 return new LoginUserDTO
                 {
                     UserId = user.UserId,
                     Name = user.Name,
                     EmailId = user.EmailId,
+                    UserRoleName = user.UserRole?.Name,
                     Token = token,
                     Password = password,
                     IsActive = user.IsActive,
@@ -70,13 +73,14 @@ namespace SocPass.Application.Services
             return null;
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(User user,string roleName)
         {
             var Cliams = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email,user.EmailId ?? string.Empty),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, roleName)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Jwtkey));

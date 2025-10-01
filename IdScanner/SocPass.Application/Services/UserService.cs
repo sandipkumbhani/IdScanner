@@ -12,10 +12,12 @@ namespace SocPass.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserRoleRepository _userRoleRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository)
         {
             _userRepository = userRepository;
+            _userRoleRepository = userRoleRepository;
         }
         public async Task<User> CreateUserAsync(User user)
         {
@@ -24,22 +26,26 @@ namespace SocPass.Application.Services
             {
                 throw new InvalidOperationException("This email is already registered.");
             }
-            var salt = Guid.NewGuid().ToString("N").Substring(0, 8);
+            var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
+            int? societyId = role.Name == "Admin" ? null : user.SocietyId;
+
             var newUser = new User
             {
                 Name = user.Name,
                 EmailId = user.EmailId,
                 Password = user.Password,
                 UserRoleId = user.UserRoleId,
-                SocietyId=user.SocietyId,
+                SocietyId = societyId,
                 IsActive = true,
                 InsertBy = 1,
                 InsertDate = DateTime.Now,
                 UpdateBy = 1,
                 UpdateDate = DateTime.Now
             };
+
             return await _userRepository.AddUserAsync(newUser);
         }
+
         public async Task<List<User>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllUsersAsync();
