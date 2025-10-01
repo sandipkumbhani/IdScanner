@@ -9,7 +9,7 @@ namespace SocPass.Domain.Model
 {
     public class SocietyData
     {
-        public int SocietyDataId { get; set; }
+        public int? SocietyDataId { get; set; }
         public int FlatId { get; set; }
         public string? ContactName { get; set; }
         public string? ContactNumber { get; set; }

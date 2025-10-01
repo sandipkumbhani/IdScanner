@@ -1,7 +1,7 @@
-﻿@model MicroService_Template.Domain.Model.ModelUsers
+﻿@model SocPass.Domain.Model.User
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    IList<MicroService_Template.Domain.Model.ModelUsers> UserList = ViewBag.UserList;
+    IList<SocPass.Domain.Model.User> UserList = ViewBag.UserList;
 }
 <html>
 <head>
@@ -26,33 +26,12 @@
                                 </div>
                             </div>
                         </div>
-                       
-                        @* <button class="btn btn-primary me-2" style="width:95px;height:38px;" id="btnAddUser">Add User</button> *@
-                        @*  <div class="dropdown">
-                        <button id="filterDropdown"
-                                class="btn btn-outline-secondary dropdown-toggle month-filter"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            -- All Months -- <i class="ri-arrow-down-s-fill" style="font-size:larger"></i>
-                        </button>
-                        <ul class="dropdown-menu" id="monthDropdownMenu" aria-labelledby="filterDropdown"></ul>
-                    </div> *@
                     </div>
                     <div class="col-12">
                         <div class="card com-profile-info">
                             <!-- Top Header -->
                             <div class="table-top-header">
                                 <h4>List of Users</h4>
-                                <div class="d-flex gap-2">
-                                    @*  <div class="table-search-box">
-                                    <input type="text" id="customFranchiseSearch" class="form-control form-control-sm" placeholder="Search...">
-                                    <button type="submit"><i class="ri-search-line"></i></button>
-                                </div> *@
-                                    @*  <div id="exportFranchiseButtons">
-                                    <button id="exportExcel" class="btn-btn-outline-secondary">
-                                        <i class="bi bi-file-earmark-excel"></i> Export
-                                    </button>
-                                </div> *@
-                                </div>
                             </div>
                             <!-- Table -->
                             <div class="table-responsive" id="franchiseTable">

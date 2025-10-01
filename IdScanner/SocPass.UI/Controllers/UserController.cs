@@ -1,25 +1,21 @@
-﻿using Emertec.UI.Application.Interface;
-using Emertec.UI.Application.Services;
-using Emertec.UI.Domain.Model;
-using MicroService_Template.Domain.Model;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using SocPass.Domain.Model;
+using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
 using System.Security.Claims;
 
-namespace EmertecUI.Controllers
+namespace SocPass.Controllers
 {
     public class UserController : Controller
     {
-        IUserServices _userServices;
-        IMenuMappingServices _menuMappingServices;
-        IMenuMasterServices _menuMasterServices;
+        IUserService _userServices;
         private GlobalClass _globalClass;
-        public UserController(IUserServices userServices, IMenuMappingServices menuMappingServices,IMenuMasterServices menuMasterServices, GlobalClass globalClass)
+        private readonly ISocietyService _Societyservices;
+        public UserController(IUserService userServices, GlobalClass globalClass, ISocietyService societyservices)
         {
             _userServices = userServices;
-            _menuMappingServices = menuMappingServices;
-            _menuMasterServices = menuMasterServices;
             _globalClass = globalClass;
+            _Societyservices = societyservices;
         }
         public async Task<IActionResult> UserList()
         {
@@ -27,18 +23,7 @@ namespace EmertecUI.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
-            var role = HttpContext.User?.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            long.TryParse(userIdClaim, out long userId);
-            IList<ModelUsers> userList = await _userServices.GetAllUsersAsync();
-            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                userList = userList.Where(u => u.UserId != userId).ToList();
-            }
-            else
-            {
-                userList = userList.Where(u => u.UserId == userId).ToList();
-            }
+            IList<User> userList = await _userServices.GetAllUsersAsync();
             ViewBag.UserList = userList;
             return View("~/Views/User/UserList.cshtml");
         }
@@ -48,13 +33,13 @@ namespace EmertecUI.Controllers
             await InitViewBag();
             if (id == null)
             {
-                return View(new ModelUsers());
+                return View(new User());
             }
             var user = await _userServices.GetUserByIdAsync(id.Value);
             return View(user);
         }
         [HttpPost]
-        public async Task<IActionResult> AddUser(ModelUsers modelUsers,string action)
+        public async Task<IActionResult> AddUser(User modelUsers, string action)
         {
             string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(modelUsers.Name))
@@ -98,20 +83,7 @@ namespace EmertecUI.Controllers
             }
             if (modelUsers.UserId == 0)
             {
-                ModelUsers createdUser = await _userServices.AddUserAsync(modelUsers);
-                long newUserId = createdUser.UserId; 
-                var roles = await _userServices.GetRoleNameByIdAsync(modelUsers.UserRoleId);
-                string roleName = roles.Name ?? "";
-                if (string.Equals(roleName, "Admin", StringComparison.OrdinalIgnoreCase))
-                {
-                    var allMenus = await _menuMasterServices.GetAllMenuMasterAsync();
-                    var menuMapping = new ModelUserMenuMapping
-                    {
-                        UserId = createdUser.UserId,
-                        MenuIds = string.Join(",", allMenus.Select(m => m.MenuId)),
-                    };
-                    await _menuMappingServices.AddMenuMappingAsync(menuMapping);
-                }
+                await _userServices.AddUserAsync(modelUsers);
             }
             else
             {
@@ -135,7 +107,11 @@ namespace EmertecUI.Controllers
         }
         private async Task InitViewBag()
         {
-            IList<ModelUserRole> userRoles = await _userServices.GetAllUserRoleAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _Societyservices.GetAllSocietyAsync(userId);
+            ViewBag.SocietyList = societies;
+            IList<UserRole> userRoles = await _userServices.GetAllUserRoleAsync();
             ViewBag.RoleList = userRoles;
         }
     }

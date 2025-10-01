@@ -12,7 +12,7 @@ namespace SocPass.Domain.Model
     {
         [Key]
         public int UserId { get; set; }
-        public int SocietyId { get; set; }
+        public int? SocietyId { get; set; }
         public int UserRoleId { get; set; }
         [StringLength(200)]
         public string? Name { get; set; }

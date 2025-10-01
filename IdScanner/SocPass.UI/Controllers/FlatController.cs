@@ -40,7 +40,9 @@ namespace SocPass.UI.Controllers
             //{
             //    return RedirectToAction("Login", "Login");
             //}
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = societies;
 
 
@@ -58,8 +60,9 @@ namespace SocPass.UI.Controllers
             //{
             //    return RedirectToAction("Login", "Login");
             //}
-
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = societies;
 
             await _flatRepository.UpdateFlatAsync(flat);

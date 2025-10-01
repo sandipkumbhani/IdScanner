@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SocPass.Domain.Model;
 
-namespace SocPass.UI.Domain.Interfaces
+namespace SocPass.Domain.Interface
 {
     public interface ISubscriptionRepository
     {
+        Task<Subscription> addsubscriptionAsync(Subscription subscription);
+        Task<Subscription> GetById(int subscriptionId);
+        Task UpdateSubscription(Subscription subscription);
+        Task<List<Subscription>> GetAllSubscriptionAsync();
+        Task DeleteSubscriptionAsync(int subscriptionId);
     }
 }

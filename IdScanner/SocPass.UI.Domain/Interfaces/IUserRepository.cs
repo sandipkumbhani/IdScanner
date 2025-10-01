@@ -1,16 +1,16 @@
-﻿using MicroService_Template.Domain.Model;
+﻿using SocPass.Domain.Model;
 
-namespace Emertec.UI.Domain.Interfaces
+namespace SocPass.UI.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<List<ModelUsers>> GetAllUsersAsync();
-        Task<ModelUsers> GetUsersByIdAsync(long? id);
-        Task<ModelUsers> AddUserAsync(ModelUsers user);
-        Task<ModelUsers> UpdateUserAsync(ModelUsers user);
+        Task<List<User>> GetAllUsersAsync();
+        Task<User> GetUsersByIdAsync(long? id);
+        Task<User> AddUserAsync(User user);
+        Task<User> UpdateUserAsync(User user);
         Task<string> DeleteUserAsync(int id);
         //UserRole
-        Task<List<ModelUserRole>> GetAllUserRoleAsync();
-        Task<ModelUserRole> GetRoleNameByIdAsync(long? id);
+        Task<List<UserRole>> GetAllUserRoleAsync();
+        Task<UserRole> GetRoleNameByIdAsync(long? id);
     }
 }

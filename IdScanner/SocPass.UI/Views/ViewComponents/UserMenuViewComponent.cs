@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using System.Security.Claims;
 
 namespace IdScanner.UI.Views.ViewComponents
 {
@@ -13,16 +15,20 @@ namespace IdScanner.UI.Views.ViewComponents
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //var userIdClaim = HttpContext.User.FindFirst("UserId")?.Value;
-            //if (!long.TryParse(userIdClaim, out long userId))
-            //{
-            //    return View(new List<MenuMaster>());
-            //}
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
-            //var menus = await _menuService.GetMenusByUserIdAsync(Convert.ToInt64(userIdClaim));
-            //return View(menus);
+            if (string.IsNullOrEmpty(role))
+                return View(new List<MenuMaster>());
+
             var menus = await _menuService.GetAllMenuMasterAsync();
+
+            if (!role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                menus = menus.Where(m => !m.Name.Equals("Add Society", StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
             return View(menus);
         }
+
     }
 }

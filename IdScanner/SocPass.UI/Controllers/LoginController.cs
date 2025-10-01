@@ -46,7 +46,7 @@ namespace SocPass.UI.Controllers
                         new Claim("UserId",responseToken.UserId.ToString()),
                         new Claim(ClaimTypes.Name, responseToken.UserName),
                         new Claim(ClaimTypes.Email, responseToken.EmailId),
-                        //new Claim(ClaimTypes.Role, responseToken.UserRoleName)
+                        new Claim(ClaimTypes.Role, responseToken.UserRoleName)
                     };
                     var identity = new ClaimsIdentity(claims,
                         CookieAuthenticationDefaults.AuthenticationScheme);

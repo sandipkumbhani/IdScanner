@@ -13,7 +13,6 @@ namespace SocPass.API.Controllers
         {
             _flatService = flatService;
         }
-
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] Flat flat)
         {

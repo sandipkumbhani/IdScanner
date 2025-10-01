@@ -23,13 +23,57 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return society;
         }
-        public async Task<Society>GetByIdAsync(int societyid)
+        public async Task<Society> GetByIdAsync(int societyid)
         {
-            return await _context.societies.Where(x=>x.IsActive==true).FirstOrDefaultAsync(e => e.SocietyId == societyid);
+            return await _context.societies.Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.SocietyId == societyid);
         }
-        public async Task<List<Society>>GetAllSocietyAsync()
+        public async Task<List<Society>> GetAllSocietyAsync(int userId)
         {
-            return await _context.societies.Where(x =>x.IsActive==true).ToListAsync();
+            var user = await _context.users
+                .Include(u => u.Society)
+                .Include(u => u.UserRole)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+                return new List<Society>();
+
+            if (user.SocietyId == null &&
+                user.UserRole != null &&
+                user.UserRole.Name == "Admin")
+            {
+                return await _context.societies
+                    .Where(s => s.IsActive)
+                    .Select(s => new Society
+                    {
+                        SocietyId = s.SocietyId,
+                        Name = s.Name,
+                        Address = s.Address,
+                        Email= s.Email,
+                        Contact = s.Contact,
+                        Contact2 = s.Contact2,
+                        IsActive = s.IsActive
+                    })
+                    .ToListAsync();
+            }
+
+            if (user.Society != null && user.Society.IsActive)
+            {
+                return new List<Society>
+                 {
+            new Society
+                {
+                    SocietyId = user.Society.SocietyId,
+                    Name = user.Society.Name,
+                    Address=user.Society.Address,
+                    Email=user.Society.Email,
+                    Contact=user.Society.Contact,
+                    Contact2=user.Society.Contact2,
+                    IsActive = user.Society.IsActive
+                }
+            };
+            }
+
+            return new List<Society>();
         }
         public async Task UpdateSocietyAsync(Society society)
         {
@@ -45,5 +89,6 @@ namespace SocPass.Infrastructure.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
     }
 }

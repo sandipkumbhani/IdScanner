@@ -22,17 +22,22 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> MemberQrList()
         {
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.Societies = societies;
             return View("/Views/MembersQrList/MembersQrList.cshtml");
         }
         [HttpPost]
         public async Task<IActionResult> GeneratePass(int blockId, DateTime passDate)
         {
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
             if (blockId <= 0 || passDate == default)
             {
                 ViewBag.Error = "Invalid block or date";
-                ViewBag.Societies = await _societyService.GetAllSocietyAsync();
+
+                ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
                 return View();
             }
             await _memberService.GeneratePass(blockId, passDate);
@@ -43,7 +48,9 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> GuestQrList()
         {
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.Societies = societies;
             return View("/Views/GuestQrList/GuestQrList.cshtml");
         }
@@ -53,7 +60,9 @@ namespace SocPass.UI.Controllers
             if (blockId <= 0 || passDate == default)
             {
                 ViewBag.Error = "Invalid block or date";
-                ViewBag.Societies = await _societyService.GetAllSocietyAsync();
+                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+                int.TryParse(userIdClaim, out int userId);
+                ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
                 return View();
             }
             await _memberService.GenerateGuestPass(blockId, passDate);

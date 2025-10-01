@@ -40,6 +40,7 @@ namespace SocPass.Domain.Model
         public DateTime InsertDate { get; set; }
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
+        public ICollection<User>? Users { get; set; }
     }
 
 }

@@ -322,6 +322,9 @@ namespace SocPass.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int>("SocietyId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartFrom")
                         .HasColumnType("datetime2");
 
@@ -331,12 +334,9 @@ namespace SocPass.Infrastructure.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("SubscriptionId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("SocietyId");
 
                     b.ToTable("Subscriptions");
                 });
@@ -370,7 +370,7 @@ namespace SocPass.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("SocietyId")
+                    b.Property<int?>("SocietyId")
                         .HasColumnType("int");
 
                     b.Property<long>("UpdateBy")
@@ -477,22 +477,20 @@ namespace SocPass.Infrastructure.Migrations
 
             modelBuilder.Entity("SocPass.Domain.Model.Subscription", b =>
                 {
-                    b.HasOne("SocPass.Domain.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SocPass.Domain.Model.User", b =>
-                {
                     b.HasOne("SocPass.Domain.Model.Society", "Society")
                         .WithMany()
                         .HasForeignKey("SocietyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Society");
+                });
+
+            modelBuilder.Entity("SocPass.Domain.Model.User", b =>
+                {
+                    b.HasOne("SocPass.Domain.Model.Society", "Society")
+                        .WithMany("Users")
+                        .HasForeignKey("SocietyId");
 
                     b.HasOne("SocPass.Domain.Model.UserRole", "UserRole")
                         .WithMany()
@@ -508,6 +506,11 @@ namespace SocPass.Infrastructure.Migrations
             modelBuilder.Entity("SocPass.Domain.Model.Flat", b =>
                 {
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("SocPass.Domain.Model.Society", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

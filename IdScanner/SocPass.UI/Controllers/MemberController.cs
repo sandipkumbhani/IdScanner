@@ -12,13 +12,13 @@ namespace SocPass.UI.Controllers
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
         private readonly IFlatService _flatRepository;
-        public MemberController(IMemberService memberService, IBlockService blockService,ISocietyService societyService,IFlatService flatService)
+        public MemberController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService)
         {
             _memberService = memberService;
             _blockService = blockService;
             _societyService = societyService;
             _flatRepository = flatService;
-            
+
         }
         //public async Task<IActionResult> MemberList(int flatId)
         //{
@@ -29,7 +29,9 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddMember()
         {
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.Societies = societies;
             var model = new MemberCreateRequest();
             return View("/Views/Member/AddMember.cshtml", model);
@@ -56,9 +58,10 @@ namespace SocPass.UI.Controllers
         public async Task<JsonResult> GetBlocksBySociety(int societyId)
         {
             var blocks = await _blockService.GetBlockBySocietyId(societyId);
-            var result = blocks.Select(b => new {
+            var result = blocks.Select(b => new
+            {
                 blockId = b.BlockId,
-                blockName = b.BlockNumber   
+                blockName = b.BlockNumber
             });
             return Json(result);
         }
@@ -67,16 +70,19 @@ namespace SocPass.UI.Controllers
         public async Task<JsonResult> GetFlatsByBlock(int blockId)
         {
             var flats = await _flatRepository.GetFlatByBlockId(blockId);
-            var result = flats.Select(f => new {
+            var result = flats.Select(f => new
+            {
                 flatId = f.FlatId,
-                flatNumber = f.FlatNumber     
+                flatNumber = f.FlatNumber
             });
             return Json(result);
         }
         [HttpGet]
         public async Task<IActionResult> AddGuest()
         {
-            var societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.Societies = societies;
             var model = new MemberCreateRequest();
             return View("/Views/Guest/AddGuest.cshtml", model);
@@ -100,38 +106,38 @@ namespace SocPass.UI.Controllers
             return RedirectToAction("FlatList", "Flat");
         }
 
-      
-[HttpGet]
-    public async Task<IActionResult> DownloadTemplate(int societyId, int blockId)
-    {
-        var flats = await _flatRepository.GetFlatByBlockId(blockId);
 
-        using (var workbook = new XLWorkbook())
+        [HttpGet]
+        public async Task<IActionResult> DownloadTemplate(int societyId, int blockId)
         {
-            var ws = workbook.Worksheets.Add("Flats");
+            var flats = await _flatRepository.GetFlatByBlockId(blockId);
 
-            // headers
-            ws.Cell(1, 1).Value = "FlatNumber";
-            ws.Cell(1, 2).Value = "NumberOfAdults";
-            ws.Cell(1, 3).Value = "NumberOfChildren";
-            ws.Cell(1, 4).Value = "ChildrenAges (comma separated)";
-
-            int row = 2;
-            foreach (var flat in flats)
+            using (var workbook = new XLWorkbook())
             {
-                ws.Cell(row, 1).Value = flat.FlatNumber;
-                row++;
-            }
+                var ws = workbook.Worksheets.Add("Flats");
 
-            using (var stream = new MemoryStream())
-            {
-                workbook.SaveAs(stream);
-                return File(stream.ToArray(),
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    $"Society_{societyId}_Block_{blockId}_Template.xlsx");
+                // headers
+                ws.Cell(1, 1).Value = "FlatNumber";
+                ws.Cell(1, 2).Value = "NumberOfAdults";
+                ws.Cell(1, 3).Value = "NumberOfChildren";
+                ws.Cell(1, 4).Value = "ChildrenAges (comma separated)";
+
+                int row = 2;
+                foreach (var flat in flats)
+                {
+                    ws.Cell(row, 1).Value = flat.FlatNumber;
+                    row++;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"Society_{societyId}_Block_{blockId}_Template.xlsx");
+                }
             }
         }
-    }
 
         [HttpPost]
         public async Task<IActionResult> UploadMembers(IFormFile file)

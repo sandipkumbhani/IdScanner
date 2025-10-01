@@ -4,6 +4,8 @@ using SocPass.Domain.Model;
 
 namespace SocPass.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -29,7 +31,7 @@ namespace SocPass.API.Controllers
                 var result = await _userService.CreateUserAsync(user);
                 return Ok(result);
             }
-            catch (KeyNotFoundException ex)
+            catch (KeyNotFoundException)
             {
                 return Ok($"This email is already registered.");
             }
@@ -51,7 +53,6 @@ namespace SocPass.API.Controllers
         [HttpPut("Update-User/{userid}")]
         public async Task<IActionResult> UpdateUserAsync(int userid, [FromBody] User user)
         {
-
             var existingUser = _userService.GetUserDetailsById(userid);
             if (existingUser == null && userid != user.UserId)
             {
@@ -74,7 +75,6 @@ namespace SocPass.API.Controllers
                 }
             }
         }
-
         [HttpGet("GetById")]
         public IActionResult UserGetById(int userid)
         {
@@ -88,6 +88,6 @@ namespace SocPass.API.Controllers
                 return NotFound("User Not Found");
             }
 
-        }
+          }
     }
 }

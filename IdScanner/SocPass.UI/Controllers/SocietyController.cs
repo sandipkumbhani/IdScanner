@@ -19,11 +19,14 @@ namespace SocPass.UI.Controllers
 
         public async Task<IActionResult> SocietyList()
         {
-            //if (string.IsNullOrEmpty(_globalClass.Token))
-            //{
-            //    return RedirectToAction("Login", "Login");
-            //}
-            IList<Society> SocietyList = await _societyService.GetAllSocietyAsync();
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+
+            IList<Society> SocietyList = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = SocietyList;
             return View("~/Views/Society/SocietyList.cshtml");
         }
@@ -31,10 +34,10 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSociety(int? societyId)
         {
-            //if (string.IsNullOrEmpty(_globalClass.Token))
-            //{
-            //    return RedirectToAction("Login", "Login");
-            //}
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             if (societyId == null)
             {
                 return View(new Society());
@@ -46,10 +49,10 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSociety(Society society)
         {
-            //if (string.IsNullOrEmpty(_globalClass.Token))
-            //{
-            //    return RedirectToAction("Login", "Login");
-            //}
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             //long.TryParse(userIdClaim, out long userId);
             //society.UserId = (int)userId;
@@ -69,10 +72,10 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteSociety(int societyId)
         {
-            //if (string.IsNullOrEmpty(_globalClass.Token))
-            //{
-            //    return RedirectToAction("Login", "Login");
-            //}
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _societyService.DeleteSocietyAsync(societyId);

@@ -1,14 +1,13 @@
-﻿using Emertec.UI.Domain.Comman;
-using Emertec.UI.Domain.Helper;
-using Emertec.UI.Domain.Interfaces;
-using Emertec.UI.Domain.Model;
-using MicroService_Template.Domain.Model;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System.Net.Http;
+using SocPass.Domain.DTO;
+using SocPass.Domain.Model;
+using SocPass.UI.Domain.Helper;
+using SocPass.UI.Domain.Interfaces;
+using SocPass.UI.Domain.Model;
 using System.Text;
 
-namespace Emertec.UI.Infrastructure.Provider
+namespace SocPass.UI.Infrastructure.Provider
 {
     public class UserRepository : IUserRepository
     {
@@ -23,15 +22,15 @@ namespace Emertec.UI.Infrastructure.Provider
             apiCredential = new APICredential(configuration);
             _globalClass = globalClass;
         }
-        public async Task<List<ModelUsers>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             var baseUrl = apiCredential.url + "User/get-all-user";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<ModelUsers>>(json)!;
+            return JsonConvert.DeserializeObject<List<User>>(json)!;
         }
-        public async Task<ModelUsers> AddUserAsync(ModelUsers user)
+        public async Task<User> AddUserAsync(User user)
         {
             var baseUrl = apiCredential.url + "User/create";
 
@@ -70,10 +69,9 @@ namespace Emertec.UI.Infrastructure.Provider
                 }
             }
 
-            // ✅ Only try to deserialize if success
             try
             {
-                var createdUser = JsonConvert.DeserializeObject<ModelUsers>(responseData);
+                var createdUser = JsonConvert.DeserializeObject<User>(responseData);
                 return createdUser!;
             }
             catch (JsonException)
@@ -82,7 +80,7 @@ namespace Emertec.UI.Infrastructure.Provider
             }
         }
 
-        public async Task<ModelUsers> GetUsersByIdAsync(long? id)
+        public async Task<User> GetUsersByIdAsync(long? id)
         {
             if (id == null)
             {
@@ -96,9 +94,9 @@ namespace Emertec.UI.Infrastructure.Provider
                 throw new Exception($"Failed to get user. Status code: {response.StatusCode}");
 
             var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ModelUsers>(jsonString)!;
+            return JsonConvert.DeserializeObject<User>(jsonString)!;
         }
-        public async Task<ModelUsers> UpdateUserAsync(ModelUsers user)
+        public async Task<User> UpdateUserAsync(User user)
         {
             var baseUrl = apiCredential.url + $"User/Update-User/{user.UserId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
@@ -109,7 +107,7 @@ namespace Emertec.UI.Infrastructure.Provider
                 throw new Exception($"Failed to update user. Status code: {response.StatusCode}");
 
             var jsonString =  await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ModelUsers>(jsonString)!;
+            return JsonConvert.DeserializeObject<User>(jsonString)!;
         }
         public async Task<string> DeleteUserAsync(int id)
         {
@@ -121,15 +119,15 @@ namespace Emertec.UI.Infrastructure.Provider
             }
             return await response.Content.ReadAsStringAsync();
         }
-        public async Task<List<ModelUserRole>> GetAllUserRoleAsync()
+        public async Task<List<UserRole>> GetAllUserRoleAsync()
         {
             var baseUrl = apiCredential.url + "UserRole/get-all-userRole";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<ModelUserRole>>(json)!;
+            return JsonConvert.DeserializeObject<List<UserRole>>(json)!;
         }
-        public async Task<ModelUserRole> GetRoleNameByIdAsync(long? id)
+        public async Task<UserRole> GetRoleNameByIdAsync(long? id)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
@@ -140,7 +138,7 @@ namespace Emertec.UI.Infrastructure.Provider
                 throw new Exception($"Failed to get user. Status code: {response.StatusCode}");
 
             var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ModelUserRole>(jsonString)!;
+            return JsonConvert.DeserializeObject<UserRole>(jsonString)!;
         }
     }
 }
