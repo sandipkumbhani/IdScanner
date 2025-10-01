@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
 
 namespace SocPass.UI.Controllers
 {
@@ -13,15 +14,21 @@ namespace SocPass.UI.Controllers
         private readonly ISocietyService _societyService;
         private readonly IBlockService _blockService;
         private readonly IFlatService _flatService;
-        public SubscriptionController(ISubscriptionService subscriptionService, ISocietyService societyService, IBlockService blockService, IFlatService flatService)
+        private readonly GlobalClass _globalClass;
+        public SubscriptionController(ISubscriptionService subscriptionService, ISocietyService societyService, IBlockService blockService, IFlatService flatService,GlobalClass globalClass)
         {
             _subscriptionService = subscriptionService;
             _societyService = societyService;
             _blockService = blockService;
             _flatService = flatService;
+            _globalClass = globalClass;
         }
         public async Task<IActionResult> SubScriptionList()
-        { 
+        {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             var SubScriptionList = await _subscriptionService.GetAllSubscription();
             ViewBag.SubScriptionList = SubScriptionList;
             return View("~/Views/SubScription/SubScriptionList.cshtml");
@@ -29,6 +36,10 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSubScription(int? subscriptionId)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
             var societies = await _societyService.GetAllSocietyAsync(userId);
@@ -52,6 +63,10 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSubScription(Subscription subscription)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             if (subscription == null)
             {
                 return BadRequest("Invalid data");
@@ -74,6 +89,10 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteSubscription(int subscriptionId)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _subscriptionService.DeleteSubscriptionAsync(subscriptionId);

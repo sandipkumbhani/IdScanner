@@ -24,7 +24,11 @@ namespace IdScanner.UI.Views.ViewComponents
 
             if (!role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
-                menus = menus.Where(m => !m.Name.Equals("Add Society", StringComparison.OrdinalIgnoreCase)).ToList();
+                var excludedMenus = new List<string> { "Add Society", "Add Subscription", "Add Flat" };
+
+                menus = menus
+                    .Where(m => !excludedMenus.Contains(m.Name, StringComparer.OrdinalIgnoreCase))
+                    .ToList();
             }
 
             return View(menus);
