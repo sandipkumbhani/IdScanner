@@ -7,7 +7,7 @@ using SocPass.Domain.Model;
 
 namespace SocPass.UI.Domain.Interfaces
 {
-    public interface ISocietyRepository
+    public interface  ISocietyRepository
     {
         Task<List<Society>> GetAllSocietyAsync(int userId);
         Task<Society> GetSocietyByIdAsync(int? societyId);
