@@ -1,0 +1,226 @@
+﻿@model SocPass.Domain.DTO.SocietyDataCreateRequest
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+    <title>SocPass | Add Society Data</title>
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .contact-row {
+            margin-bottom: 10px;
+        }
+
+            .contact-row .form-control {
+                width: 100%;
+            }
+
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+        }
+
+        .is-invalid {
+            border-color: red !important;
+        }
+
+        .dropdown-invalid {
+            border-color: red !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Add Society Data</h2>
+
+        <form id="societyDataForm">
+            <input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
+
+            <!-- First Row: Society, Block, Flat, Number of Contacts -->
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Select Society</label>
+                    <select id="Society" class="form-select">
+                        <option value="">-- Select Society --</option>
+                        @foreach (var society in ViewBag.Societies)
+                        {
+                            <option value="@society.SocietyId">@society.Name</option>
+                        }
+                    </select>
+                    <div class="error-message" id="societyError"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Block</label>
+                    <select id="Block" class="form-select">
+                        <option value="">-- Select Block --</option>
+                    </select>
+                    <div class="error-message" id="blockError"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Select Flat</label>
+                    <select id="Flat" class="form-select">
+                        <option value="">-- Select Flat --</option>
+                    </select>
+                    <div class="error-message" id="flatError"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Number of Contacts</label>
+                    <select id="AllowedFields" class="form-select">
+                        <option value="">-- Select Number --</option>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                    <div class="error-message" id="allowedFieldsError"></div>
+                </div>
+            </div>
+
+            <div id="contactContainer"></div>
+
+            <div class="mt-3">
+                <button type="button" id="saveBtn" class="btn btn-success">Save</button>
+                <a href="@Url.Action("SocietyDataList", "SocietyData")" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        
+        $("#Society").change(function(){
+            var societyId = $(this).val();
+            $("#Block").empty().append('<option value="">-- Select Block --</option>');
+            $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+            $("#AllowedFields").val("");
+            $("#contactContainer").empty();
+            $(".error-message").text("");
+            $(".is-invalid").removeClass("is-invalid");
+            if(societyId){
+                $.getJSON('@Url.Action("GetBlocksBySociety", "SocietyData")', { societyId: societyId }, function(data){
+                    $.each(data, function(i, block){
+                        $("#Block").append('<option value="'+block.blockId+'">'+block.blockName+'</option>');
+                    });
+                });
+            }
+        });
+
+        $("#Block").change(function(){
+            var blockId = $(this).val();
+            $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+            $("#AllowedFields").val("");
+            $("#contactContainer").empty();
+            $(".error-message").text("");
+            $(".is-invalid").removeClass("is-invalid");
+            if(blockId){
+                $.getJSON('@Url.Action("GetFlatsByBlock", "SocietyData")', { blockId: blockId }, function(data){
+                    $.each(data, function(i, flat){
+                        $("#Flat").append('<option value="'+flat.flatId+'">'+flat.flatNumber+'</option>');
+                    });
+                });
+            }
+        });
+
+        $("#AllowedFields").change(function(){
+            $("#contactContainer").empty();
+            $(".error-message").text("");
+            $(".is-invalid").removeClass("is-invalid");
+
+            var count = parseInt($(this).val());
+            if(!count) return;
+
+            for(var i=0; i<count; i++){
+                $("#contactContainer").append(
+                    `<div class="row contact-row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Name</label>
+                            <input type="text" class="form-control contact-name" placeholder="Contact Name" />
+                            <div class="error-message contactNameError"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" class="form-control contact-number" placeholder="Contact Number" />
+                            <div class="error-message contactNumberError"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Email</label>
+                            <input type="email" class="form-control contact-email" placeholder="Contact Email" />
+                            <div class="error-message contactEmailError"></div>
+                        </div>
+                    </div>`
+                );
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+
+            if(!$("#Society").val()) {
+                $("#societyError").text("Please select a society.");
+                $("#Society").addClass("dropdown-invalid");
+                isValid = false;
+            } else { $("#societyError").text(""); $("#Society").removeClass("dropdown-invalid"); }
+
+            if(!$("#Block").val()) {
+                $("#blockError").text("Please select a block.");
+                $("#Block").addClass("dropdown-invalid");
+                isValid = false;
+            } else { $("#blockError").text(""); $("#Block").removeClass("dropdown-invalid"); }
+
+            if(!$("#Flat").val()) {
+                $("#flatError").text("Please select a flat.");
+                $("#Flat").addClass("dropdown-invalid");
+                isValid = false;
+            } else { $("#flatError").text(""); $("#Flat").removeClass("dropdown-invalid"); }
+
+            if(!$("#AllowedFields").val()) {
+                $("#allowedFieldsError").text("Please select number of contacts.");
+                $("#AllowedFields").addClass("dropdown-invalid");
+                isValid = false;
+            } else { $("#allowedFieldsError").text(""); $("#AllowedFields").removeClass("dropdown-invalid"); }
+
+            $(".contact-row").each(function(){
+                let name = $(this).find(".contact-name").val().trim();
+                let number = $(this).find(".contact-number").val().trim();
+                let email = $(this).find(".contact-email").val().trim();
+
+                if(!name){ $(this).find(".contactNameError").text("Contact Name is Required"); $(this).find(".contact-name").addClass("is-invalid"); isValid=false;} else {$(this).find(".contactNameError").text(""); $(this).find(".contact-name").removeClass("is-invalid");}
+                if(!number){ $(this).find(".contactNumberError").text("Contact Number is Required"); $(this).find(".contact-number").addClass("is-invalid"); isValid=false;} else {$(this).find(".contactNumberError").text(""); $(this).find(".contact-number").removeClass("is-invalid");}
+                if(!email){ $(this).find(".contactEmailError").text("Contact Email is Required"); $(this).find(".contact-email").addClass("is-invalid"); isValid=false;} else {$(this).find(".contactEmailError").text(""); $(this).find(".contact-email").removeClass("is-invalid");}
+            });
+
+            return isValid;
+        }
+
+        // Save Button
+        $("#saveBtn").click(function(){
+            if(!validateForm()) return;
+
+            var model = {
+                SocietyDataId: $("#SocietyDataId").val(),
+                FlatId: $("#Flat").val(),
+                AllowedFields: $("#AllowedFields").val(),
+                ContactName: $(".contact-name").map(function(){ return $(this).val(); }).get(),
+                ContactNumber: $(".contact-number").map(function(){ return $(this).val(); }).get(),
+                ContactEmail: $(".contact-email").map(function(){ return $(this).val(); }).get()
+            };
+
+            $.ajax({
+                url: '@Url.Action("AddSocietyData", "SocietyData")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model),
+                success: function(){
+                    alert("Saved successfully!");
+                    window.location.href = '@Url.Action("SocietyDataList", "SocietyData")';
+                },
+                error: function(){
+                    alert("Error saving data.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
