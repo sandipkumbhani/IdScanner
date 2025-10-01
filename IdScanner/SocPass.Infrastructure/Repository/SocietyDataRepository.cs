@@ -10,7 +10,7 @@ using SocPass.Infrastructure.Data;
 
 namespace SocPass.Infrastructure.Repository
 {
-    public class SocietyDataRepository : ISocietyDataRepository
+    public class    SocietyDataRepository : ISocietyDataRepository
     {
         private readonly AppDbContext _context;
         public SocietyDataRepository(AppDbContext context)

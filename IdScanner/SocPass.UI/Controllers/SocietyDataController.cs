@@ -35,7 +35,10 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSocietyData()
         {
-            ViewBag.Societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+
+            ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
             return View(new SocietyDataCreateRequest());
         }
 
@@ -58,8 +61,9 @@ namespace SocPass.UI.Controllers
             if (societyData == null)
                 return NotFound();
 
-            // Load societies, blocks and flats
-            ViewBag.Societies = await _societyService.GetAllSocietyAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
             if (societyData.Flat?.Block?.SocietyId != null)
             {
                 ViewBag.Blocks = await _blockService.GetBlockBySocietyId(societyData.Flat.Block.SocietyId);
