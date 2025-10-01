@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SocPass.Domain.Interface
 {
-    public interface IMemberRepository
+    public interface    IMemberRepository
     {
         Task<Member> AddMemberAsync(Member member);
         Task UpdateQrCodeAsync(int memberId, string qrCodeUrl);
