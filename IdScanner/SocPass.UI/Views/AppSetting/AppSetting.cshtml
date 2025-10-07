@@ -1,0 +1,217 @@
+﻿@* @model SocPass.Domain.Model.Subscription
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var societyList = ViewBag.SocietyList as List<SocPass.Domain.Model.Society>;
+}
+
+<div class="container mt-4">
+    <h3>App Setting</h3>
+    <form asp-action="AppSetting" asp-controller="Subscription" method="post">
+        @Html.HiddenFor(m => m.SubscriptionId)
+        @Html.HiddenFor(m => m.IsActive, new { @Value = true })
+        <!-- Society Dropdown -->
+        <div class="col-xl-4 col-lg-6">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Society</label>
+                <select asp-for="SocietyId" class="form-control userinput"
+                        asp-items="@(new SelectList(societyList, "SocietyId", "Name", Model?.SocietyId))">
+                    <option value="">-- Select Society --</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Allow Name -->
+        <div class="col-xl-4 col-lg-6">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Allow Name</label>
+                <select asp-for="AllowNoOfName" class="form-control userinput">
+                    <option value="">-- Select Value --</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Allow Contact -->
+        <div class="col-xl-4 col-lg-6">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Allow Contact</label>
+                <select asp-for="AllowNoOfContact" class="form-control userinput">
+                    <option value="">-- Select Value --</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Allow Email -->
+        <div class="col-xl-4 col-lg-6">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Allow Email</label>
+                <select asp-for="AllowNoOfEmail" class="form-control userinput">
+                    <option value="">-- Select Value --</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+        </div>
+        
+
+        <!-- Buttons -->
+        <div class="button-main d-flex gap-3 mt-4">
+            <button type="submit" class="card-link">
+                <i class="ri-save-line"></i> <span>Save</span>
+            </button>
+
+            @if (Model.SubscriptionId == 0 || Model.SubscriptionId == null)
+            {
+                <button type="reset" class="card-link outline-bar">
+                    <i class="ri-refresh-line"></i> <span>Clear</span>
+                </button>
+            }
+
+            <a href="@Url.Action("SubScriptionList", "Subscription")" class="card-link outline-bar">
+                <i class="bi bi-eye"></i> <span>View</span>
+            </a>
+        </div>
+    </form>
+</div> *@
+
+
+@model SocPass.Domain.Model.Subscription
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var societyList = ViewBag.SocietyList as List<SocPass.Domain.Model.Society>;
+}
+
+<style>
+    .field-error {
+        color: red;
+        font-size: 0.875rem;
+        display: none;
+    }
+</style>
+
+<div class="container mt-4">
+    <h3>App Setting</h3>
+    <form id="appSettingForm" asp-action="AppSetting" asp-controller="Subscription" method="post">
+        @Html.HiddenFor(m => m.SubscriptionId)
+        @Html.HiddenFor(m => m.IsActive, new { @Value = true })
+
+        <!-- Society Dropdown -->
+        <div class="col-xl-4 col-lg-6 mb-3">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Society</label>
+                <select asp-for="SocietyId" class="form-control userinput" id="SocietyId"
+                        asp-items="@(new SelectList(societyList, "SocietyId", "Name", Model?.SocietyId))">
+                    <option value="">-- Select Society --</option>
+                </select>
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <!-- Allow Name -->
+        <div class="col-xl-4 col-lg-6 mb-3">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Allow Name</label>
+                <select asp-for="AllowNoOfName" class="form-control userinput" id="AllowNoOfName">
+                    <option value="">-- Select Value --</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <!-- Allow Contact -->
+        <div class="col-xl-4 col-lg-6 mb-3">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Allow Contact</label>
+                <select asp-for="AllowNoOfContact" class="form-control userinput" id="AllowNoOfContact">
+                    <option value="">-- Select Value --</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <!-- Allow Email -->
+        <div class="col-xl-4 col-lg-6 mb-3">
+            <div class="item-input">
+                <label class="form-label fw-semibold fs-6">Allow Email</label>
+                <select asp-for="AllowNoOfEmail" class="form-control userinput" id="AllowNoOfEmail">
+                    <option value="">-- Select Value --</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-main d-flex gap-3 mt-4">
+            <button type="submit" class="card-link">
+                <i class="ri-save-line"></i> <span>Save</span>
+            </button>
+
+            @if (Model.SubscriptionId == 0 || Model.SubscriptionId == null)
+            {
+                <button type="reset" class="card-link outline-bar">
+                    <i class="ri-refresh-line"></i> <span>Clear</span>
+                </button>
+            }
+
+            <a href="@Url.Action("SubScriptionList", "Subscription")" class="card-link outline-bar">
+                <i class="bi bi-eye"></i> <span>View</span>
+            </a>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#appSettingForm").submit(function(e){
+            var isValid = true;
+            $(this).find(".field-error").text("").hide();
+
+            // Validation array for all dropdowns
+            var validations = [
+                { selector: "#SocietyId", message: "Please select a society." },
+                { selector: "#AllowNoOfName", message: "Please select how many names are allowed." },
+                { selector: "#AllowNoOfContact", message: "Please select how many contacts are allowed." },
+                { selector: "#AllowNoOfEmail", message: "Please select how many emails are allowed." }
+            ];
+
+            validations.forEach(function(v){
+                var element = $(v.selector);
+                // Trigger validation if value is empty (default placeholder)
+                if(element.val() === ""){
+                    element.closest(".item-input").find(".field-error").text(v.message).show();
+                    isValid = false;
+                }
+            });
+
+            if(!isValid) e.preventDefault();
+        });
+    });
+</script>
+
+
+
+
