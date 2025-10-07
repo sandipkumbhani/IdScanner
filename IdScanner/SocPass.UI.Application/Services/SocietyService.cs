@@ -21,6 +21,11 @@ namespace SocPass.UI.Application.Services
             return await _societyRepository.GetAllSocietyAsync(userId);
         }
 
+        public async Task<List<Society>> GetAllSocietyAsync()
+        {
+            return await _societyRepository.GetAllSocietyAsync();
+        }
+
         public async Task<Society> GetSocietyByIdAsync(int? societyId)
         {
             return await _societyRepository.GetSocietyByIdAsync(societyId);

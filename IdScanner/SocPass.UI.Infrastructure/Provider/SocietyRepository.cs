@@ -36,6 +36,17 @@ namespace SocPass.UI.Infrastructure.Provider
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Society>>(jsonString)!;
         }
+
+        public async Task<List<Society>> GetAllSocietyAsync()
+        {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+            var baseUrl = apiCredential.url + $"Society/getAllSociety";
+            var response = await _httpClinet.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Society>>(jsonString)!;
+        }   
+
         public async Task<Society> GetSocietyByIdAsync(int? societyId)
         {
             _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);

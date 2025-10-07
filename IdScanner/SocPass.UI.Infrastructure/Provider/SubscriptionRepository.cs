@@ -38,7 +38,7 @@ namespace SocPass.UI.Infrastructure.Provider
             var baseUrl = apiCredential.url + "Subscription/create";
             var societyJson = JsonConvert.SerializeObject(subscription);
             var requestContent = new StringContent(societyJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(baseUrl, requestContent);
+                var response = await _httpClient.PostAsync(baseUrl, requestContent);
             var responseData = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
@@ -58,13 +58,20 @@ namespace SocPass.UI.Infrastructure.Provider
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Subscription>(jsonString)!;
         }
+        public async Task<Subscription> GetSubscriptionBySocietyIdAsync(int? societyId)
+        {
+            var baseUrl = apiCredential.url + $"Subscription/GetBySocietyId?societyId={societyId}";
+            var response = await _httpClient.GetAsync(baseUrl);
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<Subscription>(jsonString)!;
+        }
         public async Task<string> UpdateSubsubscriptionAsync(Subscription subscription)
         {
             //_httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Subscription/Update-Subscription/{subscription.SubscriptionId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(subscription), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsStringAsync();  
         }
 
         public async Task<string> DeleteSubsubscriptionAsync(int subscriptionId)
@@ -73,6 +80,15 @@ namespace SocPass.UI.Infrastructure.Provider
             var baseUrl = apiCredential.url + $"Subscription/Delete-Subscription?subscriptionId={subscriptionId}";
             var response = await _httpClient.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId)
+        {
+            var baseUrl = apiCredential.url + $"Subscription/GetExistsSocietyData?societyId={societyId}&subscriptionId={subscriptionId}";
+            var response = await _httpClient.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<bool>(json);
         }
     }
 }

@@ -39,6 +39,13 @@ namespace SocPass.Application.Services
             var newSociety = await _societyRepository.GetAllSocietyAsync(userId);
             return newSociety ?? new List<Society>();
         }
+
+        public async Task<List<Society>> GetAllSocietyAsync()
+        {
+            var newSociety = await _societyRepository.GetAllSocietyAsync();
+            return newSociety ?? new List<Society>();
+        }
+
         public async Task<Society> GetById(int societyId)
         {
             var society = await _societyRepository.GetByIdAsync(societyId);

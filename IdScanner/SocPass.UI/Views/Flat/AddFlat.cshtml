@@ -1,238 +1,236 @@
 ﻿@model SocPass.Domain.Model.Flat
 @{
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	string userRole = ViewBag.UserRole as string ?? "";
-	bool isAdmin = string.Equals(userRole, "Admin", StringComparison.OrdinalIgnoreCase);
-	bool isNew = Model.FlatId == 0;
-	bool isChecked = Model.IsActive || (isAdmin && isNew);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isNew = Model.FlatId == 0;
+    bool isChecked = Model.IsActive || isNew;
 }
 <html>
 <head>
-	<title>SocPass | Add Flats</title>
-	<style>
-		.field-error {
-			color: red;
-			font-size: 0.875rem;
-			display: none;
-		}
-	</style>
+    <title>SocPass | Add Flats</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <style>
+        .field-error { color: red; font-size: 0.875rem; display: none; }
+    </style>
 </head>
 <body>
-	<div class="content-page">
-		<div class="content">
-			<div class="main-inner container-fluid">
-				<div class="row">
-					<div class="col-12">
-						<div class="card com-profile-info">
-							<div class="top-details">
-								<h2 class="page-form-title">Flats Details</h2>
-								<form class="row all-custom-class" method="post" action="@Url.Action("AddFlat", "Flat")" enctype="multipart/form-data">
+<div class="content-page">
+    <div class="content">
+        <div class="main-inner container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card com-profile-info">
+                        <div class="top-details">
+                            <h2 class="page-form-title">Flats Details</h2>
+                            <form id="flatForm" class="row all-custom-class" method="post" action="@Url.Action("AddFlat", "Flat")">
+                                @Html.HiddenFor(m => m.FlatId)
 
-									<div class="col-md-6 mb-3">
-										<div class="item-input">
-											<input type="hidden" id="FlatId" name="FlatId" value="@Model.FlatId" />
-											<label for="SocietyId" class="form-label required fw-semibold fs-6">Society Name</label>
-											<select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))"
-													class="form-select form-control userinput"
-													data-required-message="Please select a society.">
-												<option value="0">-- Select Society --</option>
-											</select>
-											<span class="field-error"></span>
-										</div>
-									</div>
+                                <!-- Society -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="item-input">
+                                            <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
+                                            @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
 
-									<div class="col-md-6 mb-3">
-										<div class="item-input">
-											<label for="BlockId" class="form-label required fw-semibold fs-6">Block Name</label>
-											<select class="form-select form-control userinput" id="BlockId" name="BlockId"
-													data-required-message="Please select a block.">
-											</select>
-											<span class="field-error"></span>
-										</div>
-									</div>
+                                            <select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">
 
-									<div class="col-md-12 mb-3">
-										<label class="form-label required fw-semibold fs-6">Flat Entry Mode</label>
-										<div class="d-flex gap-4" id="entryModeContainer">
-											<div class="form-check">
-												<input type="radio" class="form-check-input" id="RangeMode" name="EntryMode" value="Range"
-													   data-required-message="Please select a flat entry mode." />
-												<label class="form-check-label" for="RangeMode">Range</label>
-											</div>
-											<div class="form-check">
-												<input type="radio" class="form-check-input" id="ManualMode" name="EntryMode" value="Manual"
-													   data-required-message="Please select a flat entry mode." />
-												<label class="form-check-label" for="ManualMode">Manual</label>
-											</div>
-										</div>
-										<span class="field-error"></span>
-									</div>
+                                                <option value="">-- Select Society --</option>
+                                            </select>
+                                            <input type="hidden" asp-for="SocietyId" />
+                                            <span asp-validation-for="SocietyId" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-									<!-- Range Fields -->
-									<div id="rangeFields" class="row" style="display:none;">
-										<div class="col-md-3 mb-3">
-											<label class="form-label">Start Range</label>
-											<input type="number" name="StartFlatNumber" class="form-control" data-required-message="Start range is required." />
-											<span class="field-error"></span>
-										</div>
-										<div class="col-md-3 mb-3">
-											<label class="form-label">End Range</label>
-											<input type="number" name="EndFlatNumber" class="form-control" data-required-message="End range is required." />
-											<span class="field-error"></span>
-										</div>
-										<div class="col-md-3 mb-3">
-											<label class="form-label">Flats Per Floor</label>
-											<input type="number" name="NumberOfFlats" class="form-control" data-required-message="Flats per floor is required." />
-											<span class="field-error"></span>
-										</div>
-										<div class="col-md-3 mb-3">
-											<label class="form-label">Floor Number</label>
-											<input type="number" name="FloorNumber" class="form-control" data-required-message="Floor number is required." />
-											<span class="field-error"></span>
-										</div>
-									</div>
+                                <!-- Block -->
+                                <div class="col-md-6 mb-3">
+                                    <div class="item-input">
+                                        <label for="BlockId" class="form-label required fw-semibold fs-6">Block Name</label>
+                                        <select id="BlockId" name="BlockId" class="form-select form-control userinput" data-required-message="Please select a block.">
+                                            <option value="0">-- Select Block --</option>
+                                        </select>
+                                        <span class="field-error"></span>
+                                    </div>
+                                </div>
 
-									<!-- Manual Fields -->
-									<div id="manualFields" class="row" style="display:none;">
-										<div class="col-md-3 mb-3">
-											<label class="form-label">Floor Number</label>
-											<input type="number" name="FloorNumber" class="form-control" data-required-message="Floor number is required." />
-											<span class="field-error"></span>
-										</div>
-										<div class="col-md-3 mb-3">
-											<label class="form-label">Flat Number</label>
-											<input type="number" name="FlatNumber" class="form-control" data-required-message="Flat number is required." />
-											<span class="field-error"></span>
-										</div>
-									</div>
+                                <!-- Entry Mode -->
+                                <div class="col-md-12 mb-3">
+                                    <div class="item-input">
+                                        <label class="form-label required fw-semibold fs-6">Entry Mode</label>
+                                        <div class="d-flex gap-4" id="entryModeContainer">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" id="RangeMode" name="EntryMode" value="Range" data-required-message="Please select a flat entry mode." />
+                                                <label class="form-check-label" for="RangeMode">Range</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" id="ManualMode" name="EntryMode" value="Manual" data-required-message="Please select a flat entry mode." />
+                                                <label class="form-check-label" for="ManualMode">Manual</label>
+                                            </div>
+                                        </div>
+                                        <span class="field-error"></span>
+                                    </div>
+                                </div>
 
-									<div class="col-md-6 mb-3 d-flex align-items-center">
-										<input type="checkbox" name="IsActive" id="IsActive" class="form-check-input"
-											   value="true" checked="checked"
-											   @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
-										<label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size: 16px;">Is Active</label>
-									</div>
+                                <!-- Range Fields -->
+                                <div id="rangeFields" class="row" style="display:none;">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="item-input">
+                                            <label class="form-label required fw-semibold fs-6">Start Range</label>
+                                            <input type="number" name="StartFlatNumber" class="form-control userinput" data-required-message="Start range is required.">
+                                            <span class="field-error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="item-input">
+                                            <label class="form-label required fw-semibold fs-6">End Range</label>
+                                            <input type="number" name="EndFlatNumber" class="form-control userinput" data-required-message="End range is required.">
+                                            <span class="field-error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="item-input">
+                                            <label class="form-label required fw-semibold fs-6">Flats Per Floor</label>
+                                            <input type="number" name="NumberOfFlats" class="form-control userinput" data-required-message="Flats per floor is required.">
+                                            <span class="field-error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="item-input">
+                                            <label class="form-label required fw-semibold fs-6">Floor Number</label>
+                                            <input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
+                                            <span class="field-error"></span>
+                                        </div>
+                                    </div>
+                                </div>
 
-									<!-- Buttons -->
-									<div class="col-12">
-										<div class="button-main d-flex gap-2 mt-3">
-											<button type="submit" class="card-link">
-												<i class="ri-save-line"></i><span>Save</span>
-											</button>
-											@if (Model.FlatId == 0 || Model.FlatId == null)
-											{
-												<button type="reset" class="card-link outline-bar">
-													<span>Clear</span>
-												</button>
-											}
-											<a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
-												<span>View</span>
-											</a>
-										</div>
-									</div>
+                                <!-- Manual Fields -->
+                                <div id="manualFields" class="row" style="display:none;">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="item-input">
+                                            <label class="form-label required fw-semibold fs-6">Floor Number</label>
+                                            <input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
+                                            <span class="field-error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="item-input">
+                                            <label class="form-label required fw-semibold fs-6">Flat Number</label>
+                                            <input type="number" name="FlatNumber" class="form-control userinput" data-required-message="Flat number is required.">
+                                            <span class="field-error"></span>
+                                        </div>
+                                    </div>
+                                </div>
 
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                <!-- IsActive -->
+                                <div class="col-md-6 mb-3 d-flex align-items-center">
+                                    <input type="checkbox" name="IsActive" id="IsActive" class="form-check-input" value="true" @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
+                                    <label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size:16px;">Is Active</label>
+                                </div>
 
-	<script type="text/javascript">
-		document.addEventListener("DOMContentLoaded", function () {
-			// === Load Blocks dynamically ===
-			const companyDropdown = document.getElementById("SocietyId");
-			const departmentDropdown = document.getElementById("BlockId");
-			const selectedDeptId = "@Model.BlockId";
+                                <!-- Buttons -->
+                                <div class="col-12">
+                                    <div class="button-main d-flex gap-2 mt-3">
+                                        <button type="submit" class="card-link"><i class="ri-save-line"></i><span>Save</span></button>
+                                        @if (isNew)
+                                        {
+                                            <button type="reset" class="card-link outline-bar"><span>Clear</span></button>
+                                        }
+                                        <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar"><span>View</span></a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-			function loadDepartments(companyId, preselectId = null) {
-				if (!companyId || companyId === "0") {
-					departmentDropdown.innerHTML = '<option value="0">-select-</option>';
-					return;
-				}
-				fetch(`/Flat/GetBlocksBySociety?societyId=${companyId}`)
-					.then(res => res.json())
-					.then(data => {
-						departmentDropdown.innerHTML = '<option value="0">-select-</option>';
-						data.forEach(d => {
-							const opt = document.createElement("option");
-							opt.value = d.blockId;
-							opt.text = d.blockNumber;
-							if (preselectId && d.blockId == preselectId) opt.selected = true;
-							departmentDropdown.appendChild(opt);
-						});
-					});
-			}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
 
-			if (companyDropdown.value !== "0") loadDepartments(companyDropdown.value, selectedDeptId);
-			companyDropdown.addEventListener("change", function () {
-				loadDepartments(this.value);
-			});
+    // Entry mode toggle
+    function toggleFields(){
+        if($("#RangeMode").is(":checked")){
+            $("#rangeFields").show(); $("#manualFields").hide();
+        } else if($("#ManualMode").is(":checked")){
+            $("#rangeFields").hide(); $("#manualFields").show();
+        } else { $("#rangeFields, #manualFields").hide(); }
+    }
+    toggleFields();
+    $("input[name='EntryMode']").change(toggleFields);
 
-			// === Toggle Range/Manual Fields ===
-			const rangeMode = document.getElementById("RangeMode");
-			const manualMode = document.getElementById("ManualMode");
-			const rangeFields = document.getElementById("rangeFields");
-			const manualFields = document.getElementById("manualFields");
+    // Load blocks
+    function loadBlocks(selectedBlockId = 0){
+        var societyId = $("#SocietyId").val();
+        var $blockDropdown = $("#BlockId");
+        $blockDropdown.html('<option value="0">-- Select Block --</option>');
+        if(!societyId || societyId=="0") return;
 
-			function toggleFields() {
-				if (rangeMode.checked) {
-					rangeFields.style.display = "flex";
-					manualFields.style.display = "none";
-					rangeFields.querySelectorAll("input").forEach(i => i.disabled = false);
-					manualFields.querySelectorAll("input").forEach(i => i.disabled = true);
-				} else if (manualMode.checked) {
-					rangeFields.style.display = "none";
-					manualFields.style.display = "flex";
-					rangeFields.querySelectorAll("input").forEach(i => i.disabled = true);
-					manualFields.querySelectorAll("input").forEach(i => i.disabled = false);
-				} else {
-					rangeFields.style.display = "none";
-					manualFields.style.display = "none";
-				}
-			}
+        $.getJSON('/Flat/GetBlocksBySociety', { societyId: societyId }, function(data){
+            $.each(data, function(i,b){
+                var selected = (b.blockId==selectedBlockId) ? 'selected' : '';
+                $blockDropdown.append('<option value="'+b.blockId+'" '+selected+'>'+b.blockNumber+'</option>');
+            });
+        });
+    }
 
-			rangeMode.addEventListener("change", toggleFields);
-			manualMode.addEventListener("change", toggleFields);
-			toggleFields();
+    // Initialize blocks if editing or non-admin with prefilled society
+    var initialBlockId = "@Model.BlockId";
+    var isSocietyReadonly = "@ViewBag.IsSocietyReadonly" === "True";
+    if($("#SocietyId").val() && $("#SocietyId").val()!="0"){
+        loadBlocks(initialBlockId);
+    }
 
-			// === Form Validation ===
-			const form = document.querySelector("form");
-			form.addEventListener("submit", function(event) {
-				let isValid = true;
+    // Admin: reload blocks on society change
+    if(!isSocietyReadonly){
+        $("#SocietyId").change(function(){ loadBlocks(0); });
+    }
 
-				// Clear previous messages
-				form.querySelectorAll(".field-error").forEach(span => span.style.display = "none");
+    // Form validation
+    $("#flatForm").submit(function(e){
+        var isValid=true;
+        $(".field-error").hide().text("");
 
-				// Validate visible required fields
-				const requiredFields = Array.from(form.querySelectorAll("[data-required-message]"))
-					.filter(f => f.offsetParent !== null);
+        $(this).find("[data-required-message]:visible").each(function(){
+            if(!$(this).val() || $(this).val()=="0"){
+                $(this).next(".field-error").text($(this).data("required-message")).show();
+                isValid=false;
+            }
+        });
 
-				requiredFields.forEach(field => {
-					if (!field.value || field.value === "0") {
-						const errorSpan = field.nextElementSibling;
-						if (errorSpan) {
-							errorSpan.textContent = field.getAttribute("data-required-message");
-							errorSpan.style.display = "block";
-						}
-						isValid = false;
-					}
-				});
+        if(!$("input[name='EntryMode']:checked").length){
+            $("input[name='EntryMode']").closest(".item-input").find(".field-error")
+                .text("Please select a flat entry mode").show();
+            isValid=false;
+        }
 
-				// Validate entry mode radio
-				const entryModeSelected = document.querySelector('input[name="EntryMode"]:checked');
-				const radioErrorSpan = document.querySelector("#entryModeContainer + .field-error");
-				if (!entryModeSelected && radioErrorSpan) {
-					radioErrorSpan.textContent = "Please select a flat entry mode.";
-					radioErrorSpan.style.display = "block";
-					isValid = false;
-				}
+        if(!isValid) e.preventDefault();
+    });
+});
 
-				if (!isValid) event.preventDefault();
-			});
-		});
-	</script>
+function toggleFields(){
+    if($("#RangeMode").is(":checked")){
+        $("#rangeFields").show();
+        $("#manualFields").hide();
+
+        // Enable range floor and disable manual
+        $("#rangeFields input").prop("disabled", false);
+        $("#manualFields input").prop("disabled", true);
+    } else if($("#ManualMode").is(":checked")){
+        $("#rangeFields").hide();
+        $("#manualFields").show();
+
+        // Enable manual floor and disable range
+        $("#rangeFields input").prop("disabled", true);
+        $("#manualFields input").prop("disabled", false);
+    } else {
+        $("#rangeFields, #manualFields").hide();
+        $("#rangeFields input, #manualFields input").prop("disabled", true);
+    }
+}
+            $(document).ready(function(){
+                toggleFields();
+                $("input[name='EntryMode']").change(toggleFields);
+            });
+</script>
 </body>
 </html>

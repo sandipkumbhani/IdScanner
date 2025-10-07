@@ -11,17 +11,20 @@ namespace SocPass.UI.Controllers
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
         private readonly IFlatService _flatService;
+        private readonly ISubscriptionService _subscriptionService;
 
         public SocietyDataController(
             ISocietyDataService societyDataService,
             IBlockService blockService,
             ISocietyService societyService,
-            IFlatService flatService)
+            IFlatService flatService,
+            ISubscriptionService subscriptionService)
         {
             _societyDataService = societyDataService;
             _blockService = blockService;
             _societyService = societyService;
             _flatService = flatService;
+            _subscriptionService = subscriptionService;
         }
 
         // LIST
@@ -113,6 +116,22 @@ namespace SocPass.UI.Controllers
             var flats = await _flatService.GetFlatByBlockId(blockId);
             return Json(flats.Select(f => new { flatId = f.FlatId, flatNumber = f.FlatNumber }));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSubscriptionBySociety(int societyId)
+        {
+            var subscription = await _subscriptionService.GetSubscriptionBySocietyIdAsync(societyId);
+            if (subscription == null)
+                return Json(new { allowsName = 0, allowsNumber = 0, allowsEmail = 0 });
+
+            return Json(new
+            {
+                allowsName = subscription.AllowNoOfName,
+                allowsNumber = subscription.AllowNoOfContact,
+                allowsEmail = subscription.AllowNoOfEmail
+            });
+        }
+
     }
 }
 

@@ -29,6 +29,11 @@ namespace SocPass.UI.Application.Services
             return await _subscriptionRepository.GetSubsubscriptionByIdAsync(subscriptionId);
         }
 
+        public async Task<Subscription> GetSubscriptionBySocietyIdAsync(int? societyId)
+        {
+            return await _subscriptionRepository.GetSubscriptionBySocietyIdAsync(societyId);
+        }
+
         public async Task<string> UpdateSubscriptionAsync(Subscription subscription)
         {
             return await _subscriptionRepository.UpdateSubsubscriptionAsync(subscription);
@@ -38,5 +43,9 @@ namespace SocPass.UI.Application.Services
             return await _subscriptionRepository.DeleteSubsubscriptionAsync(subscriptionId);
         }
 
+        public async Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId)
+        {
+            return await _subscriptionRepository.ExistsSocietyDataAsync(societyId, subscriptionId);
+        }
     }
 }

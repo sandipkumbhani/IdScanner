@@ -35,11 +35,11 @@
 							<div class="top-details">
 								<h2 class="page-form-title">Add Members Details</h2>
 								@* <form method="post" action="@Url.Action("AddMember", "Member")" id="memberForm"> *@
-									<div class="row">
-										<div class="col-xl-4 col-lg-6">
-											<div class="item-input">
-												<label class="form-label required fw-semibold fs-6">Select Society</label>
-												<select id="Society" name="SocietyId" class="form-select">
+								<div class="row">
+									<div class="col-xl-4 col-lg-6">
+										<div class="item-input">
+											<label class="form-label required fw-semibold fs-6">Select Society</label>
+											@* <select id="Society" name="SocietyId" class="form-select">
 													<option value="">-- Select Society --</option>
 													@if (ViewBag.Societies != null)
 													{
@@ -48,62 +48,87 @@
 															<option value="@society.SocietyId">@society.Name</option>
 														}
 													}
-												</select>
-												<div class="error-message" id="societyError"></div>
-											</div>
-										</div>
+												</select> *@
 
-										<div class="col-xl-4 col-lg-6">
-											<div class="item-input">
-												<label class="form-label required fw-semibold fs-6">Select Block</label>
-												<select id="Block" name="BlockId" class="form-select">
-													<option value="">-- Select Block --</option>
-												</select>
-												<div class="error-message" id="blockError"></div>
-											</div>
+											<select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
+												<option value="">-- Select Society --</option>
+												@if (ViewBag.Societies != null)
+												{
+													foreach (var society in ViewBag.Societies)
+													{
+														if (Model.SocietyId == society.SocietyId)
+														{
+															<option value="@society.SocietyId" selected>@society.Name</option>
+														}
+														else
+														{
+															<option value="@society.SocietyId">@society.Name</option>
+														}
+													}
+												}
+											</select>
+
+											@if (ViewBag.IsSocietyReadonly)
+											{
+												<input type="hidden" name="SocietyId" value="@Model.SocietyId" />
+											}
+
+
+											<div class="error-message" id="societyError"></div>
 										</div>
 									</div>
 
-									<div class="col-xl-12 col-lg-12 mt-4" id="excelSection" style="display:none;">
-										<h4 class="fw-semibold fs-5 mb-2">Bulk Upload Members (Excel)</h4>
+									<div class="col-xl-4 col-lg-6">
+										<div class="item-input">
+											<label class="form-label required fw-semibold fs-6">Select Block</label>
+											<select id="Block" name="BlockId" class="form-select">
+												<option value="">-- Select Block --</option>
+											</select>
+											<div class="error-message" id="blockError"></div>
+										</div>
+									</div>
+								</div>
 
-										<!-- Download Template -->
-										<a id="downloadExcelBtn" class="btn btn-outline-primary mb-3" target="_blank">
-											Download Excel Template
+								<div class="col-xl-12 col-lg-12 mt-4" id="excelSection" style="display:none;">
+									<h4 class="fw-semibold fs-5 mb-2">Bulk Upload Members (Excel)</h4>
+
+									<!-- Download Template -->
+									<a id="downloadExcelBtn" class="btn btn-outline-primary mb-3" target="_blank">
+										Download Excel Template
+									</a>
+
+									<!-- Upload Filled Excel -->
+									<form asp-action="UploadMembers" asp-controller="Member"
+										  method="post" enctype="multipart/form-data">
+
+										<div class="mb-3">
+											<label for="file" class="form-label">Choose Excel File</label>
+											<input type="file" class="form-control" id="file" name="file" accept=".xlsx" required />
+										</div>
+
+										<div class="d-flex gap-3 mt-3">
+											<button type="submit" class="btn btn-success">Upload</button>
+											<a href="@Url.Action("FlatList", "Flat")" class="btn btn-secondary">Back to List</a>
+										</div>
+
+									</form>
+								</div>
+
+								<div class="col-xl-12 col-lg-12">
+									<label id="flatsLabel" class="form-label required fw-semibold fs-6" style="display:none;">Flats</label>
+									<div id="flatContainer"></div>
+								</div>
+
+								<div class="col-12">
+									<div class="button-main d-flex gap-2 mt-3">
+										<button type="reset" class="card-link outline-bar">
+											<span>Clear</span>
+										</button>
+										<a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
+											<span>View</span>
 										</a>
-
-										<!-- Upload Filled Excel -->
-										<form asp-action="UploadMembers" asp-controller="Member"
-											  method="post" enctype="multipart/form-data">
-
-											<div class="mb-3">
-												<label for="file" class="form-label">Choose Excel File</label>
-												<input type="file" class="form-control" id="file" name="file" accept=".xlsx" required />
-											</div>
-
-											<div class="d-flex gap-3 mt-3">
-												<button type="submit" class="btn btn-success">Upload</button>
-												<a href="@Url.Action("FlatList", "Flat")" class="btn btn-secondary">Back to List</a>
-											</div>
-
-										</form>
 									</div>
-
-									<div class="col-xl-12 col-lg-12">
-										<label id="flatsLabel" class="form-label required fw-semibold fs-6" style="display:none;">Flats</label>
-										<div id="flatContainer"></div>
-									</div>
-
-									<div class="col-12">
-										<div class="button-main d-flex gap-2 mt-3">
-												<button type="reset" class="card-link outline-bar">
-													<span>Clear</span>
-												</button>
-											<a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
-												<span>View</span>
-											</a>
-										</div>
-									</div>
+								</div>
 
 								@* </form> *@
 							</div>
@@ -114,210 +139,217 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript">
-		$(document).ready(function () {
+                <script type="text/javascript">
+        $(document).ready(function () {
 
-			// --- validate Society & Block dropdowns ---
-			function validateDropdowns() {
-				let isValid = true;
+            // --- validate Society & Block dropdowns ---
+            function validateDropdowns() {
+                let isValid = true;
 
-				if ($("#Society").val() === "") {
-					$("#societyError").text("Please select a society.");
-					$("#Society").addClass("is-invalid");
-					isValid = false;
-				} else {
-					$("#societyError").text("");
-					$("#Society").removeClass("is-invalid");
-				}
+                if ($("#Society").val() === "") {
+                    $("#societyError").text("Please select a society.");
+                    $("#Society").addClass("is-invalid");
+                    isValid = false;
+                } else {
+                    $("#societyError").text("");
+                    $("#Society").removeClass("is-invalid");
+                }
 
-				if ($("#Block").val() === "") {
-					$("#blockError").text("Please select a block.");
-					$("#Block").addClass("is-invalid");
-					isValid = false;
-				} else {
-					$("#blockError").text("");
-					$("#Block").removeClass("is-invalid");
-				}
+                if ($("#Block").val() === "") {
+                    $("#blockError").text("Please select a block.");
+                    $("#Block").addClass("is-invalid");
+                    isValid = false;
+                } else {
+                    $("#blockError").text("");
+                    $("#Block").removeClass("is-invalid");
+                }
 
-				return isValid;
-			}
+                return isValid;
+            }
 
-			$("#Society, #Block").change(validateDropdowns);
+            $("#Society, #Block").change(validateDropdowns);
 
-			// --- when society changes, load blocks ---
-			$("#Society").change(function () {
-				var societyId = $(this).val();
-				$("#Block").empty().append('<option value="">-- Select Block --</option>');
-				$("#flatContainer").empty();
+            // --- load blocks for a society ---
+            function loadBlocks(societyId, selectedBlockId = null) {
+                var $blockDropdown = $("#Block");
+                $blockDropdown.empty().append('<option value="">-- Select Block --</option>');
+                $("#flatContainer").empty();
+                $("#flatsLabel").hide();
 
-				if (societyId) {
-					$.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
-						$.each(data, function (i, block) {
-							$("#Block").append($('<option>', { value: block.blockId, text: block.blockName }));
-						});
-					});
-				}
-			});
+                if (societyId) {
+                    $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
+                        $.each(data, function (i, block) {
+                            var selected = selectedBlockId == block.blockId ? 'selected' : '';
+                            $blockDropdown.append('<option value="' + block.blockId + '" ' + selected + '>' + block.blockName + '</option>');
+                        });
 
-			// --- when block changes, load flats ---
-			$("#Block").change(function () {
-				var blockId = $(this).val();
-				var container = $("#flatContainer");
-				container.empty();
+                        // trigger block change if prefilled
+                        if (selectedBlockId) {
+                            $blockDropdown.trigger('change');
+                        }
+                    });
+                }
+            }
 
-				 $("#flatsLabel").hide();
-				if (blockId) {
-					$.getJSON('@Url.Action("GetFlatsByBlock", "Member")', { blockId: blockId }, function (data) {
-						 if (data.length > 0) {
-				// show label only if rows fetched
-				$("#flatsLabel").show();
-			}
-						$.each(data, function (i, flat) {
-							var flatRow = $(`
-					<div class="flat-row mb-3 p-2 border rounded"
-						 style="display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap;">
+            // --- on Society change ---
+            $("#Society").change(function () {
+                var societyId = $(this).val();
+                loadBlocks(societyId);
+            });
 
-						<div style="width:100px;">
-							<label>Flat ${flat.flatNumber}</label>
-						</div>
+            // --- prefill logic for Society & Block ---
+            var prefilledSocietyId = $("#Society").val();
+            var prefilledBlockId = '@Model.BlockId'; // optional, if model contains BlockId
+            if (prefilledSocietyId) {
+                loadBlocks(prefilledSocietyId, prefilledBlockId);
+            }
 
-						<div style="flex:1; min-width:120px;">
-							<input type="number" class="form-control adults" min="0" placeholder="Adults" />
-							<div class="error-message adultsError"></div>
-						</div>
+            // --- when block changes, load flats ---
+            $("#Block").change(function () {
+                var blockId = $(this).val();
+                var container = $("#flatContainer");
+                container.empty();
+                $("#flatsLabel").hide();
 
-						<div style="flex:1; min-width:120px;">
-							<input type="number" class="form-control flatChildren"
-								   data-flatid="${flat.flatId}" min="0" placeholder="Children" />
-							<div class="error-message childrenError"></div>
-						</div>
+                if (blockId) {
+                    $.getJSON('@Url.Action("GetFlatsByBlock", "Member")', { blockId: blockId }, function (data) {
+                        if (data.length > 0) {
+                            $("#flatsLabel").show();
+                        }
 
-						<div class="childAgesContainer" style="flex:1; min-width:200px;"></div>
+                        $.each(data, function (i, flat) {
+                            var flatRow = $(`
+                                <div class="flat-row mb-3 p-2 border rounded"
+                                     style="display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap;">
+                                    <div style="width:100px;">
+                                        <label>Flat ${flat.flatNumber}</label>
+                                    </div>
+                                    <div style="flex:1; min-width:120px;">
+                                        <input type="number" class="form-control adults" min="0" placeholder="Adults" />
+                                        <div class="error-message adultsError"></div>
+                                    </div>
+                                    <div style="flex:1; min-width:120px;">
+                                        <input type="number" class="form-control flatChildren"
+                                               data-flatid="${flat.flatId}" min="0" placeholder="Children" />
+                                        <div class="error-message childrenError"></div>
+                                    </div>
+                                    <div class="childAgesContainer" style="flex:1; min-width:200px;"></div>
+                                    <div>
+                                        <button type="button" class="btn btn-primary saveFlatBtn" data-flatid="${flat.flatId}">
+                                            Add Members
+                                        </button>
+                                    </div>
+                                </div>
+                            `);
+                            container.append(flatRow);
+                        });
+                    });
+                }
 
-						<div>
-							<button type="button" class="btn btn-primary saveFlatBtn" data-flatid="${flat.flatId}">
-								Add Members
-							</button>
-						</div>
-					</div>
-				`);
+                // Show/hide Excel section
+                var societyId = $("#Society").val();
+                if (societyId && blockId) {
+                    $("#excelSection").show();
+                    $("#downloadExcelBtn").attr("href", `/Member/DownloadTemplate?societyId=${societyId}&blockId=${blockId}`);
+                } else {
+                    $("#excelSection").hide();
+                }
+            });
 
-							container.append(flatRow);
-						});
+            // --- dynamically handle child input and save button ---
+            $("#flatContainer").on("input change", ".flatChildren", function () {
+                var childCount = parseInt($(this).val()) || 0;
+                var flatId = $(this).data("flatid");
+                var containerAges = $(this).closest(".flat-row").find(".childAgesContainer");
+                containerAges.empty();
 
-						// handle children input -> generate age fields
-						container.on("input change", ".flatChildren", function () {
-							var childCount = parseInt($(this).val()) || 0;
-							var flatId = $(this).data("flatid");
-							var containerAges = $(this).closest(".flat-row").find(".childAgesContainer");
-							containerAges.empty();
+                for (var i = 0; i < childCount; i++) {
+                    containerAges.append(`
+                        <div>
+                            <input type="number" class="form-control childAge mb-1"
+                                   data-flatid="${flatId}" min="0" max="17"
+                                   placeholder="Child ${i + 1} Age" />
+                            <div class="error-message ageError"></div>
+                        </div>
+                    `);
+                }
+            });
 
-							for (var i = 0; i < childCount; i++) {
-								var html = `
-									<div>
-										<input type="number" class="form-control childAge mb-1"
-											   data-flatid="${flatId}" min="0" max="17"
-											   placeholder="Child ${i + 1} Age" />
-										<div class="error-message ageError"></div>
-									</div>`;
-								containerAges.append(html);
-							}
-						});
+            $("#flatContainer").on("click", ".saveFlatBtn", function () {
+                var row = $(this).closest(".flat-row");
+                var flatId = $(this).data("flatid");
+                var isValid = validateDropdowns();
 
-						// handle save button
-						container.on("click", ".saveFlatBtn", function () {
-							var flatId = $(this).data("flatid");
-							var row = $(this).closest(".flat-row");
-							var isValid = true;
+                // Validate adults
+                var adults = row.find(".adults").val();
+                if (adults === "" || parseInt(adults) < 0) {
+                    row.find(".adultsError").text("Please enter valid number of adults.");
+                    row.find(".adults").addClass("is-invalid");
+                    isValid = false;
+                } else {
+                    row.find(".adultsError").text("");
+                    row.find(".adults").removeClass("is-invalid");
+                }
 
-							// validate dropdowns first
-							if (!validateDropdowns()) return;
+                // Validate children
+                var childAges = [];
+                var childrenInput = row.find(".flatChildren").val();
+                if (childrenInput === "" || parseInt(childrenInput) < 0) {
+                    row.find(".childrenError").text("Please enter valid number of children.");
+                    row.find(".flatChildren").addClass("is-invalid");
+                    isValid = false;
+                } else {
+                    row.find(".childrenError").text("");
+                    row.find(".flatChildren").removeClass("is-invalid");
+                }
 
-							// validate adults
-							var adults = row.find(".adults").val();
-							if (adults === "" || parseInt(adults) < 0) {
-								row.find(".adultsError").text("Please enter valid number of adults.");
-								row.find(".adults").addClass("is-invalid");
-								isValid = false;
-							} else {
-								row.find(".adultsError").text("");
-								row.find(".adults").removeClass("is-invalid");
-							}
+                row.find(".childAge").each(function () {
+                    var age = $(this).val();
+                    if (age === "" || parseInt(age) < 0 || parseInt(age) > 17) {
+                        $(this).next(".ageError").text("Enter valid age (0–17).");
+                        $(this).addClass("is-invalid");
+                        isValid = false;
+                    } else {
+                        $(this).next(".ageError").text("");
+                        $(this).removeClass("is-invalid");
+                        childAges.push(parseInt(age));
+                    }
+                });
 
-							// validate children ages
-							var childAges = [];
-							var childrenInput = row.find(".flatChildren").val();
-							if (childrenInput === "" || parseInt(childrenInput) < 0) {
-								row.find(".childrenError").text("Please enter valid number of children.");
-								row.find(".flatChildren").addClass("is-invalid");
-								isValid = false;
-							} else {
-								row.find(".childrenError").text("");
-								row.find(".flatChildren").removeClass("is-invalid");
-							}
+                if (!isValid) return;
 
-							row.find(".childAge").each(function () {
-								var age = $(this).val();
-								if (age === "" || parseInt(age) < 0 || parseInt(age) > 17) {
-									$(this).next(".ageError").text("Enter valid age (0–17).");
-									$(this).addClass("is-invalid");
-									isValid = false;
-								} else {
-									$(this).next(".ageError").text("");
-									$(this).removeClass("is-invalid");
-									childAges.push(parseInt(age));
-								}
-							});
+                var memberCreateRequest = {
+                    FlatId: flatId,
+                    NumberOfAdults: parseInt(adults),
+                    ChildAges: childAges
+                };
 
-							if (!isValid) return; // stop if invalid
+                $.ajax({
+                    url: '@Url.Action("AddMember", "Member")',
+                    type: 'POST',
+                    data: JSON.stringify(memberCreateRequest),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function () {
+                        row.append(`<div class="text-success mt-2">Saved successfully!</div>`);
+                    },
+                    error: function () {
+                        row.append(`<div class="text-danger mt-2">Error saving flat.</div>`);
+                    }
+                });
+            });
 
-							var memberCreateRequest = {
-								FlatId: flatId,
-								NumberOfAdults: parseInt(adults),
-								ChildAges: childAges
-							};
+            // --- clear button ---
+            $("#clearBtn").click(function () {
+                $("#Society").val("").trigger("change");
+                $("#Block").val("").trigger("change");
+                $("#flatContainer").empty();
+                $("#flatsLabel").hide();
+                $(".error-message").text("");
+                $(".is-invalid").removeClass("is-invalid");
+                $("#excelSection").hide();
+            });
 
-							$.ajax({
-								url: '@Url.Action("AddMember", "Member")',
-								type: 'POST',
-								data: JSON.stringify(memberCreateRequest),
-								contentType: 'application/json; charset=utf-8',
-								success: function () {
-									// instead of alert, show success inline
-									row.append(`<div class="text-success mt-2">Saved successfully!</div>`);
-								},
-								error: function () {
-									row.append(`<div class="text-danger mt-2">Error saving flat.</div>`);
-								}
-							});
-						});
-
-					});
-				}
-			});
-		});
-				$("#clearBtn").click(function () {
-			$("#Society").val("").trigger("change");
-			$("#Block").val("").trigger("change");
-			$("#flatContainer").empty();
-			$("#flatsLabel").hide();
-			$(".error-message").text("");
-			$(".is-invalid").removeClass("is-invalid");
-		});
-
-				$("#Block").change(function () {
-			var societyId = $("#Society").val();
-			var blockId = $(this).val();
-
-			if (societyId && blockId) {
-				$("#excelSection").show();
-				$("#downloadExcelBtn").attr("href",
-					`/Member/DownloadTemplate?societyId=${societyId}&blockId=${blockId}`);
-			} else {
-				$("#excelSection").hide();
-			}
-		});
-
-	</script>
+        });
+    </script>
 </body>
 </html>

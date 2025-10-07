@@ -14,5 +14,7 @@ namespace SocPass.UI.Domain.Interfaces
         Task<string> DeleteSubsubscriptionAsync(int subscriptionId);
         Task<string> UpdateSubsubscriptionAsync(Subscription subscription);
         Task<Subscription> GetSubsubscriptionByIdAsync(int? subscriptionId);
+        Task<Subscription> GetSubscriptionBySocietyIdAsync(int? societyId);
+        Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId);
     }
 }

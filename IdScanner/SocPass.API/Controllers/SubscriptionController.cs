@@ -43,6 +43,21 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("GetBySocietyId")]
+        public async Task<IActionResult> GetBySocietyId(int societyId)
+        {
+            try
+            {
+                var result = await _subscriptionService.GetSubscriptionBySocietyIdAsync(societyId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpPut("Update-Subscription/{subscriptionId}")]
         public async Task<IActionResult> UpdateMenuAsync(int subscriptionId, [FromBody] Subscription subscription)
         {
@@ -87,5 +102,23 @@ namespace SocPass.API.Controllers
             var result = await _subscriptionService.GetAllSubscription();
             return Ok(result);
         }
+
+        [HttpGet("GetExistsSocietyData")]
+        public async Task<IActionResult> GetExistsSocietyData(int societyId, int subscriptionId = 0)
+        {
+            if (societyId <= 0)
+                return BadRequest(false);
+
+            try
+            {
+                bool exists = await _subscriptionService.ExistsSocietyDataAsync(societyId, subscriptionId);
+                return Ok(exists); // returns true if society already exists, false otherwise
+            }
+            catch
+            {
+                return StatusCode(500, false);
+            }
+        }
+
     }
 }

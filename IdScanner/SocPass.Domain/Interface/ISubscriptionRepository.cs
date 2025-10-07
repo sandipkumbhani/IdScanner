@@ -9,5 +9,7 @@ namespace SocPass.Domain.Interface
         Task UpdateSubscription(Subscription subscription);
         Task<List<Subscription>> GetAllSubscriptionAsync();
         Task DeleteSubscriptionAsync(int subscriptionId);
+        Task<Subscription> GetSubscriptionBySocietyIdAsync(int societyId);
+        Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId);
     }
 }

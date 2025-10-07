@@ -23,9 +23,13 @@
                                 <div class="col-xl-4 col-lg-6">
                                     <div class="item-input">
                                         <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
-                                        <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput">
+                                        @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
+
+                                            <select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">
+
                                             <option value="">-- Select Society --</option>
                                         </select>
+                                            <input type="hidden" asp-for="SocietyId" />
                                         <span asp-validation-for="SocietyId" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -59,3 +63,4 @@
 </div>
 </body>
 </html>
+

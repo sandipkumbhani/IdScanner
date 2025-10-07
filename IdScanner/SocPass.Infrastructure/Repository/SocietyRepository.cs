@@ -23,7 +23,7 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return society;
         }
-        public async Task<Society> GetByIdAsync(int societyid)
+        public async Task<Society>  GetByIdAsync(int societyid)
         {
             return await _context.societies.Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.SocietyId == societyid);
         }
@@ -75,6 +75,12 @@ namespace SocPass.Infrastructure.Repository
 
             return new List<Society>();
         }
+
+        public async Task<List<Society>> GetAllSocietyAsync()
+        {
+            return await _context.societies.Where(x => x.IsActive == true).ToListAsync();
+        }
+      
         public async Task UpdateSocietyAsync(Society society)
         {
             _context.societies.Update(society);

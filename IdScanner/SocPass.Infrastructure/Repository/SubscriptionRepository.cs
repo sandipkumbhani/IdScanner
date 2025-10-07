@@ -20,7 +20,12 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<Subscription> GetById(int subscriptionId)
         {
-          return  await _context.Subscriptions.FirstOrDefaultAsync(e=>e.SubscriptionId == subscriptionId && e.IsActive==true);
+          return  await _context.Subscriptions.FirstOrDefaultAsync(e=>e.SubscriptionId == subscriptionId);
+        }
+
+        public async Task<Subscription> GetSubscriptionBySocietyIdAsync(int societyId)
+        {
+            return await _context.Subscriptions.FirstOrDefaultAsync(e => e.SocietyId == societyId);
         }
         public async Task UpdateSubscription(Subscription subscription)
         {
@@ -40,6 +45,10 @@ namespace SocPass.Infrastructure.Repository
                 Deletesub.IsActive = false;
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId)
+        {
+            return await _context.Subscriptions.AnyAsync(e => e.SocietyId == societyId && e.SubscriptionId != subscriptionId);
         }
     }
 }

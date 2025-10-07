@@ -20,17 +20,20 @@ namespace SocPass.Application.Services
         }
         public async Task<Subscription> addsubscriptionAsync(Subscription subscription)
         {
-            var existingSubscription = await _societyRepository.GetByIdAsync(subscription.SocietyId);
-            if (existingSubscription != null)
-            {
-                return null; 
-            }
+            //var existingSubscription = await _subscriptionRepository.GetById(subscription.SocietyId);
+            //if (existingSubscription != null)
+            //{
+            //    return null; 
+            //}
             var newSubscription = new Subscription
             {
                 SocietyId = subscription.SocietyId,
                 StartFrom = subscription.StartFrom,
                 EndTo = subscription.EndTo,
-                IsActive= true,
+                //AllowNoOfName = subscription.AllowNoOfName,
+                //AllowNoOfContact = subscription.AllowNoOfContact,
+                //AllowNoOfEmail = subscription.AllowNoOfEmail,
+                IsActive = true,
                 InsertDate = DateTime.Now,
                 InsertBy = 0,
                 UpdateDate = DateTime.Now,
@@ -42,6 +45,12 @@ namespace SocPass.Application.Services
         {
             return await _subscriptionRepository.GetById(subscriptionId);
         }
+
+        public async Task<Subscription> GetSubscriptionBySocietyIdAsync(int societyId)
+        {
+            return await _subscriptionRepository.GetSubscriptionBySocietyIdAsync(societyId);
+        }
+
         public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, Subscription subscription)
         {
             var subscriptionUpdate = await _subscriptionRepository.GetById(subscriptionId);
@@ -56,7 +65,9 @@ namespace SocPass.Application.Services
             subscriptionUpdate.InsertDate = DateTime.UtcNow;
             subscriptionUpdate.UpdateBy = 1;
             subscriptionUpdate.UpdateDate = DateTime.UtcNow;
-
+            subscriptionUpdate.AllowNoOfName = subscription.AllowNoOfName;
+            subscriptionUpdate.AllowNoOfContact = subscription.AllowNoOfContact;
+            subscriptionUpdate.AllowNoOfEmail = subscription.AllowNoOfEmail;
             await _subscriptionRepository.UpdateSubscription(subscriptionUpdate);
             return subscriptionUpdate;
         }
@@ -74,6 +85,9 @@ namespace SocPass.Application.Services
             }
             await _subscriptionRepository.DeleteSubscriptionAsync(subscriptionId);
         }
-
+        public async Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId)
+        {
+            return await _subscriptionRepository.ExistsSocietyDataAsync(societyId, subscriptionId);
+        }
     }
 }

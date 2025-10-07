@@ -56,6 +56,12 @@ namespace SocPass.UI.Controllers
             {
                 return BadRequest("Invalid data");
             }
+            bool exists = await _subscriptionService.ExistsSocietyDataAsync(subscription.SocietyId, subscription.SubscriptionId);
+            if (exists)
+            {
+                ModelState.AddModelError("SocietyId", "This society already has a subscription.");
+                return View("AddSubScription", subscription);
+            }
 
             if (!ModelState.IsValid)
             {
@@ -109,6 +115,72 @@ namespace SocPass.UI.Controllers
             });
             return Json(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> AppSetting(int? subscriptionId)
+        {
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+
+            // Load societies for dropdown
+            var societies = await _societyService.GetAllSocietyAsync(userId);
+            ViewBag.SocietyList = societies;
+
+            Subscription model;
+            if (subscriptionId.HasValue && subscriptionId.Value > 0)
+            {
+                model = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId.Value);
+                if (model == null)
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                model = new Subscription();
+            }
+
+            return View("~/Views/AppSetting/AppSetting.cshtml", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AppSetting(Subscription subscription)
+        {
+            if (subscription == null)
+            {
+                return BadRequest("Invalid data");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+                int.TryParse(userIdClaim, out int userId);
+                var societies = await _societyService.GetAllSocietyAsync(userId);
+                ViewBag.SocietyList = societies;
+
+                return View("~/Views/SubScription/AppSetting.cshtml", subscription);
+            }
+
+            var existing = await _subscriptionService.GetSubscriptionBySocietyIdAsync(subscription.SocietyId);
+
+            if (existing != null)
+            {
+                existing.IsActive = true;
+                existing.AllowNoOfName = subscription.AllowNoOfName;
+                existing.AllowNoOfContact = subscription.AllowNoOfContact;
+                existing.AllowNoOfEmail = subscription.AllowNoOfEmail;
+                await _subscriptionService.UpdateSubscriptionAsync(existing);
+            }
+            else
+            {
+                subscription.IsActive = true;
+                await _subscriptionService.AddSubscriptionAsync(subscription);
+            }
+
+            TempData["SuccessMessage"] = "App settings updated successfully.";
+            return RedirectToAction("SubScriptionList", "Subscription");
+        }
+
 
     }
 }

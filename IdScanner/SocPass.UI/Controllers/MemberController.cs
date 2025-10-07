@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
@@ -26,32 +27,100 @@ namespace SocPass.UI.Controllers
         //    ViewBag.MemberList = MemberList;
         //    return View("~/Views/Member/MemberList.cshtml");
         //}
+        //[HttpGet]
+        //public async Task<IActionResult> AddMember()
+        //{
+        //    var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+        //    int.TryParse(userIdClaim, out int userId);
+        //    var societies = await _societyService.GetAllSocietyAsync(userId);
+        //    ViewBag.Societies = societies;
+        //    var model = new MemberCreateRequest();
+        //    return View("/Views/Member/AddMember.cshtml", model);
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> AddMember([FromBody] MemberCreateRequest memberCreateRequest)
+        //{
+        //    if (memberCreateRequest == null)
+        //    {
+        //        return BadRequest("Invalid data");
+        //    }
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View("AddMember", memberCreateRequest);
+        //    }
+
+        //    await _memberService.AddMemberAsync(memberCreateRequest);
+
+        //    return RedirectToAction("FlatList", "Flat");
+        //}
+
         [HttpGet]
         public async Task<IActionResult> AddMember()
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var societies = await _societyService.GetAllSocietyAsync(userId);
-            ViewBag.Societies = societies;
-            var model = new MemberCreateRequest();
-            return View("/Views/Member/AddMember.cshtml", model);
-        }
-        [HttpPost]
-        public async Task<IActionResult> AddMember([FromBody] MemberCreateRequest memberCreateRequest)
-        {
-            if (memberCreateRequest == null)
+
+            IEnumerable<Society> societies;
+
+            if (User.IsInRole("Admin"))
             {
-                return BadRequest("Invalid data");
+                // Admin sees all societies
+                societies = await _societyService.GetAllSocietyAsync();
+                ViewBag.IsSocietyReadonly = false;
+            }
+            else
+            {
+                // User sees only assigned societies
+                societies = await _societyService.GetAllSocietyAsync(userId);
+                ViewBag.IsSocietyReadonly = true;
             }
 
+            ViewBag.Societies = societies;
+
+            var model = new MemberCreateRequest();
+
+            // If non-admin, preselect first society
+            if (!User.IsInRole("Admin"))
+            {
+                model.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddMember([FromBody] MemberCreateRequest model)
+        {
             if (!ModelState.IsValid)
             {
-                return View("AddMember", memberCreateRequest);
+                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+                int.TryParse(userIdClaim, out int userId);
+
+                IEnumerable<Society> societies;
+
+                if (User.IsInRole("Admin"))
+                {
+                    societies = await _societyService.GetAllSocietyAsync();
+                    ViewBag.IsSocietyReadonly = false;
+                }
+                else
+                {
+                    societies = await _societyService.GetAllSocietyAsync(userId);
+                    ViewBag.IsSocietyReadonly = true;
+                }
+
+                ViewBag.Societies = societies;
+                return View(model);
             }
 
-            await _memberService.AddMemberAsync(memberCreateRequest);
-
-            return RedirectToAction("FlatList", "Flat");
+            await _memberService.AddMemberAsync(model);
+            return Json(new
+            {
+                success = true,
+                message = "Member added successfully!",
+                redirectUrl = Url.Action("MemberList", "Member")
+            });
         }
 
         [HttpGet]
@@ -65,6 +134,7 @@ namespace SocPass.UI.Controllers
             });
             return Json(result);
         }
+
 
         [HttpGet]
         public async Task<JsonResult> GetFlatsByBlock(int blockId)

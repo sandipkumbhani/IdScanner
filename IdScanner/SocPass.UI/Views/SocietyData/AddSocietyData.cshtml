@@ -9,12 +9,13 @@
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        .contact-row {
+        .contact-column {
             margin-bottom: 10px;
         }
 
-            .contact-row .form-control {
+            .contact-column .form-control {
                 width: 100%;
+                margin-bottom: 8px;
             }
 
         .error-message {
@@ -38,9 +39,9 @@
         <form id="societyDataForm">
             <input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
 
-            <!-- First Row: Society, Block, Flat, Number of Contacts -->
+            <!-- Dropdowns -->
             <div class="row mb-3">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">Select Society</label>
                     <select id="Society" class="form-select">
                         <option value="">-- Select Society --</option>
@@ -51,34 +52,26 @@
                     </select>
                     <div class="error-message" id="societyError"></div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">Select Block</label>
                     <select id="Block" class="form-select">
                         <option value="">-- Select Block --</option>
                     </select>
                     <div class="error-message" id="blockError"></div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">Select Flat</label>
                     <select id="Flat" class="form-select">
                         <option value="">-- Select Flat --</option>
                     </select>
                     <div class="error-message" id="flatError"></div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">Number of Contacts</label>
-                    <select id="AllowedFields" class="form-select">
-                        <option value="">-- Select Number --</option>
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <option value="@i">@i</option>
-                        }
-                    </select>
-                    <div class="error-message" id="allowedFieldsError"></div>
-                </div>
             </div>
 
-            <div id="contactContainer"></div>
+            <!-- Contact fields in 3 columns -->
+            <div class="row" id="contactContainer">
+                <!-- Columns will be dynamically generated here -->
+            </div>
 
             <div class="mt-3">
                 <button type="button" id="saveBtn" class="btn btn-success">Save</button>
@@ -88,16 +81,75 @@
     </div>
 
     <script>
-        
+        function generateContactColumns(subscription) {
+            $("#contactContainer").empty();
+
+            const nameCount = subscription.allowsName || 0;
+            const numberCount = subscription.allowsNumber || 0;
+            const emailCount = subscription.allowsEmail || 0;
+
+            // If no fields, do nothing
+            if(nameCount === 0 && numberCount === 0 && emailCount === 0) return;
+
+            // Create columns
+            let nameColumn = nameCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Name</label></div>' : '';
+            let numberColumn = numberCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Number</label></div>' : '';
+            let emailColumn = emailCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Email</label></div>' : '';
+
+            $("#contactContainer").append(nameColumn + numberColumn + emailColumn);
+
+            // Append fields vertically in each column
+            if(nameCount > 0) {
+                let column = $("#contactContainer .contact-column").eq(0);
+                for(let i=0;i<nameCount;i++){
+                    column.append(`<input type="text" class="form-control contact-name" placeholder="Contact Name" />
+                                   <div class="error-message contactNameError"></div>`);
+                }
+            }
+
+            if(numberCount > 0) {
+                let columnIndex = nameCount > 0 ? 1 : 0;
+                let column = $("#contactContainer .contact-column").eq(columnIndex);
+                for(let i=0;i<numberCount;i++){
+                    column.append(`<input type="text" class="form-control contact-number" placeholder="Contact Number" />
+                                   <div class="error-message contactNumberError"></div>`);
+                }
+            }
+
+            if(emailCount > 0) {
+                let columnIndex = (nameCount>0 ? 1:0) + (numberCount>0 ? 1:0);
+                let column = $("#contactContainer .contact-column").eq(columnIndex);
+                for(let i=0;i<emailCount;i++){
+                    column.append(`<input type="email" class="form-control contact-email" placeholder="Contact Email" />
+                                   <div class="error-message contactEmailError"></div>`);
+                }
+            }
+        }
+
+        function tryRenderContacts() {
+            var societyId = $("#Society").val();
+            var blockId = $("#Block").val();
+            var flatId = $("#Flat").val();
+
+            $("#contactContainer").empty();
+            $(".error-message").text("");
+            $(".is-invalid").removeClass("is-invalid");
+
+            if(societyId && blockId && flatId) {
+                $.getJSON('@Url.Action("GetSubscriptionBySociety", "SocietyData")', { societyId: societyId }, function(subscription){
+                    generateContactColumns(subscription);
+                });
+            }
+        }
+
+        // Dropdown change events
         $("#Society").change(function(){
             var societyId = $(this).val();
             $("#Block").empty().append('<option value="">-- Select Block --</option>');
             $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-            $("#AllowedFields").val("");
-            $("#contactContainer").empty();
-            $(".error-message").text("");
-            $(".is-invalid").removeClass("is-invalid");
-            if(societyId){
+            tryRenderContacts();
+
+            if(societyId) {
                 $.getJSON('@Url.Action("GetBlocksBySociety", "SocietyData")', { societyId: societyId }, function(data){
                     $.each(data, function(i, block){
                         $("#Block").append('<option value="'+block.blockId+'">'+block.blockName+'</option>');
@@ -109,11 +161,9 @@
         $("#Block").change(function(){
             var blockId = $(this).val();
             $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-            $("#AllowedFields").val("");
-            $("#contactContainer").empty();
-            $(".error-message").text("");
-            $(".is-invalid").removeClass("is-invalid");
-            if(blockId){
+            tryRenderContacts();
+
+            if(blockId) {
                 $.getJSON('@Url.Action("GetFlatsByBlock", "SocietyData")', { blockId: blockId }, function(data){
                     $.each(data, function(i, flat){
                         $("#Flat").append('<option value="'+flat.flatId+'">'+flat.flatNumber+'</option>');
@@ -122,85 +172,40 @@
             }
         });
 
-        $("#AllowedFields").change(function(){
-            $("#contactContainer").empty();
-            $(".error-message").text("");
-            $(".is-invalid").removeClass("is-invalid");
-
-            var count = parseInt($(this).val());
-            if(!count) return;
-
-            for(var i=0; i<count; i++){
-                $("#contactContainer").append(
-                    `<div class="row contact-row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Contact Name</label>
-                            <input type="text" class="form-control contact-name" placeholder="Contact Name" />
-                            <div class="error-message contactNameError"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Contact Number</label>
-                            <input type="text" class="form-control contact-number" placeholder="Contact Number" />
-                            <div class="error-message contactNumberError"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Contact Email</label>
-                            <input type="email" class="form-control contact-email" placeholder="Contact Email" />
-                            <div class="error-message contactEmailError"></div>
-                        </div>
-                    </div>`
-                );
-            }
+        $("#Flat").change(function(){
+            tryRenderContacts();
         });
 
+        // Validation
         function validateForm() {
             let isValid = true;
 
-            if(!$("#Society").val()) {
-                $("#societyError").text("Please select a society.");
-                $("#Society").addClass("dropdown-invalid");
-                isValid = false;
-            } else { $("#societyError").text(""); $("#Society").removeClass("dropdown-invalid"); }
+            if(!$("#Society").val()){ $("#societyError").text("Please select a society."); $("#Society").addClass("dropdown-invalid"); isValid=false; } else { $("#societyError").text(""); $("#Society").removeClass("dropdown-invalid"); }
+            if(!$("#Block").val()){ $("#blockError").text("Please select a block."); $("#Block").addClass("dropdown-invalid"); isValid=false; } else { $("#blockError").text(""); $("#Block").removeClass("dropdown-invalid"); }
+            if(!$("#Flat").val()){ $("#flatError").text("Please select a flat."); $("#Flat").addClass("dropdown-invalid"); isValid=false; } else { $("#flatError").text(""); $("#Flat").removeClass("dropdown-invalid"); }
 
-            if(!$("#Block").val()) {
-                $("#blockError").text("Please select a block.");
-                $("#Block").addClass("dropdown-invalid");
-                isValid = false;
-            } else { $("#blockError").text(""); $("#Block").removeClass("dropdown-invalid"); }
+            $(".contact-name").each(function(){
+                if(!$(this).val().trim()){ $(this).next(".contactNameError").text("Name required"); $(this).addClass("is-invalid"); isValid=false; } else { $(this).next(".contactNameError").text(""); $(this).removeClass("is-invalid"); }
+            });
 
-            if(!$("#Flat").val()) {
-                $("#flatError").text("Please select a flat.");
-                $("#Flat").addClass("dropdown-invalid");
-                isValid = false;
-            } else { $("#flatError").text(""); $("#Flat").removeClass("dropdown-invalid"); }
+            $(".contact-number").each(function(){
+                if(!$(this).val().trim()){ $(this).next(".contactNumberError").text("Number required"); $(this).addClass("is-invalid"); isValid=false; } else { $(this).next(".contactNumberError").text(""); $(this).removeClass("is-invalid"); }
+            });
 
-            if(!$("#AllowedFields").val()) {
-                $("#allowedFieldsError").text("Please select number of contacts.");
-                $("#AllowedFields").addClass("dropdown-invalid");
-                isValid = false;
-            } else { $("#allowedFieldsError").text(""); $("#AllowedFields").removeClass("dropdown-invalid"); }
-
-            $(".contact-row").each(function(){
-                let name = $(this).find(".contact-name").val().trim();
-                let number = $(this).find(".contact-number").val().trim();
-                let email = $(this).find(".contact-email").val().trim();
-
-                if(!name){ $(this).find(".contactNameError").text("Contact Name is Required"); $(this).find(".contact-name").addClass("is-invalid"); isValid=false;} else {$(this).find(".contactNameError").text(""); $(this).find(".contact-name").removeClass("is-invalid");}
-                if(!number){ $(this).find(".contactNumberError").text("Contact Number is Required"); $(this).find(".contact-number").addClass("is-invalid"); isValid=false;} else {$(this).find(".contactNumberError").text(""); $(this).find(".contact-number").removeClass("is-invalid");}
-                if(!email){ $(this).find(".contactEmailError").text("Contact Email is Required"); $(this).find(".contact-email").addClass("is-invalid"); isValid=false;} else {$(this).find(".contactEmailError").text(""); $(this).find(".contact-email").removeClass("is-invalid");}
+            $(".contact-email").each(function(){
+                if(!$(this).val().trim()){ $(this).next(".contactEmailError").text("Email required"); $(this).addClass("is-invalid"); isValid=false; } else { $(this).next(".contactEmailError").text(""); $(this).removeClass("is-invalid"); }
             });
 
             return isValid;
         }
 
-        // Save Button
+        // Save button click
         $("#saveBtn").click(function(){
             if(!validateForm()) return;
 
             var model = {
                 SocietyDataId: $("#SocietyDataId").val(),
                 FlatId: $("#Flat").val(),
-                AllowedFields: $("#AllowedFields").val(),
                 ContactName: $(".contact-name").map(function(){ return $(this).val(); }).get(),
                 ContactNumber: $(".contact-number").map(function(){ return $(this).val(); }).get(),
                 ContactEmail: $(".contact-email").map(function(){ return $(this).val(); }).get()
@@ -223,4 +228,7 @@
     </script>
 </body>
 </html>
+
+
+
 

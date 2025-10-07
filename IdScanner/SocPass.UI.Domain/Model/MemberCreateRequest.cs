@@ -8,9 +8,11 @@ namespace SocPass.UI.Domain.Model
 {
     public class MemberCreateRequest
     {
-        public int FlatId { get; set; }
+        public int FlatId { get; set; } 
         public int NumberOfAdults { get; set; }
         public List<int> ChildAges { get; set; } = new List<int>();
+        public int SocietyId { get; set; }
+        public int BlockId { get; set; }
 
     }
 }

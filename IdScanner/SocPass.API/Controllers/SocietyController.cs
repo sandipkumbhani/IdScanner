@@ -7,7 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class SocietyController : Controller
     {
         private readonly ISocietyService _societyService;
@@ -30,12 +30,27 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpGet("getAllSociety")]
-        public async Task<IActionResult> GetAllSociety(int userId)
+        public async Task<IActionResult> GetAllSociety([FromQuery] int? userId)
         {
+            List<Society> societies;
 
-            var societies = await _societyService.GetAllSocietyAsync(userId);
+            if (userId.HasValue)
+            {
+                // User-specific
+                societies = await _societyService.GetAllSocietyAsync(userId.Value);
+            }
+            else
+            {
+                // All societies
+                societies = await _societyService.GetAllSocietyAsync();
+            }
+
             return Ok(societies);
+            //var societies = await _societyService.GetAllSocietyAsync(userId);
+            //return Ok(societies);
         }
+
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateSociety([FromBody] Society society)
         {
