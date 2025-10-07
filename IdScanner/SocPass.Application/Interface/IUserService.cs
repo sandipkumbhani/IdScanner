@@ -13,6 +13,6 @@ namespace SocPass.Application.Interface
         Task<List<User>> GetAllUsersAsync();
         Task DeleteUserById(int id);
         Task<User> UpdateUserAsync(int userid, User user);
-        User GetUserDetailsById(int userid);
+        Task<User?> GetUserDetailsById(int userid);
     }
 }

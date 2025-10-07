@@ -4,9 +4,10 @@ namespace SocPass.UI.Controllers
 {
     public class AccessDeniedController : Controller
     {
-        public IActionResult Index()
+        public IActionResult AccessDenied()
         {
-            return View();
+            return View("~/Views/AccessDenied/AccessDenied.cshtml");
         }
+
     }
 }

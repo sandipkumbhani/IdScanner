@@ -5,6 +5,7 @@ using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -41,17 +42,23 @@ namespace SocPass.UI.Controllers
                 return RedirectToAction("Login", "Login");
             }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            { 
+                return RedirectToAction("AccessDenied", "AccessDenied"); 
+            }
             int.TryParse(userIdClaim, out int userId);
             var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = societies;
+
             Subscription model;
             if (subscriptionId.HasValue && subscriptionId.Value > 0)
             {
                 model = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId.Value);
-
                 if (model == null)
                 {
-                    return NotFound(); 
+                    return NotFound();
                 }
             }
             else
@@ -60,6 +67,7 @@ namespace SocPass.UI.Controllers
             }
             return View("/Views/SubScription/AddSubScription.cshtml", model);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddSubScription(Subscription subscription)
         {

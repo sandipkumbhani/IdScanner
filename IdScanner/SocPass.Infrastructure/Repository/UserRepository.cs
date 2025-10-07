@@ -31,12 +31,11 @@ namespace SocPass.Infrastructure.Repository
         {
             return await _context.users.Include(x => x.UserRole).Include(x=>x.Society).Where(u => u.IsActive).ToListAsync();
         }
-        public User GetUserById(int id)
+        public async Task<User?> GetUserById(int id)
         {
-            return _context.users
-                .Include(e => e.UserRole)
-                .Include(e =>e.Society)
-                .FirstOrDefault(e => e.UserId == id);
+            var user = await _context.users
+                .FirstOrDefaultAsync(e => e.UserId == id && e.IsActive==true);
+            return user;
         }
         public async Task DeleteAsync(User user)
         {

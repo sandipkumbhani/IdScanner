@@ -38,6 +38,13 @@ namespace SocPass.UI.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             if (societyId == null)
             {
                 return View(new Society());

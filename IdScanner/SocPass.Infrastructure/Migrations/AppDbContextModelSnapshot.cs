@@ -310,6 +310,15 @@ namespace SocPass.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubscriptionId"));
 
+                    b.Property<int>("AllowNoOfContact")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AllowNoOfEmail")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AllowNoOfName")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndTo")
                         .HasColumnType("datetime2");
 
@@ -478,7 +487,7 @@ namespace SocPass.Infrastructure.Migrations
             modelBuilder.Entity("SocPass.Domain.Model.Subscription", b =>
                 {
                     b.HasOne("SocPass.Domain.Model.Society", "Society")
-                        .WithMany()
+                        .WithMany("Subscriptions")
                         .HasForeignKey("SocietyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -510,6 +519,8 @@ namespace SocPass.Infrastructure.Migrations
 
             modelBuilder.Entity("SocPass.Domain.Model.Society", b =>
                 {
+                    b.Navigation("Subscriptions");
+
                     b.Navigation("Users");
                 });
 #pragma warning restore 612, 618

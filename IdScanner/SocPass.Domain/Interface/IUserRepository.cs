@@ -12,7 +12,7 @@ namespace SocPass.Domain.Interface
         Task<bool> EmailExistsAsync(string email);
         Task<User> AddUserAsync(User user);
         Task<List<User>> GetAllUsersAsync();
-        User GetUserById(int id);
+        Task<User?> GetUserById(int id);
         Task DeleteAsync(User user);
         Task UserUpdateAsync(User user);
     }
