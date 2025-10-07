@@ -45,7 +45,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                 <a class="nav-link dropdown-toggle nav-user" href="#" id="userDropdown"
+                <a class="nav-link dropdown-toggle nav-user" href="#" id="userDropdown"
                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="account-user-avatar">
                         <img src="~/images/avatar-1.png" alt="user-image" width="40" class="rounded-circle">
@@ -88,7 +88,6 @@
                 <div class="left-toplogo">
                     <a href="#" class="logo logo-light">
                         <span class="logo-lg" style="font-size:x-large;color:#0466C8;">
-                            @* <i class="ri-first-aid-kit-line" style="font-size:35px"></i> *@
                             <b>SocPass</b>
                         </span>
                         <span class="logo-sm" style="font-size:x-large;color:#0466C8;">
@@ -112,16 +111,51 @@
                         </div>
                     </div>
                 </div>
-                @*             <div class="left-footer">
-                <ul class="side-nav">
-                <li class="side-nav-item">
-                <a href="@ViewBag.appUrl/Dashboard/Dashboard" class="side-nav-link">
-                <i class="ri-home-4-fill"></i>
-                <span> Back To Home </span>
-                </a>
-                </li>
-                </ul>
-                </div> *@
+                <div class="left-footer">
+                    <ul class="side-nav">
+                        <li class="side-nav-item">
+                            <form asp-controller="Logout" asp-action="Logout" method="post" class="logout-form">
+                                <button type="submit" class="logout-link">
+                                    <i class="ri-logout-circle-line"></i>
+                                    <span>Log Out</span>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <style>
+                    .logout-form {
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    .logout-link {
+                        display: flex;
+                        align-items: center;
+                        font-size: 0.875rem;
+                        color: var(--ft-left-menu-text);
+                        font-weight: 500;
+                        padding: 0.625rem 0.75rem;
+                        border-radius: 0.75rem;
+                        width: 100%;
+                        border: none;
+                        background: transparent;
+                        cursor: pointer;
+                        text-align: left;
+                        transition: all 0.3s ease;
+                    }
+
+                        .logout-link i {
+                            font-size: 1.375rem;
+                            margin-right: 12px;
+                        }
+
+                        .logout-link:hover {
+                            background: var(--ft-primary);
+                            color: var(--ft-white);
+                        }
+                </style>
+
             </div>
             <div class="content-page">
                 <div class="content">

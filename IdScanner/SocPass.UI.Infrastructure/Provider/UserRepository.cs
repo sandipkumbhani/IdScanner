@@ -24,6 +24,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<User>> GetAllUsersAsync()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "User/get-all-user";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -32,6 +33,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<User> AddUserAsync(User user)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "User/create";
 
             var userJson = JsonConvert.SerializeObject(user);
@@ -42,14 +44,13 @@ namespace SocPass.UI.Infrastructure.Provider
 
             if (!response.IsSuccessStatusCode)
             {
-                // Try parsing as JSON error response
                 try
                 {
                     var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
 
                     var message = errorResponse?.ErrorMessage
                                   ?? errorResponse?.Message
-                                  ?? responseData; // fallback to raw response text
+                                  ?? responseData; 
 
                     if (message.Contains("email", StringComparison.OrdinalIgnoreCase))
                     {
@@ -60,7 +61,6 @@ namespace SocPass.UI.Infrastructure.Provider
                 }
                 catch (JsonException)
                 {
-                    // If not JSON, treat it as plain text
                     if (responseData.Contains("email", StringComparison.OrdinalIgnoreCase))
                     {
                         throw new InvalidOperationException("This email is already registered.");
@@ -80,8 +80,9 @@ namespace SocPass.UI.Infrastructure.Provider
             }
         }
 
-        public async Task<User> GetUsersByIdAsync(long? id)
+        public async Task<User> GetUsersByIdAsync(int? id)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             if (id == null)
             {
                 throw new ArgumentNullException(nameof(id));
@@ -98,6 +99,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<User> UpdateUserAsync(User user)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"User/Update-User/{user.UserId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
 
@@ -111,6 +113,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> DeleteUserAsync(int id)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}User/Delete-User?id={id}";
             var response = await _httpClient.DeleteAsync(baseUrl);
             if (!response.IsSuccessStatusCode)
@@ -121,6 +124,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<UserRole>> GetAllUserRoleAsync()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "UserRole/get-all-userRole";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -129,6 +133,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<UserRole> GetRoleNameByIdAsync(long? id)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
 

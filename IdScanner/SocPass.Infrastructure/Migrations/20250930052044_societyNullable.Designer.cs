@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocPass.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using SocPass.Infrastructure.Data;
 namespace SocPass.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250930052044_societyNullable")]
+    partial class societyNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -310,15 +313,6 @@ namespace SocPass.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubscriptionId"));
 
-                    b.Property<int>("AllowNoOfContact")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AllowNoOfEmail")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AllowNoOfName")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("EndTo")
                         .HasColumnType("datetime2");
 
@@ -487,7 +481,7 @@ namespace SocPass.Infrastructure.Migrations
             modelBuilder.Entity("SocPass.Domain.Model.Subscription", b =>
                 {
                     b.HasOne("SocPass.Domain.Model.Society", "Society")
-                        .WithMany("Subscriptions")
+                        .WithMany()
                         .HasForeignKey("SocietyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -519,8 +513,6 @@ namespace SocPass.Infrastructure.Migrations
 
             modelBuilder.Entity("SocPass.Domain.Model.Society", b =>
                 {
-                    b.Navigation("Subscriptions");
-
                     b.Navigation("Users");
                 });
 #pragma warning restore 612, 618

@@ -34,9 +34,11 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<List<Subscription>> GetAllSubscriptionAsync()
         {
-            return await _context.Subscriptions.Include(u=>u.Society).Where(u => u.IsActive).ToListAsync();
+            return await _context.Subscriptions
+                                 .Include(u => u.Society)
+                                 .Where(u => u.IsActive == true)
+                                 .ToListAsync();
         }
-
         public async Task DeleteSubscriptionAsync(int subscriptionId)
         {
             var Deletesub = await _context.Subscriptions.FindAsync(subscriptionId);

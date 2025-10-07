@@ -35,7 +35,7 @@ namespace SocPass.Application.Services
             _userRoleRepository = userRoleRepository;
         }
         public async Task<LoginUserDTO?> LoginAsync(string email, string password)
-        {
+       {
             try
             {
                 var user = await _loginRepository.GetByEmailAsync(email);
@@ -44,19 +44,32 @@ namespace SocPass.Application.Services
                     return null;
                 }
 
-                if(user.Password != password)
+                if (user.Password != password)
                 {
                     return null;
                 }
+
                 var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
 
+                if (!string.Equals(role.Name, "Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    var activeSubscription = user.Society?.Subscriptions?
+                        .Where(s => s.IsActive)
+                        .OrderByDescending(s => s.EndTo)
+                        .FirstOrDefault();
+
+                    if (activeSubscription == null || activeSubscription.EndTo < DateTime.UtcNow)
+                    {
+                        throw new Exception("You don't have an active subscription. Please contact XYZ at mobile number 1234567897.");
+                    }
+                }
                 var token = GenerateJwtToken(user, role.Name);
                 return new LoginUserDTO
                 {
                     UserId = user.UserId,
                     Name = user.Name,
                     EmailId = user.EmailId,
-                    UserRoleName = user.UserRole?.Name,
+                    UserRoleName = role.Name,
                     Token = token,
                     Password = password,
                     IsActive = user.IsActive,
@@ -69,11 +82,10 @@ namespace SocPass.Application.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error during login: {ex.Message}");
+                throw;
             }
-            return null;
         }
-
-        private string GenerateJwtToken(User user,string roleName)
+        private string GenerateJwtToken(User user, string roleName)
         {
             var Cliams = new[]
             {
@@ -82,7 +94,6 @@ namespace SocPass.Application.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, roleName)
             };
-
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Jwtkey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(

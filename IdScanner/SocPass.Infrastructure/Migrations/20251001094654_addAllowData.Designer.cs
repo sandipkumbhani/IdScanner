@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocPass.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using SocPass.Infrastructure.Data;
 namespace SocPass.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251001094654_addAllowData")]
+    partial class addAllowData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,6 +334,9 @@ namespace SocPass.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("SocietyDataId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SocietyId")
                         .HasColumnType("int");
 
@@ -344,6 +350,8 @@ namespace SocPass.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("SubscriptionId");
+
+                    b.HasIndex("SocietyDataId");
 
                     b.HasIndex("SocietyId");
 
@@ -486,6 +494,10 @@ namespace SocPass.Infrastructure.Migrations
 
             modelBuilder.Entity("SocPass.Domain.Model.Subscription", b =>
                 {
+                    b.HasOne("SocPass.Domain.Model.SocietyData", null)
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("SocietyDataId");
+
                     b.HasOne("SocPass.Domain.Model.Society", "Society")
                         .WithMany("Subscriptions")
                         .HasForeignKey("SocietyId")
@@ -522,6 +534,11 @@ namespace SocPass.Infrastructure.Migrations
                     b.Navigation("Subscriptions");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("SocPass.Domain.Model.SocietyData", b =>
+                {
+                    b.Navigation("Subscriptions");
                 });
 #pragma warning restore 612, 618
         }

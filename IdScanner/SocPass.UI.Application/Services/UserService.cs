@@ -15,7 +15,7 @@ namespace SocPass.UI.Application.Services
         {
             return await _userRepository.GetAllUsersAsync();
         }
-        public async Task<User?> GetUserByIdAsync(long userId)
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
             return await _userRepository.GetUsersByIdAsync(userId);
         }

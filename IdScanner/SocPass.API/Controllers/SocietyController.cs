@@ -29,6 +29,7 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
+        [AllowAnonymous]
         [HttpGet("getAllSociety")]
         public async Task<IActionResult> GetAllSociety([FromQuery] int? userId)
         {

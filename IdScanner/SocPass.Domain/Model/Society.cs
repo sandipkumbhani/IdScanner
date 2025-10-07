@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SocPass.Domain.Model
@@ -41,6 +42,8 @@ namespace SocPass.Domain.Model
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
         public ICollection<User>? Users { get; set; }
+        [JsonIgnore] 
+        public ICollection<Subscription> Subscriptions { get; set; }
     }
 
 }

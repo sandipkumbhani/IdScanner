@@ -17,27 +17,43 @@ namespace SocPass.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
-            if (request == null || string.IsNullOrWhiteSpace(request.EmailId) || string.IsNullOrWhiteSpace(request.Password))
+            try
             {
-                return BadRequest(new { message = "Email and Password are required" });
-            }
-            var result = await _loginService.LoginAsync(request.EmailId, request.Password);
-            if (result == null)
-            {
-                return Unauthorized(new CommanResponseDto
+                if (request == null || string.IsNullOrWhiteSpace(request.EmailId) || string.IsNullOrWhiteSpace(request.Password))
                 {
-                    StatusCode = 401,
-                    Message = "Unauthorized",
-                    ErrorMessage = "Invalid Email or password"
+                    return BadRequest(new { message = "Email and Password are required" });
+                }
+
+                var result = await _loginService.LoginAsync(request.EmailId, request.Password);
+
+                if (result == null)
+                {
+                    return Unauthorized(new CommanResponseDto
+                    {
+                        StatusCode = 401,
+                        Message = "Unauthorized",
+                        ErrorMessage = "Invalid Email or password"
+                    });
+                }
+
+                return Ok(new CommanResponseDto
+                {
+                    StatusCode = 200,
+                    Message = "Login successful",
+                    Data = result
                 });
             }
-            return Ok(new CommanResponseDto
+            catch (Exception ex)
             {
-                StatusCode = 200,
-                Message = "Login successful",
-                Data = result
-            });
+                return BadRequest(new CommanResponseDto
+                {
+                    StatusCode = 400,
+                    Message = "Login failed",
+                    ErrorMessage = ex.Message
+                });
+            }
         }
+
 
     }
 }

@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
+using System.Data;
 
 namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -76,18 +79,27 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpGet("GetById")]
-        public IActionResult UserGetById(int userid)
+        public async Task<IActionResult> UserGetById(int userid)
         {
             try
             {
-                var result = _userService.GetUserDetailsById(userid);
+                var result = await _userService.GetUserDetailsById(userid);
+                if (result == null)
+                {
+                    return NotFound("User not found.");
+                }
+
                 return Ok(result);
             }
-            catch (KeyNotFoundException ex)
+            catch (KeyNotFoundException)
             {
-                return NotFound("User Not Found");
+                return NotFound("User not found.");
             }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
 
-          }
     }
 }

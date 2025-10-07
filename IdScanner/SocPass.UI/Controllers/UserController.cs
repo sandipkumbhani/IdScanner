@@ -30,6 +30,10 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> AddUser(int? id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             await InitViewBag();
             if (id == null)
             {
@@ -41,6 +45,10 @@ namespace SocPass.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(User modelUsers, string action)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(modelUsers.Name))
             {
@@ -94,6 +102,10 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _userServices.Deleteuserasync(id);

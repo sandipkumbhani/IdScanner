@@ -18,9 +18,18 @@ namespace SocPass.Infrastructure.Repository
             _context = context;
         }
 
+        //public async Task<User?> GetByEmailAsync(string email)
+        //{
+        //    return await _context.users.FirstOrDefaultAsync(u => u.EmailId == email && u.IsActive);
+        //}
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _context.users.FirstOrDefaultAsync(u => u.EmailId == email && u.IsActive);
+            return await _context.users
+                .Include(u => u.Society)
+                    .ThenInclude(s => s.Subscriptions)
+                .Include(u => u.UserRole)
+                .FirstOrDefaultAsync(u => u.EmailId == email && u.IsActive);
         }
+
     }
 }

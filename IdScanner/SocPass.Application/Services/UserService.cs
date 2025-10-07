@@ -68,7 +68,7 @@ namespace SocPass.Application.Services
         }
         public async Task DeleteUserById(int id)
         {
-            var deleteUser = _userRepository.GetUserById(id);
+            var deleteUser = await _userRepository.GetUserById(id);
             if (deleteUser == null)
             {
                 throw new KeyNotFoundException($"User ID {id} not found.");
@@ -78,7 +78,7 @@ namespace SocPass.Application.Services
         }
         public async Task<User> UpdateUserAsync(int userid, User user)
         {
-            var userExisting = _userRepository.GetUserById(userid);
+            var userExisting = await _userRepository.GetUserById(userid);
 
             if (userExisting == null)
             {
@@ -99,9 +99,9 @@ namespace SocPass.Application.Services
 
             return userExisting;
         }
-        public User GetUserDetailsById(int userid)
+        public async Task<User?> GetUserDetailsById(int userid)
         {
-            var UserDetails = _userRepository.GetUserById(userid);
+            var UserDetails =await _userRepository.GetUserById(userid);
             if (UserDetails == null)
             {
                 throw new KeyNotFoundException($"User Id with ID {userid} not found.");

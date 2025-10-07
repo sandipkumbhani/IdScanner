@@ -18,15 +18,19 @@ namespace IdScanner.UI.Views.ViewComponents
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.IsNullOrEmpty(role))
+            {
                 return View(new List<MenuMaster>());
-
+            }
             var menus = await _menuService.GetAllMenuMasterAsync();
 
             if (!role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
-                menus = menus.Where(m => !m.Name.Equals("Add Society", StringComparison.OrdinalIgnoreCase)).ToList();
-            }
+                var excludedMenus = new List<string> { "Add Society", "Add Subscription", "Add User" };
 
+                menus = menus
+                    .Where(m => !excludedMenus.Contains(m.Name, StringComparer.OrdinalIgnoreCase))
+                    .ToList();
+            }
             return View(menus);
         }
 
