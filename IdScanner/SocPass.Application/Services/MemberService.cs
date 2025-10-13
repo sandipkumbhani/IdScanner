@@ -68,7 +68,7 @@ namespace SocPass.Application.Services
                         UpdateDate = DateTime.Now
                     };
                     var result = await _memberRepository.AddMemberAsync(newAdult);
-                    await updatedQrAsync(result.MemberId, result.IsChild);
+                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
             if (children.Count()> childAges.Count)
@@ -107,7 +107,7 @@ namespace SocPass.Application.Services
                         UpdateDate = DateTime.Now
                     };
                     var result = await _memberRepository.AddMemberAsync(newChild);
-                    await updatedQrAsync(result.MemberId, result.IsChild);
+                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
         }
@@ -169,7 +169,7 @@ namespace SocPass.Application.Services
                         UpdateDate = DateTime.Now
                     };
                     var result = await _memberRepository.AddMemberAsync(newAdult);
-                    await updatedQrAsync(result.MemberId, result.IsChild);
+                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
 
@@ -213,7 +213,7 @@ namespace SocPass.Application.Services
                         UpdateDate = DateTime.Now
                     };
                     var result = await _memberRepository.AddMemberAsync(newChild);
-                    await updatedQrAsync(result.MemberId, result.IsChild);
+                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
         }
@@ -239,44 +239,44 @@ namespace SocPass.Application.Services
         {
             return await _memberRepository.IsVisitedAsync(memberid, loggedInUserId);
         }
-        private async Task updatedQrAsync(int memberid, bool isChild)
-        {
-            string qrUrl = $"http://localhost:5109/MemberDetails/GetDetails/{memberid}";
-            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
-            using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
-            {
-                byte[] qrBytes = qrCode.GetGraphic(20);
-                using (var ms = new MemoryStream(qrBytes))
-                using (var originalBitmap = new Bitmap(ms))
-                using (var bitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height, PixelFormat.Format32bppArgb))
-                using (var graphics = Graphics.FromImage(bitmap))
-                {
-                    graphics.Clear(Color.White);
-                    graphics.DrawImage(originalBitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-                    string label = isChild ? "CHILD" : "ADULT";
-                    using (Font font = new Font("Arial", 14, FontStyle.Bold))
-                    using (Brush textBrush = new SolidBrush(Color.Red))
-                    {
-                        SizeF textSize = graphics.MeasureString(label, font);
-                        float rectX = (bitmap.Width - textSize.Width) / 2 - 10;   // add padding
-                        float rectY = (bitmap.Height - textSize.Height) / 2 - 5;
-                        float rectWidth = textSize.Width + 20;
-                        float rectHeight = textSize.Height + 10;
-                        graphics.FillRectangle(Brushes.White, rectX, rectY, rectWidth, rectHeight);
-                        graphics.DrawString(label, font, textBrush,
-                            new RectangleF(rectX, rectY, rectWidth, rectHeight),
-                            new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-                    }
-                    var qrFolder = Path.Combine(@"D:\Broadsy\Project\IdScanner\SocPass.UI", "wwwroot", "QRCodes");
-                    if (!Directory.Exists(qrFolder))
-                        Directory.CreateDirectory(qrFolder);
-                    var qrFileName = $"{memberid}_qr.png";
-                    var qrPath = Path.Combine(qrFolder, qrFileName);
-                    bitmap.Save(qrPath, ImageFormat.Png);
-                    await _memberRepository.UpdateQrCodeAsync(memberid, "/QRCodes/" + qrFileName);
-                }
-            }
-        }
+        //private async Task updatedQrAsync(int memberid, bool isChild)
+        //{
+        //    string qrUrl = $"http://localhost:5109/MemberDetails/GetDetails/{memberid}";
+        //    using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+        //    using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrUrl, QRCodeGenerator.ECCLevel.Q))
+        //    using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
+        //    {
+        //        byte[] qrBytes = qrCode.GetGraphic(20);
+        //        using (var ms = new MemoryStream(qrBytes))
+        //        using (var originalBitmap = new Bitmap(ms))
+        //        using (var bitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height, PixelFormat.Format32bppArgb))
+        //        using (var graphics = Graphics.FromImage(bitmap))
+        //        {
+        //            graphics.Clear(Color.White);
+        //            graphics.DrawImage(originalBitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+        //            string label = isChild ? "CHILD" : "ADULT";
+        //            using (Font font = new Font("Arial", 14, FontStyle.Bold))
+        //            using (Brush textBrush = new SolidBrush(Color.Red))
+        //            {
+        //                SizeF textSize = graphics.MeasureString(label, font);
+        //                float rectX = (bitmap.Width - textSize.Width) / 2 - 10;   // add padding
+        //                float rectY = (bitmap.Height - textSize.Height) / 2 - 5;
+        //                float rectWidth = textSize.Width + 20;
+        //                float rectHeight = textSize.Height + 10;
+        //                graphics.FillRectangle(Brushes.White, rectX, rectY, rectWidth, rectHeight);
+        //                graphics.DrawString(label, font, textBrush,
+        //                    new RectangleF(rectX, rectY, rectWidth, rectHeight),
+        //                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+        //            }
+        //            var qrFolder = Path.Combine(@"D:\Broadsy\\Projects\IdScanner\IdScanner\SocPass.UI", "wwwroot", "QRCodes");
+        //            if (!Directory.Exists(qrFolder))
+        //                Directory.CreateDirectory(qrFolder);
+        //            var qrFileName = $"{memberid}_qr.png";
+        //            var qrPath = Path.Combine(qrFolder, qrFileName);
+        //            bitmap.Save(qrPath, ImageFormat.Png);
+        //            await _memberRepository.UpdateQrCodeAsync(memberid, "/QRCodes/" + qrFileName);
+        //        }
+        //    }
+        //}
     }
 }

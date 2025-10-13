@@ -21,6 +21,7 @@ namespace SocPass.UI.Infrastructure.Extension
             services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
             services.AddScoped<IUserRepository,UserRepository>();   
             services.AddScoped<ISocietyDataRepository, SocietyDataRepository>();
+            services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
             return services;
         }
     }

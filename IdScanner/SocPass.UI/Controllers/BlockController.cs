@@ -38,12 +38,11 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                ViewBag.UserSocietyName = ""; // optional
+                ViewBag.UserSocietyName = "";
             }
 
             return View();
         }
-
 
         [HttpGet]
         public async Task<IActionResult> AddBlock(int? blockid)
@@ -59,14 +58,12 @@ namespace SocPass.UI.Controllers
             else
                 societies = await _societyService.GetAllSocietyAsync(userId);
 
-            // ---------- NEW BLOCK ----------
             if (blockid == null)
             {
                 var newBlock = new Block();
 
                 if (!User.IsInRole("Admin"))
                 {
-                    // For non-admins: preselect and lock the dropdown
                     var assignedSociety = societies.FirstOrDefault();
                     if (assignedSociety != null)
                         newBlock.SocietyId = assignedSociety.SocietyId;
@@ -76,7 +73,6 @@ namespace SocPass.UI.Controllers
                 }
                 else
                 {
-                    // Admins: all societies visible and editable
                     ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name");
                     ViewBag.IsSocietyReadonly = false;
                 }
@@ -84,14 +80,12 @@ namespace SocPass.UI.Controllers
                 return View(newBlock);
             }
 
-            // ---------- EDIT BLOCK ----------
             var block = await _blockService.GetBlockByIdAsync(blockid.Value);
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
             ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
 
             return View(block);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AddBlock(Block block)
@@ -102,29 +96,48 @@ namespace SocPass.UI.Controllers
             IEnumerable<Society> societies;
 
             if (User.IsInRole("Admin"))
+            {
                 societies = await _societyService.GetAllSocietyAsync();
+            }
             else
+            {
                 societies = await _societyService.GetAllSocietyAsync(userId);
-
+            }
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
             ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
 
-            // --- Validation ---
             if (string.IsNullOrEmpty(block.BlockNumber))
             {
-                ViewBag.BlockNumberMsg = "Please Enter Block Number.";
+                ViewBag.BlockNumberMsg = "Please enter block number.";
                 return View(block);
             }
+            try
+            {
+                string message;
 
-            // --- Save/Update ---
-            if (block.BlockId == 0)
-                await _blockService.AddBlockAsync(block);
-            else
-                await _blockService.UpdateBlockAsync(block);
+                if (block.BlockId == 0)
+                {
+                    message = await _blockService.AddBlockAsync(block);
+                }
+                else
+                {
+                    message = await _blockService.UpdateBlockAsync(block);
+                }
 
-            return RedirectToAction("BlockList");
+                if (message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+                {
+                    ViewBag.ErrorMessage = message;
+                    return View(block);
+                }
+                TempData["SuccessMessage"] = message;
+                return RedirectToAction("BlockList");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View(block);
+            }
         }
-
         [HttpGet]
         public async Task<IActionResult> DeleteBlock(int blockid)
         {

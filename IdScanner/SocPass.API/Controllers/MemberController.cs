@@ -74,7 +74,7 @@ namespace SocPass.API.Controllers
             var result = await _memberService.AddGuestPassDateAsync(blockId, passDate);
             return Ok(result);
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetMemberByMemberId")]
         public async Task<IActionResult> GetmemberById(int memberId)
         {
@@ -86,29 +86,24 @@ namespace SocPass.API.Controllers
             return Ok(result);
         }
         [HttpPost("IsVisited")]
-        [Authorize]
         public async Task<IActionResult> IsVisitedAsync(int memberId, int loggedInUserId)
         {
             if (memberId <= 0)
             {
                 return BadRequest(new { Message = "Valid Member Id is required." });
             }
-
             if (loggedInUserId <= 0)
             {
                 return BadRequest(new { Message = "Valid Logged In User Id is required." });
             }
-
             bool isVisited = await _memberService.IsVisitedAsync(memberId, loggedInUserId);
-
             if (isVisited)
             {
                 return Ok(new { Message = "Member is visiting." });
             }
             else
             {
-                //return NotFound(new { Message = "No matching record found or already transacted." });
-                return Ok(new { Message = "Member is already visiting visiting." });
+                return Ok(new { Message = "Member is already visiting." });
             }
         }
 

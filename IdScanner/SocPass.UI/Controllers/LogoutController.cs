@@ -6,7 +6,7 @@ namespace SocPass.UI.Controllers
 {
     public class LogoutController : Controller
     {
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

@@ -114,7 +114,7 @@ namespace SocPass.API.Controllers
             try
             {
                 bool exists = await _subscriptionService.ExistsSocietyDataAsync(societyId, subscriptionId);
-                return Ok(exists); // returns true if society already exists, false otherwise
+                return Ok(exists); 
             }
             catch
             {

@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     @* <title>@ViewData["Title"] - Emertec.UI</title> *@
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +37,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
 </head>
 <body>
     <header>
@@ -57,11 +59,11 @@
                     <div class="dropdown-header noti-title">
                         <h6 class="text-overflow m-0">Welcome !</h6>
                     </div>
-                    <form asp-controller="Logout" asp-action="Logout" method="post">
+                    <a class="nav-link" href="../Logout/Logout">
                         <button type="submit" class="dropdown-item">
                             <span>Logout</span>
                         </button>
-                    </form>
+                    </a>
                 </div>
             </div>
         </nav>
@@ -112,23 +114,25 @@
                     </div>
                 </div>
                 <div class="left-footer">
-                    <ul class="side-nav">
-                        <li class="side-nav-item">
-                            <form asp-controller="Logout" asp-action="Logout" method="post" class="logout-form">
-                                <button type="submit" class="logout-link">
-                                    <i class="ri-logout-circle-line"></i>
-                                    <span>Log Out</span>
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+                    <div class="left-sidebar-wrap">
+                        <div class="sidebar-menu-area">
+                            <ul id="leftside-menu-container" class="side-nav" style="padding:initial;">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="../Logout/Logout">
+                                        <i class="ri-logout-circle-line" style="display:flow"></i>
+                                        <span>Log Out</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
                 </div>
                 <style>
                     .logout-form {
                         margin: 0;
                         padding: 0;
                     }
-
                     .logout-link {
                         display: flex;
                         align-items: center;

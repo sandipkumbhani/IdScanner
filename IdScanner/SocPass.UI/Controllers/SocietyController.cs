@@ -30,7 +30,6 @@ namespace SocPass.UI.Controllers
             ViewBag.SocietyList = SocietyList;
             return View("~/Views/Society/SocietyList.cshtml");
         }
-
         [HttpGet]
         public async Task<IActionResult> AddSociety(int? societyId)
         {

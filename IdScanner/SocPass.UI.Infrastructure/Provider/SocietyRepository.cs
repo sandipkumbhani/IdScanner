@@ -78,11 +78,26 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<string> UpdateSocietyAsync(Society society)
         {
-            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = apiCredential.url + $"Society/Update-society/{society.SocietyId}";
+            if (society.SocietyId <= 0)
+            {
+                throw new Exception("Invalid SocietyId. Cannot update society without valid ID.");
+            }
+
+            _httpClinet.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+
+            var baseUrl = $"{apiCredential.url}Society/Update-society/{society.SocietyId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(society), Encoding.UTF8, "application/json");
-            var response = await _httpClinet.PutAsync(baseUrl,jsonContent);
-            return await response.Content.ReadAsStringAsync();
+
+            var response = await _httpClinet.PutAsync(baseUrl, jsonContent);
+            var responseData = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"API Error ({response.StatusCode}): {responseData}");
+            }
+
+            return responseData;
         }
 
         public async Task<string> DeleteSocietyAsync(int societyId)

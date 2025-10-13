@@ -1,20 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
 
 namespace SocPass.UI.Controllers
 {
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;
-        public MenuMasterController(IMenuMasterService menuMasterService)
+        private readonly GlobalClass _globalClass;
+        public MenuMasterController(IMenuMasterService menuMasterService,GlobalClass globalClass)
+
         {
             _menuMasterService = menuMasterService
                 ?? throw new ArgumentNullException(nameof(menuMasterService));
+            _globalClass = globalClass;
         }
 
         public async Task<IActionResult> MenuMasterList()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             IList<MenuMaster> MenuMasterList = await _menuMasterService.GetAllMenuMasterAsync();
             ViewBag.MenuMasterList = MenuMasterList;
             return View("~/Views/MenuMaster/MenuMasterList.cshtml");
@@ -23,8 +31,12 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddMenuMaster(int? id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             //ViewBag.UserRole = User.FindFirst(ClaimTypes.Role)?.Value;
-            if(id == null)
+            if (id == null)
             {
                 return View(new MenuMaster());
             }
@@ -35,6 +47,10 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMenuMAster(MenuMaster menuMaster)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(menuMaster.Name))
             {
@@ -79,6 +95,10 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteMenuMaster(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _menuMasterService.DeleteMenuAsync(id);

@@ -13,13 +13,15 @@ namespace SocPass.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserRoleRepository _userRoleRepository;
+        private readonly IUserFlatMappingRepository _userFlatMappingRepository;
 
-        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository)
+        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository, IUserFlatMappingRepository userFlatMappingRepository)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
+            _userFlatMappingRepository = userFlatMappingRepository;
         }
-        public async Task<User> CreateUserAsync(User user)
+        public async Task<User> CreateUserAsync(User user, int? flatId = null)
         {
             bool emailExists = await _userRepository.EmailExistsAsync(user.EmailId);
             if (emailExists)
@@ -43,9 +45,24 @@ namespace SocPass.Application.Services
                 UpdateDate = DateTime.Now
             };
 
-            return await _userRepository.AddUserAsync(newUser);
-        }
+            var result = await _userRepository.AddUserAsync(newUser);
+            if (role.Name == "User")
+            {
+                var userMapping = new UserFlatMapping
+                {
+                    UserId = result.UserId,
+                    FlatId = flatId.Value,
+                    IsActive = true,
+                    InsertBy = 1,
+                    InsertDate = DateTime.Now,
+                    UpdateBy = 1,
+                    UpdateDate = DateTime.Now
+                };
+                await _userFlatMappingRepository.AddFlatMappingAsync(userMapping);
 
+            }
+            return result;
+        }
         public async Task<List<User>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllUsersAsync();

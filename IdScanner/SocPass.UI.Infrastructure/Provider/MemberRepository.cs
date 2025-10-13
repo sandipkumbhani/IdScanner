@@ -73,7 +73,6 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<Member> GetMemberByMemberId(int? memberId)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Member/GetMemberByMemberId?memberId={memberId}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();

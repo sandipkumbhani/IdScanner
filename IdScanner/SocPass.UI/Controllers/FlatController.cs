@@ -8,14 +8,14 @@ namespace SocPass.UI.Controllers
 {
     public class FlatController : Controller
     {
-        private readonly IFlatService _flatRepository;
+        private readonly IFlatService _flatService;
         private readonly ISocietyService _societyService;
         private readonly IBlockService _blockService;
         private GlobalClass _globalClass;
-        public FlatController(IFlatService flatRepository, GlobalClass globalClass, ISocietyService societyService, IBlockService blockService)
+        public FlatController(IFlatService flatService, GlobalClass globalClass, ISocietyService societyService, IBlockService blockService)
         {
-            _flatRepository = flatRepository
-                ?? throw new ArgumentNullException(nameof(flatRepository));
+            _flatService = flatService
+                ?? throw new ArgumentNullException(nameof(flatService));
 
             _societyService = societyService
                 ?? throw new ArgumentNullException(nameof(societyService));
@@ -75,7 +75,7 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            var flatList = (await _flatRepository.GetAllFlatAsync()).ToList();
+            var flatList = (await _flatService.GetAllFlatAsync()).ToList();
 
             ViewBag.FlatList = flatList;
             ViewBag.IsAdmin = User.IsInRole("Admin");
@@ -103,15 +103,12 @@ namespace SocPass.UI.Controllers
 
             IEnumerable<Society> societies;
 
-            // Admin = access all societies, else user-specific
             if (User.IsInRole("Admin"))
-                societies = await _societyService.GetAllSocietyAsync(); // all societies
+                societies = await _societyService.GetAllSocietyAsync(); 
             else
-                societies = await _societyService.GetAllSocietyAsync(userId); // only user's society
-
+                societies = await _societyService.GetAllSocietyAsync(userId); 
             Flat flat;
 
-            // ---------- NEW Flat ----------
             if (societyId == null || blockId == 0)
             {
                 flat = new Flat();
@@ -128,15 +125,13 @@ namespace SocPass.UI.Controllers
                 }
                 else
                 {
-                    // Admin → editable dropdown
                     ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name");
                     ViewBag.IsSocietyReadonly = false;
                 }
                 return View(flat);
             }
 
-            // ---------- EDIT Flat ----------
-            var flatList = await _flatRepository.GetFlatByIdAsync(societyId, blockId);
+            var flatList = await _flatService.GetFlatByIdAsync(societyId, blockId);
             flat = flatList.FirstOrDefault() ?? new Flat();
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
             ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
@@ -175,7 +170,7 @@ namespace SocPass.UI.Controllers
 
             try
             {
-                await _flatRepository.UpdateFlatAsync(flat);
+                await _flatService.UpdateFlatAsync(flat);
                 TempData["SuccessMessage"] = "Flat updated successfully.";
                 return RedirectToAction("FlatList");
             }

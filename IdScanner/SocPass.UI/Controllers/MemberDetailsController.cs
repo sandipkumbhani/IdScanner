@@ -23,11 +23,6 @@ namespace SocPass.UI.Controllers
         [HttpGet("MemberDetails/GetDetails/{memberId}")]
         public async Task<IActionResult> GetDetails(int memberId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
-
             if (memberId == 0)
             {
                 return BadRequest("Member Id is not found.");
@@ -38,21 +33,19 @@ namespace SocPass.UI.Controllers
             {
                 return NotFound();
             }
-
-            ViewBag.Message = TempData["Message"];
-            ViewBag.AlertType = TempData["AlertType"];
+            string? Message = string.Empty;
+            if (result.Visited && TempData["Message"] == null)
+                Message = "This member has already visited.";
+            else
+                Message = TempData["Message"] != null ? TempData["Message"].ToString() : "";
+            ViewBag.Message = Message;
+            ViewBag.AlertType = TempData["AlertType"] == null ? "danger" : TempData["AlertType"];
 
             return View("~/Views/MemberDetails/MemberDetails.cshtml", result);
         }
-
         [HttpPost]
         public async Task<IActionResult> IsVisited(int memberId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
-
             if (memberId == 0)
             {
                 return BadRequest("Member Id is not found.");
@@ -68,7 +61,6 @@ namespace SocPass.UI.Controllers
                 : "Something went wrong. Please try again.";
             TempData["AlertType"] = success ? "success" : "danger";
 
-            // PRG pattern: reload the updated entity
             return RedirectToAction(nameof(GetDetails), new { memberId });
         }
 

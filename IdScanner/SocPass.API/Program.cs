@@ -4,11 +4,27 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz;
+using SocPass.API.Jobs;
 using SocPass.Application.Extension;
+using SocPass.Domain.DTO;
 using SocPass.Infrastructure.Data;
 using SocPass.Infrastructure.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddQuartz(q =>
+{
+    var QrCodeCleanupKey = new JobKey("QrCodeCleanupJob");
+    q.AddJob<DeleteQr>(opts => opts.WithIdentity(QrCodeCleanupKey));
+    var mp3ToRsaCron = builder.Configuration["Quartz:DeleteQr"];
+    q.AddTrigger(opts => opts
+        .ForJob(QrCodeCleanupKey)
+        .WithIdentity("TriggerMP3ToRSA")
+        .WithCronSchedule(mp3ToRsaCron, cron => cron.WithMisfireHandlingInstructionDoNothing()));
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+builder.Services.Configure<AppSettingsDTO>(builder.Configuration.GetSection("AppSettings"));
 
 //database connection string
 builder.Services.AddDbContext<AppDbContext>(options =>

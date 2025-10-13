@@ -11,9 +11,18 @@ namespace SocPass.Application.Services
         {
             _blockRepository = blockRepository;
         }
-
         public async Task<Block> CreateBlockAsync(Block block)
         {
+           
+            var existingBlocks = await _blockRepository.GetBlocksBySocietyIdAsync(block.SocietyId);
+            var checkBlockExisting = existingBlocks
+                .FirstOrDefault(b => b.BlockNumber.Trim().ToLower() == block.BlockNumber.Trim().ToLower());
+
+            if (checkBlockExisting != null)
+            {
+                throw new InvalidOperationException($"Block '{block.BlockNumber}' already exists in this society.");
+            }
+
             var newBlock = new Block
             {
                 BlockNumber = block.BlockNumber,
@@ -23,10 +32,26 @@ namespace SocPass.Application.Services
                 InsertDate = DateTime.Now,
                 UpdateBy = 1,
                 UpdateDate = DateTime.Now
-
             };
+
             return await _blockRepository.CreateBlockAsync(newBlock);
         }
+
+        //public async Task<Block> CreateBlockAsync(Block block)
+        //{
+        //    var newBlock = new Block
+        //    {
+        //        BlockNumber = block.BlockNumber,
+        //        SocietyId = block.SocietyId,
+        //        IsActive = true,
+        //        InsertBy = 1,
+        //        InsertDate = DateTime.Now,
+        //        UpdateBy = 1,
+        //        UpdateDate = DateTime.Now
+
+        //    };
+        //    return await _blockRepository.CreateBlockAsync(newBlock);
+        //}
         public async Task<List<Block>> GetAllBlockAsync()
         {
             var newBlock = await _blockRepository.GetAllBlockAsync();

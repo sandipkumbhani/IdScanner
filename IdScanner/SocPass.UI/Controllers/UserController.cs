@@ -11,11 +11,15 @@ namespace SocPass.Controllers
         IUserService _userServices;
         private GlobalClass _globalClass;
         private readonly ISocietyService _Societyservices;
-        public UserController(IUserService userServices, GlobalClass globalClass, ISocietyService societyservices)
+        private readonly IBlockService _blockService;
+        private readonly IFlatService _flatService;
+        public UserController(IUserService userServices, GlobalClass globalClass, ISocietyService societyservices, IBlockService blockService, IFlatService flatService)
         {
             _userServices = userServices;
             _globalClass = globalClass;
             _Societyservices = societyservices;
+            _blockService = blockService;
+            _flatService = flatService;
         }
         public async Task<IActionResult> UserList()
         {
@@ -43,7 +47,7 @@ namespace SocPass.Controllers
             return View(user);
         }
         [HttpPost]
-        public async Task<IActionResult> AddUser(User modelUsers, string action)
+        public async Task<IActionResult> AddUser(User modelUsers, string action, int? flatId = null)
         {
             if (string.IsNullOrEmpty(_globalClass.Token))
             {
@@ -91,7 +95,7 @@ namespace SocPass.Controllers
             }
             if (modelUsers.UserId == 0)
             {
-                await _userServices.AddUserAsync(modelUsers);
+                await _userServices.AddUserAsync(modelUsers,flatId);
             }
             else
             {
@@ -116,6 +120,28 @@ namespace SocPass.Controllers
                 ViewBag.ErrorMessage = $"User with ID {id} not found: {ex.Message}";
                 return View("Error");
             }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetBlocksBySociety(int societyId)
+        {
+            var blocks = await _blockService.GetBlockBySocietyId(societyId);
+            var result = blocks.Select(d => new
+            {
+                blockId = d.BlockId,
+                blockNumber = d.BlockNumber
+            });
+            return Json(result);
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetFlatsByBlock(int blockId)
+        {
+            var flats = await _flatService.GetFlatByBlockId(blockId);
+            var result = flats.Select(f => new
+            {
+                flatId = f.FlatId,
+                flatNumber = f.FlatNumber
+            });
+            return Json(result);
         }
         private async Task InitViewBag()
         {
