@@ -28,7 +28,7 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<List<Flat>> GetAllFlatAsync()
         {
-            return await _context.flats.Include(X => X.Society).Include(X => X.Block).Where(X => X.IsActive == true).ToListAsync();
+            return await _context.flats.Include(X => X.Society).Include(X => X.Block).OrderBy(X => X.Society.Name).ThenBy(X => X.Block.BlockNumber).ThenBy(X => X.FloorNumber).ThenBy(X => X.FlatNumber).Where(X => X.IsActive == true).ToListAsync();
         }
         public async Task<Flat> GetById(int flatId)
         {

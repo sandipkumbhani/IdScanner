@@ -192,25 +192,36 @@ namespace SocPass.Application.Services
             }
             else if (flat.StartFlatNumber == 0 && flat.EndFlatNumber == 0 && flat.NumberOfFlats == 0)
             {
-                var newFlat = new Flat
+                var existingFlat = await _flatRepository.GetFlatByNumberAsync(flat.SocietyId, flat.BlockId, int.Parse(flat.FlatNumber));
+                if (existingFlat == null)
                 {
-                    SocietyId = flat.SocietyId,
-                    BlockId = flat.BlockId,
-                    FlatNumber = flat.FlatNumber.ToString(),
-                    FloorNumber = flat.FloorNumber,
-                    TotalMember = flat.TotalMember,
-                    NumberOfAdult = flat.NumberOfAdult,
-                    NumberOfChild = flat.NumberOfChild,
-                    IsActive = true,
-                    InsertBy = 1,
-                    InsertDate = DateTime.Now,
-                    UpdateBy = 1,
-                    UpdateDate = DateTime.Now
-                };
+                    var newFlat = new Flat
+                    {
+                        SocietyId = flat.SocietyId,
+                        BlockId = flat.BlockId,
+                        FlatNumber = flat.FlatNumber.ToString(),
+                        FloorNumber = flat.FloorNumber,
+                        TotalMember = flat.TotalMember,
+                        NumberOfAdult = flat.NumberOfAdult,
+                        NumberOfChild = flat.NumberOfChild,
+                        IsActive = true,
+                        InsertBy = 1,
+                        InsertDate = DateTime.Now,
+                        UpdateBy = 1,
+                        UpdateDate = DateTime.Now
+                    };
 
-                var result = await _flatRepository.CreateFlatAsync(newFlat);
-                updatedFlats.Add(result);
-                return updatedFlats;
+                    var result = await _flatRepository.CreateFlatAsync(newFlat);
+                    updatedFlats.Add(result);
+                    return updatedFlats;
+                }
+                else
+                {
+                    if(existingFlat.SocietyId == flat.SocietyId && existingFlat.BlockId == flat.BlockId && existingFlat.FloorNumber == flat.FloorNumber && existingFlat.FlatNumber == flat.FlatNumber)
+                    {
+                        throw new InvalidOperationException("Flat number already exists in the same society and block.");
+                    }
+                }
             }
             else
             {

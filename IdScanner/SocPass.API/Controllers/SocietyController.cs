@@ -69,6 +69,7 @@ namespace SocPass.API.Controllers
                 return Ok($"someting Went Wrong");
             }
         }
+
         [HttpPut("Update-society/{societyId}")]
         public async Task<IActionResult> UpdateSocietyAsync(int societyId, [FromBody] Society society)
         {

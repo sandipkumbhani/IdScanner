@@ -58,16 +58,61 @@ namespace SocPass.UI.Infrastructure.Provider
             return JsonConvert.DeserializeObject<List<Flat>>(responseData)!;
         }
 
+        //public async Task<List<Flat>> UpdateFlatAsync(Flat flat)
+        //{
+        //    var baseUrl = apiCredential.url + "Flat/Update-flat";
+        //    var flatJson = JsonConvert.SerializeObject(flat);
+        //    var requestContent = new StringContent(flatJson, Encoding.UTF8, "application/json");
+        //    var response = await _httpClinet.PutAsync(baseUrl, requestContent);
+        //    response.EnsureSuccessStatusCode();
+        //    var responseData = await response.Content.ReadAsStringAsync();
+        //    return JsonConvert.DeserializeObject<List<Flat>>(responseData)!;
+        //}
+
         public async Task<List<Flat>> UpdateFlatAsync(Flat flat)
         {
             var baseUrl = apiCredential.url + "Flat/Update-flat";
             var flatJson = JsonConvert.SerializeObject(flat);
             var requestContent = new StringContent(flatJson, Encoding.UTF8, "application/json");
+
             var response = await _httpClinet.PutAsync(baseUrl, requestContent);
-            response.EnsureSuccessStatusCode();
             var responseData = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Flat>>(responseData)!;
+
+            // Handle 200 OK
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JsonConvert.DeserializeObject<dynamic>(responseData);
+                return result?.data?.ToObject<List<Flat>>() ?? new List<Flat>();
+            }
+
+            // Handle 409 Conflict (e.g., flat already exists)
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                try
+                {
+                    var error = JsonConvert.DeserializeObject<dynamic>(responseData);
+                    string message = error?.message ?? "Flat already exists.";
+                    throw new InvalidOperationException(message);
+                }
+                catch
+                {
+                    throw new InvalidOperationException("Flat already exists.");
+                }
+            }
+
+            // Handle 400 BadRequest
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var error = JsonConvert.DeserializeObject<dynamic>(responseData);
+                string message = error?.message ?? "Invalid flat data.";
+                throw new InvalidOperationException(message);
+            }
+
+            // Handle 500 and other errors
+            throw new Exception($"API Error ({response.StatusCode}): {responseData}");
         }
+
+
         public async Task<List<Flat>> GetFlatByBlockId(int blockid)
         {
             var baseUrl = $"{apiCredential.url}Flat/GetFlatByBlockid?blockid={blockid}";

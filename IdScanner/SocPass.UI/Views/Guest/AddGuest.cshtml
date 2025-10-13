@@ -1,236 +1,435 @@
 ﻿@model SocPass.UI.Domain.Model.MemberCreateRequest
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <title>SocPass | Add Guest</title>
 
 <div class="content-page">
-    <div class="content">
-        <div class="main-inner container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <h1 class="page-title">Add Guest</h1>
-                    </div>
-                </div>
-            </div>
+	<div class="content">
+		<div class="main-inner container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="page-title-box">
+						<h1 class="page-title">Add Guest</h1>
+					</div>
+				</div>
+			</div>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card com-profile-info">
-                        <div class="top-details">
-                            <h2 class="page-form-title">Add Guest Details</h2>
+			<div class="row">
+				<div class="col-12">
+					<div class="card com-profile-info">
+						<div class="top-details">
+							<h2 class="page-form-title">Add Guest Details</h2>
 
-                            <form id="guestForm">
-                                <div class="row g-3 align-items-end">
+							<form id="guestForm">
+                                <div class="form-section row">
                                     <!-- Society -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 form-field">
                                         <label class="form-label">Select Society</label>
-                                        <select id="Society" class="form-select">
+
+                                        <select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
                                             <option value="">-- Select Society --</option>
                                             @if (ViewBag.Societies != null)
                                             {
                                                 foreach (var society in ViewBag.Societies)
                                                 {
-                                                    <option value="@society.SocietyId">@society.Name</option>
+                                                    if (Model.SocietyId == society.SocietyId)
+                                                    {
+                                                        <option value="@society.SocietyId" selected>@society.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@society.SocietyId">@society.Name</option>
+                                                    }
                                                 }
                                             }
                                         </select>
-                                        <span class="text-danger small" id="societyError"></span>
+
+                                        @if (ViewBag.IsSocietyReadonly)
+                                        {
+                                            <input type="hidden" name="SocietyId" value="@Model.SocietyId" />
+                                        }
+
+                                        <div class="error-message" id="societyError"></div>
                                     </div>
 
                                     <!-- Block -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 form-field">
                                         <label class="form-label">Select Block</label>
                                         <select id="Block" class="form-select">
                                             <option value="">-- Select Block --</option>
                                         </select>
-                                        <span class="text-danger small" id="blockError"></span>
+                                        <span class="error-message" id="blockError"></span>
                                     </div>
 
                                     <!-- Flat -->
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 form-field">
                                         <label class="form-label">Select Flat</label>
                                         <select id="Flat" class="form-select">
                                             <option value="">-- Select Flat --</option>
                                         </select>
-                                        <span class="text-danger small" id="flatError"></span>
+                                        <span class="error-message" id="flatError"></span>
                                     </div>
                                 </div>
 
-                                <!-- Dynamic Inputs -->
-                                <div id="flatInputsContainer" class="mt-3"></div>
 
-                                <!-- Buttons -->
-                                <div class="col-12 mt-3 d-flex gap-2">
-                                    <button type="button" id="saveFlatBtnGlobal" class="btn btn-primary">
-                                        <i class="ri-save-line"></i> Save
-                                    </button>
-                                    <button type="reset" id="clearBtn" class="btn btn-outline-secondary">Clear</button>
-                                    <a href="@Url.Action("FlatList", "Flat")" class="btn btn-outline-dark">View</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+								<!-- Dynamic Inputs -->
+								<div id="flatInputsContainer" class="mt-3"></div>
+
+								<!-- Buttons -->
+								<div class="col-12 mt-3 d-flex gap-2">
+									<button type="button" id="saveFlatBtnGlobal" class="btn btn-primary">
+										<i class="ri-save-line"></i> Save
+									</button>
+									<button type="reset" id="clearBtn" class="btn btn-outline-secondary">Clear</button>
+									<a href="@Url.Action("FlatList", "Flat")" class="btn btn-outline-dark">View</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <style>
-    .dynamicRow .form-control {
-        width: 100%;
+
+    .error-message {
+        color: red;
+        font-size: 0.875rem;
+        margin-top: 2px;
     }
 
-    .childAgesContainer input {
-        width: 100%;
+    .is-invalid {
+        border-color: red !important;
     }
+
+    /* --- Layout-Stable Validation Design (Finalized) --- */
+
+
+    .form-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start; /* Ensures top alignment across fields */
+    }
+
+        /* === Grid Uniformity === */
+        .form-section .col-md-4 {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            flex: 1 1 30%; /* Equal-width responsive columns */
+            min-width: 250px; /* Prevent collapse on smaller screens */
+        }
+
+        /* === Consistent Label Styling === */
+        .form-section label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            min-height: 20px; /* Locks label height for even alignment */
+        }
+
+        /* === Uniform Input Heights === */
+        .form-section .form-control,
+        .form-section .form-select {
+            height: 38px;
+            line-height: 1.5;
+            margin-bottom: 0.25rem;
+            padding: 6px 10px;
+        }
+
+    /* === Reserve Consistent Space for Validation === */
+    .text-danger.small {
+        display: block;
+        min-height: 18px; /* Prevent layout shift */
+        visibility: hidden; /* Keeps spacing even without text */
+        font-size: 13px;
+        line-height: 1.2;
+        margin-top: 2px;
+    }
+
+        .text-danger.small.show-error {
+            visibility: visible; /* Show message without pushing layout */
+        }
+
+    /* === Cosmetic: Dynamic Row Styling === */
+    .dynamicRow {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+        /* Maintain alignment inside dynamic row as well */
+        .dynamicRow .col-md-4 {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+    /* === Optional Corporate Polish === */
+    button.btn {
+        min-width: 90px;
+    }
+
+    /* Prevent society dropdown from offsetting vertically */
+    #Society {
+        margin-top: 0 !important;
+    }
+
 </style>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
-        // Validate dropdowns
+
+        // --- Dropdown Validation ---
         function validateDropdowns() {
             let valid = true;
-            if ($("#Society").val() === "") { $("#societyError").text("Please select a society."); valid = false; } else { $("#societyError").text(""); }
-            if ($("#Block").val() === "") { $("#blockError").text("Please select a block."); valid = false; } else { $("#blockError").text(""); }
-            if ($("#Flat").val() === "") { $("#flatError").text("Please select a flat."); valid = false; } else { $("#flatError").text(""); }
+
+            // Society
+            if ($("#Society").val() === "") {
+                $("#societyError").text("Please select a society.");
+                $("#Society").addClass("is-invalid");
+                valid = false;
+            } else {
+                $("#societyError").text("");
+                $("#Society").removeClass("is-invalid");
+            }
+
+            // Block
+            if ($("#Block").val() === "") {
+                $("#blockError").text("Please select a block.");
+                $("#Block").addClass("is-invalid");
+                valid = false;
+            } else {
+                $("#blockError").text("");
+                $("#Block").removeClass("is-invalid");
+            }
+
+            // Flat
+            if ($("#Flat").val() === "") {
+                $("#flatError").text("Please select a flat.");
+                $("#Flat").addClass("is-invalid");
+                valid = false;
+            } else {
+                $("#flatError").text("");
+                $("#Flat").removeClass("is-invalid");
+            }
+
             return valid;
         }
-        // Validate dynamic row
+
+        // --- Dynamic Row Validation ---
         function validateDynamicRow(row) {
             let valid = true;
+
             // Adults
-            var adults = row.find(".adults").val();
+            let adults = row.find(".adults").val();
             if (adults === "" || parseInt(adults) < 0) {
                 row.find(".adults").addClass("is-invalid");
-                row.find(".adultError").text("Please enter number of adults").show();
+                row.find(".adultError").text("Please enter number of adults").addClass("show-error");
                 valid = false;
             } else {
                 row.find(".adults").removeClass("is-invalid");
-                row.find(".adultError").hide();
+                row.find(".adultError").removeClass("show-error").text("");
             }
+
             // Children
-            var children = row.find(".flatChildren").val();
+            let children = row.find(".flatChildren").val();
             if (children === "" || parseInt(children) < 0) {
                 row.find(".flatChildren").addClass("is-invalid");
-                row.find(".childrenError").text("Please enter number of children").show();
+                row.find(".childrenError").text("Please enter number of children").addClass("show-error");
                 valid = false;
             } else {
                 row.find(".flatChildren").removeClass("is-invalid");
-                row.find(".childrenError").hide();
+                row.find(".childrenError").removeClass("show-error").text("");
             }
+
             // Child Ages
             row.find(".childAgesContainer input").each(function () {
-                var age = $(this).val();
-                var errorSpan = $(this).next(".childAgeError");
+                let age = $(this).val();
+                let errorSpan = $(this).next(".childAgeError");
                 if (age === "" || parseInt(age) < 0 || parseInt(age) > 17) {
                     $(this).addClass("is-invalid");
-                    errorSpan.text("Enter valid age (0–17)").show();
+                    errorSpan.text("Enter valid age (0–17)").addClass("show-error");
                     valid = false;
                 } else {
                     $(this).removeClass("is-invalid");
-                    errorSpan.hide();
+                    errorSpan.removeClass("show-error").text("");
                 }
             });
+
             return valid;
         }
-        // Load blocks
-        $("#Society").change(function () {
-            var societyId = $(this).val();
-            $("#Block").empty().append('<option value="">-- Select Block --</option>');
+
+        // --- Load blocks for a society ---
+        function loadBlocks(societyId, selectedBlockId = null) {
+            var $blockDropdown = $("#Block");
+            $blockDropdown.empty().append('<option value="">-- Select Block --</option>');
             $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
             $("#flatInputsContainer").empty();
-            if (!societyId) return;
-            $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId }, function (data) {
-                $.each(data, function (i, b) { $("#Block").append($('<option>', { value: b.blockId, text: b.blockName })); });
-            });
+
+            if (societyId) {
+                $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
+                    $.each(data, function (i, block) {
+                        var selected = selectedBlockId == block.blockId ? 'selected' : '';
+                        $blockDropdown.append('<option value="' + block.blockId + '" ' + selected + '>' + block.blockName + '</option>');
+                    });
+
+                    if (selectedBlockId) {
+                        $blockDropdown.trigger('change');
+                    }
+                });
+            }
+        }
+
+        // --- On Society change ---
+        $("#Society").change(function () {
+            var societyId = $(this).val();
+
+            // Clear related errors
+            $("#blockError, #flatError").text("");
+            $("#Block, #Flat").removeClass("is-invalid");
+
+            loadBlocks(societyId);
         });
-        // Load flats
+
+        // --- Prefill logic ---
+        var prefilledSocietyId = $("#Society").val();
+        var prefilledBlockId = '@Model.BlockId';
+        if (prefilledSocietyId) {
+            loadBlocks(prefilledSocietyId, prefilledBlockId);
+        }
+
+        // --- Load Flats on Block Change ---
         $("#Block").change(function () {
-            var blockId = $(this).val();
+            let blockId = $(this).val();
             $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
             $("#flatInputsContainer").empty();
             if (!blockId) return;
+
             $.getJSON('@Url.Action("GetFlatsByBlock", "Member")', { blockId }, function (data) {
-                $.each(data, function (i, f) { $("#Flat").append($('<option>', { value: f.flatId, text: f.flatNumber })); });
+                $.each(data, function (i, f) {
+                    $("#Flat").append($('<option>', { value: f.flatId, text: f.flatNumber }));
+                });
             });
         });
-        // Generate dynamic row on flat selection
+
+        // --- Flat Selection Generates Dynamic Inputs ---
         $("#Flat").change(function () {
-            var flatId = $(this).val();
+            let flatId = $(this).val();
             if (!flatId) return;
-            var container = $("#flatInputsContainer");
+
+            let container = $("#flatInputsContainer");
             container.empty();
-            var row = $(`
-                        <div class="dynamicRow row border p-2 rounded mb-2">
-                            <!-- Adults -->
-                            <div class="col-md-4">
-                                <label>Adults</label>
-                                <input type="number" class="form-control adults" min="0" placeholder="Adults">
-                                <span class="text-danger small mt-1 adultError" style="display:none;"></span>
-                            </div>
-                            <!-- Children -->
-                            <div class="col-md-4">
-                                <label>Children</label>
-                                <input type="number" class="form-control flatChildren" min="0" placeholder="Children">
-                                <span class="text-danger small mt-1 childrenError" style="display:none;"></span>
-                            </div>
-                            <!-- Child Ages -->
-                            <div class="col-md-4">
-                                <label class="childAgeLabel" style="display:none;">Child Ages</label>
-                                <div class="childAgesContainer d-flex flex-column gap-2"></div>
-                            </div>
+
+            let row = $(`
+                <div class="dynamicRow row border p-3 rounded mb-2">
+                    <div class="col-md-4">
+                        <label class="fw-semibold">Adults</label>
+                        <input type="number" class="form-control adults" min="0" placeholder="Adults">
+                        <span class="text-danger small mt-1 adultError"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="fw-semibold">Children</label>
+                        <input type="number" class="form-control flatChildren" min="0" placeholder="Children">
+                        <span class="text-danger small mt-1 childrenError"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="fw-semibold childAgeLabel" style="display:none;">Child Ages</label>
+                        <div class="childAgesContainer d-flex flex-column gap-2 mt-1"></div>
+                    </div>
+                </div>
+            `);
+
+            container.append(row);
+
+            // Generate Child Age Inputs
+            row.find(".flatChildren").on("input change", function () {
+                let count = parseInt($(this).val()) || 0;
+                let ageContainer = $(this).closest(".dynamicRow").find(".childAgesContainer");
+                let ageLabel = $(this).closest(".dynamicRow").find(".childAgeLabel");
+
+                ageContainer.empty();
+                count > 0 ? ageLabel.show() : ageLabel.hide();
+
+                for (let i = 0; i < count; i++) {
+                    ageContainer.append(`
+                        <div>
+                            <input type="number" class="form-control childAge" min="0" max="17" placeholder="Child ${i + 1} Age">
+                            <span class="text-danger small mt-1 childAgeError"></span>
                         </div>
                     `);
-            container.append(row);
-            // Generate child age inputs
-            row.find(".flatChildren").on("input change", function () {
-                var childCount = parseInt($(this).val()) || 0;
-                var ageContainer = $(this).closest(".dynamicRow").find(".childAgesContainer");
-                var ageLabel = $(this).closest(".dynamicRow").find(".childAgeLabel");
-                ageContainer.empty();
-                if (childCount > 0) ageLabel.show();
-                else ageLabel.hide();
-                for (var i = 0; i < childCount; i++) {
-                    ageContainer.append(`
-                                <div>
-                                    <input type="number" class="form-control childAge" min="0" max="17" placeholder="Child ${i + 1} Age">
-                                    <span class="text-danger small mt-1 childAgeError" style="display:none;"></span>
-                                </div>
-                            `);
                 }
             });
         });
-        // Save Flat button
+
+        // --- Save Button ---
         $("#saveFlatBtnGlobal").click(function () {
-            var row = $("#flatInputsContainer .dynamicRow");
-            if (!validateDropdowns() || !validateDynamicRow(row)) return;
-            var flatId = $("#Flat").val();
-            var adults = parseInt(row.find(".adults").val() || 0);
-            var childAges = [];
-            row.find(".childAge").each(function () { childAges.push(parseInt($(this).val())); });
+            let isDropdownsValid = validateDropdowns();
+            let row = $("#flatInputsContainer .dynamicRow");
+
+            // If flat not selected, row won't exist → show flat error
+            if (row.length === 0) {
+                $("#flatError").text("Please select a flat.");
+                $("#Flat").addClass("is-invalid");
+                return;
+            }
+
+            let isDynamicRowValid = validateDynamicRow(row);
+
+            // Prevent submit if any invalid
+            if (!isDropdownsValid || !isDynamicRowValid) {
+                // Optional: Scroll to first error
+                const firstError = $(".is-invalid").first();
+                if (firstError.length) {
+                    $('html, body').animate({
+                        scrollTop: firstError.offset().top - 100
+                    }, 300);
+                }
+                return;
+            }
+
+            let payload = {
+                FlatId: $("#Flat").val(),
+                NumberOfAdults: parseInt(row.find(".adults").val() || 0),
+                ChildAges: row.find(".childAge").map(function () {
+                    return parseInt($(this).val());
+                }).get()
+            };
+
             $.ajax({
                 url: '@Url.Action("AddGuest", "Member")',
                 type: 'POST',
-                data: JSON.stringify({ FlatId: flatId, NumberOfAdults: adults, ChildAges: childAges }),
+                data: JSON.stringify(payload),
                 contentType: 'application/json; charset=utf-8',
                 success: function () {
-                    alert("Saved successfully!");
+                    alert("Saved successfully");
+                    $("#Block").val("").trigger("change");
                     row.find("input").val('');
                     row.find(".childAgesContainer").empty();
                     row.find(".childAgeLabel").hide();
                 },
-                error: function () { alert("Error saving"); }
+                error: function () {
+                    alert("Error saving");
+                }
             });
         });
-        // Clear
+
+        // --- Clear Button ---
         $("#clearBtn").click(function () {
-            $("#Society,#Block,#Flat").val('').trigger('change');
+            $("#Block,#Flat").val('').trigger('change');
             $("#flatInputsContainer").empty();
+            $(".text-danger.small").removeClass("show-error").text("");
+            $(".form-select, .form-control").removeClass("is-invalid");
         });
+
     });
 </script>
+
+
+
+
+
 

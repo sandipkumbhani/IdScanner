@@ -29,11 +29,17 @@ namespace SocPass.API.Controllers
             try
             {
                 await _societyDataService.CreateSocietyDataAsync(request);
-                return Ok("SocietyData Updating successfully.");
+                return Json(new { success = true, message = "Society Data saved successfully." });
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                return NotFound(new { message = ex.Message });
+                // Handle custom duplicate message from service
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                // Generic fallback
+                return Json(new { success = false, message = "An unexpected error occurred." });
             }
         }
 

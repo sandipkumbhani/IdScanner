@@ -54,16 +54,34 @@ namespace SocPass.UI.Infrastructure.Provider
             var response = await _httpClient.PostAsync(baseUrl, requestContent);
             var responseData = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
-                var message = errorResponse?.ErrorMessage
-                    ?? errorResponse?.Message
-                    ?? "Failed to create SocietyData.";
+                var result = JsonConvert.DeserializeObject<dynamic>(responseData);
+                bool isSuccess = result.success;
+                string message = result.message;
 
-                throw new Exception($"API Error ({response.StatusCode}): {message}");
+                // Return message string only
+                return message;
             }
-            return "SocietyData Added Successfully.";
+            catch
+            {
+                // fallback if JSON cannot be parsed
+                if (!response.IsSuccessStatusCode)
+                    return $"Error: Failed to create Society Data (HTTP {response.StatusCode}).";
+
+                return "Society Data added successfully.";
+            }
+
+            //if (!response.IsSuccessStatusCode)
+            //{
+            //    var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
+            //    var message = errorResponse?.ErrorMessage
+            //        ?? errorResponse?.Message
+            //        ?? "Failed to create SocietyData.";
+
+            //    throw new Exception($"API Error ({response.StatusCode}): {message}");
+            //}
+            //return "SocietyData Added Successfully.";
         }
         public async Task<string> UpdateSocietyDataAsync(SocietyData societyData)
         {

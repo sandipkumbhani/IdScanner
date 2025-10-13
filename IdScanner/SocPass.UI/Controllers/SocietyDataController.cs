@@ -38,22 +38,69 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSocietyData()
         {
+            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            //int.TryParse(userIdClaim, out int userId);
+
+            //ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
+
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
+            IEnumerable<Society> societies;
+            int selectedSocietyId = 0;
+            if (User.IsInRole("Admin"))
+            {
+                // Admin sees all societies
+                societies = await _societyService.GetAllSocietyAsync();
+                ViewBag.IsSocietyReadonly = false;
+                selectedSocietyId = 0;
+            }
+            else
+            {
+                // User sees only assigned societies
+                societies = await _societyService.GetAllSocietyAsync(userId);
+                ViewBag.IsSocietyReadonly = true;
+                selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+            }
+
+            ViewBag.Societies = societies;
+            ViewBag.SelectedSocietyId = selectedSocietyId;
             return View(new SocietyDataCreateRequest());
         }
 
         [HttpPost]
         public async Task<IActionResult> AddSocietyData([FromBody] SocietyDataCreateRequest request)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            //    var message = await _societyDataService.AddSocietyDataAsync(request);
+            //    var success = message == "SocietyData Added Successfully.";
+            //    return Json(new { success, message });
+            //}
+            //return BadRequest("Invalid data");
+
+            if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Invalid data." });
+
+            try
             {
-                await _societyDataService.AddSocietyDataAsync(request);
-                return Ok();
+                var message = await _societyDataService.AddSocietyDataAsync(request);
+
+                if (message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+                {
+                    return Json(new { success = false, message = "Society Data Already exists" });
+                }
+
+                return Json(new { success = true, message = "Society Data added successfully." });
             }
-            return BadRequest("Invalid data");
+            catch (InvalidOperationException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "An unexpected error occurred." });
+            }
         }
 
         // EDIT

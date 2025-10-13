@@ -31,6 +31,18 @@ namespace SocPass.Application.Services
 
         public async Task CreateSocietyDataAsync(SocietyDataCreateRequest request)
         {
+            var existingSocietyData = await _societyDataRepository.GetSocietyDataByFlatId(request.FlatId);
+
+            var checkExistingSocietyData = existingSocietyData
+                .FirstOrDefault(b => b.Flat != null &&
+                                     b.FlatId == request.FlatId);
+
+            if (checkExistingSocietyData != null)
+            {
+                throw new InvalidOperationException($"Soicety Data Of Flat  already exists.");
+            }
+
+
             // Get the maximum length among the lists
             int count = Math.Max(request.ContactName.Count,
                                  Math.Max(request.ContactNumber.Count, request.ContactEmail.Count));

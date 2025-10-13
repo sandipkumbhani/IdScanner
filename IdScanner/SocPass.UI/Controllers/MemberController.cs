@@ -150,25 +150,78 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddGuest()
         {
+            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            //int.TryParse(userIdClaim, out int userId);
+            //var societies = await _societyService.GetAllSocietyAsync(userId);
+            //ViewBag.Societies = societies;
+            //var model = new MemberCreateRequest();
+            //return View("/Views/Guest/AddGuest.cshtml", model);
+
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var societies = await _societyService.GetAllSocietyAsync(userId);
+
+            IEnumerable<Society> societies;
+
+            if (User.IsInRole("Admin"))
+            {
+                // Admin sees all societies
+                societies = await _societyService.GetAllSocietyAsync();
+                ViewBag.IsSocietyReadonly = false;
+            }
+            else
+            {
+                // User sees only assigned societies
+                societies = await _societyService.GetAllSocietyAsync(userId);
+                ViewBag.IsSocietyReadonly = true;
+            }
+
             ViewBag.Societies = societies;
-            var model = new MemberCreateRequest();
-            return View("/Views/Guest/AddGuest.cshtml", model);
+
+            var guestmodel = new MemberCreateRequest();
+
+            // If non-admin, preselect first society
+            if (!User.IsInRole("Admin"))
+            {
+                guestmodel.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+            }
+
+            return View("/Views/Guest/AddGuest.cshtml", guestmodel);
+
         }
 
         [HttpPost]
         public async Task<IActionResult> AddGuest([FromBody] MemberCreateRequest memberCreateRequest)
         {
-            if (memberCreateRequest == null)
-            {
-                return BadRequest("Invalid data");
-            }
+            //if (memberCreateRequest == null)
+            //{
+            //    return BadRequest("Invalid data");
+            //}
+
+            //if (!ModelState.IsValid)
+            //{
+            //    return View("AddGuest", memberCreateRequest);
+            //}
 
             if (!ModelState.IsValid)
             {
-                return View("AddGuest", memberCreateRequest);
+                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+                int.TryParse(userIdClaim, out int userId);
+
+                IEnumerable<Society> societies;
+
+                if (User.IsInRole("Admin"))
+                {
+                    societies = await _societyService.GetAllSocietyAsync();
+                    ViewBag.IsSocietyReadonly = false;
+                }
+                else
+                {
+                    societies = await _societyService.GetAllSocietyAsync(userId);
+                    ViewBag.IsSocietyReadonly = true;
+                }
+
+                ViewBag.Societies = societies;
+                return View("AddGuest",memberCreateRequest);
             }
 
             await _memberService.AddAndUpdateGuestAsync(memberCreateRequest);

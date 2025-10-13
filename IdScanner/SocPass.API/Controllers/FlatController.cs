@@ -49,23 +49,76 @@ namespace SocPass.API.Controllers
             var flats = await _flatService.GetAllFlatAsync();
             return Ok(flats);
         }
+        //[HttpPut("Update-flat")]
+        //public async Task<IActionResult> UpdateFlatAsync([FromBody] Flat flat)
+        //{
+        //    if (flat == null)
+        //    {
+        //        return NotFound("Id Not found");
+        //    }
+        //    try
+        //    {
+        //        var updated = await _flatService.UpdateFlatAsync(flat);
+        //        return Ok(updated);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return NotFound(new { message = ex.Message });
+        //    }
+        //}
+
         [HttpPut("Update-flat")]
         public async Task<IActionResult> UpdateFlatAsync([FromBody] Flat flat)
         {
             if (flat == null)
             {
-                return NotFound("Id Not found");
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Flat data is required."
+                });
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Invalid flat data. Please verify your input."
+                });
+            }
+
             try
             {
-                var updated = await _flatService.UpdateFlatAsync(flat);
-                return Ok(updated);
+                var updatedFlats = await _flatService.UpdateFlatAsync(flat);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Flat updated successfully.",
+                    data = updatedFlats
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handles "Flat already exists" error from service
+                return Conflict(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return NotFound(new { message = ex.Message });
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An unexpected error occurred while updating flat data.",
+                    details = ex.Message
+                });
             }
         }
+
         [HttpGet("GetFlatByBlockid")]
         public async Task<IActionResult> GetFlatByBlockid(int blockid)
         {

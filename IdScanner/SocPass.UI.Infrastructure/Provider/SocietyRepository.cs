@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -80,7 +81,7 @@ namespace SocPass.UI.Infrastructure.Provider
             _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Society/Update-society/{society.SocietyId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(society), Encoding.UTF8, "application/json");
-            var response = await _httpClinet.PutAsync(baseUrl, jsonContent);
+            var response = await _httpClinet.PutAsync(baseUrl,jsonContent);
             return await response.Content.ReadAsStringAsync();
         }
 

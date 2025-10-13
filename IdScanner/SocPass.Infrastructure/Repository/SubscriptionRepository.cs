@@ -37,6 +37,7 @@ namespace SocPass.Infrastructure.Repository
             return await _context.Subscriptions
                                  .Include(u => u.Society)
                                  .Where(u => u.IsActive == true)
+                                 .OrderBy(u => u.Society.Name)
                                  .ToListAsync();
         }
         public async Task DeleteSubscriptionAsync(int subscriptionId)
@@ -50,7 +51,7 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId)
         {
-            return await _context.Subscriptions.AnyAsync(e => e.SocietyId == societyId && e.SubscriptionId != subscriptionId);
+            return await _context.Subscriptions.AnyAsync(e => e.SocietyId == societyId && e.IsActive == true && e.SubscriptionId != subscriptionId);
         }
     }
 }

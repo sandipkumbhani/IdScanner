@@ -43,6 +43,7 @@ namespace SocPass.Infrastructure.Repository
             {
                 return await _context.societies
                     .Where(s => s.IsActive)
+                    .OrderBy(s => s.Name)
                     .Select(s => new Society
                     {
                         SocietyId = s.SocietyId,
@@ -78,7 +79,7 @@ namespace SocPass.Infrastructure.Repository
 
         public async Task<List<Society>> GetAllSocietyAsync()
         {
-            return await _context.societies.Where(x => x.IsActive == true).ToListAsync();
+            return await _context.societies.Where(x => x.IsActive == true).OrderBy(x => x.Name).ToListAsync();
         }
       
         public async Task UpdateSocietyAsync(Society society)

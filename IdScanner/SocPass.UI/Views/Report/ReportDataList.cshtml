@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedSocietyId = ViewBag.SelectedSocietyId as int? ?? 0;
 }
 
 <html>
@@ -22,13 +23,31 @@
             <!-- Society Dropdown -->
             <div class="col-md-4">
                 <label class="form-label">Select Society</label>
-                <select id="Society" class="form-select">
+                @* <select id="Society" class="form-select">
                     <option value="">-- Select Society --</option>
                     @if (ViewBag.Societies != null)
                     {
                         foreach (var society in ViewBag.Societies)
                         {
                             <option value="@society.SocietyId">@society.Name</option>
+                        }
+                    }
+                </select> *@
+
+                <select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
+                    <option value="">-- Select Society --</option>
+                    @if (ViewBag.Societies != null)
+                    {
+                        foreach (var society in ViewBag.Societies)
+                        {
+                            if (selectedSocietyId == society.SocietyId)
+                            {
+                                <option value="@society.SocietyId" selected>@society.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@society.SocietyId">@society.Name</option>
+                            }
                         }
                     }
                 </select>
@@ -54,10 +73,9 @@
     </div>
 
     <script>
-        $(document).ready(function () {
+                $(document).ready(function () {
 
-            $("#Society").change(function () {
-                var societyId = $(this).val();
+            function loadBlocks(societyId) {
                 $("#Block").empty().append('<option value="">-- Select Block --</option>');
                 $("#flatContainer").empty();
 
@@ -68,9 +86,9 @@
                         });
                     });
                 }
-            });
+            }
 
-            $("#Block, #ReportDate").change(function () {
+            function loadReport() {
                 var blockId = $("#Block").val();
                 var selectedDate = $("#ReportDate").val();
                 var container = $("#flatContainer");
@@ -142,9 +160,27 @@
                             container.append(table);
                         });
                 }
+            }
+
+            // Society dropdown change event
+            $("#Society").change(function () {
+                var societyId = $(this).val();
+                loadBlocks(societyId);
             });
 
+            // Block or Date change event
+            $("#Block, #ReportDate").change(function () {
+                loadReport();
+            });
+
+            // --- Auto-trigger for preselected society ---
+            var selectedSocietyId = '@selectedSocietyId';
+            if (selectedSocietyId && selectedSocietyId !== "0") {
+                // Preload blocks for the selected society
+                loadBlocks(selectedSocietyId);
+            }
         });
+
     </script>
 </body>
 </html>

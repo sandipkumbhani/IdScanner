@@ -29,11 +29,15 @@ namespace SocPass.Domain.Model
         [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Enter a valid 10-digit mobile number starting with 6-9")]
         public string? Contact { get; set; }
 
-        [Required(ErrorMessage = "Secondary contact number is required")]
+        ////[Required(ErrorMessage = "Secondary contact number is required")]
+        //[Display(Name = "Secondary Contact")]
+        ////[RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Enter a valid 10-digit mobile number starting with 6-9")]
+        //[DataType(DataType.PhoneNumber)]
+        //public string? Contact2 { get; set; } = string.Empty;
+
         [Display(Name = "Secondary Contact")]
-        [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Enter a valid 10-digit mobile number starting with 6-9")]
-        [DataType(DataType.PhoneNumber)]
-        public string Contact2 { get; set; } = string.Empty;
+        [RegularExpression(@"(^$|^[6-9]\d{9}$)", ErrorMessage = "Enter a valid 10-digit mobile number starting with 6-9")]
+        public string? Contact2 { get; set; }
 
 
         public bool IsActive { get; set; }
@@ -41,9 +45,10 @@ namespace SocPass.Domain.Model
         public DateTime InsertDate { get; set; }
         public long UpdateBy { get; set; }
         public DateTime UpdateDate { get; set; }
+         [JsonIgnore] 
         public ICollection<User>? Users { get; set; }
         [JsonIgnore] 
-        public ICollection<Subscription> Subscriptions { get; set; }
+        public ICollection<Subscription>? Subscriptions { get; set; }
     }
 
 }

@@ -29,7 +29,7 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _context.users.Include(x => x.UserRole).Include(x=>x.Society).Where(u => u.IsActive).ToListAsync();
+            return await _context.users.Include(x => x.UserRole).Include(x=>x.Society).Where(u => u.IsActive).OrderBy(u => u.Name).ToListAsync();
         }
         public async Task<User?> GetUserById(int id)
         {

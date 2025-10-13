@@ -124,6 +124,11 @@
                                     <label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size:16px;">Is Active</label>
                                 </div>
 
+                                    @if (ViewBag.ErrorMessage != null)
+                                    {
+                                        <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                    }
+
                                 <!-- Buttons -->
                                 <div class="col-12">
                                     <div class="button-main d-flex gap-2 mt-3">
@@ -135,6 +140,7 @@
                                         <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar"><span>View</span></a>
                                     </div>
                                 </div>
+
                             </form>
                         </div>
                     </div>

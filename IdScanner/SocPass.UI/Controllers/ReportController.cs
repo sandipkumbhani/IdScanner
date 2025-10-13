@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
 
@@ -25,9 +26,33 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> MemberReport()
         {
+            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            //int.TryParse(userIdClaim, out int userId);
+            //ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
+
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
+
+            IEnumerable<Society> societies;
+            int selectedSocietyId = 0;
+            if (User.IsInRole("Admin"))
+            {
+                // Admin sees all societies
+                societies = await _societyService.GetAllSocietyAsync();
+                ViewBag.IsSocietyReadonly = false;
+                selectedSocietyId = 0;
+            }
+            else
+            {
+                // User sees only assigned societies
+                societies = await _societyService.GetAllSocietyAsync(userId);
+                ViewBag.IsSocietyReadonly = true;
+                selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+            }
+
+            ViewBag.Societies = societies;
+            ViewBag.SelectedSocietyId = selectedSocietyId;
+
             return View("/Views/Report/ReportDataList.cshtml");
         }
 

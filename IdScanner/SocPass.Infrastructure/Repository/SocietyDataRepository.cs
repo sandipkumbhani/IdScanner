@@ -20,11 +20,14 @@ namespace SocPass.Infrastructure.Repository
 
         public async Task<List<SocietyData>> GetAllSocietyDataAsync()
         {
-            return await _context.SocietyData
+         return await _context.SocietyData
         .Include(sd => sd.Flat)
             .ThenInclude(f => f.Block)
                 .ThenInclude(b => b.Society)
         .Where(sd => sd.IsActive)
+        .OrderBy(s => s.Flat.Society.Name)
+        .ThenBy(s => s.Flat.Block.BlockNumber)
+        .ThenBy(s => s.Flat.FlatNumber)
         .ToListAsync();
         }
 
@@ -36,14 +39,11 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<SocietyData> GetSocietyDataByIdAsync(int societyDataId)
         {
-            //return await _context.SocietyData.Include(e=> e.Flat).
-            //Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.SocietyDataId == societyDataId);
-
             return await _context.SocietyData
-       .Include(sd => sd.Flat)                     // Include Flat
-           .ThenInclude(f => f.Block)             // Include Block inside Flat
-               .ThenInclude(b => b.Society)       // Include Society inside Block
-       .Where(sd => sd.IsActive)                  // Only active records
+       .Include(sd => sd.Flat)                    
+           .ThenInclude(f => f.Block)            
+               .ThenInclude(b => b.Society)      
+       .Where(sd => sd.IsActive)                
        .FirstOrDefaultAsync(sd => sd.SocietyDataId == societyDataId);
         }
 

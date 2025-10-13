@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedSocietyId = ViewBag.SelectedSocietyId as int? ?? 0;
 }
 <html>
 <head>
@@ -16,6 +17,7 @@
         .is-invalid {
             border-color: red !important;
         }
+
     </style>
 </head>
 <body>
@@ -42,7 +44,7 @@
                                         <div class="col-xl-4 col-lg-6">
                                             <div class="item-input">
                                                 <label class="form-label fw-semibold fs-6">Select Society</label>
-                                                <select id="Society" name="SocietyId" class="form-select">
+                                                @* <select id="Society" name="SocietyId" class="form-select">
                                                     <option value="">-- Select Society --</option>
                                                     @if (ViewBag.Societies != null)
                                                     {
@@ -52,7 +54,31 @@
                                                         }
                                                     }
                                                 </select>
-                                                <div class="error-message" id="SocietyError">Please select a society.</div>
+                                                <div class="error-message" id="SocietyError">Please select a society.</div> *@
+
+                                                <select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
+                                                    <option value="">-- Select Society --</option>
+                                                    @if (ViewBag.Societies != null)
+                                                    {
+                                                        foreach (var society in ViewBag.Societies)
+                                                        {
+                                                            if (selectedSocietyId == society.SocietyId)
+                                                            {
+                                                                <option value="@society.SocietyId" selected>@society.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@society.SocietyId">@society.Name</option>
+                                                            }
+                                                        }
+                                                    }
+                                                </select>
+
+                                                @if (ViewBag.IsSocietyReadonly)
+                                                {
+                                                    <input type="hidden" name="SocietyId" value="@selectedSocietyId" />
+                                                }
+                                                <div class="error-message" id="SocietyError">Please select a society.</div> 
                                             </div>
                                         </div>
 
@@ -102,7 +128,7 @@
     </div>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+              $(document).ready(function () {
 
             function showError(inputId, messageId) {
                 $("#" + inputId).addClass("is-invalid");
@@ -188,7 +214,14 @@
                     });
                 }
             });
+
+            // Trigger change on page load if society is already selected
+            if ($("#Society").val()) {
+                $("#Society").trigger("change");
+            }
+
         });
+
     </script>
 </body>
 </html>

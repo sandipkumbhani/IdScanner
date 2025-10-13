@@ -16,6 +16,7 @@
 		.is-invalid {
 			border-color: red !important;
 		}
+
 	</style>
 </head>
 <body>
@@ -72,8 +73,6 @@
 											{
 												<input type="hidden" name="SocietyId" value="@Model.SocietyId" />
 											}
-
-
 											<div class="error-message" id="societyError"></div>
 										</div>
 									</div>
@@ -84,7 +83,7 @@
 											<select id="Block" name="BlockId" class="form-select">
 												<option value="">-- Select Block --</option>
 											</select>
-											<div class="error-message" id="blockError"></div>
+											@* <div class="error-message" id="blockError"></div> *@
 										</div>
 									</div>
 								</div>
@@ -121,9 +120,9 @@
 
 								<div class="col-12">
 									<div class="button-main d-flex gap-2 mt-3">
-										<button type="reset" class="card-link outline-bar">
-											<span>Clear</span>
-										</button>
+                                        <button type="button" id="clearBtn" class="card-link outline-bar">
+                                            <span>Clear</span>
+                                        </button>
 										<a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
 											<span>View</span>
 										</a>
@@ -155,14 +154,14 @@
                     $("#Society").removeClass("is-invalid");
                 }
 
-                if ($("#Block").val() === "") {
-                    $("#blockError").text("Please select a block.");
-                    $("#Block").addClass("is-invalid");
-                    isValid = false;
-                } else {
-                    $("#blockError").text("");
-                    $("#Block").removeClass("is-invalid");
-                }
+                // if ($("#Block").val() === "") {
+                //     $("#blockError").text("Please select a block.");
+                //     $("#Block").addClass("is-invalid");
+                //     isValid = false;
+                // } else {
+                //     $("#blockError").text("");
+                //     $("#Block").removeClass("is-invalid");
+                // }
 
                 return isValid;
             }
@@ -329,12 +328,38 @@
                     type: 'POST',
                     data: JSON.stringify(memberCreateRequest),
                     contentType: 'application/json; charset=utf-8',
-                    success: function () {
-                        row.append(`<div class="text-success mt-2">Saved successfully!</div>`);
-                    },
-                    error: function () {
-                        row.append(`<div class="text-danger mt-2">Error saving flat.</div>`);
-                    }
+                                                                        success: function () {
+            // Remove any old error messages (but not success)
+            row.find(".text-danger").remove();
+
+            var btn = row.find(".saveFlatBtn");
+
+            // If success message already exists, don’t show another
+            if (row.find(".text-success").length === 0) {
+                var message = $('<div class="text-success mt-2">Saved successfully!</div>');
+                row.append(message);
+            }
+
+            // Add smooth animation only the first time
+            if (!btn.data("animated")) {
+                btn.css({
+                    transition: "transform 0.4s ease-in-out"
+                });
+
+                // Move left slightly
+                btn.css("transform", "translateX(-25px)");
+
+                // Smoothly move back
+                setTimeout(function () {
+                    btn.css("transform", "translateX(0)");
+                }, 100);
+
+                // Prevent repeating the animation setup
+                btn.data("animated", true);
+            }
+        },
+
+
                 });
             });
 

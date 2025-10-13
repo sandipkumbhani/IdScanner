@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedSocietyId = ViewBag.SelectedSocietyId as int? ?? 0;
 }
 <html>
 <head>
@@ -42,16 +43,28 @@
                                         <div class="col-xl-4 col-lg-6">
                                             <div class="item-input">
                                                 <label class="form-label fw-semibold fs-6">Select Society</label>
-                                                <select id="Society" name="SocietyId" class="form-select">
+                                                <select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
                                                     <option value="">-- Select Society --</option>
                                                     @if (ViewBag.Societies != null)
                                                     {
                                                         foreach (var society in ViewBag.Societies)
                                                         {
-                                                            <option value="@society.SocietyId">@society.Name</option>
+                                                            if (selectedSocietyId == society.SocietyId)
+                                                            {
+                                                                <option value="@society.SocietyId" selected>@society.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@society.SocietyId">@society.Name</option>
+                                                            }
                                                         }
                                                     }
                                                 </select>
+
+                                                @if (ViewBag.IsSocietyReadonly)
+                                                {
+                                                    <input type="hidden" name="SocietyId" value="@selectedSocietyId" />
+                                                }
                                                 <div class="error-message" id="SocietyError">Please select a society.</div>
                                             </div>
                                         </div>
@@ -102,6 +115,94 @@
     </div>
 
     <script type="text/javascript">
+        // $(document).ready(function () {
+
+        //     function showError(inputId, messageId) {
+        //         $("#" + inputId).addClass("is-invalid");
+        //         $("#" + messageId).show();
+        //     }
+
+        //     function hideError(inputId, messageId) {
+        //         $("#" + inputId).removeClass("is-invalid");
+        //         $("#" + messageId).hide();
+        //     }
+
+        //     $("#qrForm").submit(function (e) {
+        //         let valid = true;
+
+        //         if (!$("#Society").val()) {
+        //             showError("Society", "SocietyError");
+        //             valid = false;
+        //         } else {
+        //             hideError("Society", "SocietyError");
+        //         }
+
+        //         if (!$("#Block").val()) {
+        //             showError("Block", "BlockError");
+        //             valid = false;
+        //         } else {
+        //             hideError("Block", "BlockError");
+        //         }
+
+        //         if (!$("#PassDate").val()) {
+        //             showError("PassDate", "PassDateError");
+        //             valid = false;
+        //         } else {
+        //             hideError("PassDate", "PassDateError");
+        //         }
+
+        //         if (!valid) {
+        //             e.preventDefault();
+        //         }
+        //     });
+
+        //     $("#Society").change(function () {
+        //         var societyId = $(this).val();
+        //         $("#Block").empty().append('<option value="">-- Select Block --</option>');
+        //         $("#flatContainer").empty();
+        //         hideError("Society", "SocietyError");
+
+        //         if (societyId) {
+        //             $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
+        //                 $.each(data, function (i, block) {
+        //                     $("#Block").append($('<option>', { value: block.blockId, text: block.blockName }));
+        //                 });
+        //             });
+        //         }
+        //     });
+
+        //     $("#Block").change(function () {
+        //         var blockId = $(this).val();
+        //         var container = $("#flatContainer");
+        //         container.empty();
+        //         hideError("Block", "BlockError");
+
+        //         if (blockId) {
+        //             $.getJSON('@Url.Action("GetFlatsByBlock", "MembersQrList")', { blockId: blockId }, function (data) {
+        //                 $.each(data, function (i, flat) {
+        //                     var flatRow = $(`
+        //                         <div class="flat-row mb-3 p-2 border rounded">
+        //                             <div><strong>Flat:</strong> ${flat.flatNumber}</div>
+        //                             <div><strong>Total Members:</strong> ${flat.totalMember}</div>
+        //                             <div class="qr-row d-flex flex-wrap gap-2 mt-2"></div>
+        //                         </div>
+        //                     `);
+
+        //                     var qrRow = flatRow.find(".qr-row");
+        //                     $.each(flat.members, function (j, member) {
+        //                         if (member.qrCodeUrl) {
+        //                             qrRow.append(`<img src="${member.qrCodeUrl}" alt="QR" width="100" height="100"
+        //                                 style="border:1px solid #ccc; border-radius:8px;">`);
+        //                         }
+        //                     });
+
+        //                     container.append(flatRow);
+        //                 });
+        //             });
+        //         }
+        //     });
+        // });
+
         $(document).ready(function () {
 
             function showError(inputId, messageId) {
@@ -170,7 +271,7 @@
                             var flatRow = $(`
                                 <div class="flat-row mb-3 p-2 border rounded">
                                     <div><strong>Flat:</strong> ${flat.flatNumber}</div>
-                                    <div><strong>Total Members:</strong> ${flat.totalMember}</div>
+                                    <div><strong>Total Guest:</strong> ${flat.totalMember}</div>
                                     <div class="qr-row d-flex flex-wrap gap-2 mt-2"></div>
                                 </div>
                             `);
@@ -188,7 +289,14 @@
                     });
                 }
             });
+
+            // Trigger change on page load if society is already selected
+            if ($("#Society").val()) {
+                $("#Society").trigger("change");
+            }
+
         });
+
     </script>
 </body>
 </html>

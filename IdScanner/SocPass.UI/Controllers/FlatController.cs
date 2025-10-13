@@ -167,8 +167,30 @@ namespace SocPass.UI.Controllers
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
             ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
 
-            await _flatRepository.UpdateFlatAsync(flat); // existing flat
-            return RedirectToAction("FlatList");
+            if (!ModelState.IsValid)
+            {
+                // Pass validation errors to view
+                return View(flat);
+            }
+
+            try
+            {
+                await _flatRepository.UpdateFlatAsync(flat);
+                TempData["SuccessMessage"] = "Flat updated successfully.";
+                return RedirectToAction("FlatList");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle specific repo errors like "Flat already exists"
+                ViewBag.ErrorMessage = ex.Message;
+                return View(flat);
+            }
+            catch (Exception ex)
+            {
+                // Handle generic errors
+                ViewBag.ErrorMessage = "An unexpected error occurred while saving the flat.";
+                return View(flat);
+            }
         }
 
 
