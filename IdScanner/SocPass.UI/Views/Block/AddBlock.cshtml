@@ -19,7 +19,15 @@
                             <form asp-action="AddBlock" asp-controller="Block" method="post" class="row all-custom-class">
 
                                 <input type="hidden" asp-for="BlockId" />
+                                    @if (ViewBag.ErrorMessage != null)
+                                    {
+                <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                    }
 
+                                    @if (ViewBag.BlockNumberMsg != null)
+                                    {
+            <div class="alert alert-warning">@ViewBag.BlockNumberMsg</div>
+                                    }
                                 <div class="col-xl-4 col-lg-6">
                                     <div class="item-input">
                                         <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
@@ -42,10 +50,10 @@
                                     </div>
                                 </div>
 
-                                <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
-                                    <button type="submit" class="card-link">
-                                        <span>Save</span>
-                                    </button>
+                                  <div   class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
+                                        <button type="submit" class="card-link">
+                                            <span>Save</span>
+                                        </button>
                                     @if (isNew)
                                     {
                                         <button type="reset" class="card-link outline-bar">Clear</button>

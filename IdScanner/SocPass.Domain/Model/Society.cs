@@ -43,7 +43,7 @@ namespace SocPass.Domain.Model
         public DateTime UpdateDate { get; set; }
         public ICollection<User>? Users { get; set; }
         [JsonIgnore] 
-        public ICollection<Subscription> Subscriptions { get; set; }
+        public ICollection<Subscription>? Subscriptions { get; set; }
     }
 
 }

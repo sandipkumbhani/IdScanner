@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿ 
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;

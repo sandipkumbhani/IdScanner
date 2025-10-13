@@ -45,17 +45,42 @@ namespace SocPass.UI.Infrastructure.Provider
             var response = await _httpClient.PostAsync(baseUrl, requestContent);
             var responseData = await response.Content.ReadAsStringAsync();
 
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                try
+                {
+                    var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
+                    return errorResponse?.Message ?? "This block already exists in the selected society.";
+                }
+                catch
+                {
+                    return "This block already exists in the selected society.";
+                }
+            }
+
             if (!response.IsSuccessStatusCode)
             {
-                var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
-                var message = errorResponse?.ErrorMessage
-                    ?? errorResponse?.Message
-                    ?? "Failed to create user.";
+                string message;
+
+                try
+                {
+                    var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
+                    message = errorResponse?.ErrorMessage
+                        ?? errorResponse?.Message
+                        ?? "Failed to create block.";
+                }
+                catch (JsonReaderException)
+                {
+                    message = responseData;
+                }
 
                 throw new Exception($"API Error ({response.StatusCode}): {message}");
             }
-            return "Menu Added Successfully.";
+
+            return "Block added successfully.";
         }
+
+
         public async Task<string> UpdateBlockAsync(Block block)
         {
             var baseUrl = apiCredential.url + $"Block/Update-Block/{block.BlockId}";

@@ -15,42 +15,54 @@
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2>Member Reports</h2>
+    <div class="content-page">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Member Reports</h2>
 
-        <div class="row mb-3">
-            <!-- Society Dropdown -->
-            <div class="col-md-4">
-                <label class="form-label">Select Society</label>
-                <select id="Society" class="form-select">
-                    <option value="">-- Select Society --</option>
-                    @if (ViewBag.Societies != null)
-                    {
-                        foreach (var society in ViewBag.Societies)
-                        {
-                            <option value="@society.SocietyId">@society.Name</option>
-                        }
-                    }
-                </select>
-            </div>
+                                <div class="row mb-3">
+                                    <!-- Society Dropdown -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">Select Society</label>
+                                        <select id="Society" class="form-select">
+                                            <option value="">-- Select Society --</option>
+                                            @if (ViewBag.Societies != null)
+                                            {
+                                                foreach (var society in ViewBag.Societies)
+                                                {
+                                                    <option value="@society.SocietyId">@society.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
 
-            <!-- Block Dropdown -->
-            <div class="col-md-4">
-                <label class="form-label">Select Block</label>
-                <select id="Block" class="form-select">
-                    <option value="">-- Select Block --</option>
-                </select>
-            </div>
+                                    <!-- Block Dropdown -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">Select Block</label>
+                                        <select id="Block" class="form-select">
+                                            <option value="">-- Select Block --</option>
+                                        </select>
+                                    </div>
 
-            <!-- Date Picker -->
-            <div class="col-md-4">
-                <label class="form-label">Select Date</label>
-                <input type="date" id="ReportDate" class="form-control" />
+                                    <!-- Date Picker -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">Select Date</label>
+                                        <input type="date" id="ReportDate" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <!-- Flats Table -->
+                                <div id="flatContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Flats Table -->
-        <div id="flatContainer"></div>
     </div>
 
     <script>
@@ -89,38 +101,38 @@
                             var totalMembers = 0, totalVisitedAdults = 0, totalVisitedChildren = 0, totalPending = 0;
 
                             var table = `<table class="table table-bordered table-striped mt-3" style="table-layout: fixed; width: 100%;">
-                                            <colgroup>
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                            </colgroup>
-                                            <thead>
-                                                <tr>
-                                                    <th>Flat Number</th>
-                                                    <th>Adults</th>
-                                                    <th>Children</th>
-                                                    <th>Total</th>
-                                                    <th>Visited Adults</th>
-                                                    <th>Visited Children</th>
-                                                    <th>Pending</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>`;
+                                                                                    <colgroup>
+                                                                                        <col style="width:14.28%">
+                                                                                        <col style="width:14.28%">
+                                                                                        <col style="width:14.28%">
+                                                                                        <col style="width:14.28%">
+                                                                                        <col style="width:14.28%">
+                                                                                        <col style="width:14.28%">
+                                                                                        <col style="width:14.28%">
+                                                                                    </colgroup>
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th>Flat Number</th>
+                                                                                            <th>Adults</th>
+                                                                                            <th>Children</th>
+                                                                                            <th>Total</th>
+                                                                                            <th>Visited Adults</th>
+                                                                                            <th>Visited Children</th>
+                                                                                            <th>Pending</th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>`;
 
                             $.each(flats, function (i, flat) {
                                 table += `<tr>
-                                            <td>${flat.flatNumber}</td>
-                                            <td>${flat.numberOfAdult}</td>
-                                            <td>${flat.numberOfChild}</td>
-                                            <td>${flat.totalMember}</td>
-                                            <td>${flat.visitedAdults}</td>
-                                            <td>${flat.visitedChildren}</td>
-                                            <td>${flat.pending}</td>
-                                          </tr>`;
+                                                                                    <td>${flat.flatNumber}</td>
+                                                                                    <td>${flat.numberOfAdult}</td>
+                                                                                    <td>${flat.numberOfChild}</td>
+                                                                                    <td>${flat.totalMember}</td>
+                                                                                    <td>${flat.visitedAdults}</td>
+                                                                                    <td>${flat.visitedChildren}</td>
+                                                                                    <td>${flat.pending}</td>
+                                                                                  </tr>`;
 
                                 totalMembers += flat.totalMember;
                                 totalVisitedAdults += flat.visitedAdults;
@@ -129,14 +141,14 @@
                             });
 
                             table += `<tr class="fw-bold">
-                                        <td>Total</td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>${totalMembers}</td>
-                                        <td>${totalVisitedAdults}</td>
-                                        <td>${totalVisitedChildren}</td>
-                                        <td>${totalPending}</td>
-                                      </tr>`;
+                                                                                <td>Total</td>
+                                                                                <td>-</td>
+                                                                                <td>-</td>
+                                                                                <td>${totalMembers}</td>
+                                                                                <td>${totalVisitedAdults}</td>
+                                                                                <td>${totalVisitedChildren}</td>
+                                                                                <td>${totalPending}</td>
+                                                                              </tr>`;
 
                             table += '</tbody></table>';
                             container.append(table);

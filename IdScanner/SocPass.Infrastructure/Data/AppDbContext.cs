@@ -22,6 +22,7 @@ namespace SocPass.Infrastructure.Data
         public DbSet<MenuMaster> MenuMasters { get; set; }
         public DbSet<SocietyData> SocietyData { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<UserFlatMapping> userFlatMappings { get; set; }    
 
     }
 }

@@ -7,7 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class SubscriptionController : Controller
     {
         private readonly ISubscriptionService _subscriptionService;
@@ -114,7 +114,7 @@ namespace SocPass.API.Controllers
             try
             {
                 bool exists = await _subscriptionService.ExistsSocietyDataAsync(societyId, subscriptionId);
-                return Ok(exists); // returns true if society already exists, false otherwise
+                return Ok(exists); 
             }
             catch
             {

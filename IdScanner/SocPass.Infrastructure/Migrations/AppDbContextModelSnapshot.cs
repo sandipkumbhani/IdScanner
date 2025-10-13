@@ -400,6 +400,42 @@ namespace SocPass.Infrastructure.Migrations
                     b.ToTable("users");
                 });
 
+            modelBuilder.Entity("SocPass.Domain.Model.Member", b =>
+                {
+                    b.Property<int>("UserFlatMappingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserFlatMappingId"));
+
+                    b.Property<int>("FlatId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("InsertBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("UpdateBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserFlatMappingId");
+
+                    b.HasIndex("FlatId");
+
+                    b.ToTable("userFlatMappings");
+                });
+
             modelBuilder.Entity("SocPass.Domain.Model.UserRole", b =>
                 {
                     b.Property<int>("UserRoleId")
@@ -510,6 +546,17 @@ namespace SocPass.Infrastructure.Migrations
                     b.Navigation("Society");
 
                     b.Navigation("UserRole");
+                });
+
+            modelBuilder.Entity("SocPass.Domain.Model.Member", b =>
+                {
+                    b.HasOne("SocPass.Domain.Model.Flat", "Flat")
+                        .WithMany()
+                        .HasForeignKey("FlatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flat");
                 });
 
             modelBuilder.Entity("SocPass.Domain.Model.Flat", b =>

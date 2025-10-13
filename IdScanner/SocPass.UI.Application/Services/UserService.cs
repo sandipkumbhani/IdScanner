@@ -19,9 +19,9 @@ namespace SocPass.UI.Application.Services
         {
             return await _userRepository.GetUsersByIdAsync(userId);
         }
-        public async Task<User> AddUserAsync(User user)
+        public async Task<User> AddUserAsync(User user, int? flatId = null)
         {
-            return await _userRepository.AddUserAsync(user);
+            return await _userRepository.AddUserAsync(user, flatId);
         }
         public async Task<User> UpdateUserAsync(User model)
         {

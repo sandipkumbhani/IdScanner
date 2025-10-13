@@ -30,7 +30,20 @@ namespace SocPass.API.Controllers
             try
             {
                 var newBlock = await _blockService.CreateBlockAsync(block);
-                return Ok(newBlock);
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "Block created successfully.",  
+                    Data = newBlock
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
             }
             catch (KeyNotFoundException ex)
             {

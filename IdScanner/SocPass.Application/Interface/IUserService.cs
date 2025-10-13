@@ -9,7 +9,7 @@ namespace SocPass.Application.Interface
 {
     public interface IUserService
     {
-        Task<User> CreateUserAsync(User user);
+        Task<User> CreateUserAsync(User user, int? flatId = null);
         Task<List<User>> GetAllUsersAsync();
         Task DeleteUserById(int id);
         Task<User> UpdateUserAsync(int userid, User user);

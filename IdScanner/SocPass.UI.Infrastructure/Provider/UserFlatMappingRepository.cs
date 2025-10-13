@@ -1,37 +1,37 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using SocPass.Domain.Model;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
 using SocPass.UI.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
-    public class MemberDetailsRepository : IMemberDetailsRepository
+    public class UserFlatMappingRepository : IUserFlatMappingRepository
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
         private GlobalClass _globalClass;
-
-        public MemberDetailsRepository(HttpClient httpClient, IConfiguration configuration, GlobalClass globalClass)
+        public UserFlatMappingRepository(HttpClient httpClient, IConfiguration configuration, GlobalClass globalClass)
         {
             _httpClient = httpClient;
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
             _globalClass = globalClass;
         }
-        public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
+        public async Task<List<Member>> GetQrByUserId(int? userid)
         {
-            var baseUrl = $"{apiCredential.url}Member/IsVisited?memberid={memberid}&loggedInUserId={loggedInUserId}";
-            var response = await _httpClient.PostAsync(baseUrl, null);
+            var baseUrl = $"{apiCredential.url}UserFlatMapping/GetQrByUserId?userid={userid}";
+            var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            return response.IsSuccessStatusCode;
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Member>>(jsonString)!;
         }
     }
 }

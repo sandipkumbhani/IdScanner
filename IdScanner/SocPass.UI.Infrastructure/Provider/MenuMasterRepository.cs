@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SocPass.UI.Domain.Interfaces;
+using SocPass.UI.Domain.Model;
+using System.Net.Http;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
@@ -17,15 +19,17 @@ namespace SocPass.UI.Infrastructure.Provider
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
-        public MenuMasterRepository(HttpClient httpCleint, IConfiguration configuration)
+        private readonly GlobalClass _globalClass;
+        public MenuMasterRepository(HttpClient httpCleint, IConfiguration configuration,GlobalClass globalClass)
         {
             _httpClient = httpCleint;
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
+            _globalClass = globalClass; 
         }
-
         public async Task<List<MenuMaster>> GetAllMenuAsync()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "MenuMaster/Get-All-Menu-Master";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -34,6 +38,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<MenuMaster> GetMenuByIdAsync(int? id)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"MenuMaster/GetByMenuId?id={id}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -41,6 +46,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> AddMenuAsync(MenuMaster menuMaster)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "MenuMaster/Menu-Master";
             var userJson = JsonConvert.SerializeObject(menuMaster);
             var requestContent = new StringContent(userJson, Encoding.UTF8, "application/json");
@@ -60,6 +66,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> UpdateMenuAsync(MenuMaster menuMaster)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"MenuMaster/Update-Menu/{menuMaster.MenuId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(menuMaster), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
@@ -67,12 +74,14 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> DeleteMenuAsync(int id)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"MenuMaster/Delete-Menu-Master?id={id}";
             var response = await _httpClient.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
         }
         public async Task<List<MenuMaster>> GetMenuByUserIdAsync(int userId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"MenuMaster/GetMenusByUserId?userId={userId}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();

@@ -1,4 +1,4 @@
-﻿    @model SocPass.Domain.Model.MenuMaster
+﻿@model SocPass.Domain.Model.MenuMaster
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     IList<SocPass.Domain.Model.MenuMaster> MenuMastersList = ViewBag.MenuMasterList;
@@ -30,7 +30,6 @@
                         <div class="col-12">
                             <div class="page-title-box add">
                                 <h1 class="page-title">Menu Master</h1>
-
                                 <div class="add-btn">
                                     <a href="#" id="btnAddMenu">
                                         <i class="ri-add-line"></i> <span>Add Menu</span>
@@ -38,15 +37,6 @@
                                 </div>
                             </div>
                         </div>
-                        @* <button class="btn btn-primary me-2" id="btnAddMenu">Add Menu</button> *@
-                        @*  <div class="dropdown">
-                        <button id="filterDropdown"
-                                class="btn btn-outline-secondary dropdown-toggle month-filter"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            -- All Months -- <i class="ri-arrow-down-s-fill" style="font-size:larger"></i>
-                        </button>
-                        <ul class="dropdown-menu" id="monthDropdownMenu" aria-labelledby="filterDropdown"></ul>
-                    </div> *@
                     </div>
                     <div class="col-12">
                         <div class="card com-profile-info">
@@ -57,12 +47,12 @@
                                     @* <div class="table-search-box">
                                     <input type="text" id="customFranchiseSearch" class="form-control form-control-sm" placeholder="Search...">
                                     <button type="submit"><i class="ri-search-line"></i></button>
-                                </div> *@
+                                    </div> *@
                                     @*  <div id="exportFranchiseButtons">
                                     <button id="exportExcel" class="btn-btn-outline-secondary">
-                                        <i class="bi bi-file-earmark-excel"></i> Export
+                                    <i class="bi bi-file-earmark-excel"></i> Export
                                     </button>
-                                </div> *@
+                                    </div> *@
                                 </div>
                             </div>
                             <!-- Table -->
@@ -125,9 +115,9 @@
     <script type="text/javascript">
         $(document).on("click", "#btnAddMenu", AddMenuMaster);
 
-        function AddMenuMaster(){
-           window.location.href = "/MenuMaster/AddMenuMaster";
-         };
+        function AddMenuMaster() {
+            window.location.href = "/MenuMaster/AddMenuMaster";
+        };
     </script>
 </body>
 </html>

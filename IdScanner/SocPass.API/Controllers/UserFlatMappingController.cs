@@ -1,0 +1,38 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SocPass.Application.Interface;
+
+namespace SocPass.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserFlatMappingController : Controller
+    {
+        private readonly IUserFlatMappingService _userFlatMappingService;
+        public UserFlatMappingController(IUserFlatMappingService userFlatMappingService)
+        {
+            _userFlatMappingService = userFlatMappingService;
+        }
+        [HttpGet("GetQrByUserId")]
+        public async Task<IActionResult>GetQrByUserId(int userid)
+        {
+            try
+            {
+                var result = await _userFlatMappingService.GetQrByUserId(userid);
+                if (result == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                return Ok(result);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("User not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+    }
+}

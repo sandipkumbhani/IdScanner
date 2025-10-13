@@ -8,7 +8,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace SocPass.Application.Services
 {
     public class FlatService : IFlatService
@@ -196,7 +195,7 @@ namespace SocPass.Application.Services
                 {
                     SocietyId = flat.SocietyId,
                     BlockId = flat.BlockId,
-                    FlatNumber = flat.FlatNumber.ToString(),
+                    FlatNumber = flat.FlatNumber?.ToString(),
                     FloorNumber = flat.FloorNumber,
                     TotalMember = flat.TotalMember,
                     NumberOfAdult = flat.NumberOfAdult,

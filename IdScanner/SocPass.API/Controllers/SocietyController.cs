@@ -7,7 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class SocietyController : Controller
     {
         private readonly ISocietyService _societyService;

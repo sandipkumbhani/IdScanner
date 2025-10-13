@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
 
@@ -6,6 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;

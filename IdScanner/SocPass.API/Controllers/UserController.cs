@@ -23,7 +23,7 @@ namespace SocPass.API.Controllers
             return Ok(users);
         }
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] User user)
+        public async Task<IActionResult> Create([FromBody] User user, int? flatId = null)
         {
             if (!ModelState.IsValid)
             {
@@ -31,7 +31,7 @@ namespace SocPass.API.Controllers
             }
             try
             {
-                var result = await _userService.CreateUserAsync(user);
+                var result = await _userService.CreateUserAsync(user,flatId);
                 return Ok(result);
             }
             catch (KeyNotFoundException)
