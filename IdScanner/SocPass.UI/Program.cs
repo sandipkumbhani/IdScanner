@@ -8,6 +8,7 @@ var globalClass = new GlobalClass();
 builder.Services.AddControllersWithViews()
     .AddViewOptions(options =>
     {
+
         // Enabling client-side validation
         options.HtmlHelperOptions.ClientValidationEnabled = true;
     });

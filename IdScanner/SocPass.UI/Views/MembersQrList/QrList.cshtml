@@ -4,28 +4,46 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h2>Member QR Codes List</h2>
-
-    @if (Model != null && Model.Any())
-    {
-        foreach (var flat in Model)
-        {
-            <div class="mb-4">
-                <h5>Flat: @flat.FlatNumber (Total Members: @flat.TotalMember)</h5>
-                <div class="d-flex flex-wrap gap-3">
-                    @foreach (var member in flat.Members)
-                    {
-                        <div class="text-center">
-                            <img src="@member.QRCodeUrl" style="width:200px; height:200px;" />
-                        </div>
-                    }
+<div class="content-page">
+    <div class="content">
+        <div class="main-inner container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <h1 class="page-title">Member QR Codes List</h1>
+                    </div>
                 </div>
             </div>
-        }
-    }
-    else
-    {
-        <p>No QR codes found for this block.</p>
-    }
+            <div class="row">
+                <div class="col-12">
+                    <div class="card com-profile-info">
+                        <div class="top-details">
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var flat in Model)
+                                {
+                                    <div class="mb-4">
+                                        <h5>Flat: @flat.FlatNumber (Total Members: @flat.TotalMember)</h5>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            @foreach (var member in flat.Members)
+                                            {
+                                                <div class="text-center">
+                                                    <img src="@member.QRCodeUrl" style="width:200px; height:200px;" />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No QR codes found for this block.</p>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

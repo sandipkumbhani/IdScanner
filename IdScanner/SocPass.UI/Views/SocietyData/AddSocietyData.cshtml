@@ -1,23 +1,24 @@
 ﻿@model SocPass.Domain.DTO.SocietyDataCreateRequest
 @{
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	var selectedSocietyId = ViewBag.SelectedSocietyId as int? ?? 0;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedSocietyId = ViewBag.SelectedSocietyId as int? ?? 0;
 }
 
 <html>
 <head>
-	<title>SocPass | Add Society Data</title>
-	<link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<style>
-		.contact-column {
-			margin-bottom: 10px;
-		}
+    <title>SocPass | Add Society Data</title>
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .contact-column {
+            margin-bottom: 10px;
+        }
 
             .contact-column .form-control {
                 width: 100%;
                 margin-bottom: 8px;
             }
+
         .error-message {
             color: red;
             font-size: 0.875rem;
@@ -33,20 +34,28 @@
     </style>
 </head>
 <body>
-	<div class="container mt-4">
-		<h2>Add Society Data</h2>
-
-		<form id="societyDataForm">
-			<input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
-
-			<div class="content-page">
-				<div class="content">
-					<div class="main-inner container-fluid">
-						<!-- Dropdowns -->
-						<div class="row mb-3">
-							<div class="col-md-4">
-								<label class="form-label">Select Society</label>
-								@* <select id="Society" class="form-select">
+    <div class="content-page">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h1 class="page-title">Add Society Data</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Society Data</h2>
+                                <form id="societyDataForm">
+                                    <input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
+                                    <!-- Dropdowns -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Society</label>
+                                            @* <select id="Society" class="form-select">
 									<option value="">-- Select Society --</option>
 									@foreach (var society in ViewBag.Societies)
 									{
@@ -54,76 +63,81 @@
 									}
 								</select> *@
 
-								<select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
-									<option value="">-- Select Society --</option>
-									@if (ViewBag.Societies != null)
-									{
-										foreach (var society in ViewBag.Societies)
-										{
-											if (selectedSocietyId == society.SocietyId)
-											{
-												<option value="@society.SocietyId" selected>@society.Name</option>
-											}
-											else
-											{
-												<option value="@society.SocietyId">@society.Name</option>
-											}
-										}
-									}
-								</select>
+                                            <select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
+                                                <option value="">-- Select Society --</option>
+                                                @if (ViewBag.Societies != null)
+                                                {
+                                                    foreach (var society in ViewBag.Societies)
+                                                    {
+                                                        if (selectedSocietyId == society.SocietyId)
+                                                        {
+                                                            <option value="@society.SocietyId" selected>@society.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@society.SocietyId">@society.Name</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
 
-								@if (ViewBag.IsSocietyReadonly)
-								{
-									<input type="hidden" name="SocietyId" value="@selectedSocietyId" />
-								}
-								<div class="text-danger" id="societyError"></div>
-							</div>
-							<div class="col-md-4">
-								<label class="form-label">Select Block</label>
-								<select id="Block" class="form-select">
-									<option value="">-- Select Block --</option>
-								</select>
-                                <div class="text-danger" id="blockError"></div>
-							</div>
-							<div class="col-md-4">
-								<label class="form-label">Select Flat</label>
-								<select id="Flat" class="form-select">
-									<option value="">-- Select Flat --</option>
-								</select>
-                                <div class="text-danger" id="flatError"></div>
-							</div>
-						</div>
+                                            @if (ViewBag.IsSocietyReadonly)
+                                            {
+                                                <input type="hidden" name="SocietyId" value="@selectedSocietyId" />
+                                            }
+                                            <div class="text-danger" id="societyError"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Block</label>
+                                            <select id="Block" class="form-select">
+                                                <option value="">-- Select Block --</option>
+                                            </select>
+                                            <div class="text-danger" id="blockError"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Flat</label>
+                                            <select id="Flat" class="form-select">
+                                                <option value="">-- Select Flat --</option>
+                                            </select>
+                                            <div class="text-danger" id="flatError"></div>
+                                        </div>
+                                    </div>
 
-						<!-- Contact fields in 3 columns -->
-						<div class="row" id="contactContainer">
-							<!-- Columns will be dynamically generated here -->
-						</div>
-						<div id="messageArea" class="mt-3"></div>
+                                    <!-- Contact fields in 3 columns -->
+                                    <div class="row" id="contactContainer">
+                                        <!-- Columns will be dynamically generated here -->
+                                    </div>
+                                    <div id="messageArea" class="mt-3"></div>
 
-						@* <div class="mt-3">
+                                    @* <div class="mt-3">
 							<button type="button" id="saveBtn" class="btn btn-success">Save</button>
 							<a href="@Url.Action("SocietyDataList", "SocietyData")" class="btn btn-secondary">Cancel</a>
 						</div> *@
 
-                        <div class="button-main d-flex gap-3 mt-4">
-                            <button type="button" id="saveBtn" class="card-link">
-                                <i class="ri-save-line"></i> <span>Save</span>
-                            </button>
+                                    <div class="button-main d-flex gap-3 mt-4">
+                                        <button type="button" id="saveBtn" class="card-link">
+                                            <i class="ri-save-line"></i> <span>Save</span>
+                                        </button>
 
 
-                            <button type="reset" id="clearBtn" class="card-link outline-bar">
-                                <i class="ri-refresh-line"></i> <span>Clear</span>
-                            </button>
+                                        <button type="reset" id="clearBtn" class="card-link outline-bar">
+                                            <i class="ri-refresh-line"></i> <span>Clear</span>
+                                        </button>
 
 
-                            <a href="@Url.Action("SocietyDataList", "SocietyData")" class="card-link outline-bar">
-                                <i class="bi bi-eye"></i> <span>View</span>
-                            </a>
+                                        <a href="@Url.Action("SocietyDataList", "SocietyData")" class="card-link outline-bar">
+                                            <i class="bi bi-eye"></i> <span>View</span>
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-		</form>
-	</div>
-
-	<script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
             $(document).ready(function () {
 
         function generateContactColumns(subscription) {
@@ -314,7 +328,7 @@
         });
 
                 $(".contact-email").each(function () {
-            const email = $(this).val().trim(); 
+            const email = $(this).val().trim();
             if (!email) {
                 $(this).next(".contactEmailError").text("Contact Email required");
                 $(this).addClass("is-invalid");
@@ -376,7 +390,7 @@
 
         });
 
-	</script>
+    </script>
 </body>
 </html>
 
