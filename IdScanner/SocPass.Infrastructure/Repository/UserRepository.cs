@@ -49,7 +49,7 @@ namespace SocPass.Infrastructure.Repository
         public async Task UserUpdateAsync(User user)
         {
             _context.users.Update(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 

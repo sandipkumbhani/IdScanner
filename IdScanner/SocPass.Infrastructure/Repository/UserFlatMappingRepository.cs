@@ -41,6 +41,17 @@ namespace SocPass.Infrastructure.Repository
 
             return members;
         }
+        public async Task<UserFlatMapping> GetMappingByUserId(int userid)
+        {
+            return await _context.userFlatMappings
+                .FirstOrDefaultAsync(e => e.UserId == userid && e.IsActive==true);
+        }
+
+        public async Task UpdateFlatMappingAsync(UserFlatMapping userFlatMapping)
+        {
+            _context.userFlatMappings.Update(userFlatMapping);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

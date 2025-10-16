@@ -99,7 +99,7 @@ namespace SocPass.Controllers
             }
             else
             {
-                await _userServices.UpdateUserAsync(modelUsers);
+                await _userServices.UpdateUserAsync(modelUsers,flatId);
             }
             return RedirectToAction("UserList");
         }

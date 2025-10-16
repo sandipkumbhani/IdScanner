@@ -93,8 +93,10 @@ namespace SocPass.Application.Services
 
             await _userRepository.DeleteAsync(deleteUser);
         }
-        public async Task<User> UpdateUserAsync(int userid, User user)
+        public async Task<User> UpdateUserAsync(int userid, User user, int? flatId = null)
         {
+            var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
+
             var userExisting = await _userRepository.GetUserById(userid);
 
             if (userExisting == null)
@@ -110,10 +112,19 @@ namespace SocPass.Application.Services
             userExisting.InsertDate = DateTime.UtcNow;
             userExisting.UpdateBy = 1;
             userExisting.UpdateDate = DateTime.UtcNow;
-
-
             await _userRepository.UserUpdateAsync(userExisting);
 
+            if (role.Name == "User" && flatId.HasValue)
+            {
+                var existingMapping = await _userFlatMappingRepository.GetMappingByUserId(userid);
+                if (existingMapping != null)
+                {
+                    existingMapping.FlatId = flatId.Value;
+                    existingMapping.UpdateBy = 1;
+                    existingMapping.UpdateDate = DateTime.UtcNow;
+                    await _userFlatMappingRepository.UpdateFlatMappingAsync(existingMapping);
+                }
+            }
             return userExisting;
         }
         public async Task<User?> GetUserDetailsById(int userid)

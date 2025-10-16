@@ -17,6 +17,21 @@
 			border-color: red !important;
 		}
 
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #0466C8;
+            color: #fff;
+            border: 1px solid #0a58ca;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease;
+        }
+
 	</style>
 </head>
 <body>
@@ -105,9 +120,9 @@
 											<input type="file" class="form-control" id="file" name="file" accept=".xlsx" required />
 										</div>
 
-										<div class="d-flex gap-3 mt-3">
-											<button type="submit" class="btn btn-success">Upload</button>
-											<a href="@Url.Action("FlatList", "Flat")" class="btn btn-secondary">Back to List</a>
+										<div class="d-flex gap-3 mt-3" style="margin-bottom:10px;">
+											<button type="submit" class="btn btn-success">Upload Excel File</button>
+                                            @* <button type="submit" class="card-link outline-bar">Upload Excel File</button> *@
 										</div>
 
 									</form>
@@ -120,12 +135,22 @@
 
 								<div class="col-12">
 									<div class="button-main d-flex gap-2 mt-3">
-                                        <button type="button" id="clearBtn" class="card-link outline-bar">
+          @*                               <button type="button" id="clearBtn" class="card-link outline-bar">
                                             <span>Clear</span>
                                         </button>
 										<a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
 											<span>View</span>
-										</a>
+										</a> *@
+
+                                        <button type="button" id="clearBtn" class="card-link outline-bar">
+                                            <i class="ri-refresh-line"></i> <span>Clear</span>
+                                        </button>
+
+
+                                        <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
+                                            <i class="bi bi-eye"></i> <span>View</span>
+                                        </a>
+
 									</div>
 								</div>
 
@@ -212,6 +237,13 @@
 
                 if (blockId) {
                     $.getJSON('@Url.Action("GetFlatsByBlock", "Member")', { blockId: blockId }, function (data) {
+                        if(data.length === 0)
+                        {
+                         $("#excelSection").hide();
+						 var noFlatsMsg = $('<div class="text-danger mt-2">No flats found for the selected block.</div>');
+                         container.append(noFlatsMsg);
+							return;
+						}
                         if (data.length > 0) {
                             $("#flatsLabel").show();
                         }
@@ -225,16 +257,16 @@
                                     </div>
                                     <div style="flex:1; min-width:120px;">
                                         <input type="number" class="form-control adults" min="0" placeholder="Adults" />
-                                        <div class="error-message adultsError"></div>
+                                        <div class="text-danger adultsError"></div>
                                     </div>
                                     <div style="flex:1; min-width:120px;">
                                         <input type="number" class="form-control flatChildren"
                                                data-flatid="${flat.flatId}" min="0" placeholder="Children" />
-                                        <div class="error-message childrenError"></div>
+                                        <div class="text-danger childrenError"></div>
                                     </div>
                                     <div class="childAgesContainer" style="flex:1; min-width:200px;"></div>
                                     <div>
-                                        <button type="button" class="btn btn-primary saveFlatBtn" data-flatid="${flat.flatId}">
+                                        <button type="button" class="btn-save saveFlatBtn" data-flatid="${flat.flatId}">
                                             Add Members
                                         </button>
                                     </div>
@@ -365,7 +397,7 @@
 
             // --- clear button ---
             $("#clearBtn").click(function () {
-                $("#Society").val("").trigger("change");
+                // $("#Society").val("").trigger("change");
                 $("#Block").val("").trigger("change");
                 $("#flatContainer").empty();
                 $("#flatsLabel").hide();

@@ -1,98 +1,144 @@
 ﻿@model SocPass.Domain.Model.Subscription
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	bool isAddMode = Model.StartFrom == DateTime.MinValue;
+
+	// Value to show in input
+	string inputValue = !isAddMode
+						? Model.StartFrom.ToString("yyyy-MM-ddTHH:mm")
+						: string.Empty;
+
+	// Minimum selectable date
+	string minDate = isAddMode
+					 ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")        // Add
+					 : Model.StartFrom.ToString("yyyy-MM-ddTHH:mm");
+
+	bool isAddModeend = Model.EndTo == DateTime.MinValue;
+
+	// Value to show in input
+	string inputValueend = !isAddMode
+						? Model.EndTo.ToString("yyyy-MM-ddTHH:mm")
+						: string.Empty;
+
+	// Minimum selectable date
+	string minDateend = isAddMode
+					 ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")        // Add
+					 : Model.EndTo.ToString("yyyy-MM-ddTHH:mm");
 }
 <title>SocPass | Add Subscription</title>
-
 <div class="content-page">
-    <div class="content">
-        <div class="main-inner container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <h1 class="page-title">Add Subscription</h1>
-                    </div>
-                </div>
-            </div>
+	<div class="content">
+		<div class="main-inner container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="page-title-box">
+						<h1 class="page-title">Add Subscription</h1>
+					</div>
+				</div>
+			</div>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="card com-profile-info">
-                        <div class="top-details">
-                            <h2 class="page-form-title">Add Subscription</h2>
+			<div class="row">
+				<div class="col-12">
+					<div class="card com-profile-info">
+						<div class="top-details">
+							<h2 class="page-form-title">Add Subscription</h2>
 
-                            <form class="row all-custom-class" method="post"
-                                  action="@Url.Action("AddSubScription", "Subscription")">
-                                <input type="hidden" name="SubscriptionId" value="@Model.SubscriptionId" />
+							<form class="row all-custom-class" method="post"
+								  action="@Url.Action("AddSubScription", "Subscription")">
+								<input type="hidden" name="SubscriptionId" value="@Model.SubscriptionId" />
 
-                                <!-- Society Dropdown -->
-                                <div class="col-xl-4 col-lg-6 mb-3">
-                                    <div class="item-input">
-                                        <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
-                                        <select asp-for="SocietyId"
-                                                asp-items="@(new SelectList(ViewBag.SocietyList ?? new List<SocPass.Domain.Model.Society>(), "SocietyId", "Name", Model?.SocietyId))"
-                                                class="form-control userinput">
-                                            <option value="">-- Select Society --</option>
-                                        </select>
-                                        @* Display server-side validation error *@
-                                        <span class="text-danger">
-                                            @Html.ValidationMessageFor(m => m.SocietyId)
-                                        </span>
-                                    </div>
-                                </div>
+								<!-- Society Dropdown -->
+								<div class="col-xl-4 col-lg-6 mb-3">
+									<div class="item-input">
+										<label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
+										<select asp-for="SocietyId"
+												asp-items="@(new SelectList(ViewBag.SocietyList ?? new List<SocPass.Domain.Model.Society>(), "SocietyId", "Name", Model?.SocietyId))"
+												class="form-control userinput">
+											<option value="">-- Select Society --</option>
+										</select>
+										@* Display server-side validation error *@
+										<span class="text-danger">
+											@Html.ValidationMessageFor(m => m.SocietyId)
+										</span>
 
-                                <!-- Start From -->
-                                <div class="col-xl-4 col-lg-6 mb-3">
-                                    <div class="item-input">
-                                        <label for="StartFrom" class="form-label required fw-semibold fs-6">Start From</label>
-                                        <input type="date" class="form-control userinput"
-                                               id="StartFrom" name="StartFrom"
-                                               value="@(Model?.StartFrom != null ? Model.StartFrom.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))"
-                                               min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                        <span class="text-danger">
-                                            @Html.ValidationMessageFor(m => m.StartFrom)
-                                        </span>
-                                    </div>
-                                </div>
+										@if (ViewData.ModelState["SocietyId"]?.Errors.Count > 0 &&
+																				ViewData.ModelState["SocietyId"].Errors[0].ErrorMessage
+																				.Contains("already has a subscription"))
+										{
+											<script>
+												setTimeout(function () {
+													window.location.href = '@Url.Action("SubScriptionList", "Subscription")';
+												}, 1500); // redirect after 2.5 seconds
+											</script>
+										}
 
-                                <!-- End To -->
-                                <div class="col-xl-4 col-lg-6 mb-3">
-                                    <div class="item-input">
-                                        <label for="EndTo" class="form-label required fw-semibold fs-6">End To</label>
-                                        <input type="date" class="form-control userinput"
-                                               id="EndTo" name="EndTo"
-                                               value="@(Model?.EndTo != null ? Model.EndTo.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))"
-                                               min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                        <span class="text-danger">
-                                            @Html.ValidationMessageFor(m => m.EndTo)
-                                        </span>
-                                    </div>
-                                </div>
+									</div>
+								</div>
 
-                                <!-- Buttons -->
-                                <div class="button-main d-flex gap-3 mt-4">
-                                    <button type="submit" class="card-link">
-                                        <i class="ri-save-line"></i> <span>Save</span>
-                                    </button>
+								<!-- Start From -->
+								<div class="col-xl-4 col-lg-6 mb-3">
+									<div class="item-input">
+										<label for="StartFrom" class="form-label required fw-semibold fs-6">Start From</label>
+										<input type="datetime-local" class="form-control userinput"
+											   id="StartFrom" name="StartFrom"
+											   value="@inputValue"
+											   min="@minDate"
+											   required data-val="true"
+											   data-val-required="Please select a Start Date and Time." />
 
-                                    @if (Model.SubscriptionId == 0 || Model.SubscriptionId == null)
-                                    {
-                                        <button type="reset" class="card-link outline-bar">
-                                            <i class="ri-refresh-line"></i> <span>Clear</span>
-                                        </button>
-                                    }
+										<span class="text-danger">
+											@Html.ValidationMessageFor(m => m.StartFrom)
+										</span>
+									</div>
+								</div>
 
-                                    <a href="@Url.Action("SubScriptionList", "Subscription")" class="card-link outline-bar">
-                                        <i class="bi bi-eye"></i> <span>View</span>
-                                    </a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+								<!-- End To -->
+								<div class="col-xl-4 col-lg-6 mb-3">
+									<div class="item-input">
+										<label for="EndTo" class="form-label required fw-semibold fs-6">End To</label>
+										@* <input type="datetime-local" class="form-control userinput"
+											   id="EndTo" name="EndTo"
+											   value="@(Model?.EndTo != null && Model.EndTo != DateTime.MinValue ? Model.EndTo.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
+											   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required data-val="true"
+											   data-val-required="Please select a End Date and Time." /> *@
+
+										<input type="datetime-local" class="form-control userinput"
+											   id="EndTo" name="EndTo"
+											   value="@inputValueend"
+											   min="@minDate"
+											   required data-val="true"
+											   data-val-required="Please select a End Date and Time." />
+
+										<span class="text-danger">
+											@Html.ValidationMessageFor(m => m.EndTo)
+										</span>
+									</div>
+								</div>
+
+								<!-- Buttons -->
+								<div class="button-main d-flex gap-3 mt-4">
+									<button type="submit" class="card-link">
+										<i class="ri-save-line"></i> <span>Save</span>
+									</button>
+
+									@if (Model.SubscriptionId == 0 || Model.SubscriptionId == null)
+									{
+										<button type="reset" class="card-link outline-bar">
+											<i class="ri-refresh-line"></i> <span>Clear</span>
+										</button>
+									}
+
+									<a href="@Url.Action("SubScriptionList", "Subscription")" class="card-link outline-bar">
+										<i class="bi bi-eye"></i> <span>View</span>
+									</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 

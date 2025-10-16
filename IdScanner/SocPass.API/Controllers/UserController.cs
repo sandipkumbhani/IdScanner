@@ -8,7 +8,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Society")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -54,9 +54,9 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpPut("Update-User/{userid}")]
-        public async Task<IActionResult> UpdateUserAsync(int userid, [FromBody] User user)
+        public async Task<IActionResult> UpdateUserAsync(int userid, [FromBody] User user, int? flatId = null)
         {
-            var existingUser = _userService.GetUserDetailsById(userid);
+            var existingUser = await _userService.GetUserDetailsById(userid);
             if (existingUser == null && userid != user.UserId)
             {
                 return BadRequest("User ID mismatch.");
@@ -69,7 +69,7 @@ namespace SocPass.API.Controllers
             {
                 try
                 {
-                    var updatedUser = await _userService.UpdateUserAsync(userid, user);
+                    var updatedUser = await _userService.UpdateUserAsync(userid, user, flatId);
                     return Ok(updatedUser);
                 }
                 catch (Exception ex)

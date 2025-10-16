@@ -77,21 +77,21 @@
 								{
 									<input type="hidden" name="SocietyId" value="@selectedSocietyId" />
 								}
-								<div class="error-message" id="societyError"></div>
+								<div class="text-danger" id="societyError"></div>
 							</div>
 							<div class="col-md-4">
 								<label class="form-label">Select Block</label>
 								<select id="Block" class="form-select">
 									<option value="">-- Select Block --</option>
 								</select>
-								<div class="error-message" id="blockError"></div>
+                                <div class="text-danger" id="blockError"></div>
 							</div>
 							<div class="col-md-4">
 								<label class="form-label">Select Flat</label>
 								<select id="Flat" class="form-select">
 									<option value="">-- Select Flat --</option>
 								</select>
-								<div class="error-message" id="flatError"></div>
+                                <div class="text-danger" id="flatError"></div>
 							</div>
 						</div>
 
@@ -101,10 +101,26 @@
 						</div>
 						<div id="messageArea" class="mt-3"></div>
 
-						<div class="mt-3">
+						@* <div class="mt-3">
 							<button type="button" id="saveBtn" class="btn btn-success">Save</button>
 							<a href="@Url.Action("SocietyDataList", "SocietyData")" class="btn btn-secondary">Cancel</a>
-						</div>
+						</div> *@
+
+                        <div class="button-main d-flex gap-3 mt-4">
+                            <button type="button" id="saveBtn" class="card-link">
+                                <i class="ri-save-line"></i> <span>Save</span>
+                            </button>
+
+
+                            <button type="reset" id="clearBtn" class="card-link outline-bar">
+                                <i class="ri-refresh-line"></i> <span>Clear</span>
+                            </button>
+
+
+                            <a href="@Url.Action("SocietyDataList", "SocietyData")" class="card-link outline-bar">
+                                <i class="bi bi-eye"></i> <span>View</span>
+                            </a>
+                        </div>
 		</form>
 	</div>
 
@@ -130,7 +146,7 @@
                 let column = $("#contactContainer .contact-column").eq(0);
                 for (let i = 0; i < nameCount; i++) {
                     column.append(`<input type="text" class="form-control contact-name" placeholder="Contact Name" />
-                                   <div class="error-message contactNameError"></div>`);
+                                   <div class="text-danger contactNameError"></div>`);
                 }
             }
 
@@ -139,7 +155,7 @@
                 let column = $("#contactContainer .contact-column").eq(columnIndex);
                 for (let i = 0; i < numberCount; i++) {
                     column.append(`<input type="text" class="form-control contact-number" placeholder="Contact Number" />
-                                   <div class="error-message contactNumberError"></div>`);
+                                   <div class="text-danger contactNumberError"></div>`);
                 }
             }
 
@@ -148,7 +164,7 @@
                 let column = $("#contactContainer .contact-column").eq(columnIndex);
                 for (let i = 0; i < emailCount; i++) {
                     column.append(`<input type="email" class="form-control contact-email" placeholder="Contact Email" />
-                                   <div class="error-message contactEmailError"></div>`);
+                                   <div class="text-danger contactEmailError"></div>`);
                 }
             }
         }
@@ -159,7 +175,7 @@
             var flatId = $("#Flat").val();
 
             $("#contactContainer").empty();
-            $(".error-message").text("");
+            $(".text-danger").text("");
             $(".is-invalid").removeClass("is-invalid");
 
             if (societyId && blockId && flatId) {
@@ -241,6 +257,8 @@
 
         function validateForm() {
             let isValid = true;
+            const emailRegex  =  @Html.Raw(@"/^[^@\s]+@[^@\s]+\.[^@\s]+$/");
+            const phoneRegex = /^[0-9]{10}$/;
 
             if (!$("#Society").val()) {
                 $("#societyError").text("Please select a society.");
@@ -271,7 +289,7 @@
 
             $(".contact-name").each(function () {
                 if (!$(this).val().trim()) {
-                    $(this).next(".contactNameError").text("Name required");
+                    $(this).next(".contactNameError").text("Contact Name required");
                     $(this).addClass("is-invalid");
                     isValid = false;
                 } else {
@@ -280,27 +298,37 @@
                 }
             });
 
-            $(".contact-number").each(function () {
-                if (!$(this).val().trim()) {
-                    $(this).next(".contactNumberError").text("Number required");
-                    $(this).addClass("is-invalid");
-                    isValid = false;
-                } else {
-                    $(this).next(".contactNumberError").text("");
-                    $(this).removeClass("is-invalid");
-                }
-            });
+                 $(".contact-number").each(function () {
+            const number = $(this).val().trim();
+            if (!number) {
+                $(this).next(".contactNumberError").text("Contact Number required");
+                $(this).addClass("is-invalid");
+                isValid = false;
+            } else if (!phoneRegex.test(number)) {
+                $(this).next(".contactNumberError").text("Please enter a valid 10-digit number.");
+                $(this).addClass("is-invalid");
+                isValid = false;
+            } else {
+                $(this).next(".contactNumberError").text("");
+                $(this).removeClass("is-invalid");
+            }
+        });
 
-            $(".contact-email").each(function () {
-                if (!$(this).val().trim()) {
-                    $(this).next(".contactEmailError").text("Email required");
-                    $(this).addClass("is-invalid");
-                    isValid = false;
-                } else {
-                    $(this).next(".contactEmailError").text("");
-                    $(this).removeClass("is-invalid");
-                }
-            });
+                $(".contact-email").each(function () {
+            const email = $(this).val().trim(); 
+            if (!email) {
+                $(this).next(".contactEmailError").text("Contact Email required");
+                $(this).addClass("is-invalid");
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                $(this).next(".contactEmailError").text("Please enter a valid email address.");
+                $(this).addClass("is-invalid");
+                isValid = false;
+            } else {
+                $(this).next(".contactEmailError").text("");
+                $(this).removeClass("is-invalid");
+            }
+        });
 
             return isValid;
         }
