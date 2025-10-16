@@ -1,8 +1,8 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -51,7 +51,6 @@ namespace SocPass.UI.Controllers
             var society = await _societyService.GetSocietyByIdAsync(societyId.Value);
             return View(society);
         }
-
         [HttpPost]
         public async Task<IActionResult> AddSociety(Society society)
         {
@@ -59,9 +58,6 @@ namespace SocPass.UI.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
-            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            //long.TryParse(userIdClaim, out long userId);
-            //society.UserId = (int)userId;
             if (society.SocietyId == 0)
             {
                 await _societyService.AddSocietyAsync(society);
@@ -72,9 +68,7 @@ namespace SocPass.UI.Controllers
                 await _societyService.UpdateSocietyAsync(society);
             }
             return RedirectToAction("SocietyList");
-
         }
-
         [HttpGet]
         public async Task<IActionResult> DeleteSociety(int societyId)
         {

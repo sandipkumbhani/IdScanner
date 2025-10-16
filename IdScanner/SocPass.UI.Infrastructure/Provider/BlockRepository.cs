@@ -6,6 +6,7 @@ using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
+using SocPass.UI.Domain.Model;
 
 
 namespace SocPass.UI.Infrastructure.Provider
@@ -15,15 +16,18 @@ namespace SocPass.UI.Infrastructure.Provider
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
-        public BlockRepository(HttpClient httpCleint, IConfiguration configuration)
+        private readonly GlobalClass _globalClass;
+        public BlockRepository(HttpClient httpCleint, IConfiguration configuration, GlobalClass globalClass)
         {
             _httpClient = httpCleint;
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
+            _globalClass = globalClass;
         }
 
         public async Task<List<Block>> GetAllBlockAsync()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Block/GetAllBlock";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -32,6 +36,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<Block> GetBlockByIdAsync(int? blockid)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Block/GetBlockById?blockid={blockid}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -39,12 +44,12 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> AddBlockAsync(Block block)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Block/Create-Block";
             var userJson = JsonConvert.SerializeObject(block);
             var requestContent = new StringContent(userJson, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(baseUrl, requestContent);
             var responseData = await response.Content.ReadAsStringAsync();
-
             if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
                 try
@@ -57,7 +62,6 @@ namespace SocPass.UI.Infrastructure.Provider
                     return "This block already exists in the selected society.";
                 }
             }
-
             if (!response.IsSuccessStatusCode)
             {
                 string message;
@@ -76,13 +80,11 @@ namespace SocPass.UI.Infrastructure.Provider
 
                 throw new Exception($"API Error ({response.StatusCode}): {message}");
             }
-
             return "Block added successfully.";
         }
-
-
         public async Task<string> UpdateBlockAsync(Block block)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Block/Update-Block/{block.BlockId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(block), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
@@ -90,17 +92,19 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> DeleteBlockAsync(int blockid)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Block/Delete-Block?blockid={blockid}";
             var response = await _httpClient.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
         }
         public async Task<List<Block>> GetBlockBySocietyId(int? societyId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Block/GetBlocksBySocietyId?societyId={societyId}";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Block>>(jsonString)!;
-        }   
+        }
     }
 }

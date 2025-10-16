@@ -1,10 +1,7 @@
-﻿using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
-using SocPass.UI.Domain.Model;
+using System.Globalization;
 
 namespace SocPass.UI.Controllers
 {
@@ -26,10 +23,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> MemberReport()
         {
-            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            //int.TryParse(userIdClaim, out int userId);
-            //ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
-
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 

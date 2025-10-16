@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -9,27 +11,30 @@ namespace SocPass.UI.Controllers
     {
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
-        public BlockController(IBlockService blockService, ISocietyService societyService)
+        private readonly GlobalClass _globalClass;
+        public BlockController(IBlockService blockService, ISocietyService societyService,GlobalClass globalClass)
         {
             _blockService = blockService;
             _societyService = societyService;
+            _globalClass = globalClass;
         }
-        
         [HttpGet]
         public async Task<IActionResult> BlockList()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
-            // Get all blocks (no filtering needed here)
             var blockList = (await _blockService.GetAllBlockAsync()).ToList();
-
             ViewBag.blockList = blockList;
-
-            // Pass admin flag
             ViewBag.IsAdmin = User.IsInRole("Admin");
-
-            // Pass user's society name if not admin
             if (!User.IsInRole("Admin"))
             {
                 var societies = await _societyService.GetAllSocietyAsync(userId);
@@ -40,24 +45,35 @@ namespace SocPass.UI.Controllers
             {
                 ViewBag.UserSocietyName = "";
             }
-
             return View();
         }
 
         [HttpGet]
         public async Task<IActionResult> AddBlock(int? blockid)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
             IEnumerable<Society> societies;
 
-            // Admin = access all societies, else user-specific
             if (User.IsInRole("Admin"))
+            {
                 societies = await _societyService.GetAllSocietyAsync();
+            }
             else
+            {
                 societies = await _societyService.GetAllSocietyAsync(userId);
-
+            }
             if (blockid == null)
             {
                 var newBlock = new Block();
@@ -110,7 +126,7 @@ namespace SocPass.UI.Controllers
             {
                 ViewBag.BlockNumberMsg = "Please enter block number.";
                 return View(block);
-            }
+            } 
             try
             {
                 string message;
@@ -123,7 +139,6 @@ namespace SocPass.UI.Controllers
                 {
                     message = await _blockService.UpdateBlockAsync(block);
                 }
-
                 if (message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
                 {
                     ViewBag.ErrorMessage = message;
@@ -141,6 +156,19 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteBlock(int blockid)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _blockService.DeleteBlockAsync(blockid);

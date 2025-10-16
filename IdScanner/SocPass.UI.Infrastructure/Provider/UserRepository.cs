@@ -37,10 +37,21 @@ namespace SocPass.UI.Infrastructure.Provider
             var baseUrl = $"{apiCredential.url}User/create?flatId={flatId}";
             var userJson = JsonConvert.SerializeObject(user);
             var requestContent = new StringContent(userJson, Encoding.UTF8, "application/json");
-
             var response = await _httpClient.PostAsync(baseUrl, requestContent);
             var responseData = await response.Content.ReadAsStringAsync();
-
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                try
+                {
+                    var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
+                    var message = errorResponse?.Message ?? "Duplicate entry.";
+                    throw new InvalidOperationException(message);
+                }
+                catch
+                {
+                    throw new InvalidOperationException("Duplicate entry found (email or flat).");
+                }
+            }
             if (!response.IsSuccessStatusCode)
             {
                 try
@@ -49,7 +60,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
                     var message = errorResponse?.ErrorMessage
                                   ?? errorResponse?.Message
-                                  ?? responseData; 
+                                  ?? responseData;
 
                     if (message.Contains("email", StringComparison.OrdinalIgnoreCase))
                     {
@@ -67,7 +78,6 @@ namespace SocPass.UI.Infrastructure.Provider
                     throw new Exception($"API Error ({response.StatusCode}): {responseData}");
                 }
             }
-
             try
             {
                 var createdUser = JsonConvert.DeserializeObject<User>(responseData);
@@ -78,7 +88,6 @@ namespace SocPass.UI.Infrastructure.Provider
                 throw new Exception("Unexpected response format from API: " + responseData);
             }
         }
-
         public async Task<User> GetUsersByIdAsync(int? id)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
@@ -86,7 +95,6 @@ namespace SocPass.UI.Infrastructure.Provider
             {
                 throw new ArgumentNullException(nameof(id));
             }
-
             var baseUrl = apiCredential.url + $"User/GetById?userid={id}";
             var response = await _httpClient.GetAsync(baseUrl);
 
@@ -107,7 +115,7 @@ namespace SocPass.UI.Infrastructure.Provider
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Failed to update user. Status code: {response.StatusCode}");
 
-            var jsonString =  await response.Content.ReadAsStringAsync();
+            var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<User>(jsonString)!;
         }
         public async Task<string> DeleteUserAsync(int id)

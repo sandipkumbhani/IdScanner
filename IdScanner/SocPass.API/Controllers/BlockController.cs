@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
 using static System.Reflection.Metadata.BlobBuilder;
@@ -7,6 +8,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,Society")]
     public class BlockController : Controller
     {
         private readonly IBlockService _blockService;
@@ -33,7 +35,7 @@ namespace SocPass.API.Controllers
                 return Ok(new
                 {
                     Success = true,
-                    Message = "Block created successfully.",  
+                    Message = "Block created successfully.",
                     Data = newBlock
                 });
             }

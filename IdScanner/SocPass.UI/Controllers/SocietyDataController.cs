@@ -2,6 +2,8 @@
 using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -12,37 +14,53 @@ namespace SocPass.UI.Controllers
         private readonly ISocietyService _societyService;
         private readonly IFlatService _flatService;
         private readonly ISubscriptionService _subscriptionService;
+        private readonly GlobalClass _globalClass;
 
         public SocietyDataController(
             ISocietyDataService societyDataService,
             IBlockService blockService,
             ISocietyService societyService,
             IFlatService flatService,
-            ISubscriptionService subscriptionService)
+            ISubscriptionService subscriptionService,GlobalClass globalClass)
         {
             _societyDataService = societyDataService;
             _blockService = blockService;
             _societyService = societyService;
             _flatService = flatService;
             _subscriptionService = subscriptionService;
+            _globalClass = globalClass;
         }
 
         // LIST
         public async Task<IActionResult> SocietyDataList()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var societyDataList = await _societyDataService.GetAllSocietyDataAsync();
             return View(societyDataList);
         }
 
-        // ADD
         [HttpGet]
         public async Task<IActionResult> AddSocietyData()
         {
-            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            //int.TryParse(userIdClaim, out int userId);
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
-            //ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
-
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -50,7 +68,6 @@ namespace SocPass.UI.Controllers
             int selectedSocietyId = 0;
             if (User.IsInRole("Admin"))
             {
-                // Admin sees all societies
                 societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
@@ -71,16 +88,10 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSocietyData([FromBody] SocietyDataCreateRequest request)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    var message = await _societyDataService.AddSocietyDataAsync(request);
-            //    var success = message == "SocietyData Added Successfully.";
-            //    return Json(new { success, message });
-            //}
-            //return BadRequest("Invalid data");
-
             if (!ModelState.IsValid)
+            {
                 return Json(new { success = false, message = "Invalid data." });
+            }
 
             try
             {
@@ -107,6 +118,16 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> EditSocietyData(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var societyData = await _societyDataService.GetSocietyDataByIdAsync(id);
             if (societyData == null)
                 return NotFound();
@@ -145,11 +166,20 @@ namespace SocPass.UI.Controllers
         // DELETE
         public async Task<IActionResult> DeleteSocietyData(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             await _societyDataService.DeleteSocietyDataAsync(id);
             return RedirectToAction("SocietyDataList");
         }
 
-        // AJAX HELPERS
         [HttpGet]
         public async Task<JsonResult> GetBlocksBySociety(int societyId)
         {
@@ -163,14 +193,24 @@ namespace SocPass.UI.Controllers
             var flats = await _flatService.GetFlatByBlockId(blockId);
             return Json(flats.Select(f => new { flatId = f.FlatId, flatNumber = f.FlatNumber }));
         }
-
         [HttpGet]
         public async Task<IActionResult> GetSubscriptionBySociety(int societyId)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var subscription = await _subscriptionService.GetSubscriptionBySocietyIdAsync(societyId);
             if (subscription == null)
+            {
                 return Json(new { allowsName = 0, allowsNumber = 0, allowsEmail = 0 });
-
+            }
             return Json(new
             {
                 allowsName = subscription.AllowNoOfName,

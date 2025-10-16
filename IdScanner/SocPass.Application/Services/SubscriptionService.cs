@@ -45,12 +45,10 @@ namespace SocPass.Application.Services
         {
             return await _subscriptionRepository.GetById(subscriptionId);
         }
-
         public async Task<Subscription> GetSubscriptionBySocietyIdAsync(int societyId)
         {
             return await _subscriptionRepository.GetSubscriptionBySocietyIdAsync(societyId);
         }
-
         public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, Subscription subscription)
         {
             var subscriptionUpdate = await _subscriptionRepository.GetById(subscriptionId);

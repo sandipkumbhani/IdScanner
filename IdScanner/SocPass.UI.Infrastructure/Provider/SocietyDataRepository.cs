@@ -32,6 +32,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<List<SocietyData>> GetAllSocietyData()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "SocietyData/Get-All-SocietyData";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -41,6 +42,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<SocietyData> GetSocietyDataByIdAsync(int? societyDataId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"SocietyData/GetBySocietyDataId?societyDataId={societyDataId}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -48,6 +50,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> AddSocietyDataAsync(SocietyDataCreateRequest societyData)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "SocietyData/Add-Societydata";
             var userJson = JsonConvert.SerializeObject(societyData);
             var requestContent = new StringContent(userJson, Encoding.UTF8, "application/json");
@@ -71,20 +74,10 @@ namespace SocPass.UI.Infrastructure.Provider
 
                 return "Society Data added successfully.";
             }
-
-            //if (!response.IsSuccessStatusCode)
-            //{
-            //    var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
-            //    var message = errorResponse?.ErrorMessage
-            //        ?? errorResponse?.Message
-            //        ?? "Failed to create SocietyData.";
-
-            //    throw new Exception($"API Error ({response.StatusCode}): {message}");
-            //}
-            //return "SocietyData Added Successfully.";
         }
         public async Task<string> UpdateSocietyDataAsync(SocietyData societyData)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"SocietyData/Update-Societydata/{societyData.SocietyDataId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(societyData), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
@@ -92,6 +85,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> DeleteSocietyDataAsync(int societyDataId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"SocietyData/Delete-SocietyData?societyDataId={societyDataId}";
             var response = await _httpClient.DeleteAsync(baseUrl);
             return await response.Content.ReadAsStringAsync();
@@ -99,6 +93,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"SocietyData/Get-SocietyData-By-FlatId?flatId={flatId}";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();

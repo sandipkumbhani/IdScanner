@@ -32,6 +32,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<List<Flat>> GetAllFlatAsync()
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Flat/getAllFlat";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -41,6 +42,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<List<Flat>> GetFlatByIdAsync(int? societyId, int blockId)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Flat/GetFlatById?societyId={societyId}&blockId={blockId}";
             var response = await _httpClinet.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -49,6 +51,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<List<Flat>> AddFlatAsync(Flat flat)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Flat/create";
             var flatJson = JsonConvert.SerializeObject(flat);
             var requestContent = new StringContent(flatJson, Encoding.UTF8, "application/json");
@@ -71,6 +74,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<List<Flat>> UpdateFlatAsync(Flat flat)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Flat/Update-flat";
             var flatJson = JsonConvert.SerializeObject(flat);
             var requestContent = new StringContent(flatJson, Encoding.UTF8, "application/json");
@@ -115,6 +119,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<List<Flat>> GetFlatByBlockId(int blockid)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}Flat/GetFlatByBlockid?blockid={blockid}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -123,6 +128,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<Flat>> GetQR(int blockid)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}Flat/GetQR?blockid={blockid}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -131,6 +137,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<Flat>> GetGuestQR(int blockid)
         {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}Flat/GetGuestQR?blockid={blockid}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();

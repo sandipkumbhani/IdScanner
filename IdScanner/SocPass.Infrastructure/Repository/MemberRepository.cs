@@ -163,7 +163,6 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return true;
         }
-
         public async Task<bool> AddMemberPassDateAsync(int blockId, DateTime passDate)
         {
             var flatIds = await _context.flats
@@ -243,7 +242,7 @@ namespace SocPass.Infrastructure.Repository
                     }
 
                     string contentRoot = Directory.GetCurrentDirectory();
-                    string wwwroot = Path.Combine(@"D:\Broadsy\\Project\IdScanner\SocPass.UI", "wwwroot");
+                    string wwwroot = Path.Combine(@"D:\Broadsy\Projects\IdScanner\IdScanner\SocPass.UI", "wwwroot");
                 
                     string nestedFolder = Path.Combine(wwwroot, "QRCodes",
                                                       passdate,

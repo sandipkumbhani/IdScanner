@@ -27,6 +27,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<Member>> GetQrByUserId(int? userid)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}UserFlatMapping/GetQrByUserId?userid={userid}";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();

@@ -22,10 +22,9 @@ namespace SocPass.Infrastructure.Repository
         {
           return  await _context.Subscriptions.FirstOrDefaultAsync(e=>e.SubscriptionId == subscriptionId);
         }
-
         public async Task<Subscription> GetSubscriptionBySocietyIdAsync(int societyId)
         {
-            return await _context.Subscriptions.FirstOrDefaultAsync(e => e.SocietyId == societyId);
+            return await _context.Subscriptions.FirstOrDefaultAsync(e => e.SocietyId == societyId && e.IsActive==true);
         }
         public async Task UpdateSubscription(Subscription subscription)
         {

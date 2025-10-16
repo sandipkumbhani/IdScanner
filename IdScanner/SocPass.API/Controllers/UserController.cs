@@ -34,11 +34,18 @@ namespace SocPass.API.Controllers
                 var result = await _userService.CreateUserAsync(user,flatId);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
+            }
             catch (KeyNotFoundException)
             {
                 return Ok($"This email is already registered.");
             }
-
         }
         [HttpDelete("Delete-User")]
         public async Task<IActionResult> Delete(int id)

@@ -30,6 +30,13 @@ namespace SocPass.UI.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var SubScriptionList = await _subscriptionService.GetAllSubscription();
             ViewBag.SubScriptionList = SubScriptionList;
             return View("~/Views/SubScription/SubScriptionList.cshtml");
@@ -71,10 +78,6 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSubScription(Subscription subscription)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             if (subscription == null)
             {
                 return BadRequest("Invalid data");
@@ -107,6 +110,13 @@ namespace SocPass.UI.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
+
             try
             {
                 await _subscriptionService.DeleteSubscriptionAsync(subscriptionId);
@@ -149,7 +159,6 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            // Load societies for dropdown
             var societies = await _societyService.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = societies;
 
@@ -173,11 +182,16 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AppSetting(Subscription subscription)
         {
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             if (subscription == null)
             {
                 return BadRequest("Invalid data");
             }
-
             if (!ModelState.IsValid)
             {
                 var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
@@ -197,11 +211,6 @@ namespace SocPass.UI.Controllers
                 existing.AllowNoOfContact = subscription.AllowNoOfContact;
                 existing.AllowNoOfEmail = subscription.AllowNoOfEmail;
                 await _subscriptionService.UpdateSubscriptionAsync(existing);
-            }
-            else
-            {
-                subscription.IsActive = true;
-                await _subscriptionService.AddSubscriptionAsync(subscription);
             }
 
             TempData["SuccessMessage"] = "App settings updated successfully.";

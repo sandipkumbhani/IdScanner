@@ -36,22 +36,6 @@ namespace SocPass.Application.Services
 
             return await _blockRepository.CreateBlockAsync(newBlock);
         }
-
-        //public async Task<Block> CreateBlockAsync(Block block)
-        //{
-        //    var newBlock = new Block
-        //    {
-        //        BlockNumber = block.BlockNumber,
-        //        SocietyId = block.SocietyId,
-        //        IsActive = true,
-        //        InsertBy = 1,
-        //        InsertDate = DateTime.Now,
-        //        UpdateBy = 1,
-        //        UpdateDate = DateTime.Now
-
-        //    };
-        //    return await _blockRepository.CreateBlockAsync(newBlock);
-        //}
         public async Task<List<Block>> GetAllBlockAsync()
         {
             var newBlock = await _blockRepository.GetAllBlockAsync();

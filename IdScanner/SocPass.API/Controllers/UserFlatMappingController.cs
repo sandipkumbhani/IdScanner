@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 
 namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserFlatMappingController : Controller
     {
         private readonly IUserFlatMappingService _userFlatMappingService;
@@ -22,7 +24,6 @@ namespace SocPass.API.Controllers
                 {
                     return NotFound("User not found.");
                 }
-
                 return Ok(result);
             }
             catch (KeyNotFoundException)

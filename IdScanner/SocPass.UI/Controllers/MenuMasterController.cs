@@ -2,6 +2,7 @@
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -16,7 +17,6 @@ namespace SocPass.UI.Controllers
                 ?? throw new ArgumentNullException(nameof(menuMasterService));
             _globalClass = globalClass;
         }
-
         public async Task<IActionResult> MenuMasterList()
         {
             if (string.IsNullOrEmpty(_globalClass.Token))
@@ -27,7 +27,6 @@ namespace SocPass.UI.Controllers
             ViewBag.MenuMasterList = MenuMasterList;
             return View("~/Views/MenuMaster/MenuMasterList.cshtml");
         }
-
         [HttpGet]
         public async Task<IActionResult> AddMenuMaster(int? id)
         {
@@ -35,7 +34,11 @@ namespace SocPass.UI.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
-            //ViewBag.UserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             if (id == null)
             {
                 return View(new MenuMaster());
@@ -43,7 +46,6 @@ namespace SocPass.UI.Controllers
             var user = await _menuMasterService.GetMenuByIdAsync(id.Value);
             return View(user);
         }
-
         [HttpPost]
         public async Task<IActionResult> AddMenuMAster(MenuMaster menuMaster)
         {

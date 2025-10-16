@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Application.Services;
 using SocPass.Domain.DTO;
@@ -8,6 +9,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin,Society")]
     public class SocietyDataController : Controller
     {
         private readonly ISocietyDataService _societyDataService;
@@ -33,12 +35,10 @@ namespace SocPass.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                // Handle custom duplicate message from service
                 return Json(new { success = false, message = ex.Message });
             }
             catch (Exception)
             {
-                // Generic fallback
                 return Json(new { success = false, message = "An unexpected error occurred." });
             }
         }

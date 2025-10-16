@@ -44,10 +44,14 @@ namespace SocPass.Application.Services
                 UpdateBy = 1,
                 UpdateDate = DateTime.Now
             };
-
             var result = await _userRepository.AddUserAsync(newUser);
             if (role.Name == "User")
             {
+                var checkFlatExsiting = await _userFlatMappingRepository.GetMappingByFlatId(flatId);
+                if(checkFlatExsiting.FlatId == flatId)
+                {
+                    throw new InvalidOperationException($"Flat  already exists.");
+                }
                 var userMapping = new UserFlatMapping
                 {
                     UserId = result.UserId,
@@ -59,7 +63,6 @@ namespace SocPass.Application.Services
                     UpdateDate = DateTime.Now
                 };
                 await _userFlatMappingRepository.AddFlatMappingAsync(userMapping);
-
             }
             return result;
         }

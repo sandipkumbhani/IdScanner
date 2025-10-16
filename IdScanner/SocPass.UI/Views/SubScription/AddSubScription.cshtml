@@ -42,30 +42,26 @@
                                 </div>
 
                                 <!-- Start From -->
-                                <div class="col-xl-4 col-lg-6 mb-3">
+                                <div class="col-xl-4 col-lg-6">
                                     <div class="item-input">
-                                        <label for="StartFrom" class="form-label required fw-semibold fs-6">Start From</label>
-                                        <input type="date" class="form-control userinput"
+                                        <label for="StartFrom" class="form-label col-form-label required fw-semibold fs-6">Start From</label>
+                                        <input type="datetime-local"
+                                               class="form-control userinput"
                                                id="StartFrom" name="StartFrom"
                                                value="@(Model?.StartFrom != null ? Model.StartFrom.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))"
                                                min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                        <span class="text-danger">
-                                            @Html.ValidationMessageFor(m => m.StartFrom)
-                                        </span>
+
                                     </div>
                                 </div>
-
-                                <!-- End To -->
-                                <div class="col-xl-4 col-lg-6 mb-3">
+                                <div class="col-xl-4 col-lg-6">
                                     <div class="item-input">
-                                        <label for="EndTo" class="form-label required fw-semibold fs-6">End To</label>
-                                        <input type="date" class="form-control userinput"
+                                        <label for="EndTo" class="form-label col-form-label required fw-semibold fs-6">End To</label>
+                                        <input type="datetime-local"
+                                               class="form-control userinput"
                                                id="EndTo" name="EndTo"
                                                value="@(Model?.EndTo != null ? Model.EndTo.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))"
                                                min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                        <span class="text-danger">
-                                            @Html.ValidationMessageFor(m => m.EndTo)
-                                        </span>
+
                                     </div>
                                 </div>
 

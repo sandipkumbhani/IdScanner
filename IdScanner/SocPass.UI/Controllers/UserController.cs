@@ -46,6 +46,7 @@ namespace SocPass.Controllers
             var user = await _userServices.GetUserByIdAsync(id.Value);
             return View(user);
         }
+        
         [HttpPost]
         public async Task<IActionResult> AddUser(User modelUsers, string action, int? flatId = null)
         {
@@ -53,55 +54,63 @@ namespace SocPass.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
-            string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(modelUsers.Name))
             {
-                NameMsg = "Please Enter Name.";
-                ViewBag.NameMsg = NameMsg;
-            }
-            string EmailMsg = string.Empty;
-            if (string.IsNullOrEmpty(modelUsers.EmailId))
-            {
-                EmailMsg = "Please Enter EmailId.";
-                ViewBag.EmailMsg = EmailMsg;
-            }
-            string passwordMsg = string.Empty;
-            if (string.IsNullOrEmpty(modelUsers.Password))
-            {
-                passwordMsg = "Please Enter Password.";
-                ViewBag.passwordMsg = passwordMsg;
-            }
-            string ConfirmPasswordMsg = string.Empty;
-            if (modelUsers.Password != modelUsers.ConfirmPassword)
-            {
-                ConfirmPasswordMsg = "Password and Confirm Password do not match.";
-                ViewBag.ConfirmPasswordMsg = ConfirmPasswordMsg;
-            }
-            string UserRoleMsg = string.Empty;
-            if (modelUsers.UserRoleId == 0)
-            {
-                UserRoleMsg = "Please select a role.";
-                ViewBag.UserRoleMsg = UserRoleMsg;
-            }
-            if (ViewBag.NameMsg != null || ViewBag.EmailMsg != null || ViewBag.passwordMsg != null || ViewBag.UserRoleMsg != null)
-            {
+                ViewBag.ErrorMessage = "Please enter name.";
                 await InitViewBag();
                 return View(modelUsers);
             }
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(modelUsers.EmailId))
             {
-                ViewBag.RoleList = await _userServices.GetAllUserRoleAsync();
+                ViewBag.ErrorMessage = "Please enter email.";
+                await InitViewBag();
                 return View(modelUsers);
             }
-            if (modelUsers.UserId == 0)
+            if (string.IsNullOrEmpty(modelUsers.Password))
             {
-                await _userServices.AddUserAsync(modelUsers,flatId);
+                ViewBag.ErrorMessage = "Please enter password.";
+                await InitViewBag();
+                return View(modelUsers);
             }
-            else
+            if (modelUsers.Password != modelUsers.ConfirmPassword)
             {
-                await _userServices.UpdateUserAsync(modelUsers);
+                ViewBag.ErrorMessage = "Password and confirm password do not match.";
+                await InitViewBag();
+                return View(modelUsers);
             }
-            return RedirectToAction("UserList");
+            if (modelUsers.UserRoleId == 0)
+            {
+                ViewBag.ErrorMessage = "Please select a role.";
+                await InitViewBag();
+                return View(modelUsers);
+            }
+            try
+            {
+                if (modelUsers.UserId == 0)
+                {
+                    await _userServices.AddUserAsync(modelUsers, flatId);
+                    TempData["SuccessMessage"] = "User added successfully.";
+                }
+                else
+                {
+                    await _userServices.UpdateUserAsync(modelUsers);
+                    TempData["SuccessMessage"] = "User updated successfully.";
+                }
+
+                return RedirectToAction("UserList");
+            }
+            catch (InvalidOperationException ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                await InitViewBag();
+                return View(modelUsers);
+            }
+            catch (Exception)
+            {
+                ViewBag.ErrorMessage = "Something went wrong. Please try again.";
+                await InitViewBag();
+                return View(modelUsers);
+            }
         }
         [HttpGet]
         public async Task<IActionResult> DeleteUser(int id)

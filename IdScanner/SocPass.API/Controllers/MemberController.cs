@@ -7,6 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,Society")]
     public class MemberController : Controller
     {
         private readonly IMemberService _memberService;
@@ -74,7 +75,7 @@ namespace SocPass.API.Controllers
             var result = await _memberService.AddGuestPassDateAsync(blockId, passDate);
             return Ok(result);
         }
-        //[Authorize]
+        [AllowAnonymous]
         [HttpGet("GetMemberByMemberId")]
         public async Task<IActionResult> GetmemberById(int memberId)
         {
@@ -85,6 +86,7 @@ namespace SocPass.API.Controllers
 
             return Ok(result);
         }
+        [AllowAnonymous]
         [HttpPost("IsVisited")]
         public async Task<IActionResult> IsVisitedAsync(int memberId, int loggedInUserId)
         {
@@ -92,10 +94,7 @@ namespace SocPass.API.Controllers
             {
                 return BadRequest(new { Message = "Valid Member Id is required." });
             }
-            if (loggedInUserId <= 0)
-            {
-                return BadRequest(new { Message = "Valid Logged In User Id is required." });
-            }
+            
             bool isVisited = await _memberService.IsVisitedAsync(memberId, loggedInUserId);
             if (isVisited)
             {

@@ -11,5 +11,8 @@ namespace SocPass.Domain.Interface
     {
         Task<UserFlatMapping> AddFlatMappingAsync(UserFlatMapping userFlatMapping);
         Task<List<Member>> GetMembersByUserIdAsync(int loginUserId);
+        Task UpdateFlatMappingAsync(UserFlatMapping userFlatMapping);
+        Task<UserFlatMapping> GetMappingByUserId(int userid);
+        Task<UserFlatMapping> GetMappingByFlatId(int? flatId);
     }
 }

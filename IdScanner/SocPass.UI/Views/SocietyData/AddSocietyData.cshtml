@@ -1,333 +1,341 @@
 ﻿@model SocPass.Domain.DTO.SocietyDataCreateRequest
 @{
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	var selectedSocietyId = ViewBag.SelectedSocietyId as int? ?? 0;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedSocietyId = ViewBag.SelectedSocietyId as int? ?? 0;
 }
 
 <html>
 <head>
-	<title>SocPass | Add Society Data</title>
-	<link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<style>
-		.contact-column {
-			margin-bottom: 10px;
-		}
+    <title>SocPass | Add Society Data</title>
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .contact-column {
+            margin-bottom: 10px;
+        }
 
-			.contact-column .form-control {
-				width: 100%;
-				margin-bottom: 8px;
-			}
+            .contact-column .form-control {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+        }
 
-		.error-message {
-			color: red;
-			font-size: 0.875rem;
-		}
+        .is-invalid {
+            border-color: red !important;
+        }
 
-		.is-invalid {
-			border-color: red !important;
-		}
-
-		.dropdown-invalid {
-			border-color: red !important;
-		}
-	</style>
+        .dropdown-invalid {
+            border-color: red !important;
+        }
+    </style>
 </head>
 <body>
-	<div class="container mt-4">
-		<h2>Add Society Data</h2>
+    <div class="content-page">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Add Society Data</h2>
 
-		<form id="societyDataForm">
-			<input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
+                                <form id="societyDataForm">
+                                    <input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
 
-			<div class="content-page">
-				<div class="content">
-					<div class="main-inner container-fluid">
-						<!-- Dropdowns -->
-						<div class="row mb-3">
-							<div class="col-md-4">
-								<label class="form-label">Select Society</label>
-								@* <select id="Society" class="form-select">
-									<option value="">-- Select Society --</option>
-									@foreach (var society in ViewBag.Societies)
-									{
-										<option value="@society.SocietyId">@society.Name</option>
-									}
-								</select> *@
+                                    <!-- Dropdowns -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Society</label>
+                                            @* <select id="Society" class="form-select">
+                                            <option value="">-- Select Society --</option>
+                                            @foreach (var society in ViewBag.Societies)
+                                            {
+                                            <option value="@society.SocietyId">@society.Name</option>
+                                            }
+                                            </select> *@
 
-								<select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
-									<option value="">-- Select Society --</option>
-									@if (ViewBag.Societies != null)
-									{
-										foreach (var society in ViewBag.Societies)
-										{
-											if (selectedSocietyId == society.SocietyId)
-											{
-												<option value="@society.SocietyId" selected>@society.Name</option>
-											}
-											else
-											{
-												<option value="@society.SocietyId">@society.Name</option>
-											}
-										}
-									}
-								</select>
+                                            <select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
+                                                <option value="">-- Select Society --</option>
+                                                @if (ViewBag.Societies != null)
+                                                {
+                                                    foreach (var society in ViewBag.Societies)
+                                                    {
+                                                        if (selectedSocietyId == society.SocietyId)
+                                                        {
+                                                            <option value="@society.SocietyId" selected>@society.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@society.SocietyId">@society.Name</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
 
-								@if (ViewBag.IsSocietyReadonly)
-								{
-									<input type="hidden" name="SocietyId" value="@selectedSocietyId" />
-								}
-								<div class="error-message" id="societyError"></div>
-							</div>
-							<div class="col-md-4">
-								<label class="form-label">Select Block</label>
-								<select id="Block" class="form-select">
-									<option value="">-- Select Block --</option>
-								</select>
-								<div class="error-message" id="blockError"></div>
-							</div>
-							<div class="col-md-4">
-								<label class="form-label">Select Flat</label>
-								<select id="Flat" class="form-select">
-									<option value="">-- Select Flat --</option>
-								</select>
-								<div class="error-message" id="flatError"></div>
-							</div>
-						</div>
+                                            @if (ViewBag.IsSocietyReadonly)
+                                            {
+                                                <input type="hidden" name="SocietyId" value="@selectedSocietyId" />
+                                            }
+                                            <div class="error-message" id="societyError"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Block</label>
+                                            <select id="Block" class="form-select">
+                                                <option value="">-- Select Block --</option>
+                                            </select>
+                                            <div class="error-message" id="blockError"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Flat</label>
+                                            <select id="Flat" class="form-select">
+                                                <option value="">-- Select Flat --</option>
+                                            </select>
+                                            <div class="error-message" id="flatError"></div>
+                                        </div>
+                                    </div>
 
-						<!-- Contact fields in 3 columns -->
-						<div class="row" id="contactContainer">
-							<!-- Columns will be dynamically generated here -->
-						</div>
-						<div id="messageArea" class="mt-3"></div>
+                                    <!-- Contact fields in 3 columns -->
+                                    <div class="row" id="contactContainer">
+                                        <!-- Columns will be dynamically generated here -->
+                                    </div>
+                                    <div id="messageArea" class="mt-3"></div>
 
-						<div class="mt-3">
-							<button type="button" id="saveBtn" class="btn btn-success">Save</button>
-							<a href="@Url.Action("SocietyDataList", "SocietyData")" class="btn btn-secondary">Cancel</a>
-						</div>
-		</form>
-	</div>
+                                    <div class="mt-3">
+                                        <button type="button" id="saveBtn" class="btn btn-success">Save</button>
+                                        <a href="@Url.Action("SocietyDataList", "SocietyData")" class="btn btn-secondary">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<script>
-            $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
 
-        function generateContactColumns(subscription) {
-            $("#contactContainer").empty();
+            function generateContactColumns(subscription) {
+                $("#contactContainer").empty();
 
-            const nameCount = subscription.allowsName || 0;
-            const numberCount = subscription.allowsNumber || 0;
-            const emailCount = subscription.allowsEmail || 0;
+                const nameCount = subscription.allowsName || 0;
+                const numberCount = subscription.allowsNumber || 0;
+                const emailCount = subscription.allowsEmail || 0;
 
-            if (nameCount === 0 && numberCount === 0 && emailCount === 0) return;
+                if (nameCount === 0 && numberCount === 0 && emailCount === 0) return;
 
-            let nameColumn = nameCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Name</label></div>' : '';
-            let numberColumn = numberCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Number</label></div>' : '';
-            let emailColumn = emailCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Email</label></div>' : '';
+                let nameColumn = nameCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Name</label></div>' : '';
+                let numberColumn = numberCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Number</label></div>' : '';
+                let emailColumn = emailCount > 0 ? '<div class="col-md-4 contact-column"><label>Contact Email</label></div>' : '';
 
-            $("#contactContainer").append(nameColumn + numberColumn + emailColumn);
+                $("#contactContainer").append(nameColumn + numberColumn + emailColumn);
 
-            if (nameCount > 0) {
-                let column = $("#contactContainer .contact-column").eq(0);
-                for (let i = 0; i < nameCount; i++) {
-                    column.append(`<input type="text" class="form-control contact-name" placeholder="Contact Name" />
-                                   <div class="error-message contactNameError"></div>`);
+                if (nameCount > 0) {
+                    let column = $("#contactContainer .contact-column").eq(0);
+                    for (let i = 0; i < nameCount; i++) {
+                        column.append(`<input type="text" class="form-control contact-name" placeholder="Contact Name" />
+                                                           <div class="error-message contactNameError"></div>`);
+                    }
+                }
+
+                if (numberCount > 0) {
+                    let columnIndex = nameCount > 0 ? 1 : 0;
+                    let column = $("#contactContainer .contact-column").eq(columnIndex);
+                    for (let i = 0; i < numberCount; i++) {
+                        column.append(`<input type="text" class="form-control contact-number" placeholder="Contact Number" />
+                                                           <div class="error-message contactNumberError"></div>`);
+                    }
+                }
+
+                if (emailCount > 0) {
+                    let columnIndex = (nameCount > 0 ? 1 : 0) + (numberCount > 0 ? 1 : 0);
+                    let column = $("#contactContainer .contact-column").eq(columnIndex);
+                    for (let i = 0; i < emailCount; i++) {
+                        column.append(`<input type="email" class="form-control contact-email" placeholder="Contact Email" />
+                                                           <div class="error-message contactEmailError"></div>`);
+                    }
                 }
             }
 
-            if (numberCount > 0) {
-                let columnIndex = nameCount > 0 ? 1 : 0;
-                let column = $("#contactContainer .contact-column").eq(columnIndex);
-                for (let i = 0; i < numberCount; i++) {
-                    column.append(`<input type="text" class="form-control contact-number" placeholder="Contact Number" />
-                                   <div class="error-message contactNumberError"></div>`);
-                }
-            }
+            function tryRenderContacts() {
+                var societyId = $("#Society").val();
+                var blockId = $("#Block").val();
+                var flatId = $("#Flat").val();
 
-            if (emailCount > 0) {
-                let columnIndex = (nameCount > 0 ? 1 : 0) + (numberCount > 0 ? 1 : 0);
-                let column = $("#contactContainer .contact-column").eq(columnIndex);
-                for (let i = 0; i < emailCount; i++) {
-                    column.append(`<input type="email" class="form-control contact-email" placeholder="Contact Email" />
-                                   <div class="error-message contactEmailError"></div>`);
-                }
-            }
-        }
+                $("#contactContainer").empty();
+                $(".error-message").text("");
+                $(".is-invalid").removeClass("is-invalid");
 
-        function tryRenderContacts() {
-            var societyId = $("#Society").val();
-            var blockId = $("#Block").val();
-            var flatId = $("#Flat").val();
-
-            $("#contactContainer").empty();
-            $(".error-message").text("");
-            $(".is-invalid").removeClass("is-invalid");
-
-            if (societyId && blockId && flatId) {
-                $.getJSON('@Url.Action("GetSubscriptionBySociety", "SocietyData")', { societyId: societyId }, function (subscription) {
-                    generateContactColumns(subscription);
-                });
-            }
-        }
-
-        function loadBlocks(societyId, callback) {
-            $("#Block").empty().append('<option value="">-- Select Block --</option>');
-            $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-            tryRenderContacts();
-
-            if (societyId) {
-                $.getJSON('@Url.Action("GetBlocksBySociety", "SocietyData")', { societyId: societyId }, function (blocks) {
-                    $.each(blocks, function (i, block) {
-                        $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
-                    });
-
-                    if (typeof callback === "function") callback(blocks);
-                });
-            }
-        }
-
-        function loadFlats(blockId, callback) {
-            $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-            tryRenderContacts();
-
-            if (blockId) {
-                $.getJSON('@Url.Action("GetFlatsByBlock", "SocietyData")', { blockId: blockId }, function (flats) {
-                    $.each(flats, function (i, flat) {
-                        $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
-                    });
-
-                    if (typeof callback === "function") callback(flats);
-                });
-            }
-        }
-
-        // Dropdown change events
-        $("#Society").change(function () {
-            loadBlocks($(this).val());
-        });
-
-        $("#Block").change(function () {
-            loadFlats($(this).val());
-        });
-
-        $("#Flat").change(function () {
-            tryRenderContacts();
-        });
-
-        // ------------------------------
-        // 🔁 Auto-trigger on page load
-        // ------------------------------
-
-        var selectedSocietyId = '@ViewBag.SelectedSocietyId' || '0';
-        var isSocietyReadonly = @((ViewBag.IsSocietyReadonly ?? false).ToString().ToLower()); // true/false
-
-        if (selectedSocietyId !== "0" && isSocietyReadonly) {
-            // Society is pre-selected and readonly → auto-load blocks
-            loadBlocks(selectedSocietyId, function (blocks) {
-                if (blocks.length === 1) {
-                    $("#Block").val(blocks[0].blockId);
-                    loadFlats(blocks[0].blockId, function (flats) {
-                        if (flats.length === 1) {
-                            $("#Flat").val(flats[0].flatId);
-                            tryRenderContacts();
-                        }
+                if (societyId && blockId && flatId) {
+                    $.getJSON('@Url.Action("GetSubscriptionBySociety", "SocietyData")', { societyId: societyId }, function (subscription) {
+                        generateContactColumns(subscription);
                     });
                 }
-            });
-        }
-
-        // ------------------------------
-        // Validation & Save
-        // ------------------------------
-
-        function validateForm() {
-            let isValid = true;
-
-            if (!$("#Society").val()) {
-                $("#societyError").text("Please select a society.");
-                $("#Society").addClass("dropdown-invalid");
-                isValid = false;
-            } else {
-                $("#societyError").text("");
-                $("#Society").removeClass("dropdown-invalid");
             }
 
-            if (!$("#Block").val()) {
-                $("#blockError").text("Please select a block.");
-                $("#Block").addClass("dropdown-invalid");
-                isValid = false;
-            } else {
-                $("#blockError").text("");
-                $("#Block").removeClass("dropdown-invalid");
+            function loadBlocks(societyId, callback) {
+                $("#Block").empty().append('<option value="">-- Select Block --</option>');
+                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                tryRenderContacts();
+
+                if (societyId) {
+                    $.getJSON('@Url.Action("GetBlocksBySociety", "SocietyData")', { societyId: societyId }, function (blocks) {
+                        $.each(blocks, function (i, block) {
+                            $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
+                        });
+
+                        if (typeof callback === "function") callback(blocks);
+                    });
+                }
             }
 
-            if (!$("#Flat").val()) {
-                $("#flatError").text("Please select a flat.");
-                $("#Flat").addClass("dropdown-invalid");
-                isValid = false;
-            } else {
-                $("#flatError").text("");
-                $("#Flat").removeClass("dropdown-invalid");
+            function loadFlats(blockId, callback) {
+                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                tryRenderContacts();
+
+                if (blockId) {
+                    $.getJSON('@Url.Action("GetFlatsByBlock", "SocietyData")', { blockId: blockId }, function (flats) {
+                        $.each(flats, function (i, flat) {
+                            $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
+                        });
+
+                        if (typeof callback === "function") callback(flats);
+                    });
+                }
             }
 
-            $(".contact-name").each(function () {
-                if (!$(this).val().trim()) {
-                    $(this).next(".contactNameError").text("Name required");
-                    $(this).addClass("is-invalid");
-                    isValid = false;
-                } else {
-                    $(this).next(".contactNameError").text("");
-                    $(this).removeClass("is-invalid");
-                }
+            // Dropdown change events
+            $("#Society").change(function () {
+                loadBlocks($(this).val());
             });
 
-            $(".contact-number").each(function () {
-                if (!$(this).val().trim()) {
-                    $(this).next(".contactNumberError").text("Number required");
-                    $(this).addClass("is-invalid");
-                    isValid = false;
-                } else {
-                    $(this).next(".contactNumberError").text("");
-                    $(this).removeClass("is-invalid");
-                }
+            $("#Block").change(function () {
+                loadFlats($(this).val());
             });
 
-            $(".contact-email").each(function () {
-                if (!$(this).val().trim()) {
-                    $(this).next(".contactEmailError").text("Email required");
-                    $(this).addClass("is-invalid");
-                    isValid = false;
-                } else {
-                    $(this).next(".contactEmailError").text("");
-                    $(this).removeClass("is-invalid");
-                }
+            $("#Flat").change(function () {
+                tryRenderContacts();
             });
 
-            return isValid;
-        }
+            // ------------------------------
+            // 🔁 Auto-trigger on page load
+            // ------------------------------
 
-        $("#saveBtn").click(function () {
-            if (!validateForm()) return;
+            var selectedSocietyId = '@ViewBag.SelectedSocietyId' || '0';
+            var isSocietyReadonly = @((ViewBag.IsSocietyReadonly ?? false).ToString().ToLower()); // true/false
 
-            var model = {
-                SocietyDataId: $("#SocietyDataId").val(),
-                FlatId: $("#Flat").val(),
-                ContactName: $(".contact-name").map(function () { return $(this).val(); }).get(),
-                ContactNumber: $(".contact-number").map(function () { return $(this).val(); }).get(),
-                ContactEmail: $(".contact-email").map(function () { return $(this).val(); }).get()
-            };
+            if (selectedSocietyId !== "0" && isSocietyReadonly) {
+                // Society is pre-selected and readonly → auto-load blocks
+                loadBlocks(selectedSocietyId, function (blocks) {
+                    if (blocks.length === 1) {
+                        $("#Block").val(blocks[0].blockId);
+                        loadFlats(blocks[0].blockId, function (flats) {
+                            if (flats.length === 1) {
+                                $("#Flat").val(flats[0].flatId);
+                                tryRenderContacts();
+                            }
+                        });
+                    }
+                });
+            }
 
-            $.ajax({
-                url: '@Url.Action("AddSocietyData", "SocietyData")',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(model),
-                success: function (response) {
-                    if (response.success) {
-                        setTimeout(function () {
-                            window.location.href = '@Url.Action("SocietyDataList", "SocietyData")';
-                        }, 1000);
+            // ------------------------------
+            // Validation & Save
+            // ------------------------------
+
+            function validateForm() {
+                let isValid = true;
+
+                if (!$("#Society").val()) {
+                    $("#societyError").text("Please select a society.");
+                    $("#Society").addClass("dropdown-invalid");
+                    isValid = false;
+                } else {
+                    $("#societyError").text("");
+                    $("#Society").removeClass("dropdown-invalid");
+                }
+
+                if (!$("#Block").val()) {
+                    $("#blockError").text("Please select a block.");
+                    $("#Block").addClass("dropdown-invalid");
+                    isValid = false;
+                } else {
+                    $("#blockError").text("");
+                    $("#Block").removeClass("dropdown-invalid");
+                }
+
+                if (!$("#Flat").val()) {
+                    $("#flatError").text("Please select a flat.");
+                    $("#Flat").addClass("dropdown-invalid");
+                    isValid = false;
+                } else {
+                    $("#flatError").text("");
+                    $("#Flat").removeClass("dropdown-invalid");
+                }
+
+                $(".contact-name").each(function () {
+                    if (!$(this).val().trim()) {
+                        $(this).next(".contactNameError").text("Name required");
+                        $(this).addClass("is-invalid");
+                        isValid = false;
                     } else {
-                        $("#messageArea").html(
+                        $(this).next(".contactNameError").text("");
+                        $(this).removeClass("is-invalid");
+                    }
+                });
+
+                $(".contact-number").each(function () {
+                    if (!$(this).val().trim()) {
+                        $(this).next(".contactNumberError").text("Number required");
+                        $(this).addClass("is-invalid");
+                        isValid = false;
+                    } else {
+                        $(this).next(".contactNumberError").text("");
+                        $(this).removeClass("is-invalid");
+                    }
+                });
+
+                $(".contact-email").each(function () {
+                    if (!$(this).val().trim()) {
+                        $(this).next(".contactEmailError").text("Email required");
+                        $(this).addClass("is-invalid");
+                        isValid = false;
+                    } else {
+                        $(this).next(".contactEmailError").text("");
+                        $(this).removeClass("is-invalid");
+                    }
+                });
+
+                return isValid;
+            }
+
+            $("#saveBtn").click(function () {
+                if (!validateForm()) return;
+
+                var model = {
+                    SocietyDataId: $("#SocietyDataId").val(),
+                    FlatId: $("#Flat").val(),
+                    ContactName: $(".contact-name").map(function () { return $(this).val(); }).get(),
+                    ContactNumber: $(".contact-number").map(function () { return $(this).val(); }).get(),
+                    ContactEmail: $(".contact-email").map(function () { return $(this).val(); }).get()
+                };
+
+                $.ajax({
+                    url: '@Url.Action("AddSocietyData", "SocietyData")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(model),
+                    success: function (response) {
+                        if (response.success) {
+                            setTimeout(function () {
+                                window.location.href = '@Url.Action("SocietyDataList", "SocietyData")';
+                            }, 1000);
+                        } else {
+                            $("#messageArea").html(
                                 '<div class="alert alert-danger">' + response.message + '</div>'
                             );
                         }
@@ -349,7 +357,7 @@
 
         });
 
-	</script>
+    </script>
 </body>
 </html>
 

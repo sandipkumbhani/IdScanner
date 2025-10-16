@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -13,51 +14,29 @@ namespace SocPass.UI.Controllers
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
         private readonly IFlatService _flatRepository;
-        public MemberController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService)
+        private readonly GlobalClass _globalClass;
+        public MemberController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService,GlobalClass globalClass)
         {
             _memberService = memberService;
             _blockService = blockService;
             _societyService = societyService;
             _flatRepository = flatService;
+            _globalClass = globalClass;
 
         }
-        //public async Task<IActionResult> MemberList(int flatId)
-        //{
-        //    IList<Member> MemberList = await _memberService.GetAllMember(flatId);
-        //    ViewBag.MemberList = MemberList;
-        //    return View("~/Views/Member/MemberList.cshtml");
-        //}
-        //[HttpGet]
-        //public async Task<IActionResult> AddMember()
-        //{
-        //    var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-        //    int.TryParse(userIdClaim, out int userId);
-        //    var societies = await _societyService.GetAllSocietyAsync(userId);
-        //    ViewBag.Societies = societies;
-        //    var model = new MemberCreateRequest();
-        //    return View("/Views/Member/AddMember.cshtml", model);
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> AddMember([FromBody] MemberCreateRequest memberCreateRequest)
-        //{
-        //    if (memberCreateRequest == null)
-        //    {
-        //        return BadRequest("Invalid data");
-        //    }
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View("AddMember", memberCreateRequest);
-        //    }
-
-        //    await _memberService.AddMemberAsync(memberCreateRequest);
-
-        //    return RedirectToAction("FlatList", "Flat");
-        //}
-
         [HttpGet]
         public async Task<IActionResult> AddMember()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -150,13 +129,16 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddGuest()
         {
-            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            //int.TryParse(userIdClaim, out int userId);
-            //var societies = await _societyService.GetAllSocietyAsync(userId);
-            //ViewBag.Societies = societies;
-            //var model = new MemberCreateRequest();
-            //return View("/Views/Guest/AddGuest.cshtml", model);
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -164,44 +146,26 @@ namespace SocPass.UI.Controllers
 
             if (User.IsInRole("Admin"))
             {
-                // Admin sees all societies
                 societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
             }
             else
             {
-                // User sees only assigned societies
                 societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
             }
-
             ViewBag.Societies = societies;
-
             var guestmodel = new MemberCreateRequest();
-
-            // If non-admin, preselect first society
             if (!User.IsInRole("Admin"))
             {
                 guestmodel.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
-
             return View("/Views/Guest/AddGuest.cshtml", guestmodel);
-
         }
 
         [HttpPost]
         public async Task<IActionResult> AddGuest([FromBody] MemberCreateRequest memberCreateRequest)
         {
-            //if (memberCreateRequest == null)
-            //{
-            //    return BadRequest("Invalid data");
-            //}
-
-            //if (!ModelState.IsValid)
-            //{
-            //    return View("AddGuest", memberCreateRequest);
-            //}
-
             if (!ModelState.IsValid)
             {
                 var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
@@ -228,8 +192,6 @@ namespace SocPass.UI.Controllers
 
             return RedirectToAction("FlatList", "Flat");
         }
-
-
         [HttpGet]
         public async Task<IActionResult> DownloadTemplate(int societyId, int blockId)
         {
@@ -261,7 +223,6 @@ namespace SocPass.UI.Controllers
                 }
             }
         }
-
         [HttpPost]
         public async Task<IActionResult> UploadMembers(IFormFile file)
         {
@@ -301,7 +262,6 @@ namespace SocPass.UI.Controllers
                     }
                 }
             }
-
             return RedirectToAction("FlatList", "Flat");
         }
 

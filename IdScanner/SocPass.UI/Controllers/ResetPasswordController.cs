@@ -11,7 +11,6 @@ namespace SocPass.UI.Controllers
         {
             _resetPasswordService = resetPasswordService;
         }
-
         [HttpGet]
         public IActionResult ResetPassword(string email, string token)
         {
@@ -37,15 +36,13 @@ namespace SocPass.UI.Controllers
         private string ValidatePassword(ResetPasswordModel resetPasswordModel)
         {
             if (resetPasswordModel == null)
-            {
+            { 
                 throw new ArgumentNullException(nameof(resetPasswordModel));
             }
-
             if (string.IsNullOrWhiteSpace(resetPasswordModel.NewPassword))
             {
                 return "Password is required.";
             }
-
             if (resetPasswordModel.NewPassword.Length < 8)
             {
                 return "Password must be at least 8 characters long.";
@@ -54,22 +51,18 @@ namespace SocPass.UI.Controllers
             {
                 return "Password must contain at least one uppercase letter.";
             }
-
             if (!resetPasswordModel.NewPassword.Any(char.IsLower))
             {
                 return "Password must contain at least one lowercase letter.";
             }
-
             if (!resetPasswordModel.NewPassword.Any(char.IsDigit))
             {
                 return "Password must contain at least one number.";
             }
-
             if (!resetPasswordModel.NewPassword.Any(ch => !char.IsLetterOrDigit(ch)))
             {
                 return "Password must contain at least one special character.";
             }
-
             if (resetPasswordModel.NewPassword != resetPasswordModel.ConfirmPassword)
             {
                 return "Passwords do not match.";

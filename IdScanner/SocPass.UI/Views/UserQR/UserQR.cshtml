@@ -22,14 +22,36 @@
             background-color: #ffffff;
             min-height: 100vh;
             padding: 30px;
+            position: relative;
         }
 
-        .table-top-header h4 {
-            margin: 0;
-            color: #000;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
+        .table-top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+            .table-top-header h4 {
+                margin: 0;
+                color: #000;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 10px;
+            }
+
+        .logout-btn {
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+            .logout-btn:hover {
+                background-color: #c9302c;
+            }
 
         .qr-container {
             display: flex;
@@ -75,9 +97,12 @@
 <body>
     <div class="content-page">
         <div class="table-top-header">
-            <h4>User QR List</h4>
+            <h2>User QR List</h2>
+            <a href="~/Logout/Logout">
+                <button type="button" class="logout-btn">Logout</button>
+            </a>
         </div>
-
+        <hr />
         <div class="qr-container">
             @foreach (var qr in qrList)
             {
@@ -92,3 +117,4 @@
     <script src="~/js/record.js" defer></script>
 </body>
 </html>
+

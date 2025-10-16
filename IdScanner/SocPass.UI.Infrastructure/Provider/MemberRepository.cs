@@ -28,6 +28,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<Member>> GetAllGuestAsync(int flatId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + "Member/GetGuestByid?flatId={flatId}";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
@@ -36,6 +37,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<List<Member>> GetAllMemberAsync(int flatId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Member/GetMemberByid?flatId={flatId}";
             var response = await _httpClient.GetAsync(baseUrl);
                 response.EnsureSuccessStatusCode();
@@ -44,6 +46,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> AddMemberAsync(MemberCreateRequest memberCreateRequest)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Member/add-update-member";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(memberCreateRequest), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
@@ -51,6 +54,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> AddAndUpdateGuestAsync(MemberCreateRequest memberCreateRequest)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Member/Update-Guest";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(memberCreateRequest), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);
@@ -59,6 +63,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<string> GeneratePass(int blockId, DateTime passDate)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}Member/AddPassdate?blockId={blockId}&passDate={passDate:O}";
             var response = await _httpClient.PutAsync(baseUrl, null); 
             response.EnsureSuccessStatusCode();
@@ -66,6 +71,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> GenerateGuestPass(int blockId, DateTime passDate)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}Member/AddGuestPassdate?blockId={blockId}&passDate={passDate:O}";
             var response = await _httpClient.PutAsync(baseUrl, null);
             response.EnsureSuccessStatusCode();
@@ -73,6 +79,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<Member> GetMemberByMemberId(int? memberId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Member/GetMemberByMemberId?memberId={memberId}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();

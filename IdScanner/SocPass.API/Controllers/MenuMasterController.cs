@@ -7,7 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles ="Admin,Society")]
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;
@@ -21,6 +21,7 @@ namespace SocPass.API.Controllers
             var users = await _menuMasterService.GetModelMenuMastersAsync();
             return Ok(users);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("Menu-Master")]
         public async Task<IActionResult> CreateMenuMaster([FromBody] MenuMaster modelMenuMaster)
         {

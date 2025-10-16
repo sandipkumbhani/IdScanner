@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -23,12 +23,12 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> MemberQrList()
         {
-            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            //int.TryParse(userIdClaim, out int userId);
-            //var societies = await _societyService.GetAllSocietyAsync(userId);
-            //ViewBag.Societies = societies;
-            //return View("/Views/MembersQrList/MembersQrList.cshtml");
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -55,56 +55,6 @@ namespace SocPass.UI.Controllers
             return View("/Views/MembersQrList/MembersQrList.cshtml");
 
         }
-        //[HttpPost]
-        //public async Task<IActionResult> GeneratePass(int blockId, DateTime passDate)
-        //{
-        //    //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-        //    //int.TryParse(userIdClaim, out int userId);
-        //    //if (blockId <= 0 || passDate == default)
-        //    //{
-        //    //    ViewBag.Error = "Invalid block or date";
-
-        //    //    ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
-        //    //    return View();
-        //    //}
-        //    //await _memberService.GeneratePass(blockId, passDate);
-        //    //var QRlist = await _flatRepository.GetQR(blockId);
-
-        //    //return View("/Views/MembersQrList/QrList.cshtml", QRlist);
-
-        //    var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-        //    int.TryParse(userIdClaim, out int userId);
-
-        //    // Validate input
-        //    if (blockId <= 0 || passDate == default)
-        //    {
-        //        ViewBag.Error = "Invalid block or date.";
-
-        //        // Repopulate dropdowns (admin vs user)
-        //        IEnumerable<Society> societies;
-        //        if (User.IsInRole("Admin"))
-        //        {
-        //            societies = await _societyService.GetAllSocietyAsync();
-        //            ViewBag.IsSocietyReadonly = false;
-        //        }
-        //        else
-        //        {
-        //            societies = await _societyService.GetAllSocietyAsync(userId);
-        //            ViewBag.IsSocietyReadonly = true;
-        //        }
-
-        //        ViewBag.Societies = societies;
-
-        //        return View("/Views/MembersQrList/MembersQrList.cshtml");
-        //    }
-
-        //    // Generate QR and show result
-        //    await _memberService.GeneratePass(blockId, passDate);
-        //    var QRlist = await _flatRepository.GetQR(blockId);
-
-        //    return View("/Views/MembersQrList/QrList.cshtml", QRlist);
-        //}
-
         [HttpPost]
         public async Task<IActionResult> GeneratePass(int societyId, int blockId, DateTime passDate)
         {
@@ -143,10 +93,15 @@ namespace SocPass.UI.Controllers
             return View("/Views/MembersQrList/QrList.cshtml", QRlist);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GuestQrList()
         {
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -172,22 +127,6 @@ namespace SocPass.UI.Controllers
             return View("/Views/GuestQrList/GuestQrList.cshtml");
         }
         [HttpPost]
-        //public async Task<IActionResult> GenerateGuestPass(int societyId,int blockId, DateTime passDate)
-        //{
-        //    if (blockId <= 0 || passDate == default)
-        //    {
-        //        ViewBag.Error = "Invalid block or date";
-        //        var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-        //        int.TryParse(userIdClaim, out int userId);
-        //        ViewBag.Societies = await _societyService.GetAllSocietyAsync(userId);
-        //        return View();
-        //    }
-        //    await _memberService.GenerateGuestPass(blockId, passDate);
-        //    var QRlist = await _flatRepository.GetGuestQR(blockId);
-
-        //    return View("/Views/GuestQrList/GuestQr.cshtml", QRlist);
-        //}
-
         public async Task<IActionResult> GenerateGuestPass(int societyId, int blockId, DateTime passDate)
         {
             if (blockId <= 0 || passDate == default(DateTime) /*|| passDate < DateTime.Today*/)
@@ -197,7 +136,6 @@ namespace SocPass.UI.Controllers
                 var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
                 int.TryParse(userIdClaim, out int userId);
 
-                // Load societies based on user role or id
                 IEnumerable<Society> societies;
                 if (User.IsInRole("Admin"))
                 {
@@ -213,7 +151,6 @@ namespace SocPass.UI.Controllers
                 ViewBag.Societies = societies;
                 ViewBag.SelectedSocietyId = societyId;
 
-                // Pass back an empty model or default model as needed by your view
                 return View();
             }
 

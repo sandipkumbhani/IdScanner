@@ -66,6 +66,7 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<Subscription> GetSubscriptionBySocietyIdAsync(int? societyId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Subscription/GetBySocietyId?societyId={societyId}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -90,6 +91,7 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<bool> ExistsSocietyDataAsync(int societyId, int subscriptionId)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = apiCredential.url + $"Subscription/GetExistsSocietyData?societyId={societyId}&subscriptionId={subscriptionId}";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();

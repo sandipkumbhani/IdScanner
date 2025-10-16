@@ -14,7 +14,7 @@ namespace SocPass.UI.Application.Services
 
         public async Task<List<Block>> GetAllBlockAsync()
         {
-            return await _blockRepository.GetAllBlockAsync();
+             return await _blockRepository.GetAllBlockAsync();
         }
         public async Task<string> DeleteBlockAsync(int blockid)
         {
@@ -36,6 +36,5 @@ namespace SocPass.UI.Application.Services
         {
             return await _blockRepository.GetBlockBySocietyId(societyId);
         }
-
     }
 }

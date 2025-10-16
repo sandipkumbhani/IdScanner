@@ -49,6 +49,10 @@
                                             {
                                                 <span class="text-danger">@EmailMsg</span>
                                             }
+                                            @if (ViewBag.ErrorMessage != null)
+                                            {
+                                                <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                            }
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
@@ -121,6 +125,10 @@
                                             <select id="Flat" name="FlatId" class="form-select">
                                                 <option value="">-- Select Flat --</option>
                                             </select>
+                                            @if (ViewBag.ErrorMessage != null)
+                                            {
+                                                <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                            }
                                             <span class="text-danger small" id="flatError"></span>
                                         </div>
 
@@ -152,7 +160,6 @@
                             </div>
 
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -164,13 +171,9 @@
 
             $("#Society").change(function () {
                 var societyId = $(this).val();
-
-                // Clear old dropdowns
                 $("#Block").empty().append('<option value="">-- Select Block --</option>');
                 $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-
                 if (societyId === "" || societyId === null) return;
-
                 $.getJSON('@Url.Action("GetBlocksBySociety", "User")', { societyId: societyId })
                     .done(function (data) {
                         console.log("Blocks:", data);
@@ -185,7 +188,6 @@
                         alert("Error loading blocks. Please try again.");
                     });
             });
-
             $("#Block").change(function () {
                 var blockId = $(this).val();
                 $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
@@ -208,5 +210,4 @@
             });
         });
     </script>
-
 </body>

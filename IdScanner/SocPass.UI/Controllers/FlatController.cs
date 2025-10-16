@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -22,56 +23,18 @@ namespace SocPass.UI.Controllers
             _globalClass = globalClass;
             _blockService = blockService;
         }
-
-        //public async Task<IActionResult> FlatList()
-        //{
-        //    //if (string.IsNullOrEmpty(_globalClass.Token))
-        //    //{
-        //    //    return RedirectToAction("Login", "Login");
-        //    //}
-        //    IList<Flat> FlatList = await _flatRepository.GetAllFlatAsync();
-        //    ViewBag.FlatList = FlatList;
-        //    return View("~/Views/Flat/FlatList.cshtml");
-        //}
-        //[HttpGet]
-        //public async Task<IActionResult> AddFlat(int? societyId, int blockId)
-        //{
-        //    //if (string.IsNullOrEmpty(_globalClass.Token))
-        //    //{
-        //    //    return RedirectToAction("Login", "Login");
-        //    //}
-        //    var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-        //    int.TryParse(userIdClaim, out int userId);
-        //    var societies = await _societyService.GetAllSocietyAsync(userId);
-        //    ViewBag.SocietyList = societies;
-
-
-        //    if (societyId == null || blockId == 0)
-        //    {
-        //        return View(new Flat());
-        //    }
-        //    var flat = await _flatRepository.GetFlatByIdAsync(societyId, blockId);
-        //    return View(flat);
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> AddFlat(Flat flat)
-        //{
-        //    //if (string.IsNullOrEmpty(_globalClass.Token))
-        //    //{
-        //    //    return RedirectToAction("Login", "Login");
-        //    //}
-        //    var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-        //    int.TryParse(userIdClaim, out int userId);
-        //    var societies = await _societyService.GetAllSocietyAsync(userId);
-        //    ViewBag.SocietyList = societies;
-
-        //    await _flatRepository.UpdateFlatAsync(flat);
-
-        //    return RedirectToAction("FlatList");
-        //}
-
         public async Task<IActionResult> FlatList()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -89,15 +52,24 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                ViewBag.UserSocietyName = ""; // optional
+                ViewBag.UserSocietyName = "";
             }
 
             return View();
         }
-
         [HttpGet]
         public async Task<IActionResult> AddFlat(int? societyId, int blockId)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -115,7 +87,6 @@ namespace SocPass.UI.Controllers
 
                 if (!User.IsInRole("Admin"))
                 {
-                    // Non-admin → prefill and lock the dropdown
                     var assignedSociety = societies.FirstOrDefault();
                     if (assignedSociety != null)
                         flat.SocietyId = assignedSociety.SocietyId;
@@ -153,10 +124,9 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                // Non-admin → only assigned society
                 var assignedSociety = await _societyService.GetAllSocietyAsync(userId);
-                societies = assignedSociety; // assuming method returns IEnumerable<Society>
-                flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0; // enforce assigned society
+                societies = assignedSociety; 
+                flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0; 
             }
 
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
@@ -176,19 +146,15 @@ namespace SocPass.UI.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                // Handle specific repo errors like "Flat already exists"
                 ViewBag.ErrorMessage = ex.Message;
                 return View(flat);
             }
             catch (Exception ex)
             {
-                // Handle generic errors
                 ViewBag.ErrorMessage = "An unexpected error occurred while saving the flat.";
                 return View(flat);
             }
         }
-
-
         [HttpGet]
         public async Task<JsonResult> GetBlocksBySociety(int societyId)
         {

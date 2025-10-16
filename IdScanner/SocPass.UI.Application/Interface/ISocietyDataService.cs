@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SocPass.Domain.DTO;
+﻿using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 
 namespace SocPass.UI.Application.Interface

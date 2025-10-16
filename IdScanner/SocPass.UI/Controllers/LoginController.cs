@@ -61,7 +61,14 @@ namespace SocPass.UI.Controllers
                    ExpiresUtc = DateTime.UtcNow.AddHours(24)
                 });
 
-                    return Redirect("~/MenuMaster/MenuMasterList");
+                    if (responseToken.UserRoleName.Equals("User", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return RedirectToAction("GetQrByUserId", "UserFlatMapping");
+                    }
+                    else
+                    {
+                        return RedirectToAction("MenuMasterList", "MenuMaster");
+                    }
                 }
                 else
                 {

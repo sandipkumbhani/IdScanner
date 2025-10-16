@@ -7,7 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class SubscriptionController : Controller
     {
         private readonly ISubscriptionService _subscriptionService;
@@ -32,6 +32,7 @@ namespace SocPass.API.Controllers
                 return Ok($"someting Went Wrong");
             }
         }
+        [Authorize(Roles ="Admin")]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById(int subscriptionId)
         {
@@ -45,8 +46,8 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpGet("GetBySocietyId")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetBySocietyId(int societyId)
         {
             try
