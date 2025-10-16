@@ -104,10 +104,10 @@ namespace SocPass.UI.Infrastructure.Provider
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<User>(jsonString)!;
         }
-        public async Task<User> UpdateUserAsync(User user)
+        public async Task<User> UpdateUserAsync(User user, int? flatId = null)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = apiCredential.url + $"User/Update-User/{user.UserId}";
+            var baseUrl = apiCredential.url + $"User/Update-User/{user.UserId}?flatId={flatId}";
             var jsonContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PutAsync(baseUrl, jsonContent);

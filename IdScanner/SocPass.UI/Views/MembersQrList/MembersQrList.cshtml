@@ -44,18 +44,6 @@
                                         <div class="col-xl-4 col-lg-6">
                                             <div class="item-input">
                                                 <label class="form-label fw-semibold fs-6">Select Society</label>
-                                                @* <select id="Society" name="SocietyId" class="form-select">
-                                                    <option value="">-- Select Society --</option>
-                                                    @if (ViewBag.Societies != null)
-                                                    {
-                                                        foreach (var society in ViewBag.Societies)
-                                                        {
-                                                            <option value="@society.SocietyId">@society.Name</option>
-                                                        }
-                                                    }
-                                                </select>
-                                                <div class="error-message" id="SocietyError">Please select a society.</div> *@
-
                                                 <select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
                                                     <option value="">-- Select Society --</option>
                                                     @if (ViewBag.Societies != null)
@@ -78,7 +66,7 @@
                                                 {
                                                     <input type="hidden" name="SocietyId" value="@selectedSocietyId" />
                                                 }
-                                                <div class="error-message" id="SocietyError">Please select a society.</div> 
+                                                <div class="text-danger" id="SocietyError">Please select a society.</div> 
                                             </div>
                                         </div>
 
@@ -89,7 +77,7 @@
                                                 <select id="Block" name="BlockId" class="form-select">
                                                     <option value="">-- Select Block --</option>
                                                 </select>
-                                                <div class="error-message" id="BlockError">Please select a block.</div>
+                                                <div class="text-danger" id="BlockError">Please select a block.</div>
                                             </div>
                                         </div>
 
@@ -100,7 +88,7 @@
                                                 <input type="date" class="form-control userinput"
                                                        id="PassDate" name="PassDate"
                                                        min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                                <div class="error-message" id="PassDateError">Please select a pass date.</div>
+                                                <div class="text-danger" id="PassDateError">Please select a pass date.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +100,7 @@
                                             <span>Save</span>
                                         </button>
                                         <button type="reset" class="card-link outline-bar">
-                                            <span>Clear</span>
+                                            <i class="ri-refresh-line"></i> <span>Clear</span>
                                         </button>
                                     </div>
 
@@ -126,8 +114,9 @@
             </div>
         </div>
     </div>
-
+   
     <script type="text/javascript">
+         $(".text-danger").hide();
               $(document).ready(function () {
 
             function showError(inputId, messageId) {
@@ -168,6 +157,14 @@
                     e.preventDefault();
                 }
             });
+
+                $("#PassDate").on("change input", function () {
+            if ($(this).val()) {
+                hideError("PassDate", "PassDateError");
+            } else {
+                showError("PassDate", "PassDateError");
+            }
+        });
 
             $("#Society").change(function () {
                 var societyId = $(this).val();

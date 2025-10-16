@@ -1,213 +1,363 @@
 ﻿@model SocPass.Domain.Model.User
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    IList<SocPass.Domain.Model.UserRole> RoleList = ViewBag.RoleList;
-    string NameMsg = ViewBag.NameMsg;
-    string EmailMsg = ViewBag.EmailMsg;
-    string passwordMsg = ViewBag.passwordMsg;
-    string ConfirmPasswordMsg = ViewBag.ConfirmPasswordMsg;
-    string UserRoleMsg = ViewBag.UserRoleMsg;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	IList<SocPass.Domain.Model.UserRole> RoleList = ViewBag.RoleList;
+	string NameMsg = ViewBag.NameMsg;
+	string EmailMsg = ViewBag.EmailMsg;
+	string passwordMsg = ViewBag.passwordMsg;
+	string ConfirmPasswordMsg = ViewBag.ConfirmPasswordMsg;
+	string UserRoleMsg = ViewBag.UserRoleMsg;
 }
 <style>
-    .content-page {
-        margin-left: 144px;
-    }
+	.content-page {
+		margin-left: 144px;
+	}
 </style>
+
 <body>
-    <div class="content-page">
-        <div class="content">
-            <div class="main-inner container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="page-title-box">
-                            <h1 class="page-title">User Profile</h1>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card com-profile-info">
-                            <div class="top-details">
-                                <h2 class="page-form-title">Profile Details</h2>
-                                <form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
-                                    <div class="col-xl-4 col-lg-6">
-                                        <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
-                                        <div class="item-input">
-                                            <label for="name" class="form-label col-form-label required fw-semibold fs-6">Name</label>
-                                            <input type="text" class="form-control userinput" id="Name" name="name" value="@Model.Name">
-                                            @if (!string.IsNullOrEmpty(NameMsg))
+	<div class="content-page">
+		<div class="content">
+			<div class="main-inner container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="page-title-box">
+							<h1 class="page-title">User Profile</h1>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-12">
+						<div class="card com-profile-info">
+							<div class="top-details">
+								<h2 class="page-form-title">Profile Details</h2>
+
+								<form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
+									<input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
+									<!-- Name -->
+									<div class="col-xl-4 col-lg-6">
+										<div class="item-input">
+											<label for="Name" class="form-label required fw-semibold fs-6">Name</label>
+											<input type="text" class="form-control userinput" id="Name" name="Name" value="@Model.Name">
+											@* @if (!string.IsNullOrEmpty(NameMsg))
                                             {
                                                 <span class="text-danger">@NameMsg</span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-6">
-                                        <div class="item-input">
-                                            <label for="EmailId" class="form-label col-form-label required fw-semibold fs-6">Email</label>
-                                            <input type="email" class="form-control userinput" id="EmailId" name="EmailId" value="@Model.EmailId">
-                                            @if (!string.IsNullOrEmpty(EmailMsg))
+                                            } *@
+											<span class="text-danger small" id="nameError"></span>
+										</div>
+									</div>
+
+									<!-- Email -->
+									<div class="col-xl-4 col-lg-6">
+										<div class="item-input">
+											<label for="EmailId" class="form-label required fw-semibold fs-6">Email</label>
+											<input type="text" class="form-control userinput" id="EmailId" name="EmailId" value="@Model.EmailId">
+											@* @if (!string.IsNullOrEmpty(EmailMsg))
                                             {
                                                 <span class="text-danger">@EmailMsg</span>
-                                            }
-                                            @if (ViewBag.ErrorMessage != null)
-                                            {
-                                                <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-6">
-                                        <div class="item-input">
-                                            <label for="Password" class="form-label col-form-label required fw-semibold fs-6">Password</label>
-                                            <input type="password" class="form-control userinput" id="Password" name="Password" value="@Model.Password">
-                                            @if (!string.IsNullOrEmpty(passwordMsg))
+                                            } *@
+											<span class="text-danger small" id="emailError"></span>
+										</div>
+									</div>
+
+									<!-- Password -->
+									<div class="col-xl-4 col-lg-6">
+										<div class="item-input">
+											<label for="Password" class="form-label required fw-semibold fs-6">Password</label>
+											<input type="password" class="form-control userinput" id="Password" name="Password" value="@Model.Password">
+											@* @if (!string.IsNullOrEmpty(passwordMsg))
                                             {
                                                 <span class="text-danger">@passwordMsg</span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-6">
-                                        <div class="item-input">
-                                            <label for="ConfirmPassword" class="form-label col-form-label required fw-semibold fs-6">Confirm Password</label>
-                                            <input type="password" class="form-control userinput" id="ConfirmPassword" name="ConfirmPassword" value="@Model.ConfirmPassword">
-                                            @if (!string.IsNullOrEmpty(ConfirmPasswordMsg))
+                                            } *@
+											<span class="text-danger small" id="passwordError"></span>
+										</div>
+									</div>
+
+									<!-- Confirm Password -->
+									<div class="col-xl-4 col-lg-6">
+										<div class="item-input">
+											<label for="ConfirmPassword" class="form-label required fw-semibold fs-6">Confirm Password</label>
+											<input type="password" class="form-control userinput" id="ConfirmPassword" name="ConfirmPassword" value="@Model.Password">
+											@* @if (!string.IsNullOrEmpty(ConfirmPasswordMsg))
                                             {
                                                 <span class="text-danger">@ConfirmPasswordMsg</span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="UserRoleId" class="form-label col-form-label required fw-semibold fs-6">Role</label>
-                                            <select class="form-select" aria-label="Default select example" id="UserRoleId" name="UserRoleId">
-                                                <option value="0" selected="@(Model.UserRoleId == 0 ? "selected" : null)">-select-</option>
-                                                @foreach (var item in RoleList)
-                                                {
-                                                    <option value="@item.UserRoleId" selected="@(Model.UserRoleId == item.UserRoleId ? "selected" : null)">
-                                                        @item.Name
-                                                    </option>
-                                                }
-                                            </select>
-                                            @if (!string.IsNullOrEmpty(UserRoleMsg))
-                                            {
-                                                <span class="text-danger">@UserRoleMsg</span>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="row g-3 align-items-end">
-                                        <!-- Society -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Select Society</label>
-                                            <select id="Society" class="form-select">
-                                                <option value="">-- Select Society --</option>
-                                                @if (ViewBag.SocietyList != null)
-                                                {
-                                                    foreach (var society in ViewBag.SocietyList)
-                                                    {
-                                                        <option value="@society.SocietyId">@society.Name</option>
-                                                    }
-                                                }
-                                            </select>
-                                            <span class="text-danger small" id="societyError"></span>
-                                        </div>
+                                            } *@
+											<span class="text-danger small" id="confirmpasswordError"></span>
+										</div>
+									</div>
 
-                                        <!-- Block -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Select Block</label>
-                                            <select id="Block" class="form-select">
-                                                <option value="">-- Select Block --</option>
-                                            </select>
-                                            <span class="text-danger small" id="blockError"></span>
-                                        </div>
+									<!-- Role -->
+									<div class="col-xl-4 col-lg-6">
+										<div class="mb-3">
+											<label for="UserRoleId" class="form-label required fw-semibold fs-6">Role</label>
+											<select class="form-select" id="UserRoleId" name="UserRoleId"  @(Model.UserId != 0 ? "disabled" : "")>
+												<option value="0">-- Select Role --</option>
+												@foreach (var item in RoleList)
+												{
+													<option value="@item.UserRoleId" selected="@(Model.UserRoleId == item.UserRoleId ? "selected" : null)">
+														@item.Name
+													</option>
+												}
+											</select>
+											<span class="text-danger small" id="roleError"></span>
+										</div>
+									</div>
 
-                                        <!-- Flat -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Select Flat</label>
-                                            <select id="Flat" name="FlatId" class="form-select">
-                                                <option value="">-- Select Flat --</option>
-                                            </select>
-                                            @if (ViewBag.ErrorMessage != null)
-                                            {
-                                                <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                            }
-                                            <span class="text-danger small" id="flatError"></span>
-                                        </div>
+									<!-- Society -->
+									<div class="col-md-4">
+										<label class="form-label">Select Society</label>
+										<select id="Society" name="SocietyId" class="form-select">
+											<option value="">-- Select Society --</option>
+											@if (ViewBag.SocietyList != null)
+											{
+												foreach (var society in ViewBag.SocietyList)
+												{
+													<option value="@society.SocietyId">@society.Name</option>
+												}
+											}
+										</select>
+										<span class="text-danger small" id="societyError"></span>
+									</div>
 
-                                        <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
-                                            <button type="submit" class="card-link">
-                                                <i class="ri-save-line"></i>
-                                                <span>
-                                                    Save
-                                                </span>
-                                            </button>
-                                            @if (Model.UserId == 0)
-                                            {
-                                                <button type="reset" class="card-link outline-bar">
-                                                    <svg width="16" height="16" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M19.8166 18.6828L18.6779 12.1172H19.0625C19.3719 12.1172 19.6211 11.868 19.6211 11.5586V7.43359C19.6211 7.12422 19.3719 6.875 19.0625 6.875H13.7773V2.96484C13.7773 2.65547 13.5281 2.40625 13.2188 2.40625H9.78125C9.47188 2.40625 9.22266 2.65547 9.22266 2.96484V6.875H3.9375C3.62813 6.875 3.37891 7.12422 3.37891 7.43359V11.5586C3.37891 11.868 3.62813 12.1172 3.9375 12.1172H4.32207L3.1834 18.6828C3.17695 18.715 3.1748 18.7473 3.1748 18.7773C3.1748 19.0867 3.42402 19.3359 3.7334 19.3359H19.2666C19.2988 19.3359 19.3311 19.3338 19.3611 19.3273C19.6662 19.2758 19.8703 18.9857 19.8166 18.6828ZM4.88281 8.37891H10.7266V3.91016H12.2734V8.37891H18.1172V10.6133H4.88281V8.37891ZM14.9375 17.832V14.4805C14.9375 14.3859 14.8602 14.3086 14.7656 14.3086H13.7344C13.6398 14.3086 13.5625 14.3859 13.5625 14.4805V17.832H9.4375V14.4805C9.4375 14.3859 9.36016 14.3086 9.26562 14.3086H8.23438C8.13984 14.3086 8.0625 14.3859 8.0625 14.4805V17.832H4.85703L5.82598 12.2461H17.1719L18.1408 17.832H14.9375Z" fill="#0466C8" />
-                                                    </svg>
-                                                    <span>Clear</span>
-                                                </button>
-                                            }
-                                            <a href="@Url.Action("UserList", "User")" class="card-link outline-bar">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                                                </svg>
-                                                <span>View</span>
-                                            </a>
-                                        </div>
-                                </form>
-                            </div>
+									<!-- Block -->
+									<div class="col-md-4">
+										<label class="form-label">Select Block</label>
+										<select id="Block" class="form-select">
+											<option value="">-- Select Block --</option>
+										</select>
+										<span class="text-danger small" id="blockError"></span>
+									</div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
+									<!-- Flat -->
+									<div class="col-md-4">
+										<label class="form-label">Select Flat</label>
+										<select id="Flat" name="FlatId" class="form-select">
+											<option value="">-- Select Flat --</option>
+										</select>
+										<span class="text-danger small" id="flatError"></span>
+									</div>
 
-            $("#Society").change(function () {
-                var societyId = $(this).val();
-                $("#Block").empty().append('<option value="">-- Select Block --</option>');
-                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-                if (societyId === "" || societyId === null) return;
-                $.getJSON('@Url.Action("GetBlocksBySociety", "User")', { societyId: societyId })
-                    .done(function (data) {
-                        console.log("Blocks:", data);
+									<!-- Action Buttons -->
+									<div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
+										<button type="submit" class="card-link">
+											<i class="ri-save-line"></i>
+											<span>Save</span>
+										</button>
+										@if (Model.UserId == 0)
+										{
+											<button type="reset" class="card-link outline-bar">
+												<i class="ri-refresh-line"></i><span>Clear</span>
+											</button>
+										}
+										<a href="@Url.Action("UserList", "User")" class="card-link outline-bar">
+											<span>View</span>
+										</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-                        $.each(data, function (i, block) {
-                            var id = block.blockId || block.BlockId;
-                            var name = block.blockNumber || block.blockNumber;
-                            $("#Block").append(`<option value="${id}">${name}</option>`);
-                        });
-                    })
-                    .fail(function () {
-                        alert("Error loading blocks. Please try again.");
-                    });
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+    var societySection = $("#Society").closest(".col-md-4");
+    var blockSection = $("#Block").closest(".col-md-4");
+    var flatSection = $("#Flat").closest(".col-md-4");
+
+    // Initially hide
+    societySection.hide();
+    blockSection.hide();
+    flatSection.hide();
+
+    function toggleFieldsByRole(roleText) {
+        var role = $.trim(roleText).toLowerCase();
+        societySection.hide();
+        blockSection.hide();
+        flatSection.hide();
+
+        if (role.indexOf("society") >= 0) {
+            societySection.show();
+        } else if (role.indexOf("user") >= 0) {
+            societySection.show();
+            blockSection.show();
+            flatSection.show();
+        }
+    }
+
+		 var isEdit = parseInt($("#UserId").val()) > 0;
+
+    // On page load: toggle visibility based on selected role
+    var initialRoleText = $("#UserRoleId option:selected").text();
+    toggleFieldsByRole(initialRoleText);
+
+		 if (isEdit) {
+			$("#UserRoleId").prop("disabled", true);
+		}
+
+    // Prefill dropdowns from ViewBag (update scenario)
+    var preSelectedSociety = '@ViewBag.SelectedSocietyId';
+    var preSelectedBlock = '@ViewBag.SelectedBlockId';
+    var preSelectedFlat = '@ViewBag.SelectedFlatId';
+
+    if (preSelectedSociety) {
+        $("#Society").val(preSelectedSociety).trigger("change");
+
+        $.getJSON('/User/GetBlocksBySociety', { societyId: preSelectedSociety })
+        .done(function(data) {
+            $("#Block").empty().append('<option value="">-- Select Block --</option>');
+            $.each(data, function(i, block) {
+                $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
             });
-            $("#Block").change(function () {
-                var blockId = $(this).val();
-                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
 
-                if (blockId === "" || blockId === null) return;
+            if (preSelectedBlock) {
+                $("#Block").val(preSelectedBlock).trigger("change");
 
-                $.getJSON('@Url.Action("GetFlatsByBlock", "User")', { blockId: blockId })
-                    .done(function (data) {
-                        console.log("Flats:", data);
-
-                        $.each(data, function (i, flat) {
-                            var id = flat.flatId || flat.FlatId;
-                            var number = flat.flatNumber || flat.FlatNumber;
-                            $("#Flat").append(`<option value="${id}">${number}</option>`);
-                        });
-                    })
-                    .fail(function () {
-                        alert("Error loading flats. Please try again.");
+                $.getJSON('/User/GetFlatsByBlock', { blockId: preSelectedBlock })
+                .done(function(data) {
+                    $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                    $.each(data, function(i, flat) {
+                        $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
                     });
+
+                    if (preSelectedFlat) {
+                        $("#Flat").val(preSelectedFlat);
+                    }
+                });
+            }
+        });
+    }
+
+    // Role change
+    $("#UserRoleId").change(function () {
+		   if (!isEdit) toggleFieldsByRole($("#UserRoleId option:selected").text());
+    });
+
+    // Load Blocks dynamically
+    $("#Society").change(function () {
+        var societyId = $(this).val();
+        $("#Block").empty().append('<option value="">-- Select Block --</option>');
+        $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+        $("#societyError").text("");
+
+        if (!societyId) return;
+
+        $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
+        .done(function(data) {
+            $.each(data, function(i, block) {
+                $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
             });
         });
-    </script>
+    });
+
+    // Load Flats dynamically
+    $("#Block").change(function () {
+        var blockId = $(this).val();
+        $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+        $("#blockError").text("");
+
+        if (!blockId) return;
+
+        $.getJSON('/User/GetFlatsByBlock', { blockId: blockId })
+        .done(function(data) {
+            $.each(data, function(i, flat) {
+                $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
+            });
+        });
+    });
+
+    $("#Flat").change(function () {
+        $("#flatError").text("");
+    });
+
+			// Form validation
+			$("form").submit(function (e) {
+				var valid = true;
+
+				// Reset errors
+				$("#societyError, #blockError, #flatError, #nameError").text("");
+
+				if (societySection.is(":visible") && !$("#Society").val()) {
+					$("#societyError").text("Please select a Society.");
+					valid = false;
+				}
+
+				if (blockSection.is(":visible") && !$("#Block").val()) {
+					$("#blockError").text("Please select a Block.");
+					valid = false;
+				}
+
+				if (flatSection.is(":visible") && !$("#Flat").val()) {
+					$("#flatError").text("Please select a Flat.");
+					valid = false;
+				}
+
+				 if (!$("#Name").val()) {
+					$("#nameError").text("Please Enter Name.");
+					valid = false;
+				}
+				else {
+					   $("#nameError").text(""); // clear error if valid
+					 }
+
+				var email = $("#EmailId").val();
+				var emailPattern =  @Html.Raw(@"/^[^@\s]+@[^@\s]+\.[^@\s]+$/");
+				if (!email) {
+					$("#emailError").text("Please enter Email.");
+					valid = false;
+				} else if (!emailPattern.test(email)) {
+					$("#emailError").text("Please enter a valid Email.");
+					valid = false;
+				} else {
+					$("#emailError").text(""); // clear error if valid
+				}
+
+
+				var password = $("#Password").val();
+				var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/; // Minimum 6 chars, at least 1 letter & 1 number
+
+				if (!password) {
+					$("#passwordError").text("Please enter Password.");
+					valid = false;
+				} else if (!passwordPattern.test(password)) {
+					$("#passwordError").text("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+					valid = false;
+				} else {
+					$("#passwordError").text(""); // clear error if valid
+				}
+
+
+				if (!$("#ConfirmPassword").val()) {
+				$("#confirmpasswordError").text("Please Enter Password.");
+				valid = false;
+				}
+				else if ($("#Password").val() !== $("#ConfirmPassword").val()) {
+					$("#confirmpasswordError").text("Passwords do not match.");
+					valid = false;
+				}
+			   else {
+					$("#confirmpasswordError").text(""); // clear error if valid
+					}
+
+
+				var selectedValue = $("#UserRoleId").val();
+				if (selectedValue === null || selectedValue === "" || selectedValue === "0") {
+					$("#roleError").text("Please select an option.");
+					valid = false;
+				} else {
+					$("#roleError").text(""); // clear error if valid
+				}
+
+
+				if (!valid) e.preventDefault();
+			});
+		});
+	</script>
+
+
 </body>

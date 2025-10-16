@@ -12,7 +12,7 @@ namespace SocPass.Application.Interface
         Task<User> CreateUserAsync(User user, int? flatId = null);
         Task<List<User>> GetAllUsersAsync();
         Task DeleteUserById(int id);
-        Task<User> UpdateUserAsync(int userid, User user);
+        Task<User> UpdateUserAsync(int userid, User user, int? flatId = null);
         Task<User?> GetUserDetailsById(int userid);
     }
 }

@@ -65,7 +65,7 @@
                                                 {
                                                     <input type="hidden" name="SocietyId" value="@selectedSocietyId" />
                                                 }
-                                                <div class="error-message" id="SocietyError">Please select a society.</div>
+                                                <div class="text-danger" id="SocietyError">Please select a society.</div>
                                             </div>
                                         </div>
 
@@ -76,7 +76,7 @@
                                                 <select id="Block" name="BlockId" class="form-select">
                                                     <option value="">-- Select Block --</option>
                                                 </select>
-                                                <div class="error-message" id="BlockError">Please select a block.</div>
+                                                <div class="text-danger" id="BlockError">Please select a block.</div>
                                             </div>
                                         </div>
 
@@ -87,7 +87,7 @@
                                                 <input type="date" class="form-control userinput"
                                                        id="PassDate" name="PassDate"
                                                        min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                                <div class="error-message" id="PassDateError">Please select a pass date.</div>
+                                                <div class="text-danger" id="PassDateError">Please select a pass date.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -99,7 +99,7 @@
                                             <span>Save</span>
                                         </button>
                                         <button type="reset" class="card-link outline-bar">
-                                            <span>Clear</span>
+                                            <i class="ri-refresh-line"></i><span>Clear</span>
                                         </button>
                                     </div>
 
@@ -115,95 +115,9 @@
     </div>
 
     <script type="text/javascript">
-        // $(document).ready(function () {
-
-        //     function showError(inputId, messageId) {
-        //         $("#" + inputId).addClass("is-invalid");
-        //         $("#" + messageId).show();
-        //     }
-
-        //     function hideError(inputId, messageId) {
-        //         $("#" + inputId).removeClass("is-invalid");
-        //         $("#" + messageId).hide();
-        //     }
-
-        //     $("#qrForm").submit(function (e) {
-        //         let valid = true;
-
-        //         if (!$("#Society").val()) {
-        //             showError("Society", "SocietyError");
-        //             valid = false;
-        //         } else {
-        //             hideError("Society", "SocietyError");
-        //         }
-
-        //         if (!$("#Block").val()) {
-        //             showError("Block", "BlockError");
-        //             valid = false;
-        //         } else {
-        //             hideError("Block", "BlockError");
-        //         }
-
-        //         if (!$("#PassDate").val()) {
-        //             showError("PassDate", "PassDateError");
-        //             valid = false;
-        //         } else {
-        //             hideError("PassDate", "PassDateError");
-        //         }
-
-        //         if (!valid) {
-        //             e.preventDefault();
-        //         }
-        //     });
-
-        //     $("#Society").change(function () {
-        //         var societyId = $(this).val();
-        //         $("#Block").empty().append('<option value="">-- Select Block --</option>');
-        //         $("#flatContainer").empty();
-        //         hideError("Society", "SocietyError");
-
-        //         if (societyId) {
-        //             $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
-        //                 $.each(data, function (i, block) {
-        //                     $("#Block").append($('<option>', { value: block.blockId, text: block.blockName }));
-        //                 });
-        //             });
-        //         }
-        //     });
-
-        //     $("#Block").change(function () {
-        //         var blockId = $(this).val();
-        //         var container = $("#flatContainer");
-        //         container.empty();
-        //         hideError("Block", "BlockError");
-
-        //         if (blockId) {
-        //             $.getJSON('@Url.Action("GetFlatsByBlock", "MembersQrList")', { blockId: blockId }, function (data) {
-        //                 $.each(data, function (i, flat) {
-        //                     var flatRow = $(`
-        //                         <div class="flat-row mb-3 p-2 border rounded">
-        //                             <div><strong>Flat:</strong> ${flat.flatNumber}</div>
-        //                             <div><strong>Total Members:</strong> ${flat.totalMember}</div>
-        //                             <div class="qr-row d-flex flex-wrap gap-2 mt-2"></div>
-        //                         </div>
-        //                     `);
-
-        //                     var qrRow = flatRow.find(".qr-row");
-        //                     $.each(flat.members, function (j, member) {
-        //                         if (member.qrCodeUrl) {
-        //                             qrRow.append(`<img src="${member.qrCodeUrl}" alt="QR" width="100" height="100"
-        //                                 style="border:1px solid #ccc; border-radius:8px;">`);
-        //                         }
-        //                     });
-
-        //                     container.append(flatRow);
-        //                 });
-        //             });
-        //         }
-        //     });
-        // });
-
+          $(".text-danger").hide();
         $(document).ready(function () {
+             $(".text-danger").hide();
 
             function showError(inputId, messageId) {
                 $("#" + inputId).addClass("is-invalid");
@@ -214,6 +128,8 @@
                 $("#" + inputId).removeClass("is-invalid");
                 $("#" + messageId).hide();
             }
+
+            
 
             $("#qrForm").submit(function (e) {
                 let valid = true;
@@ -243,6 +159,14 @@
                     e.preventDefault();
                 }
             });
+
+             $("#PassDate").on("change input", function () {
+            if ($(this).val()) {
+                hideError("PassDate", "PassDateError");
+            } else {
+                showError("PassDate", "PassDateError");
+            }
+        });
 
             $("#Society").change(function () {
                 var societyId = $(this).val();
@@ -289,14 +213,11 @@
                     });
                 }
             });
-
             // Trigger change on page load if society is already selected
             if ($("#Society").val()) {
                 $("#Society").trigger("change");
             }
-
         });
-
     </script>
 </body>
 </html>

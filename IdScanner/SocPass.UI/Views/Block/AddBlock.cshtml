@@ -28,7 +28,7 @@
                                     {
             <div class="alert alert-warning">@ViewBag.BlockNumberMsg</div>
                                     }
-                                <div class="col-xl-4 col-lg-6">
+                                    <div class="col-md-6 mb-3">
                                     <div class="item-input">
                                         <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
                                         @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
@@ -42,7 +42,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-4 col-lg-6">
+                                    <div class="col-md-6 mb-3">
                                     <div class="item-input">
                                         <label asp-for="BlockNumber" class="form-label required fw-semibold fs-6"></label>
                                         <input asp-for="BlockNumber" class="form-control userinput" />
@@ -50,7 +50,7 @@
                                     </div>
                                 </div>
 
-                                  <div   class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
+                                @*   <div   class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
                                         <button type="submit" class="card-link">
                                             <span>Save</span>
                                         </button>
@@ -59,7 +59,24 @@
                                         <button type="reset" class="card-link outline-bar">Clear</button>
                                     }
                                     <a asp-action="BlockList" asp-controller="Block" class="card-link outline-bar">View</a>
-                                </div>
+                                </div> *@
+
+                                    <div class="button-main d-flex gap-3 mt-4">
+                                        <button type="submit" id="saveFlatBtnGlobal" class="card-link">
+                                            <i class="ri-save-line"></i> <span>Save</span>
+                                        </button>
+
+                                        @if (Model.BlockId == 0)
+                                        {
+                                            <button type="reset" id="clearBtn" class="card-link outline-bar">
+                                                <i class="ri-refresh-line"></i> <span>Clear</span>
+                                            </button>
+                                        }
+
+                                        <a href="@Url.Action("BlockList", "Block")" class="card-link outline-bar">
+                                            <i class="bi bi-eye"></i> <span>View</span>
+                                        </a>
+                                    </div>
 
                             </form>
                         </div>

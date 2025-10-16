@@ -8,9 +8,9 @@
 <head>
     <title>SocPass | Add Flats</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
-    <style>
-        .field-error { color: red; font-size: 0.875rem; display: none; }
-    </style>
+    @* <style>
+        .text-danger { color: red; font-size: 0.875rem; display: none; }
+    </style> *@
 </head>
 <body>
 <div class="content-page">
@@ -46,7 +46,7 @@
                                         <select id="BlockId" name="BlockId" class="form-select form-control userinput" data-required-message="Please select a block.">
                                             <option value="0">-- Select Block --</option>
                                         </select>
-                                        <span class="field-error"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                 </div>
 
@@ -64,7 +64,7 @@
                                                 <label class="form-check-label" for="ManualMode">Manual</label>
                                             </div>
                                         </div>
-                                        <span class="field-error"></span>
+                                        <span class="text-danger"></span>
                                     </div>
                                 </div>
 
@@ -74,28 +74,28 @@
                                         <div class="item-input">
                                             <label class="form-label required fw-semibold fs-6">Start Range</label>
                                             <input type="number" name="StartFlatNumber" class="form-control userinput" data-required-message="Start range is required.">
-                                            <span class="field-error"></span>
+                                            <span class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="item-input">
                                             <label class="form-label required fw-semibold fs-6">End Range</label>
                                             <input type="number" name="EndFlatNumber" class="form-control userinput" data-required-message="End range is required.">
-                                            <span class="field-error"></span>
+                                            <span class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="item-input">
                                             <label class="form-label required fw-semibold fs-6">Flats Per Floor</label>
                                             <input type="number" name="NumberOfFlats" class="form-control userinput" data-required-message="Flats per floor is required.">
-                                            <span class="field-error"></span>
+                                            <span class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="item-input">
                                             <label class="form-label required fw-semibold fs-6">Floor Number</label>
                                             <input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
-                                            <span class="field-error"></span>
+                                            <span class="text-danger"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -106,14 +106,14 @@
                                         <div class="item-input">
                                             <label class="form-label required fw-semibold fs-6">Floor Number</label>
                                             <input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
-                                            <span class="field-error"></span>
+                                            <span class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <div class="item-input">
                                             <label class="form-label required fw-semibold fs-6">Flat Number</label>
                                             <input type="number" name="FlatNumber" class="form-control userinput" data-required-message="Flat number is required.">
-                                            <span class="field-error"></span>
+                                            <span class="text-danger"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -126,10 +126,12 @@
 
                                     @if (ViewBag.ErrorMessage != null)
                                     {
-                                        <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                        <div>
+                                            <span class="alert alert-danger d-inline-block px-3 py-2 m-0">@ViewBag.ErrorMessage</span>
+                                        </div>
                                     }
 
-                                <!-- Buttons -->
+                                    @* <!-- Buttons -->
                                 <div class="col-12">
                                     <div class="button-main d-flex gap-2 mt-3">
                                         <button type="submit" class="card-link"><i class="ri-save-line"></i><span>Save</span></button>
@@ -139,7 +141,24 @@
                                         }
                                         <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar"><span>View</span></a>
                                     </div>
-                                </div>
+                                </div> *@
+
+                                    <div class="button-main d-flex gap-3 mt-4">
+                                        <button type="submit" id="saveFlatBtnGlobal" class="card-link">
+                                            <i class="ri-save-line"></i> <span>Save</span>
+                                        </button>
+
+                                        @if (Model.FlatId == 0)
+                                        {
+                                            <button type="reset" id="clearBtn" class="card-link outline-bar">
+                                                <i class="ri-refresh-line"></i> <span>Clear</span>
+                                            </button>
+                                        }
+
+                                        <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
+                                            <i class="bi bi-eye"></i> <span>View</span>
+                                        </a>
+                                    </div>
 
                             </form>
                         </div>
@@ -194,20 +213,34 @@ $(document).ready(function(){
     // Form validation
     $("#flatForm").submit(function(e){
         var isValid=true;
-        $(".field-error").hide().text("");
+        $(".text-danger").hide().text("");
 
         $(this).find("[data-required-message]:visible").each(function(){
             if(!$(this).val() || $(this).val()=="0"){
-                $(this).next(".field-error").text($(this).data("required-message")).show();
+                $(this).next(".text-danger").text($(this).data("required-message")).show();
                 isValid=false;
             }
         });
 
         if(!$("input[name='EntryMode']:checked").length){
-            $("input[name='EntryMode']").closest(".item-input").find(".field-error")
+            $("input[name='EntryMode']").closest(".item-input").find(".text-danger")
                 .text("Please select a flat entry mode").show();
             isValid=false;
         }
+
+                    var $societyDropdown = $("#SocietyId");
+            var $societyError = $societyDropdown.closest(".item-input").find(".text-danger");
+
+            if ((!$societyDropdown.val() || $societyDropdown.val() === "0") && !$societyDropdown.is(":disabled")) {
+                $societyError.text("Please select a society.").show();
+                isValid = false;
+            } else if ($societyDropdown.is(":disabled") && !$("input[name='SocietyId']").val()) {
+                // handle case where dropdown is disabled but hidden input has no value
+                $societyError.text("Please select a society.").show();
+                isValid = false;
+            } else {
+                $societyError.text("").hide();
+            }
 
         if(!isValid) e.preventDefault();
     });
