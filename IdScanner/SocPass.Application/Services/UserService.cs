@@ -26,7 +26,7 @@ namespace SocPass.Application.Services
             bool emailExists = await _userRepository.EmailExistsAsync(user.EmailId);
             if (emailExists)
             {
-                throw new InvalidOperationException("This email is already registered.");
+                throw new EmailAlreadyExistsException("This email is already registered.");
             }
             var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
             int? societyId = role.Name == "Admin" ? null : user.SocietyId;
@@ -48,9 +48,9 @@ namespace SocPass.Application.Services
             if (role.Name == "User")
             {
                 var checkFlatExsiting = await _userFlatMappingRepository.GetMappingByFlatId(flatId);
-                if(checkFlatExsiting.FlatId == flatId)
+                if (checkFlatExsiting != null)
                 {
-                    throw new InvalidOperationException($"Flat  already exists.");
+                    throw new FlatAlreadyExistsException("Flat already exists.");
                 }
                 var userMapping = new UserFlatMapping
                 {
@@ -115,6 +115,7 @@ namespace SocPass.Application.Services
             userExisting.InsertDate = DateTime.UtcNow;
             userExisting.UpdateBy = 1;
             userExisting.UpdateDate = DateTime.UtcNow;
+            userExisting.Password = user.Password;
             await _userRepository.UserUpdateAsync(userExisting);
 
             if (role.Name == "User" && flatId.HasValue)
@@ -139,6 +140,16 @@ namespace SocPass.Application.Services
             }
             return UserDetails;
         }
-      
+        public class EmailAlreadyExistsException : Exception
+        {
+            public EmailAlreadyExistsException(string message) : base(message) { }
+        }
+
+        public class FlatAlreadyExistsException : Exception
+        {
+            public FlatAlreadyExistsException(string message) : base(message) { }
+        }
+
+
     }
 }

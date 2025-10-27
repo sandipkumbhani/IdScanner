@@ -2,10 +2,12 @@
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class SocietyController : Controller
     {
         private readonly ISocietyService _societyService;
@@ -19,10 +21,6 @@ namespace SocPass.UI.Controllers
 
         public async Task<IActionResult> SocietyList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -33,10 +31,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSociety(int? societyId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
@@ -72,10 +66,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteSociety(int societyId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             try
             {
                 await _societyService.DeleteSocietyAsync(societyId);

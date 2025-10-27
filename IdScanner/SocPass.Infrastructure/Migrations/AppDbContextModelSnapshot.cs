@@ -59,6 +59,62 @@ namespace SocPass.Infrastructure.Migrations
                     b.ToTable("blocks");
                 });
 
+            modelBuilder.Entity("SocPass.Domain.Model.Event", b =>
+                {
+                    b.Property<int>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventId"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EventName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<long>("InsertBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Organizer")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("SocietyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("UpdateBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("EventId");
+
+                    b.HasIndex("SocietyId");
+
+                    b.ToTable("Events");
+                });
+
             modelBuilder.Entity("SocPass.Domain.Model.Flat", b =>
                 {
                     b.Property<int>("FlatId")
@@ -229,7 +285,6 @@ namespace SocPass.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Contact2")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -400,7 +455,7 @@ namespace SocPass.Infrastructure.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("SocPass.Domain.Model.Member", b =>
+            modelBuilder.Entity("SocPass.Domain.Model.UserFlatMapping", b =>
                 {
                     b.Property<int>("UserFlatMappingId")
                         .ValueGeneratedOnAdd()
@@ -479,6 +534,15 @@ namespace SocPass.Infrastructure.Migrations
                     b.Navigation("Society");
                 });
 
+            modelBuilder.Entity("SocPass.Domain.Model.Event", b =>
+                {
+                    b.HasOne("SocPass.Domain.Model.Society", "Society")
+                        .WithMany()
+                        .HasForeignKey("SocietyId");
+
+                    b.Navigation("Society");
+                });
+
             modelBuilder.Entity("SocPass.Domain.Model.Flat", b =>
                 {
                     b.HasOne("SocPass.Domain.Model.Block", "Block")
@@ -548,7 +612,7 @@ namespace SocPass.Infrastructure.Migrations
                     b.Navigation("UserRole");
                 });
 
-            modelBuilder.Entity("SocPass.Domain.Model.Member", b =>
+            modelBuilder.Entity("SocPass.Domain.Model.UserFlatMapping", b =>
                 {
                     b.HasOne("SocPass.Domain.Model.Flat", "Flat")
                         .WithMany()

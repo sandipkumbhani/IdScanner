@@ -5,10 +5,12 @@ using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class SubscriptionController : Controller
     {
         private readonly ISubscriptionService _subscriptionService;
@@ -26,10 +28,6 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> SubScriptionList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
@@ -44,10 +42,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSubScription(int? subscriptionId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
@@ -106,10 +100,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteSubscription(int subscriptionId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
@@ -156,6 +146,13 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AppSetting(int? subscriptionId)
         {
+             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
+
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -182,12 +179,6 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AppSetting(Subscription subscription)
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             if (subscription == null)
             {
                 return BadRequest("Invalid data");

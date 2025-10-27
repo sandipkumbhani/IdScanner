@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class BlockController : Controller
     {
         private readonly IBlockService _blockService;
@@ -21,10 +23,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> BlockList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
             {
@@ -47,14 +45,9 @@ namespace SocPass.UI.Controllers
             }
             return View();
         }
-
-        [HttpGet]
+         [HttpGet]
         public async Task<IActionResult> AddBlock(int? blockid)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -102,7 +95,6 @@ namespace SocPass.UI.Controllers
 
             return View(block);
         }
-
         [HttpPost]
         public async Task<IActionResult> AddBlock(Block block)
         {
@@ -156,11 +148,7 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteBlock(int blockid)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction("AccessDenied", "AccessDenied");

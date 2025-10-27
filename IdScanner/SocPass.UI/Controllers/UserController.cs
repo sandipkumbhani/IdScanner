@@ -2,10 +2,12 @@
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.Controllers
 {
+    [AuthorizeToken]   
     public class UserController : Controller
     {
         IUserService _userServices;
@@ -23,9 +25,10 @@ namespace SocPass.Controllers
         }
         public async Task<IActionResult> UserList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
             {
-                return RedirectToAction("Login", "Login");
+                return RedirectToAction("AccessDenied", "AccessDenied");
             }
             IList<User> userList = await _userServices.GetAllUsersAsync();
             ViewBag.UserList = userList;
@@ -34,9 +37,10 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> AddUser(int? id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
             {
-                return RedirectToAction("Login", "Login");
+                return RedirectToAction("AccessDenied", "AccessDenied");
             }
             await InitViewBag();
             if (id == null)
@@ -50,10 +54,6 @@ namespace SocPass.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(User modelUsers, string action, int? flatId = null)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             if (string.IsNullOrEmpty(modelUsers.Name))
             {
                 ViewBag.ErrorMessage = "Please enter name.";
@@ -64,7 +64,7 @@ namespace SocPass.Controllers
             {
                 ViewBag.ErrorMessage = "Please enter email.";
                 await InitViewBag();
-                return View(modelUsers);
+                return View(modelUsers); 
             }
             if (string.IsNullOrEmpty(modelUsers.Password))
             {
@@ -115,9 +115,10 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
             {
-                return RedirectToAction("Login", "Login");
+                return RedirectToAction("AccessDenied", "AccessDenied");
             }
             try
             {
@@ -133,7 +134,7 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<JsonResult> GetBlocksBySociety(int societyId)
         {
-            var blocks = await _blockService.GetBlockBySocietyId(societyId);
+            var blocks = await _blockService.GetBlockBySocietyId(societyId);  
             var result = blocks.Select(d => new
             {
                 blockId = d.BlockId,

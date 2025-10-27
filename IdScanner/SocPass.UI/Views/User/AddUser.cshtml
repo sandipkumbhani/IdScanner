@@ -31,7 +31,10 @@
                         <div class="card com-profile-info">
                             <div class="top-details">
                                 <h2 class="page-form-title">Profile Details</h2>
-
+                                @if (ViewBag.ErrorMessage != null)
+                                {
+                                    <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                }
                                 <form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
                                     <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
                                     <!-- Name -->
@@ -56,10 +59,6 @@
                                             {
                                                 <span class="text-danger">@EmailMsg</span>
                                             } *@
-                                            @if (ViewBag.ErrorMessage != null)
-                                            {
-                                                <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                            }
                                             <span class="text-danger small" id="emailError"></span>
                                         </div>
                                     </div>
@@ -90,10 +89,13 @@
                                         </div>
                                     </div>
 
-                                    <!-- Role -->
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="mb-3">
                                             <label for="UserRoleId" class="form-label required fw-semibold fs-6">Role</label>
+                                            @if (Model.UserId != 0)
+                                            {
+                                                <input type="hidden" name="UserRoleId" value="@Model.UserRoleId" />
+                                            }
                                             <select class="form-select" id="UserRoleId" name="UserRoleId" @(Model.UserId != 0 ? "disabled" : "")>
                                                 <option value="0">-- Select Role --</option>
                                                 @foreach (var item in RoleList)
@@ -138,10 +140,6 @@
                                         <select id="Flat" name="FlatId" class="form-select">
                                             <option value="">-- Select Flat --</option>
                                         </select>
-                                        @if (ViewBag.ErrorMessage != null)
-                                        {
-                                            <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                        }
                                         <span class="text-danger small" id="flatError"></span>
                                     </div>
 

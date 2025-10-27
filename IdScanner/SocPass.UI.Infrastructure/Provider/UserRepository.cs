@@ -33,51 +33,66 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<User> AddUserAsync(User user, int? flatId = null)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+
             var baseUrl = $"{apiCredential.url}User/create?flatId={flatId}";
             var userJson = JsonConvert.SerializeObject(user);
             var requestContent = new StringContent(userJson, Encoding.UTF8, "application/json");
+
             var response = await _httpClient.PostAsync(baseUrl, requestContent);
             var responseData = await response.Content.ReadAsStringAsync();
+
             if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
                 try
                 {
                     var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
-                    var message = errorResponse?.Message ?? "Duplicate entry.";
+                    var message = errorResponse?.Message?.Trim() ?? "Duplicate entry.";
+
+                    if (message.Contains("email", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("This email is already registered.");
+
+                    if (message.Contains("flat", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("This flat is already assigned.");
+
                     throw new InvalidOperationException(message);
                 }
-                catch
+                catch (JsonException)
                 {
                     throw new InvalidOperationException("Duplicate entry found (email or flat).");
                 }
             }
+
             if (!response.IsSuccessStatusCode)
             {
                 try
                 {
                     var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
-
                     var message = errorResponse?.ErrorMessage
-                                  ?? errorResponse?.Message
-                                  ?? responseData;
+                                ?? errorResponse?.Message
+                                ?? responseData;
 
                     if (message.Contains("email", StringComparison.OrdinalIgnoreCase))
-                    {
                         throw new InvalidOperationException("This email is already registered.");
-                    }
+
+                    if (message.Contains("flat", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("This flat is already assigned.");
 
                     throw new Exception($"API Error ({response.StatusCode}): {message}");
                 }
                 catch (JsonException)
                 {
                     if (responseData.Contains("email", StringComparison.OrdinalIgnoreCase))
-                    {
                         throw new InvalidOperationException("This email is already registered.");
-                    }
+
+                    if (responseData.Contains("flat", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("This flat is already assigned.");
+
                     throw new Exception($"API Error ({response.StatusCode}): {responseData}");
                 }
             }
+
             try
             {
                 var createdUser = JsonConvert.DeserializeObject<User>(responseData);
@@ -88,6 +103,7 @@ namespace SocPass.UI.Infrastructure.Provider
                 throw new Exception("Unexpected response format from API: " + responseData);
             }
         }
+
         public async Task<User> GetUsersByIdAsync(int? id)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);

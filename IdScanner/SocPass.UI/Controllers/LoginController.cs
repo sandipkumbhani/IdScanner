@@ -1,7 +1,9 @@
 ﻿using IdScanner.UI.Domain.Helper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
 using System.Security.Claims;
@@ -34,6 +36,12 @@ namespace SocPass.UI.Controllers
                 if (ModelState.IsValid)
                 {
                     var responseToken = await _loginServices.Login(viewModel);
+
+                    if (responseToken != null)
+                    {
+                        HttpContext.Session.SetString("Token", responseToken.Token);
+                    }
+
                     Response.Cookies.Append("jwtToken", responseToken.Token, new CookieOptions
                     {
                         HttpOnly = true,
@@ -56,14 +64,18 @@ namespace SocPass.UI.Controllers
                CookieAuthenticationDefaults.AuthenticationScheme,
                principal,
                new AuthenticationProperties
-                {
+               {
                    IsPersistent = true,
                    ExpiresUtc = DateTime.UtcNow.AddHours(24)
-                });
+               });
 
                     if (responseToken.UserRoleName.Equals("User", StringComparison.OrdinalIgnoreCase))
                     {
                         return RedirectToAction("GetQrByUserId", "UserFlatMapping");
+                    }
+                    else if (responseToken.UserRoleName.Equals("Society", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return RedirectToAction("BlockList", "Block");
                     }
                     else
                     {

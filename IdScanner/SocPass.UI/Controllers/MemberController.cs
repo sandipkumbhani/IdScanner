@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class MemberController : Controller
     {
         private readonly IMemberService _memberService;
@@ -27,10 +29,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddMember()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -50,16 +48,11 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                // User sees only assigned societies
                 societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
             }
-
             ViewBag.Societies = societies;
-
             var model = new MemberCreateRequest();
-
-            // If non-admin, preselect first society
             if (!User.IsInRole("Admin"))
             {
                 model.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
@@ -129,10 +122,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddGuest()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
