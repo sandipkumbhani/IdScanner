@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
 using System.Data;
+using static SocPass.Application.Services.UserService;
 
 namespace SocPass.API.Controllers
 {
@@ -34,13 +35,13 @@ namespace SocPass.API.Controllers
                 var result = await _userService.CreateUserAsync(user,flatId);
                 return Ok(result);
             }
-            catch (InvalidOperationException ex)
+            catch (EmailAlreadyExistsException ex)
             {
-                return Conflict(new
-                {
-                    Success = false,
-                    Message = ex.Message
-                });
+                return Conflict(new { Success = false, Message = ex.Message });
+            }
+            catch (FlatAlreadyExistsException ex)
+            {
+                return Conflict(new { Success = false, Message = ex.Message });
             }
             catch (KeyNotFoundException)
             {

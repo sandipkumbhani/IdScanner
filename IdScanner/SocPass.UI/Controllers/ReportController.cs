@@ -1,28 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class ReportController : Controller
     {
         private readonly ISocietyService _societyService;
         private readonly IBlockService _blockService;
         private readonly IFlatService _flatService;
         private readonly IMemberService _memberService;
-
-        public ReportController(ISocietyService societyService, IBlockService blockService, IFlatService flatService,IMemberService memberService)
+        private readonly GlobalClass _globalClass;
+        public ReportController(ISocietyService societyService, IBlockService blockService, IFlatService flatService,IMemberService memberService, GlobalClass globalClass)
         {
             _societyService = societyService;
             _blockService = blockService;
             _flatService = flatService;
             _memberService = memberService;
+            _globalClass = globalClass;
         }
 
         [HttpGet]
         public async Task<IActionResult> MemberReport()
-        {
+        { 
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
+            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -30,14 +41,12 @@ namespace SocPass.UI.Controllers
             int selectedSocietyId = 0;
             if (User.IsInRole("Admin"))
             {
-                // Admin sees all societies
                 societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
             }
             else
             {
-                // User sees only assigned societies
                 societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;

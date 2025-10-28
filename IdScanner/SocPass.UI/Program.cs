@@ -1,17 +1,30 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SocPass.UI.Application.Extension;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using SocPass.UI.Infrastructure.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 var globalClass = new GlobalClass();
+
+builder.Services.AddDistributedMemoryCache(); 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddControllersWithViews()
     .AddViewOptions(options =>
     {
-
-        // Enabling client-side validation
         options.HtmlHelperOptions.ClientValidationEnabled = true;
     });
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(typeof(AuthorizeTokenAttribute));
+});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationService();
 builder.Services.AddInfrastrucureService();
@@ -36,7 +49,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.Use(async (context, next) =>
@@ -44,15 +56,39 @@ app.Use(async (context, next) =>
     var globalClass = context.RequestServices.GetRequiredService<GlobalClass>();
     var token = context.Request.Cookies["jwtToken"];
     globalClass.Token = token;
+    context.Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0";
+    context.Response.Headers["Pragma"] = "no-cache";
+    context.Response.Headers["Expires"] = "0";
+    //await next();
     await next.Invoke();
 });
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
+//app.Use(async (context, next) =>
+//{
+//    var token = context.Session.GetString("Token");
+
+//    var path = context.Request.Path.Value?.ToLower();
+
+//    // Allow unauthenticated access to these endpoints
+//    bool isLoginPage = path.Contains("/login/login");
+//    bool isLogoutPage = path.Contains("/login/logout");
+//    bool isStaticFile = path.Contains("/css") || path.Contains("/js") || path.Contains("/images");
+
+//    if (string.IsNullOrEmpty(token) && !isLoginPage && !isLogoutPage && !isStaticFile && path != "/")
+//    {
+//        context.Response.Redirect("/Login/Login");
+//        return;
+//    }
+
+//    await next();
+//});
 app.UseAuthorization();
+
 
 
 app.MapControllerRoute(

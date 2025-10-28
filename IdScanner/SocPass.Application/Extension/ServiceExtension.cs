@@ -29,6 +29,7 @@ namespace SocPass.Application.Extension
             services.AddScoped<ISubscriptionService, SubscriptionService>();
             services.AddScoped<ISocietyDataService, SocietyDataService>();
             services.AddScoped<IUserFlatMappingService, UserFlatMappingService>();
+            services.AddScoped<IEventService, EventService>();
             return services;
         }
     }

@@ -2,10 +2,12 @@
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;
@@ -19,10 +21,10 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> MenuMasterList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
+        //    if (string.IsNullOrEmpty(_globalClass.Token))
+        //    {
+        //        return RedirectToAction("Login", "Login");
+        //    }
             IList<MenuMaster> MenuMasterList = await _menuMasterService.GetAllMenuMasterAsync();
             ViewBag.MenuMasterList = MenuMasterList;
             return View("~/Views/MenuMaster/MenuMasterList.cshtml");
@@ -100,6 +102,11 @@ namespace SocPass.UI.Controllers
             if (string.IsNullOrEmpty(_globalClass.Token))
             {
                 return RedirectToAction("Login", "Login");
+            }
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("AccessDenied", "AccessDenied");
             }
             try
             {

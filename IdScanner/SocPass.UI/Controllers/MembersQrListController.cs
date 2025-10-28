@@ -1,22 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class MembersQrListController : Controller
     {
         private readonly IMemberService _memberService;
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
         private readonly IFlatService _flatRepository;
-        public MembersQrListController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService)
+        private readonly GlobalClass _globalClass;
+        public MembersQrListController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService, GlobalClass globalClass)
         {
             _memberService = memberService;
             _blockService = blockService;
             _societyService = societyService;
             _flatRepository = flatService;
+            _globalClass = globalClass;
 
         }
 

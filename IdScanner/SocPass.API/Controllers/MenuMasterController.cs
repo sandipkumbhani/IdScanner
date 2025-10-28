@@ -32,6 +32,7 @@ namespace SocPass.API.Controllers
             var menuMaster = await _menuMasterService.CreateMenuMasterAsync(modelMenuMaster);
             return Ok(menuMaster);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("Delete-Menu-Master")]
         public async Task<IActionResult> DeleteMenuAsync(int id)
         {
@@ -45,6 +46,7 @@ namespace SocPass.API.Controllers
                 return Ok($"Menu with ID {id} not found: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("Update-Menu/{menuid}")]
         public async Task<IActionResult> UpdateMenuAsync(int menuid, [FromBody] MenuMaster menuMaster)
         {

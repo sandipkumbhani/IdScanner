@@ -3,10 +3,12 @@ using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class SocietyDataController : Controller
     {
         private readonly ISocietyDataService _societyDataService;
@@ -34,10 +36,6 @@ namespace SocPass.UI.Controllers
         // LIST
         public async Task<IActionResult> SocietyDataList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -51,10 +49,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSocietyData()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -118,10 +112,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> EditSocietyData(int id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -166,10 +156,6 @@ namespace SocPass.UI.Controllers
         // DELETE
         public async Task<IActionResult> DeleteSocietyData(int id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -196,10 +182,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSubscriptionBySociety(int societyId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))

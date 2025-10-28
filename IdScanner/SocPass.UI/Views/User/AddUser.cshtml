@@ -27,20 +27,23 @@
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-12">
-						<div class="card com-profile-info">
-							<div class="top-details">
-								<h2 class="page-form-title">Profile Details</h2>
-
-								<form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
-									<input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
-									<!-- Name -->
-									<div class="col-xl-4 col-lg-6">
-										<div class="item-input">
-											<label for="Name" class="form-label required fw-semibold fs-6">Name</label>
-											<input type="text" class="form-control userinput" id="Name" name="Name" value="@Model.Name">
-											@* @if (!string.IsNullOrEmpty(NameMsg))
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Profile Details</h2>
+                                @if (ViewBag.ErrorMessage != null)
+                                {
+                                    <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                }
+                                <form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
+                                    <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
+                                    <!-- Name -->
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="Name" class="form-label required fw-semibold fs-6">Name</label>
+                                            <input type="text" class="form-control userinput" id="Name" name="Name" value="@Model.Name">
+                                            @* @if (!string.IsNullOrEmpty(NameMsg))
                                             {
                                                 <span class="text-danger">@NameMsg</span>
                                             } *@

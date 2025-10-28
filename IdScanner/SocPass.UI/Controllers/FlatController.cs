@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class FlatController : Controller
     {
         private readonly IFlatService _flatService;
@@ -25,10 +27,6 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> FlatList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -60,10 +58,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddFlat(int? societyId, int blockId)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))

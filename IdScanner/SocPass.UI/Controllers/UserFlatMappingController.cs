@@ -2,9 +2,11 @@
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
+using SocPass.UI.Filters;
 
 namespace SocPass.UI.Controllers
 {
+    [AuthorizeToken]
     public class UserFlatMappingController : Controller
     {
         private readonly IUserFlatMappingService _userFlatMappingService;
@@ -16,10 +18,6 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> GetQrByUserId()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             Response.Headers["Pragma"] = "no-cache";
             Response.Headers["Expires"] = "0";
