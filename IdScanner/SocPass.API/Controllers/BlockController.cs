@@ -106,7 +106,7 @@ namespace SocPass.API.Controllers
             var blocks = await _blockService.GetBlocksBySocietyIdAsync(societyId);
             if (blocks == null || !blocks.Any())
             {
-                return NotFound("No societys found for this company.");
+                return NotFound("No Blocks found for this Society.");
             }
             return Ok(blocks);
         }

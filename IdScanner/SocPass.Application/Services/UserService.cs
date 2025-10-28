@@ -48,7 +48,7 @@ namespace SocPass.Application.Services
             if (role.Name == "User")
             {
                 var checkFlatExsiting = await _userFlatMappingRepository.GetMappingByFlatId(flatId);
-                if(checkFlatExsiting.FlatId == flatId)
+                   if(checkFlatExsiting != null && checkFlatExsiting.FlatId == flatId)
                 {
                     throw new InvalidOperationException($"Flat  already exists.");
                 }

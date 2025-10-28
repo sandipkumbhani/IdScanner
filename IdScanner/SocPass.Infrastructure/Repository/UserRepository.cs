@@ -25,7 +25,7 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<bool> EmailExistsAsync(string email)
         {
-            return await _context.users.AnyAsync(u => u.EmailId == email);
+            return await _context.users.AnyAsync(u => u.EmailId == email && u.IsActive == true);
         }
         public async Task<List<User>> GetAllUsersAsync()
         {
