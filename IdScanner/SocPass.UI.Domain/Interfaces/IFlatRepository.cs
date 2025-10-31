@@ -14,7 +14,7 @@ namespace SocPass.UI.Domain.Interfaces
         Task<List<Flat>> AddFlatAsync(Flat flat);
         Task<List<Flat>> UpdateFlatAsync(Flat flat);
         Task<List<Flat>> GetFlatByBlockId(int blockid);
-        Task<List<Flat>> GetQR(int blockid);
+        Task<List<Flat>> GetQR(int blockid, int eventId);
         Task<List<Flat>> GetGuestQR(int blockid);
     }
 }

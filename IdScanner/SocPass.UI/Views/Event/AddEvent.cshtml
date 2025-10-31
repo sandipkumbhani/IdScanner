@@ -1,0 +1,267 @@
+﻿@model SocPass.Domain.Model.Event
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // string NameMsg = ViewBag.NameMsg;
+    // string DescriptionMsg = ViewBag.DescriptionMsg;
+    // string UrlMsg = ViewBag.UrlMsg;
+    // string IconMsg = ViewBag.IconMsg;
+    bool isNew = Model.EventId == 0;
+    bool isChecked = Model.IsActive || isNew;
+    bool isAddMode = Model.StartDate == DateTime.MinValue;
+
+    // Value to show in input
+    string inputValue = !isAddMode
+                        ? Model.StartDate.ToString("yyyy-MM-dd")
+                        : string.Empty;
+
+    // Minimum selectable date
+    string minDate = isAddMode
+                     ? DateTime.Now.ToString("yyyy-MM-dd")
+                     : Model.StartDate.ToString("yyyy-MM-dd");
+
+    bool isAddModeend = Model.EndDate == DateTime.MinValue;
+
+    // Value to show in input
+    string inputValueend = !isAddMode
+                        ? Model.EndDate.ToString("yyyy-MM-dd")
+                        : string.Empty;
+
+    // Minimum selectable date
+    string minDateend = isAddMode
+                     ? DateTime.Now.ToString("yyyy-MM-dd")
+                     : Model.EndDate.ToString("yyyy-MM-dd");
+}
+<html>
+<head>
+    <title>SocPass | AddEvent</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+</head>
+<body>
+    <div class="content-page">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h1 class="page-title">Add Event</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Menu Details</h2>
+                                <form class="row all-custom-class" method="post" action="@Url.Action("AddEvent", "Event")">
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <input type="text" hidden id="eventId" name="eventId" value="@Model.EventId" />
+                                            <label for="EventName" class="form-label col-form-label required fw-semibold fs-6">Event Name</label>
+                                            <input type="text" class="form-control userinput" id="EventName" name="EventName" value="@Model.EventName">
+                                            <span class="text-danger small" id="eventNmae"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="Description" class="form-label col-form-label required fw-semibold fs-6">Description</label>
+                                            <input type="text" class="form-control userinput" id="Description" name="Description" value="@Model.Description">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="Location" class="form-label col-form-label required fw-semibold fs-6">Event Location</label>
+                                            <input type="text" class="form-control userinput" id="Location" name="Location" value="@Model.Location">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="Organizer" class="form-label col-form-label required fw-semibold fs-6">Organizer</label>
+                                            <input type="text" class="form-control userinput" id="Organizer" name="Organizer" value="@Model.Organizer">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="StartDate" class="form-label col-form-label required fw-semibold fs-6">Start Date</label>
+                                            <input type="date" class="form-control userinput"
+                                                   id="StartDate" name="StartDate"
+                                                   value="@inputValue"
+                                                   min="@minDate"
+                                                   required data-val="true"
+                                                   data-val-required="Please select a Start Date and Time." />
+                                            <span class="text-danger">
+                                                @Html.ValidationMessageFor(m => m.StartTime)
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- End To -->
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="EndDate" class="form-label col-form-label required fw-semibold fs-6">End Date</label>
+                                            <input type="date" class="form-control userinput"
+                                                   id="EndDate" name="EndDate"
+                                                   value="@inputValueend"
+                                                   min="@minDate"
+                                                   required data-val="true"
+                                                   data-val-required="Please select a End Date and Time." />
+
+                                            <span class="text-danger">
+                                                @Html.ValidationMessageFor(m => m.EndDate)
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="StartTime" class="form-label col-form-label required fw-semibold fs-6">Start Time</label>
+                                            <input type="time" class="form-control userinput"
+                                                   id="StartTime" name="StartTime"
+                                                   placeholder="Select Start Time"
+                                                   required data-val="true"
+                                                   value="@Model.StartDate.ToString(@"hh\:mm")"
+                                                   data-val-required="Please select a Start Time." />
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="EndTime" class="form-label col-form-label required fw-semibold fs-6">Start Time</label>
+                                            <input type="time" class="form-control userinput"
+                                                   id="EndTime" name="EndTime"
+                                                   placeholder="Select Start Time"
+                                                   required data-val="true"
+                                                   value="@Model.EndTime.ToString(@"hh\:mm")"
+                                                   data-val-required="Please select a Start Time." />
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label asp-for="SocietyId" class="form-label col-form-label required fw-semibold fs-6"></label>
+                                            @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
+
+                                            <select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">
+
+                                                <option value="">-- Select Society --</option>
+                                            </select>
+                                            <input type="hidden" asp-for="SocietyId" />
+                                            <span asp-validation-for="SocietyId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 d-flex align-items-center">
+                                        <input type="checkbox" name="IsActive" id="IsActive" class="form-check-input" value="true" @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
+                                        <label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size:16px;">Is Active</label>
+                                    </div>
+                                    <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
+                                        <button type="submit" class="card-link">
+                                            <i class="ri-save-line"></i>
+                                            <span>
+                                                Save
+                                            </span>
+                                        </button>
+
+                                        @if (Model.EventId == 0)
+                                        {
+                                            <button type="reset" class="card-link outline-bar">
+                                                <i class="ri-refresh-line"></i><span>Clear</span>
+                                            </button>
+                                        }
+
+                                        <a href="@Url.Action("EventList", "Event")" class="card-link outline-bar">
+                                            <i class="bi bi-eye"></i><span>View</span>
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("form").on("submit", function (e)
+            {
+                let valid = true;
+
+                $(".text-danger").text("");
+
+                if (!$("#EventName").val().trim()) {
+                    $("#eventNmae").text("Please enter Event Name.");
+                    valid = false;
+                }
+                if (!$("#Description").val().trim()) {
+                    $("#Description").closest(".item-input").append('<span class="text-danger small error">Please enter Description.</span>');
+                    valid = false;
+                }
+
+                if (!$("#Location").val().trim()) {
+                    $("#Location").closest(".item-input").append('<span class="text-danger small error">Please enter Location.</span>');
+                    valid = false;
+                }
+
+                if (!$("#Organizer").val().trim()) {
+                    $("#Organizer").closest(".item-input").append('<span class="text-danger small error">Please enter Organizer.</span>');
+                    valid = false;
+                }
+
+                const startDate = $("#StartDate").val();
+                if (!startDate) {
+                    $("#StartDate").closest(".item-input").append('<span class="text-danger small error">Please select Start Date.</span>');
+                    valid = false;
+                }
+
+                const endDate = $("#EndDate").val();
+                if (!endDate) {
+                    $("#EndDate").closest(".item-input").append('<span class="text-danger small error">Please select End Date.</span>');
+                    valid = false;
+                } else if (startDate && endDate < startDate) {
+                    $("#EndDate").closest(".item-input").append('<span class="text-danger small error">End Date cannot be before Start Date.</span>');
+                    valid = false;
+                }
+                 const startTime = $("#StartTime").val();
+                if (!startTime) {
+                    $("#StartTime").closest(".item-input").append('<span class="text-danger small error">Please select event Start Time.</span>');
+                    valid = false;
+                }
+                 const endTime = $("#EndTime").val();
+                if (!endTime) {
+                    $("#EndTime").closest(".item-input").append('<span class="text-danger small error">Please select event End Time.</span>');
+                    valid = false;
+                }
+
+                if (!$("#SocietyId").val()) {
+                    $("#SocietyId").closest(".item-input").append('<span class="text-danger small error">Please select a Society.</span>');
+                    valid = false;
+                }
+
+                if (!valid) {
+                    e.preventDefault();
+                }
+            });
+        });
+        //     flatpickr("#StartTime",{
+        //     enableTime: true,
+        //     noCalendar: true,
+        //     dateFormat: "h:i K",
+        //     time_24hr: false
+        // });
+        //  flatpickr("#EndTime",{
+        //     enableTime: true,
+        //     noCalendar: true,
+        //     dateFormat: "h:i K",
+        //     time_24hr: false
+        // });
+    </script>
+</body>
+</html>
+

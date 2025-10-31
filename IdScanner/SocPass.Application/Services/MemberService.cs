@@ -1,4 +1,5 @@
-﻿using QRCoder;
+﻿using Microsoft.Extensions.Logging;
+using QRCoder;
 using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
@@ -217,17 +218,17 @@ namespace SocPass.Application.Services
                 }
             }
         }
-        public async Task<bool> AddMemberPassDateAsync(int blockId, DateTime passDate)
+        public async Task<bool> AddMemberPassDateAsync(int blockId, int EventId)
         {
-            return await _memberRepository.AddMemberPassDateAsync(blockId, passDate);
+            return await _memberRepository.AddMemberPassDateAsync(blockId, EventId);
         }
         public async Task<bool> AddGuestPassDateAsync(int blockId, DateTime passDate)
         {
             return await _memberRepository.AddGuestPassDateAsync(blockId, passDate);
         }
-        public async Task<Member> GetMemberByMemberId(int memberId)
+        public async Task<Member> GetMemberByMemberId(int memberId, int EventId)
         {
-            var getMember = await _memberRepository.GetMemberByMemberIdAsync(memberId);
+            var getMember = await _memberRepository.GetMemberByMemberIdAsync(memberId, EventId);
             if (getMember == null)
             {
                 throw new KeyNotFoundException($"Member with ID {memberId} not found.");

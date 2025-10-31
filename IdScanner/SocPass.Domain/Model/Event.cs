@@ -25,6 +25,11 @@ namespace SocPass.Domain.Model
 
         [Required(ErrorMessage = "End date is required")]
         public DateTime EndDate { get; set; }
+        [Required(ErrorMessage = "Start time is required")]
+        public TimeSpan StartTime { get; set; }
+
+        [Required(ErrorMessage = "End time is required")]
+        public TimeSpan EndTime { get; set; }
 
         [MaxLength(250)]
         public string? Location { get; set; }

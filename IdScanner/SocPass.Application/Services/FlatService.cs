@@ -283,9 +283,9 @@ namespace SocPass.Application.Services
         {
             return await _flatRepository.GetFlatByBlockIdAsync(blockid);
         }
-        public async Task<List<FlatWithMembersDto>> GetMemberQr(int blockid)
+        public async Task<List<FlatWithMembersDto>> GetMemberQr(int blockid, int eventId)
         {
-            return await _flatRepository.GetMemberQr(blockid);
+            return await _flatRepository.GetMemberQrAsync(blockid, eventId);
         }
         public async Task<List<FlatWithMembersDto>> GetGuestQr(int blockid)
         {

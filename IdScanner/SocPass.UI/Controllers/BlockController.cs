@@ -30,19 +30,30 @@ namespace SocPass.UI.Controllers
             }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var blockList = (await _blockService.GetAllBlockAsync()).ToList();
-            ViewBag.blockList = blockList;
-            ViewBag.IsAdmin = User.IsInRole("Admin");
-            if (!User.IsInRole("Admin"))
+            IEnumerable<Block> blocklist;
+
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                var societies = await _societyService.GetAllSocietyAsync(userId);
-                var userSocietyName = societies.FirstOrDefault()?.Name ?? "";
-                ViewBag.UserSocietyName = userSocietyName;
+                blocklist = await _blockService.GetAllBlockAsync();
             }
             else
             {
-                ViewBag.UserSocietyName = "";
+                var societies = await _societyService.GetAllSocietyAsync(userId);
+                var society = societies.FirstOrDefault();
+
+                if (society != null)
+                {
+                    blocklist = (await _blockService.GetAllBlockAsync())
+                                .Where(e => e.SocietyId == society.SocietyId)
+                                .ToList();
+                }
+                else
+                {
+                    blocklist = new List<Block>();
+                }
             }
+
+            ViewBag.blockList = blocklist.ToList();
             return View();
         }
          [HttpGet]

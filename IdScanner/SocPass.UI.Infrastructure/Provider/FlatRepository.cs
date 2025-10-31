@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SocPass.Domain.Model;
 using SocPass.UI.Domain.Comman;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
 using SocPass.UI.Domain.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
@@ -126,10 +127,10 @@ namespace SocPass.UI.Infrastructure.Provider
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Flat>>(json)!;
         }
-        public async Task<List<Flat>> GetQR(int blockid)
+        public async Task<List<Flat>> GetQR(int blockid, int eventId)
         {
             _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}Flat/GetQR?blockid={blockid}";
+            var baseUrl = $"{apiCredential.url}Flat/GetQR?blockid={blockid}&eventId={eventId}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();

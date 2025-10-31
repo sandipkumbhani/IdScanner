@@ -1,81 +1,82 @@
-﻿
-@model IEnumerable<SocPass.Domain.Model.SocietyData>
+﻿@model SocPass.Domain.Model.Event
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var SocietyDataList = ViewBag.SocietyDataList as IList<SocPass.Domain.Model.SocietyData> ?? new List<SocPass.Domain.Model.SocietyData>();
+    var EventsList = ViewBag.EventsList as IList<SocPass.Domain.Model.Event> ?? new List<SocPass.Domain.Model.Event>();
 }
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <link href="~/css/stylesheet.css" rel="stylesheet" />
-    <link href="~/css/addpagination.css" rel="stylesheet" />
+    @* <link href="~/css/addpagination.css" rel="stylesheet" /> *@
     <link href="~/css/site.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/lib/bootstrap/css/bootstrap.rtl.min.css" rel="stylesheet" />
-    <link href="~/lib/bootstrap/css/bootstrap.rtl.css" rel="stylesheet" />
-    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/wwwroot/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/wwwroot/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/app-style.css" rel="stylesheet" />
+    <link href="~/css/addpagination.css" rel="stylesheet" />
     <link rel="StyleSheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <title>SocPass | SocietyDataList</title>
-</head>
+    <title>SocPass | EventList</title>
+
+</head> 
 <body>
     <div class="content-page">
         <div class="content">
             <div class="main-inner container-fluid">
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <div class="page-title-box add d-flex justify-content-between align-items-center">
-                            <h1 class="page-title">Society Data Master</h1>
-                            <div class="add-btn">
-                                <a href="#" id="btnAddSocietyData">
-                                    <i class="ri-add-line"></i> <span>Add Society Data</span>
-                                </a>
+                        <div class="col-12">
+                            <div class="page-title-box add">
+                                <h1 class="page-title">Event</h1>
+                                <div class="add-btn">
+                                    <a href="#" id="btnAddEvent">
+                                        <i class="ri-add-line"></i> <span>Add Event</span>
+                                    </a>
+                                </div>
                             </div>
-
                         </div>
                     </div>
-
                     <div class="col-12">
                         <div class="card com-profile-info">
+                            <!-- Top Header -->
                             <div class="table-top-header">
-                                <h4>List of Society Data</h4>
+                                <h4>List of Event</h4>
                             </div>
-
+                            <!-- Table -->
                             <div class="table-responsive">
                                 <table id="franchiseTable" class="table dt-responsive nowrap w-100">
                                     <thead>
                                         <tr>
-                                            <th class="dt-orderable-asc dt-orderable-desc">Society</th>
-                                            <th>Block</th>
-                                            <th>Flat</th>
-                                            <th>Contact Name</th>
-                                            <th>Contact Number</th>
-                                            <th>Contact Email</th>
-                                            <th>IsActive</th>
+                                            <th class="dt-orderable-asc dt-orderable-desc">Event Name</th>
+                                            <th>Society Name</th>
+                                            <th>Event Location</th>
+                                            <th>Event StartDate</th>
+                                            <th>Event EndDate</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
+                                            <th>Organizer</th>
                                             <th>Action</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var societyData in SocietyDataList)
+                                        @foreach (var events in EventsList)
                                         {
                                             <tr>
-                                                <td>@societyData.Flat?.Block?.Society?.Name</td>
-                                                <td>@societyData.Flat?.Block?.BlockNumber</td>
-                                                <td>@societyData.Flat?.FlatNumber</td>
-                                                <td>@societyData.ContactName</td>
-                                                <td>@societyData.ContactNumber</td>
-                                                <td>@societyData.ContactEmail</td>
-                                                <td>@(societyData.IsActive ? "Yes" : "No")</td>
+                                                <td>@events.EventName</td>
+                                                <td>@events.Society.Name</td>
+                                                <td>@events.Location</td>
+                                                <td>@events.StartDate.ToString("dd-MM-yyyy")</td>
+                                                <td>@events.EndDate.ToString("dd-MM-yyyy")</td>
+                                                <td>@events.StartTime.ToString(@"hh\:mm")</td>
+                                                <td>@events.EndTime.ToString(@"hh\:mm")</td>
+
+                                                <td>@events.Organizer</td>
                                                 <td>
                                                     <div class="action-items">
-                                                        <a href="@Url.Action("EditSocietyData", "SocietyData", new { id = societyData.SocietyDataId })" class="icon-btn">
+                                                        <a href="@Url.Action("AddEvent", "Event", new { eventId = events.EventId })" class="icon-btn">
                                                             <i class="ri-edit-2-line"></i>
                                                         </a>
-                                                        <a href="@Url.Action("DeleteSocietyData", "SocietyData", new { id = societyData.SocietyDataId })" class="icon-btn"
-                                                           onclick="return confirm('are you sure you want to delete this menu?');">
+                                                        <a href="@Url.Action("DeleteEvent", "Event", new { eventId = events.EventId })" class="icon-btn"
+                                                           onclick="return confirm('Are you sure you want to delete this menu?');">
                                                             <i class="ri-delete-bin-3-line"></i>
                                                         </a>
                                                     </div>
@@ -84,8 +85,7 @@
                                         }
                                     </tbody>
                                 </table>
-
-                                
+                                <!-- Bottom Area -->
                                 <div class="datatable-footer-bottom">
                                     <div class="totle-left">
                                         <span id="totalRecords">Total Reminders: 3</span>
@@ -100,20 +100,20 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-            </div> 
-        </div> 
-    </div> 
-
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript">
-        $(document).on("click", "#btnAddSocietyData", function () {
-            window.location.href = "/SocietyData/AddSocietyData";
-        });
+        $(document).on("click", "#btnAddEvent", AddEvent);
+
+        function AddEvent() {
+            window.location.href = "/Event/AddEvent";
+        };
     </script>
 </body>
 </html>
 <script src="~/js/addpagination.js"></script>
-

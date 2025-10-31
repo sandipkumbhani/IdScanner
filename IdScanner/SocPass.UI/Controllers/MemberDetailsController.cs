@@ -20,15 +20,15 @@ namespace SocPass.UI.Controllers
             _globalClass = globalClass;
         }
 
-        [HttpGet("MemberDetails/GetDetails/{memberId}")]
-        public async Task<IActionResult> GetDetails(int memberId)
+        [HttpGet("MemberDetails/GetDetails/{memberId}/{EventId}")]
+        public async Task<IActionResult> GetDetails(int memberId, int EventId)
         {
             if (memberId == 0)
             {
                 return BadRequest("Member Id is not found.");
             }
 
-            var result = await _memberService.GetMemberByMemberId(memberId);
+            var result = await _memberService.GetMemberByMemberId(memberId, EventId);
             if (result == null)
             {
                 return NotFound();

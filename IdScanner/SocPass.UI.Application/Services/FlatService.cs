@@ -37,9 +37,9 @@ namespace SocPass.UI.Application.Services
             var result = await _FlatRepository.GetFlatByBlockId(blockid);
             return result;
         }
-        public async Task<List<Flat>> GetQR(int blockid)
+        public async Task<List<Flat>> GetQR(int blockid, int eventId)
         {
-            var result = await _FlatRepository.GetQR(blockid);
+            var result = await _FlatRepository.GetQR(blockid,eventId);
             return result;
         }
         public async Task<List<Flat>> GetGuestQR(int blockid)

@@ -31,10 +31,8 @@
                         <div class="card com-profile-info">
                             <div class="top-details">
                                 <h2 class="page-form-title">Profile Details</h2>
-                                @if (ViewBag.ErrorMessage != null)
-                                {
-                                    <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                }
+                                 
+
                                 <form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
                                     <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
                                     <!-- Name -->

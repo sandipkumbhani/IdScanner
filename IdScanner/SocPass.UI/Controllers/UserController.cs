@@ -85,7 +85,7 @@ namespace SocPass.Controllers
                 return View(modelUsers);
             }
             try
-            {
+            { 
                 if (modelUsers.UserId == 0)
                 {
                     await _userServices.AddUserAsync(modelUsers, flatId);

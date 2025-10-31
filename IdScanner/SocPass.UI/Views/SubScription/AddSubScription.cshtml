@@ -61,7 +61,7 @@
 											@Html.ValidationMessageFor(m => m.SocietyId)
 										</span>
 
-										@if (ViewData.ModelState["SocietyId"]?.Errors.Count > 0 &&
+										@* @if (ViewData.ModelState["SocietyId"]?.Errors.Count > 0 &&
 																				ViewData.ModelState["SocietyId"].Errors[0].ErrorMessage
 																				.Contains("already has a subscription"))
 										{
@@ -70,7 +70,7 @@
 													window.location.href = '@Url.Action("SubScriptionList", "Subscription")';
 												}, 1500); // redirect after 2.5 seconds
 											</script>
-										}
+										} *@
 
 									</div>
 								</div>

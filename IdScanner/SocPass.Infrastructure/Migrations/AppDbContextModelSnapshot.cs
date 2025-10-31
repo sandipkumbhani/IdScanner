@@ -74,6 +74,9 @@ namespace SocPass.Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
                     b.Property<string>("EventName")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -96,11 +99,14 @@ namespace SocPass.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("SocietyId")
+                    b.Property<int>("SocietyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
 
                     b.Property<long>("UpdateBy")
                         .HasColumnType("bigint");
@@ -266,6 +272,50 @@ namespace SocPass.Infrastructure.Migrations
                     b.HasKey("MenuId");
 
                     b.ToTable("MenuMasters");
+                });
+
+            modelBuilder.Entity("SocPass.Domain.Model.QRCodeMaster", b =>
+                {
+                    b.Property<int>("QRCodeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QRCodeId"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("InsertBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("InsertDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("QRCodeUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UpdateBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Visited")
+                        .HasColumnType("bit");
+
+                    b.HasKey("QRCodeId");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("MemberId");
+
+                    b.ToTable("QRCodeMasters");
                 });
 
             modelBuilder.Entity("SocPass.Domain.Model.Society", b =>
@@ -538,7 +588,9 @@ namespace SocPass.Infrastructure.Migrations
                 {
                     b.HasOne("SocPass.Domain.Model.Society", "Society")
                         .WithMany()
-                        .HasForeignKey("SocietyId");
+                        .HasForeignKey("SocietyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Society");
                 });
@@ -571,6 +623,25 @@ namespace SocPass.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Flat");
+                });
+
+            modelBuilder.Entity("SocPass.Domain.Model.QRCodeMaster", b =>
+                {
+                    b.HasOne("SocPass.Domain.Model.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocPass.Domain.Model.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("SocPass.Domain.Model.SocietyData", b =>

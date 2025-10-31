@@ -14,15 +14,15 @@ namespace SocPass.UI.Controllers
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
         private readonly IFlatService _flatRepository;
-        private readonly GlobalClass _globalClass;
-        public MembersQrListController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService, GlobalClass globalClass)
+        private readonly IEventService _eventService;
+
+        public MembersQrListController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService, IEventService eventService)
         {
             _memberService = memberService;
             _blockService = blockService;
             _societyService = societyService;
             _flatRepository = flatService;
-            _globalClass = globalClass;
-
+            _eventService = eventService;
         }
 
         [HttpGet]
@@ -38,38 +38,37 @@ namespace SocPass.UI.Controllers
             int.TryParse(userIdClaim, out int userId);
 
             IEnumerable<Society> societies;
+            IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
             if (User.IsInRole("Admin"))
             {
-                // Admin sees all societies
                 societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
+                EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
-                // User sees only assigned societies
                 societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+                EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
             }
-
+            ViewBag.EventList = EventList;
             ViewBag.Societies = societies;
             ViewBag.SelectedSocietyId = selectedSocietyId;
-
             return View("/Views/MembersQrList/MembersQrList.cshtml");
 
         }
         [HttpPost]
-        public async Task<IActionResult> GeneratePass(int societyId, int blockId, DateTime passDate)
+        public async Task<IActionResult> GeneratePass(int societyId, int blockId, int EventId)
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
             ViewBag.SelectedSocietyId = societyId;
 
-            // Validate inputs
-            if (societyId <= 0 || blockId <= 0 || passDate == default)
+            if (societyId <= 0 || blockId <= 0 || EventId == default)
             {
                 ViewBag.Error = "Invalid input. Please fill all fields correctly.";
 
@@ -90,12 +89,11 @@ namespace SocPass.UI.Controllers
 
                 return View("/Views/MembersQrList/MembersQrList.cshtml");
             }
+            await _memberService.GeneratePass(blockId, EventId);
+            var qrList = await _flatRepository.GetQR(blockId, EventId);
+            return View("/Views/MembersQrList/QrList.cshtml", qrList);
 
-            // Generate QR codes and display result
-            await _memberService.GeneratePass(blockId, passDate);
-            var QRlist = await _flatRepository.GetQR(blockId);
 
-            return View("/Views/MembersQrList/QrList.cshtml", QRlist);
         }
 
         [HttpGet]
@@ -114,14 +112,12 @@ namespace SocPass.UI.Controllers
             int selectedSocietyId = 0;
             if (User.IsInRole("Admin"))
             {
-                // Admin sees all societies
-                societies = await _societyService.GetAllSocietyAsync();
+                 societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
             }
             else
             {
-                // User sees only assigned societies
                 societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;

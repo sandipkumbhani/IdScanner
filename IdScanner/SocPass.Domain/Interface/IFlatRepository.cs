@@ -22,7 +22,9 @@ namespace SocPass.Domain.Interface
         Task DeleteFlatAsync(int flatId);
         Task<List<Flat>> GetFlatsByBlockAsync(int societyId, int blockId);
         Task<List<Flat>> GetFlatByBlockIdAsync(int blockid);
-        Task<List<FlatWithMembersDto>> GetMemberQr(int blockid);
+        //Task<List<FlatWithMembersDto>> GetMemberQr(int blockid);
         Task<List<FlatWithMembersDto>> GetGuestQr(int blockid);
+
+        Task<List<FlatWithMembersDto>> GetMemberQrAsync(int blockid, int eventId);
     }
 }

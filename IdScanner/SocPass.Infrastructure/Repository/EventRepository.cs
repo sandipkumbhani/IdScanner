@@ -31,12 +31,26 @@ namespace SocPass.Infrastructure.Repository
                 .Where(e => e.IsActive == true) 
                 .OrderByDescending(e => e.StartDate).ToListAsync();
         }
+        public async Task<Block> GetBlockByIdAsync(int blockid)
+        {
+            return await _context.blocks.Include(e => e.Society)
+                  .Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.BlockId == blockid);
+        }
         public async Task<Event?> GetEventByIdAsync(int eventId)
         {
             return await _context.Events
                 .Include(e => e.Society)
-                .FirstOrDefaultAsync(e => e.EventId == eventId && e.IsActive == true);
+                .Where(x => x.IsActive == true)
+                .FirstOrDefaultAsync(e => e.EventId == eventId);
         }
+        public async Task<List<Event>> GetEventListBySocietyAsync(int societyId)
+        {
+            return await _context.Events
+                .Include(e => e.Society)
+                .Where(e => e.SocietyId == societyId && e.IsActive == true)
+                .ToListAsync();
+        }
+
         public async Task<Event> UpdateEventAsync(Event events)
         {
             _context.Events.Update(events);

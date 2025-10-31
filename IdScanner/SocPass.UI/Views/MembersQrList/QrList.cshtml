@@ -1,4 +1,4 @@
-﻿@model IList<SocPass.Domain.Model.Flat>
+﻿@model List<SocPass.Domain.Model.Flat>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,36 +14,24 @@
                     </div>
                 </div>
             </div>
+
             <div class="row">
-                <div class="col-12">
-                    <div class="card com-profile-info">
-                        <div class="top-details">
-                            @if (Model != null && Model.Any())
+                @foreach (var flat in Model)
+                {
+                    <div class="col-12 mb-4">
+                        <h4>Flat: @flat.FlatNumber</h4>
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach (var member in flat.Members)
                             {
-                                foreach (var flat in Model)
-                                {
-                                    <div class="mb-4">
-                                        <h5>Flat: @flat.FlatNumber (Total Members: @flat.TotalMember)</h5>
-                                        <div class="d-flex flex-wrap gap-3">
-                                            @foreach (var member in flat.Members)
-                                            {
-                                                <div class="text-center">
-                                                    <img src="@member.QRCodeUrl" style="width:200px; height:200px;" />
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <p>No QR codes found for this block.</p>
+                                <div class="text-center">
+                                    <img src="@member.QRCodeUrl" style="width:200px;height:200px;" />
+                                </div>
                             }
                         </div>
-
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>
 </div>
+

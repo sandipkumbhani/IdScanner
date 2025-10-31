@@ -64,9 +64,9 @@ namespace SocPass.API.Controllers
             return Ok(members);
         }
         [HttpPut("AddPassdate")]
-        public async Task<IActionResult> AddPassDate(int blockId, DateTime passDate)
+        public async Task<IActionResult> AddPassDate(int blockId, int EventId)
         {
-            var result = await _memberService.AddMemberPassDateAsync(blockId, passDate);
+            var result = await _memberService.AddMemberPassDateAsync(blockId, EventId);
             return Ok(result);
         }
         [HttpPut("AddGuestPassdate")]
@@ -77,9 +77,9 @@ namespace SocPass.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet("GetMemberByMemberId")]
-        public async Task<IActionResult> GetmemberById(int memberId)
+        public async Task<IActionResult> GetmemberById(int memberId,int EventId)
         {
-            var result = await _memberService.GetMemberByMemberId(memberId);
+            var result = await _memberService.GetMemberByMemberId(memberId, EventId);
 
             if (result == null)
                 return NotFound();

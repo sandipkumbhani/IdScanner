@@ -38,20 +38,40 @@ namespace SocPass.UI.Controllers
 
             var flatList = (await _flatService.GetAllFlatAsync()).ToList();
 
-            ViewBag.FlatList = flatList;
-            ViewBag.IsAdmin = User.IsInRole("Admin");
-
-            // Pass user's society name if not admin
-            if (!User.IsInRole("Admin"))
+            ICollection<Flat> FlatList;
+            if(string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                var societies = await _societyService.GetAllSocietyAsync(userId);
-                var userSocietyName = societies.FirstOrDefault()?.Name ?? "";
-                ViewBag.UserSocietyName = userSocietyName;
+                FlatList = await _flatService.GetAllFlatAsync();
             }
             else
             {
-                ViewBag.UserSocietyName = "";
+                var societies = await _societyService.GetAllSocietyAsync(userId);
+                var society = societies.FirstOrDefault();
+                if (society != null)
+                {
+                    FlatList = flatList
+                                .Where(e => e.SocietyId == society.SocietyId)
+                                .ToList();
+                }
+                else
+                {
+                    FlatList = new List<Flat>();
+                }
             }
+            ViewBag.FlatList = FlatList.ToList();
+            //ViewBag.IsAdmin = User.IsInRole("Admin");
+
+            //// Pass user's society name if not admin
+            //if (!User.IsInRole("Admin"))
+            //{
+            //    var societies = await _societyService.GetAllSocietyAsync(userId);
+            //    var userSocietyName = societies.FirstOrDefault()?.Name ?? "";
+            //    ViewBag.UserSocietyName = userSocietyName;
+            //}
+            //else
+            //{
+            //    ViewBag.UserSocietyName = "";
+            //}
 
             return View();
         }
@@ -70,9 +90,13 @@ namespace SocPass.UI.Controllers
             IEnumerable<Society> societies;
 
             if (User.IsInRole("Admin"))
-                societies = await _societyService.GetAllSocietyAsync(); 
+            {
+                societies = await _societyService.GetAllSocietyAsync();
+            }
             else
-                societies = await _societyService.GetAllSocietyAsync(userId); 
+            {
+                societies = await _societyService.GetAllSocietyAsync(userId);
+            }
             Flat flat;
 
             if (societyId == null || blockId == 0)
