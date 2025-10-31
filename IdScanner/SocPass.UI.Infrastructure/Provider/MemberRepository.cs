@@ -15,8 +15,6 @@ namespace SocPass.UI.Infrastructure.Provider
 {
     public class MemberRepository : IMemberRepository
     {
-
-
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
