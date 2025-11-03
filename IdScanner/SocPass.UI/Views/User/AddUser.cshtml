@@ -1,13 +1,16 @@
 ﻿@model SocPass.Domain.Model.User
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
-	IList<SocPass.Domain.Model.UserRole> RoleList = ViewBag.RoleList;
-	string NameMsg = ViewBag.NameMsg;
-	string EmailMsg = ViewBag.EmailMsg;
-	string passwordMsg = ViewBag.passwordMsg;
-	string ConfirmPasswordMsg = ViewBag.ConfirmPasswordMsg;
-	string UserRoleMsg = ViewBag.UserRoleMsg;
-	string CurrentRole = ViewBag.CurrentRole;
+	// IList<SocPass.Domain.Model.UserRole> RoleList = ViewBag.RoleList;
+    string NameMsg = ViewBag.NameMsg;
+    string EmailMsg = ViewBag.EmailMsg;
+    string passwordMsg = ViewBag.passwordMsg;
+    string ConfirmPasswordMsg = ViewBag.ConfirmPasswordMsg;
+    string CurrentRole = ViewBag.CurrentRole;
+    var preSociety = ViewBag.SelectedSocietyId;
+    var preBlock = ViewBag.SelectedBlockId;
+    var preFlat = ViewBag.SelectedFlatId;
+    string UserRoleMsg = ViewBag.UserRoleMsg;
 }
 <style>
 	.content-page {
@@ -32,10 +35,7 @@
                         <div class="card com-profile-info">
                             <div class="top-details">
                                 <h2 class="page-form-title">Profile Details</h2>
-                                @if (ViewBag.ErrorMessage != null)
-                                {
-                                    <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                }
+                               
                                 <form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
                                     <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
                                     <!-- Name -->
@@ -60,10 +60,6 @@
                                             {
                                                 <span class="text-danger">@EmailMsg</span>
                                             } *@
-											@if (ViewBag.ErrorMessage != null)
-											{
-												<div class="text-danger">@ViewBag.ErrorMessage</div>
-											}
 											<span class="text-danger small" id="emailError"></span>
 										</div>
 									</div>
@@ -94,18 +90,15 @@
 										</div>
 									</div>
 
-									@* @if (Model.UserId != 0)
-									{
-										<input type="hidden" name="UserRoleId" value="@Model.UserRoleId" />
-									} *@
-
 									<!-- Role -->
 									<div class="col-xl-4 col-lg-6">
 										<div class="mb-3">
 											<label for="UserRoleId" class="form-label required fw-semibold fs-6">Role</label>
-											<select class="form-select" id="UserRoleId" name="UserRoleId" @(Model.UserId != 0 ? "disabled" : "")>
+											@* <select class="form-select" id="UserRoleId" name="UserRoleId" @(Model.UserId != 0 ? "disabled" : "")> *@
+                                            <select id="UserRoleId" name="UserRoleId" class="form-select"
+                                                    @(Model.UserId != 0 || (ViewBag.CurrentRole?.ToString().ToLower().Contains("society") ?? false) ? "disabled" : "")>
 												<option value="0">-- Select Role --</option>
-												@foreach (var item in RoleList)
+                                                @foreach (var item in ViewBag.RoleList)
 												{
 													<option value="@item.UserRoleId" selected="@(Model.UserRoleId == item.UserRoleId ? "selected" : null)">
 														@item.Name
@@ -120,39 +113,36 @@
 									<!-- Society -->
 									<div class="col-md-4">
 										<label class="form-label">Select Society</label>
-										@* <select id="Society" name="SocietyId" class="form-select">
+                                        <select id="SocietyId" name="SocietyId" class="form-select"
+                                                @(
+                                                                                                (ViewBag.CurrentRole?.ToString().ToLower().Contains("society") ?? false)
+                                                                                                ? "disabled"
+                                                                                                : ""
+                                                                                                ) >
                                             <option value="">-- Select Society --</option>
-                                            @if (ViewBag.SocietyList != null)
+                                            @foreach (var society in ViewBag.Societies)
                                             {
-                                                foreach (var society in ViewBag.SocietyList)
-                                                {
-                                                    <option value="@society.SocietyId">@society.Name</option>
-                                                }
+                                                var isSelected = (society.SocietyId == (Model?.SocietyId ?? ViewBag.AssignedSocietyId));
+                                                <option value="@society.SocietyId" selected="@(isSelected ? "selected" : null)">
+                                                    @society.Name
+                                                </option>
                                             }
-                                        </select> *@
+                                        </select>
 
-										<select id="SocietyId" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
-											<option value="">-- Select Society --</option>
-											@foreach (var society in ViewBag.Societies)
-											{
-												var isSelected = (society.SocietyId == (Model?.SocietyId ?? ViewBag.AssignedSocietyId));
-												<option value="@society.SocietyId" selected="@(isSelected ? "selected" : null)">
-													@society.Name
-												</option>
-											}
-										</select>
                                         <input type="hidden" name="SocietyId" value="@Model.SocietyId" />
+                                        <span class="text-danger small" id="societyError"></span>
 
-										<span class="text-danger small" id="societyError"></span>
 									</div>
+
 
 									<!-- Block -->
 									<div class="col-md-4">
 										<label class="form-label">Select Block</label>
-										<select id="Block" class="form-select">
+										<select id="Block" name="BlockId" class="form-select">
 											<option value="">-- Select Block --</option>
 										</select>
 										<span class="text-danger small" id="blockError"></span>
+                                        <div id="EmptyBlockMsg"></div>
 									</div>
 
 									<!-- Flat -->
@@ -161,14 +151,16 @@
 										<select id="Flat" name="FlatId" class="form-select">
 											<option value="">-- Select Flat --</option>
 										</select>
-										@if (ViewBag.ErrorMessage != null)
-										{
-											<div class="text-danger">@ViewBag.ErrorMessage</div>
-										}
 										<span class="text-danger small" id="flatError"></span>
+                                        <div id="EmptyFlatMsg"></div>
 									</div>
 
-									<!-- Action Buttons -->
+                                    @if (ViewBag.ErrorMessage != null)
+                                    {
+                                        <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                    }
+
+                                    <!-- Action Buttons -->
 									<div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
 										<button type="submit" class="card-link">
 											<i class="ri-save-line"></i>
@@ -254,6 +246,14 @@
                     }
                 });
             }
+        var preSociety = '@(preSociety ?? "")';
+        var preBlock = '@(preBlock ?? "")';
+        var preFlat = '@(preFlat ?? "")';
+        
+        if (preSociety && preSociety !== "0") {
+          
+            prefillDropdowns(preSociety, preBlock, preFlat);
+        }
 
             // Handle society-login user
             if (currentUserRole.indexOf("society") >= 0) {
@@ -267,10 +267,10 @@
                 toggleFieldsByRole("user");
 
                 // Prefill dropdowns for society user
-                var preSelectedSociety = '@ViewBag.SelectedSocietyId';
-                var preSelectedBlock = '@ViewBag.SelectedBlockId';
-                var preSelectedFlat = '@ViewBag.SelectedFlatId';
-                prefillDropdowns(preSelectedSociety, preSelectedBlock, preSelectedFlat);
+                // var preSelectedSociety = '@ViewBag.SelectedSocietyId';
+                // var preSelectedBlock = '@ViewBag.SelectedBlockId';
+                // var preSelectedFlat = '@ViewBag.SelectedFlatId';
+                // prefillDropdowns(preSelectedSociety, preSelectedBlock, preSelectedFlat);
             }
 
             // Admin or general edit scenario
@@ -300,15 +300,38 @@
                 $("#Block").empty().append('<option value="">-- Select Block --</option>');
                 $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
                 $("#societyError").text("");
-
+                var $blockempty = $("#EmptyBlockMsg");
+            $blockempty.empty();
                 if (!societyId) return;
 
-                $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
-                .done(function(data) {
-                    $.each(data, function(i, block) {
-                        $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
-                    });
+                // $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
+                // .done(function(data) {
+                //     $.each(data, function(i, block) {
+                //         $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
+                //     });
+                // });
+
+                  $.ajax({
+                url: '@Url.Action("GetBlocksBySociety", "Member")',
+                method: 'GET',
+                data: { societyId: societyId },
+                dataType: 'json'
+            })
+            .done(function (data) {
+                if (!data || data.length === 0) {
+                    $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                    return;
+                }
+
+                $.each(data, function (i, block) {
+                    $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
                 });
+
+            })
+            .fail(function () {
+                $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                $blockempty.append('<span class="text-danger">No Blocks found for this Society.</span>');
+            });
             });
 
             // Load Flats dynamically
@@ -316,15 +339,30 @@
                 var blockId = $(this).val();
                 $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
                 $("#blockError").text("");
+                var $flatmsg = $("#EmptyFlatMsg");
+                $flatmsg.empty();
 
                 if (!blockId) return;
 
-                $.getJSON('/User/GetFlatsByBlock', { blockId: blockId })
-                .done(function(data) {
-                    $.each(data, function(i, flat) {
-                        $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
-                    });
+               $.ajax({
+                url: '@Url.Action("GetFlatsByBlock", "Member")',
+                method: 'GET',
+                data: { blockId: blockId },
+                dataType: 'json'
+            }).done(function (data) {
+                if (!data || data.length === 0) {
+                    $("#Flat").empty().append('<option value="">-- No Flats available --</option>');
+                    $("#EmptyFlatMsg").append('<span class="text-danger">No flats found for the selected block.</span>');
+                    return;
+                }
+
+                $.each(data, function (i, f) {
+                    $("#Flat").append($('<option>', { value: f.flatId, text: f.flatNumber }));
                 });
+            }).fail(function () {
+                $("#Flat").empty().append('<option value="">-- No Flats available --</option>');
+                $("#EmptyFlatMsg").append('<span class="text-danger">Unable to load flats for the selected block.</span>');
+            });
             });
 
             $("#Flat").change(function () {
@@ -405,6 +443,14 @@
                 if (!valid) e.preventDefault();
             });
 
+            $("#UserRoleId").on("change", function () {
+            $("input[name='UserRoleId']").val($(this).val());
+        });
+
+        $("#SocietyId").on("change", function () {
+            $("input[name='SocietyId']").val($(this).val());
+        });
+
                     $("form").on("submit", function () {
             var roleVal = $("#UserRoleId").val();
             var societyVal = $("#SocietyId").val();
@@ -413,6 +459,28 @@
             $("input[type='hidden'][name='SocietyId']").val(societyVal);
         });
 
+                  $("form").on("reset", function (e) {
+            e.preventDefault(); // prevent default HTML reset
+
+            var currentRoleVal = $("#UserRoleId").val();
+            var currentSocietyVal = $("#SocietyId").val();
+
+            // clear only text and password fields
+            $(this).find("input[type='text'], input[type='password']").val("");
+            $(".text-danger.small").text("");
+
+            // restore dropdown selections after reset
+            setTimeout(function () {
+                if (currentRoleVal) $("#UserRoleId").val(currentRoleVal);
+                if (currentSocietyVal) $("#SocietyId").val(currentSocietyVal);
+
+                // sync hidden inputs again
+                $("input[name='UserRoleId']").val(currentRoleVal);
+                $("input[name='SocietyId']").val(currentSocietyVal);
+            }, 50);
         });
+
+        });
+
     </script>
 </body>

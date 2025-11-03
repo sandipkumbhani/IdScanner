@@ -42,7 +42,10 @@
 					<div class="card com-profile-info">
 						<div class="top-details">
 							<h2 class="page-form-title">Add Subscription</h2>
-
+							@if (ViewBag.ErrorMessage != null)
+							{
+								<div class="text-danger">@ViewBag.ErrorMessage</div>
+							}
 							<form class="row all-custom-class" method="post"
 								  action="@Url.Action("AddSubScription", "Subscription")">
 								<input type="hidden" name="SubscriptionId" value="@Model.SubscriptionId" />
@@ -60,18 +63,6 @@
 										<span class="text-danger">
 											@Html.ValidationMessageFor(m => m.SocietyId)
 										</span>
-
-										@if (ViewData.ModelState["SocietyId"]?.Errors.Count > 0 &&
-																				ViewData.ModelState["SocietyId"].Errors[0].ErrorMessage
-																				.Contains("already has a subscription"))
-										{
-											<script>
-												setTimeout(function () {
-													window.location.href = '@Url.Action("SubScriptionList", "Subscription")';
-												}, 1500); // redirect after 2.5 seconds
-											</script>
-										}
-
 									</div>
 								</div>
 
@@ -96,12 +87,6 @@
 								<div class="col-xl-4 col-lg-6 mb-3">
 									<div class="item-input">
 										<label for="EndTo" class="form-label required fw-semibold fs-6">End To</label>
-										@* <input type="datetime-local" class="form-control userinput"
-											   id="EndTo" name="EndTo"
-											   value="@(Model?.EndTo != null && Model.EndTo != DateTime.MinValue ? Model.EndTo.ToString("yyyy-MM-ddTHH:mm") : string.Empty)"
-											   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required data-val="true"
-											   data-val-required="Please select a End Date and Time." /> *@
-
 										<input type="datetime-local" class="form-control userinput"
 											   id="EndTo" name="EndTo"
 											   value="@inputValueend"

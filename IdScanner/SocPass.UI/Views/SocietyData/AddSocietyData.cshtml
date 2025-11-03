@@ -49,6 +49,7 @@
                         <div class="card com-profile-info">
                             <div class="top-details">
                                 <h2 class="page-form-title">Society Data</h2>
+								<div id="messageArea"></div>
                                 <form id="societyDataForm">
                                     <input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
                                     <!-- Dropdowns -->
@@ -93,6 +94,7 @@
                                                 <option value="">-- Select Block --</option>
                                             </select>
                                             <div class="text-danger" id="blockError"></div>
+                                            <div id="EmptyBlockMsg"></div>
                                         </div>
                                         <div class="col-md-4">
                                             <label class="form-label">Select Flat</label>
@@ -100,6 +102,7 @@
                                                 <option value="">-- Select Flat --</option>
                                             </select>
                                             <div class="text-danger" id="flatError"></div>
+                                            <div id="EmptyFlatMsg"></div>
                                         </div>
                                     </div>
 
@@ -107,7 +110,6 @@
                                     <div class="row" id="contactContainer">
                                         <!-- Columns will be dynamically generated here -->
                                     </div>
-                                    <div id="messageArea" class="mt-3"></div>
 
                                     @* <div class="mt-3">
 							<button type="button" id="saveBtn" class="btn btn-success">Save</button>
@@ -198,35 +200,82 @@
                 }
             }
 
-            function loadBlocks(societyId, callback) {
-                $("#Block").empty().append('<option value="">-- Select Block --</option>');
-                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-                tryRenderContacts();
+                   function loadBlocks(societyId, callback) {
+            $("#Block").empty().append('<option value="">-- Select Block --</option>');
+            $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+            tryRenderContacts();
 
-                if (societyId) {
-                    $.getJSON('@Url.Action("GetBlocksBySociety", "SocietyData")', { societyId: societyId }, function (blocks) {
-                        $.each(blocks, function (i, block) {
-                            $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
-                        });
+            var $blockempty = $("#EmptyBlockMsg");
+            $blockempty.empty();
 
-                        if (typeof callback === "function") callback(blocks);
-                    });
+            if (!societyId) return;
+
+            $.ajax({
+                url: '@Url.Action("GetBlocksBySociety", "Member")',
+                method: 'GET',
+                data: { societyId: societyId },
+                dataType: 'json'
+            })
+            .done(function (data) {
+                if (!data || data.length === 0) {
+                    $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                    return;
                 }
-            }
+
+                $.each(data, function (i, block) {
+                    $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
+                });
+
+                if (typeof callback === "function") callback(data);
+            })
+            .fail(function () {
+                $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                $blockempty.append('<span class="text-danger">No Blocks found for this Society.</span>');
+            });
+        }
+
 
             function loadFlats(blockId, callback) {
-                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                var $flatDropdown = $("#Flat");
+                var $flatmsg = $("#EmptyFlatMsg");
+                $flatmsg.empty();
+
+                $flatDropdown.empty().append('<option value="">-- Select Flat --</option>');
                 tryRenderContacts();
 
-                if (blockId) {
-                    $.getJSON('@Url.Action("GetFlatsByBlock", "SocietyData")', { blockId: blockId }, function (flats) {
-                        $.each(flats, function (i, flat) {
-                            $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
-                        });
-
-                        if (typeof callback === "function") callback(flats);
-                    });
+                if (!blockId) {
+                    if (typeof callback === "function") callback([]);
+                    return;
                 }
+
+                $.ajax({
+                    url: '@Url.Action("GetFlatsByBlock", "Member")',
+                    method: 'GET',
+                    data: { blockId: blockId },
+                    dataType: 'json'
+                })
+                .done(function (data) {
+                    // API returned 200 OK
+                    if (!data || data.length === 0) {
+                        $flatDropdown.empty().append('<option value="">-- No Flats available --</option>');
+                        $flatmsg.html('<span class="text-danger">No Flats found for this Block.</span>');
+                        if (typeof callback === "function") callback([]);
+                        return;
+                    }
+
+                    $.each(data, function (i, flat) {
+                        $flatDropdown.append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
+                    });
+
+                    if (typeof callback === "function") callback(data);
+                })
+                .fail(function (jqXHR) {
+                    // Show API message or generic error
+                    var msg = jqXHR.responseText ? jqXHR.responseText.replace(/^"|"$/g, '') : 'Error loading flats.';
+                    $flatDropdown.empty().append('<option value="">-- No Flats available --</option>');
+                    $flatmsg.html('<span class="text-danger">' + msg + '</span>');
+                    if (typeof callback === "function") callback([]);
+                });
             }
 
             // Dropdown change events
@@ -242,9 +291,6 @@
             tryRenderContacts();
         });
 
-        // ------------------------------
-        // 🔁 Auto-trigger on page load
-        // ------------------------------
 
         var selectedSocietyId = '@ViewBag.SelectedSocietyId' || '0';
         var isSocietyReadonly = @((ViewBag.IsSocietyReadonly ?? false).ToString().ToLower()); // true/false
@@ -264,9 +310,6 @@
             });
         }
 
-        // ------------------------------
-        // Validation & Save
-        // ------------------------------
 
         function validateForm() {
             let isValid = true;
@@ -369,7 +412,7 @@
                         }, 1000);
                     } else {
                         $("#messageArea").html(
-                                '<div class="alert alert-danger">' + response.message + '</div>'
+                                '<div class="text-danger">' + response.message + '</div>'
                             );
                         }
                     },
@@ -382,7 +425,7 @@
                         }
 
                         $("#messageArea").html(
-                            '<div class="alert alert-danger">' + message + '</div>'
+                            '<div class="text-danger">' + message + '</div>'
                         );
                     }
                 });

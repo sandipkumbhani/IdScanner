@@ -17,7 +17,7 @@ namespace SocPass.UI.Controllers
         private readonly ISocietyService _societyService;
         private readonly IFlatService _flatRepository;
         private readonly GlobalClass _globalClass;
-        public MemberController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService,GlobalClass globalClass)
+        public MemberController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService, GlobalClass globalClass)
         {
             _memberService = memberService;
             _blockService = blockService;
@@ -174,7 +174,7 @@ namespace SocPass.UI.Controllers
                 }
 
                 ViewBag.Societies = societies;
-                return View("AddGuest",memberCreateRequest);
+                return View("AddGuest", memberCreateRequest);
             }
 
             await _memberService.AddAndUpdateGuestAsync(memberCreateRequest);

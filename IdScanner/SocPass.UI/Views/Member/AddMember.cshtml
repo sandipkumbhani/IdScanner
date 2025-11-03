@@ -99,6 +99,7 @@
 												<option value="">-- Select Block --</option>
 											</select>
 											@* <div class="error-message" id="blockError"></div> *@
+                                            <div id="EmptyBlockMsg"></div>
 										</div>
 									</div>
 								</div>
@@ -199,20 +200,37 @@
                 $blockDropdown.empty().append('<option value="">-- Select Block --</option>');
                 $("#flatContainer").empty();
                 $("#flatsLabel").hide();
+                        var $blockempty = $("#EmptyBlockMsg");
+        $blockempty.empty();
 
-                if (societyId) {
-                    $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
-                        $.each(data, function (i, block) {
-                            var selected = selectedBlockId == block.blockId ? 'selected' : '';
-                            $blockDropdown.append('<option value="' + block.blockId + '" ' + selected + '>' + block.blockName + '</option>');
-                        });
+                if (!societyId) return;
 
-                        // trigger block change if prefilled
-                        if (selectedBlockId) {
-                            $blockDropdown.trigger('change');
-                        }
-                    });
-                }
+        $.ajax({
+            url: '@Url.Action("GetBlocksBySociety", "Member")',
+            method: 'GET',
+            data: { societyId: societyId },
+            dataType: 'json'
+        }).done(function (data) {
+            // If API returns an empty array (200 OK + []), show message
+            if (!data || data.length === 0) {
+                $blockDropdown.empty().append('<option value="">-- No Blocks available --</option>');
+                return;
+            }
+
+            $.each(data, function (i, block) {
+                var selected = selectedBlockId == block.blockId ? 'selected' : '';
+                $blockDropdown.append('<option value="' + block.blockId + '" ' + selected + '>' + block.blockName + '</option>');
+            });
+
+            if (selectedBlockId) {
+                $blockDropdown.trigger('change');
+            }
+        }).fail(function () {
+            // Show API message when NotFound or return a generic error
+            var msg = 'No Blocks found for this Society.';
+            $blockDropdown.empty().append('<option value="">-- No Blocks available --</option>');
+            $blockempty.append('<span class="text-danger">' + msg + '</span>');
+        });
             }
 
             // --- on Society change ---

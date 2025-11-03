@@ -42,7 +42,21 @@ namespace SocPass.UI.Controllers
             {
                 return RedirectToAction("AccessDenied", "AccessDenied");
             }
-            var societyDataList = await _societyDataService.GetAllSocietyDataAsync();
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var societyDataList = (await _societyDataService.GetAllSocietyDataAsync()).ToList();
+            ViewBag.societyDataList = societyDataList;
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+            if (!User.IsInRole("Admin"))
+            {
+                var societies = await _societyService.GetAllSocietyAsync(userId);
+                var userSocietyName = societies.FirstOrDefault()?.Name ?? "";
+                ViewBag.UserSocietyName = userSocietyName;
+            }
+            else
+            {
+                ViewBag.UserSocietyName = "";
+            }
             return View(societyDataList);
         }
 

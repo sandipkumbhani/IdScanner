@@ -21,16 +21,6 @@ namespace SocPass.Controllers
             _blockService = blockService;
             _flatService = flatService;
         }
-        //public async Task<IActionResult> UserList()
-        //{
-        //    if (string.IsNullOrEmpty(_globalClass.Token))
-        //    {
-        //        return RedirectToAction("Login", "Login");
-        //    }
-        //    IList<User> userList = await _userServices.GetAllUsersAsync();
-        //    ViewBag.UserList = userList;
-        //    return View("~/Views/User/UserList.cshtml");
-        //}
 
         [HttpGet]
         public async Task<IActionResult> UserList()
@@ -60,7 +50,7 @@ namespace SocPass.Controllers
                 {
                     // Filter user list by assigned society
                     userList = (await _userServices.GetAllUsersAsync())
-                                .Where(u => u.SocietyId == assignedSociety.SocietyId)
+                                .Where(u => u.SocietyId == assignedSociety.SocietyId && u.UserRole.Name != "Society")
                                 .ToList();
                 }
                 else
@@ -68,54 +58,13 @@ namespace SocPass.Controllers
                     // Fallback – no associated society, return empty set
                     userList = new List<User>();
                 }
+
             }
 
             ViewBag.UserList = userList;
 
             return View("~/Views/User/UserList.cshtml");
         }
-
-
-        //[HttpGet]
-        //public async Task<IActionResult> AddUser(int? id)
-        //{
-        //    if (string.IsNullOrEmpty(_globalClass.Token))
-        //    {
-        //        return RedirectToAction("Login", "Login");
-        //    }
-        //    ViewBag.CurrentRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-        //    var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-        //    int.TryParse(userIdClaim, out int userId);
-
-        //    IEnumerable<Society> societies;
-        //     Society assignedSociety = null;
-
-        //    if (User.IsInRole("Admin"))
-        //    {
-        //        // Admin sees all societies
-        //        societies = await _Societyservices.GetAllSocietyAsync();
-        //        ViewBag.IsSocietyReadonly = false;
-        //    }
-        //    else
-        //    {
-        //        // Non-admin: show only their own society
-        //        societies = await _Societyservices.GetAllSocietyAsync(userId);
-        //        assignedSociety = societies.FirstOrDefault();
-
-        //        ViewBag.IsSocietyReadonly = true;
-        //        ViewBag.AssignedSocietyId = assignedSociety?.SocietyId;
-        //    }
-        //    ViewBag.Societies = societies;
-
-        //    await InitViewBag();
-        //    if (id == null)
-        //    {
-        //        return View(new User());
-        //    }
-        //    var user = await _userServices.GetUserByIdAsync(id.Value);
-        //    return View(user);
-        //}
 
         [HttpGet]
         public async Task<IActionResult> AddUser(int? id)
@@ -177,8 +126,8 @@ namespace SocPass.Controllers
 
             // --- Always provide prefilled ViewBag data ---
             ViewBag.SelectedSocietyId = user.SocietyId > 0 ? user.SocietyId : assignedSociety?.SocietyId;
-            ViewBag.SelectedBlockId = selectedBlockId;
-            ViewBag.SelectedFlatId = selectedFlatId;
+            //ViewBag.SelectedBlockId = selectedBlockId;
+            //ViewBag.SelectedFlatId = selectedFlatId;
             ViewBag.AssignedSocietyId = assignedSociety?.SocietyId;
 
             return View(user);
@@ -193,6 +142,19 @@ namespace SocPass.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
+
+            int selectedSociety =(int)modelUsers.SocietyId;
+            string selectedBlock = Request.Form["BlockId"];
+            string selectedFlat = Request.Form["FlatId"];
+
+            // 🔹 Local function to restore dropdowns
+            void SetSelectedDropdowns()
+            {
+                ViewBag.SelectedSocietyId = selectedSociety;
+                ViewBag.SelectedBlockId = selectedBlock;
+                ViewBag.SelectedFlatId = selectedFlat;
+            }
+
             if (string.IsNullOrEmpty(modelUsers.Name))
             {
                 ViewBag.ErrorMessage = "Please enter name.";
@@ -242,12 +204,14 @@ namespace SocPass.Controllers
             {
                 ViewBag.ErrorMessage = ex.Message;
                 await InitViewBag();
+                SetSelectedDropdowns();
                 return View(modelUsers);
             }
             catch (Exception)
             {
                 ViewBag.ErrorMessage = "Something went wrong. Please try again.";
                 await InitViewBag();
+                SetSelectedDropdowns();
                 return View(modelUsers);
             }
         }
@@ -297,6 +261,7 @@ namespace SocPass.Controllers
             int.TryParse(userIdClaim, out int userId);
             var societies = await _Societyservices.GetAllSocietyAsync(userId);
             ViewBag.SocietyList = societies;
+            ViewBag.Societies = societies;
             IList<UserRole> userRoles = await _userServices.GetAllUserRoleAsync();
             ViewBag.RoleList = userRoles;
         }

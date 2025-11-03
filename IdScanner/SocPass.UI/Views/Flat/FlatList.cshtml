@@ -174,8 +174,8 @@
     <script type="text/javascript">
 
          $(document).ready(function () {
-            var isAdmin = @isAdmin.ToString().ToLower();
-            var userSocietyName = "@userSocietyName";
+           var isAdmin = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(isAdmin));
+            var userSocietyName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(userSocietyName));
 
             // Filter rows for non-admin users
             if (!isAdmin && userSocietyName) {

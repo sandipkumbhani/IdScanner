@@ -91,8 +91,6 @@ namespace SocPass.UI.Controllers
          
                 int pending = f.TotalMember - (visitedAdults + visitedChildren);
 
-                
-
                 flatReports.Add(new
                 {
                     f.FlatId,
@@ -102,7 +100,6 @@ namespace SocPass.UI.Controllers
                     f.TotalMember,
                     VisitedAdults = visitedAdults,
                     VisitedChildren = visitedChildren,
-                  
                     Pending = pending,
                     HasMembersForDate = filteredMembers.Any()
                 });

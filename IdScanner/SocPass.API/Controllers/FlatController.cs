@@ -131,7 +131,7 @@ namespace SocPass.API.Controllers
             var flats = await _flatService.GetFlatByBlockID(blockid);
             if (flats == null)
             {
-                return NotFound("No BlockId found for this company.");
+                return NotFound("No Flats found for this Block.");
             }
             return Ok(flats);
         }

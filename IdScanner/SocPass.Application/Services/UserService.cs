@@ -31,7 +31,16 @@ namespace SocPass.Application.Services
             var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
             int? societyId = role.Name == "Admin" ? null : user.SocietyId;
 
-            var newUser = new User
+            if (role.Name == "User")
+            {
+                var checkFlatExsiting = await _userFlatMappingRepository.GetMappingByFlatId(flatId);
+                if (checkFlatExsiting != null && checkFlatExsiting.FlatId == flatId)
+                {
+                    throw new FlatAlreadyExistsException("Flat already exists.");
+                }
+            }
+
+                var newUser = new User
             {
                 Name = user.Name,
                 EmailId = user.EmailId,
@@ -47,11 +56,6 @@ namespace SocPass.Application.Services
             var result = await _userRepository.AddUserAsync(newUser);
             if (role.Name == "User")
             {
-                var checkFlatExsiting = await _userFlatMappingRepository.GetMappingByFlatId(flatId);
-                   if(checkFlatExsiting != null && checkFlatExsiting.FlatId == flatId)
-                {
-                    throw new FlatAlreadyExistsException("Flat already exists.");
-                }
                 var userMapping = new UserFlatMapping
                 {
                     UserId = result.UserId,

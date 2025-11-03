@@ -78,6 +78,7 @@
                                                     <option value="">-- Select Block --</option>
                                                 </select>
                                                 <div class="text-danger" id="BlockError">Please select a block.</div>
+                                                <div id="EmptyBlockMsg"></div>
                                             </div>
                                         </div>
 
@@ -168,17 +169,33 @@
 
             $("#Society").change(function () {
                 var societyId = $(this).val();
+                var $blockempty = $("#EmptyBlockMsg");
+            $blockempty.empty();
                 $("#Block").empty().append('<option value="">-- Select Block --</option>');
                 $("#flatContainer").empty();
                 hideError("Society", "SocietyError");
-
-                if (societyId) {
-                    $.getJSON('@Url.Action("GetBlocksBySociety", "Member")', { societyId: societyId }, function (data) {
-                        $.each(data, function (i, block) {
-                            $("#Block").append($('<option>', { value: block.blockId, text: block.blockName }));
-                        });
-                    });
+                if (!societyId) return;
+                 $.ajax({
+                url: '@Url.Action("GetBlocksBySociety", "MembersQrList")',
+                method: 'GET',
+                data: { societyId: societyId },
+                dataType: 'json'
+            })
+            .done(function (data) {
+                if (!data || data.length === 0) {
+                    $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                    return;
                 }
+
+                $.each(data, function (i, block) {
+                    $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
+                });
+
+            })
+            .fail(function () {
+                $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                $blockempty.append('<span class="text-danger">No Blocks found for this Society.</span>');
+            });
             });
 
             $("#Block").change(function () {

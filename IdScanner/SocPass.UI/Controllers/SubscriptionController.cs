@@ -79,7 +79,10 @@ namespace SocPass.UI.Controllers
             bool exists = await _subscriptionService.ExistsSocietyDataAsync(subscription.SocietyId, subscription.SubscriptionId);
             if (exists)
             {
-                ModelState.AddModelError("SocietyId", "This society already has a subscription.");
+                var errormessage ="This society already has a subscription.";
+                ViewBag.ErrorMessage = errormessage;
+                var SocietyList = await _societyService.GetAllSocietyAsync();
+                ViewBag.SocietyList = SocietyList;
                 return View("AddSubScription", subscription);
             }
 

@@ -65,6 +65,7 @@
 										<select id="Block" class="form-select">
 											<option value="">-- Select Block --</option>
 										</select>
+										<div id="EmptyBlockMsg"></div>
 									</div>
 
 									<!-- Date Picker -->
@@ -90,14 +91,32 @@
 			function loadBlocks(societyId) {
 				$("#Block").empty().append('<option value="">-- Select Block --</option>');
 				$("#flatContainer").empty();
+				var $blockempty = $("#EmptyBlockMsg");
+			$blockempty.empty();
 
-				if (societyId) {
-					$.getJSON('@Url.Action("GetBlocksBySociety", "Report")', { societyId: societyId }, function (blocks) {
-						$.each(blocks, function (i, block) {
-							$("#Block").append($('<option>', { value: block.blockId, text: block.blockName }));
-						});
-					});
+				if (!societyId) return;
+
+			$.ajax({
+				url: '@Url.Action("GetBlocksBySociety", "Member")',
+				method: 'GET',
+				data: { societyId: societyId },
+				dataType: 'json'
+			})
+			.done(function (data) {
+				if (!data || data.length === 0) {
+					$("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+					return;
 				}
+
+				$.each(data, function (i, block) {
+					$("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
+				});
+
+			})
+			.fail(function () {
+				$("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+				$blockempty.append('<span class="text-danger">No Blocks found for this Society.</span>');
+			});
 			}
 
 			function loadReport() {

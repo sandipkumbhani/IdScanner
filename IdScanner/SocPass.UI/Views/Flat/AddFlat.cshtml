@@ -1,137 +1,136 @@
 ﻿@model SocPass.Domain.Model.Flat
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    bool isNew = Model.FlatId == 0;
-    bool isChecked = Model.IsActive || isNew;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	bool isNew = Model.FlatId == 0;
+	bool isChecked = Model.IsActive || isNew;
 }
 <html>
 <head>
-    <title>SocPass | Add Flats</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
-    @* <style>
-        .text-danger { color: red; font-size: 0.875rem; display: none; }
-    </style> *@
+	<title>SocPass | Add Flats</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
 </head>
 <body>
-<div class="content-page">
-    <div class="content">
-        <div class="main-inner container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card com-profile-info">
-                        <div class="top-details">
-                            <h2 class="page-form-title">Flats Details</h2>
-                            <form id="flatForm" class="row all-custom-class" method="post" action="@Url.Action("AddFlat", "Flat")">
-                                @Html.HiddenFor(m => m.FlatId)
+	<div class="content-page">
+		<div class="content">
+			<div class="main-inner container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="card com-profile-info">
+							<div class="top-details">
+								<h2 class="page-form-title">Flats Details</h2>
 
-                                <!-- Society -->
-                                <div class="col-md-6 mb-3">
-                                    <div class="item-input">
-                                            <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
-                                            @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
+								@if (ViewBag.ErrorMessage != null)
+								{
+									<div>
+										<span class="text-danger">@ViewBag.ErrorMessage</span>
+									</div>
+								}
 
-                                            <select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">
+								<form id="flatForm" class="row all-custom-class" method="post" action="@Url.Action("AddFlat", "Flat")">
+									@Html.HiddenFor(m => m.FlatId)
 
-                                                <option value="">-- Select Society --</option>
-                                            </select>
-                                            <input type="hidden" asp-for="SocietyId" />
-                                            <span asp-validation-for="SocietyId" class="text-danger"></span>
-                                    </div>
-                                </div>
+									<!-- Society -->
+									<div class="col-md-6 mb-3">
+										<div class="item-input">
+											<label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
+											@* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
 
-                                <!-- Block -->
-                                <div class="col-md-6 mb-3">
-                                    <div class="item-input">
-                                        <label for="BlockId" class="form-label required fw-semibold fs-6">Block Name</label>
-                                        <select id="BlockId" name="BlockId" class="form-select form-control userinput" data-required-message="Please select a block.">
-                                            <option value="0">-- Select Block --</option>
-                                        </select>
-                                        <span class="text-danger"></span>
-                                    </div>
-                                </div>
+											<select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">
 
-                                <!-- Entry Mode -->
-                                <div class="col-md-12 mb-3">
-                                    <div class="item-input">
-                                        <label class="form-label required fw-semibold fs-6">Entry Mode</label>
-                                        <div class="d-flex gap-4" id="entryModeContainer">
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" id="RangeMode" name="EntryMode" value="Range" data-required-message="Please select a flat entry mode." />
-                                                <label class="form-check-label" for="RangeMode">Range</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" id="ManualMode" name="EntryMode" value="Manual" data-required-message="Please select a flat entry mode." />
-                                                <label class="form-check-label" for="ManualMode">Manual</label>
-                                            </div>
-                                        </div>
-                                        <span class="text-danger"></span>
-                                    </div>
-                                </div>
+												<option value="">-- Select Society --</option>
+											</select>
+											<input type="hidden" asp-for="SocietyId" />
+											<span asp-validation-for="SocietyId" class="text-danger"></span>
+										</div>
+									</div>
 
-                                <!-- Range Fields -->
-                                <div id="rangeFields" class="row" style="display:none;">
-                                    <div class="col-md-3 mb-3">
-                                        <div class="item-input">
-                                            <label class="form-label required fw-semibold fs-6">Start Range</label>
-                                            <input type="number" name="StartFlatNumber" class="form-control userinput" data-required-message="Start range is required.">
-                                            <span class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="item-input">
-                                            <label class="form-label required fw-semibold fs-6">End Range</label>
-                                            <input type="number" name="EndFlatNumber" class="form-control userinput" data-required-message="End range is required.">
-                                            <span class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="item-input">
-                                            <label class="form-label required fw-semibold fs-6">Flats Per Floor</label>
-                                            <input type="number" name="NumberOfFlats" class="form-control userinput" data-required-message="Flats per floor is required.">
-                                            <span class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="item-input">
-                                            <label class="form-label required fw-semibold fs-6">Floor Number</label>
-                                            <input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
-                                            <span class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
+									<!-- Block -->
+									<div class="col-md-6 mb-3">
+										<div class="item-input">
+											<label for="BlockId" class="form-label required fw-semibold fs-6">Block Name</label>
+											<select id="BlockId" name="BlockId" class="form-select form-control userinput" data-required-message="Please select a block.">
+												<option value="0">-- Select Block --</option>
+											</select>
+											<span class="text-danger"></span>
+											<div id="EmptyBlockMsg"></div>
+										</div>
+									</div>
 
-                                <!-- Manual Fields -->
-                                <div id="manualFields" class="row" style="display:none;">
-                                    <div class="col-md-3 mb-3">
-                                        <div class="item-input">
-                                            <label class="form-label required fw-semibold fs-6">Floor Number</label>
-                                            <input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
-                                            <span class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="item-input">
-                                            <label class="form-label required fw-semibold fs-6">Flat Number</label>
-                                            <input type="number" name="FlatNumber" class="form-control userinput" data-required-message="Flat number is required.">
-                                            <span class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
+									<!-- Entry Mode -->
+									<div class="col-md-12 mb-3">
+										<div class="item-input">
+											<label class="form-label required fw-semibold fs-6">Entry Mode</label>
+											<div class="d-flex gap-4" id="entryModeContainer">
+												<div class="form-check">
+													<input type="radio" class="form-check-input" id="RangeMode" name="EntryMode" value="Range" data-required-message="Please select a flat entry mode." />
+													<label class="form-check-label" for="RangeMode">Range</label>
+												</div>
+												<div class="form-check">
+													<input type="radio" class="form-check-input" id="ManualMode" name="EntryMode" value="Manual" data-required-message="Please select a flat entry mode." />
+													<label class="form-check-label" for="ManualMode">Manual</label>
+												</div>
+											</div>
+											<span class="text-danger"></span>
+										</div>
+									</div>
 
-                                <!-- IsActive -->
-                                <div class="col-md-6 mb-3 d-flex align-items-center">
-                                    <input type="checkbox" name="IsActive" id="IsActive" class="form-check-input" value="true" @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
-                                    <label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size:16px;">Is Active</label>
-                                </div>
+									<!-- Range Fields -->
+									<div id="rangeFields" class="row" style="display:none;">
+										<div class="col-md-3 mb-3">
+											<div class="item-input">
+												<label class="form-label required fw-semibold fs-6">Start Range</label>
+												<input type="number" name="StartFlatNumber" class="form-control userinput" data-required-message="Start range is required.">
+												<span class="text-danger"></span>
+											</div>
+										</div>
+										<div class="col-md-3 mb-3">
+											<div class="item-input">
+												<label class="form-label required fw-semibold fs-6">End Range</label>
+												<input type="number" name="EndFlatNumber" class="form-control userinput" data-required-message="End range is required.">
+												<span class="text-danger"></span>
+											</div>
+										</div>
+										<div class="col-md-3 mb-3">
+											<div class="item-input">
+												<label class="form-label required fw-semibold fs-6">Flats Per Floor</label>
+												<input type="number" name="NumberOfFlats" class="form-control userinput" data-required-message="Flats per floor is required.">
+												<span class="text-danger"></span>
+											</div>
+										</div>
+										<div class="col-md-3 mb-3">
+											<div class="item-input">
+												<label class="form-label required fw-semibold fs-6">Floor Number</label>
+												<input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
+												<span class="text-danger"></span>
+											</div>
+										</div>
+									</div>
 
-                                    @if (ViewBag.ErrorMessage != null)
-                                    {
-                                        <div>
-                                            <span class="alert alert-danger d-inline-block px-3 py-2 m-0">@ViewBag.ErrorMessage</span>
-                                        </div>
-                                    }
+									<!-- Manual Fields -->
+									<div id="manualFields" class="row" style="display:none;">
+										<div class="col-md-3 mb-3">
+											<div class="item-input">
+												<label class="form-label required fw-semibold fs-6">Floor Number</label>
+												<input type="number" name="FloorNumber" class="form-control userinput" data-required-message="Floor number is required.">
+												<span class="text-danger"></span>
+											</div>
+										</div>
+										<div class="col-md-3 mb-3">
+											<div class="item-input">
+												<label class="form-label required fw-semibold fs-6">Flat Number</label>
+												<input type="number" name="FlatNumber" class="form-control userinput" data-required-message="Flat number is required.">
+												<span class="text-danger"></span>
+											</div>
+										</div>
+									</div>
 
-                                    @* <!-- Buttons -->
+									<!-- IsActive -->
+									<div class="col-md-6 mb-3 d-flex align-items-center">
+										<input type="checkbox" name="IsActive" id="IsActive" class="form-check-input" value="true" @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
+										<label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size:16px;">Is Active</label>
+									</div>
+
+									@* <!-- Buttons -->
                                 <div class="col-12">
                                     <div class="button-main d-flex gap-2 mt-3">
                                         <button type="submit" class="card-link"><i class="ri-save-line"></i><span>Save</span></button>
@@ -143,133 +142,161 @@
                                     </div>
                                 </div> *@
 
-                                    <div class="button-main d-flex gap-3 mt-4">
-                                        <button type="submit" id="saveFlatBtnGlobal" class="card-link">
-                                            <i class="ri-save-line"></i> <span>Save</span>
-                                        </button>
+									<div class="button-main d-flex gap-3 mt-4">
+										<button type="submit" id="saveFlatBtnGlobal" class="card-link">
+											<i class="ri-save-line"></i> <span>Save</span>
+										</button>
 
-                                        @if (Model.FlatId == 0)
-                                        {
-                                            <button type="reset" id="clearBtn" class="card-link outline-bar">
-                                                <i class="ri-refresh-line"></i> <span>Clear</span>
-                                            </button>
-                                        }
+										@if (Model.FlatId == 0)
+										{
+											<button type="reset" id="clearBtn" class="card-link outline-bar">
+												<i class="ri-refresh-line"></i> <span>Clear</span>
+											</button>
+										}
 
-                                        <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
-                                            <i class="bi bi-eye"></i> <span>View</span>
-                                        </a>
-                                    </div>
+										<a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
+											<i class="bi bi-eye"></i> <span>View</span>
+										</a>
+									</div>
 
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-<script>
-$(document).ready(function(){
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
 
-    // Entry mode toggle
-    function toggleFields(){
-        if($("#RangeMode").is(":checked")){
-            $("#rangeFields").show(); $("#manualFields").hide();
-        } else if($("#ManualMode").is(":checked")){
-            $("#rangeFields").hide(); $("#manualFields").show();
-        } else { $("#rangeFields, #manualFields").hide(); }
-    }
-    toggleFields();
-    $("input[name='EntryMode']").change(toggleFields);
+				// Entry mode toggle
+				function toggleFields(){
+					if($("#RangeMode").is(":checked")){
+						$("#rangeFields").show(); $("#manualFields").hide();
+					} else if($("#ManualMode").is(":checked")){
+						$("#rangeFields").hide(); $("#manualFields").show();
+					} else { $("#rangeFields, #manualFields").hide(); }
+				}
+				toggleFields();
+				$("input[name='EntryMode']").change(toggleFields);
 
-    // Load blocks
-    function loadBlocks(selectedBlockId = 0){
-        var societyId = $("#SocietyId").val();
-        var $blockDropdown = $("#BlockId");
-        $blockDropdown.html('<option value="0">-- Select Block --</option>');
-        if(!societyId || societyId=="0") return;
+				// Load blocks
+				function loadBlocks(selectedBlockId = 0){
+					var societyId = $("#SocietyId").val();
+					var $blockDropdown = $("#BlockId");
+								var $blockempty = $("#EmptyBlockMsg");
+									$blockempty.empty();
+					$blockDropdown.html('<option value="0">-- Select Block --</option>');
+					if(!societyId || societyId=="0") return;
 
-        $.getJSON('/Flat/GetBlocksBySociety', { societyId: societyId }, function(data){
-            $.each(data, function(i,b){
-                var selected = (b.blockId==selectedBlockId) ? 'selected' : '';
-                $blockDropdown.append('<option value="'+b.blockId+'" '+selected+'>'+b.blockNumber+'</option>');
-            });
-        });
-    }
+					// $.getJSON('/Flat/GetBlocksBySociety', { societyId: societyId }, function(data){
+					//     $.each(data, function(i,b){
+					//         var selected = (b.blockId==selectedBlockId) ? 'selected' : '';
+					//         $blockDropdown.append('<option value="'+b.blockId+'" '+selected+'>'+b.blockNumber+'</option>');
+					//     });
+					// });
+								$.ajax({
+								url: '@Url.Action("GetBlocksBySociety", "Member")',
+								method: 'GET',
+								data: { societyId: societyId },
+								dataType: 'json'
+							}).done(function (data) {
+								// If API returns an empty array (200 OK + []), show message
+								if (!data || data.length === 0) {
+									$blockDropdown.empty().append('<option value="">-- No Blocks available --</option>');
+									return;
+								}
 
-    // Initialize blocks if editing or non-admin with prefilled society
-    var initialBlockId = "@Model.BlockId";
-    var isSocietyReadonly = "@ViewBag.IsSocietyReadonly" === "True";
-    if($("#SocietyId").val() && $("#SocietyId").val()!="0"){
-        loadBlocks(initialBlockId);
-    }
+								$.each(data, function (i, block) {
+									var selected = selectedBlockId == block.blockId ? 'selected' : '';
+									$blockDropdown.append('<option value="' + block.blockId + '" ' + selected + '>' + block.blockName + '</option>');
+								});
 
-    // Admin: reload blocks on society change
-    if(!isSocietyReadonly){
-        $("#SocietyId").change(function(){ loadBlocks(0); });
-    }
+								if (selectedBlockId) {
+									$blockDropdown.trigger('change');
+								}
+							}).fail(function () {
+								// Show API message when NotFound or return a generic error
+								var msg = 'No Blocks found for this Society.';
+								$blockDropdown.empty().append('<option value="">-- No Blocks available --</option>');
+								$blockempty.append('<span class="text-danger">' + msg + '</span>');
+							});
+				}
 
-    // Form validation
-    $("#flatForm").submit(function(e){
-        var isValid=true;
-        $(".text-danger").hide().text("");
+				// Initialize blocks if editing or non-admin with prefilled society
+				var initialBlockId = "@Model.BlockId";
+				var isSocietyReadonly = "@ViewBag.IsSocietyReadonly" === "True";
+				if($("#SocietyId").val() && $("#SocietyId").val()!="0"){
+					loadBlocks(initialBlockId);
+				}
 
-        $(this).find("[data-required-message]:visible").each(function(){
-            if(!$(this).val() || $(this).val()=="0"){
-                $(this).next(".text-danger").text($(this).data("required-message")).show();
-                isValid=false;
-            }
-        });
+				// Admin: reload blocks on society change
+				if(!isSocietyReadonly){
+					$("#SocietyId").change(function(){ loadBlocks(0); });
+				}
 
-        if(!$("input[name='EntryMode']:checked").length){
-            $("input[name='EntryMode']").closest(".item-input").find(".text-danger")
-                .text("Please select a flat entry mode").show();
-            isValid=false;
-        }
+				// Form validation
+				$("#flatForm").submit(function(e){
+					var isValid=true;
+					$(".text-danger").hide().text("");
 
-                    var $societyDropdown = $("#SocietyId");
-            var $societyError = $societyDropdown.closest(".item-input").find(".text-danger");
+					$(this).find("[data-required-message]:visible").each(function(){
+						if(!$(this).val() || $(this).val()=="0"){
+							$(this).next(".text-danger").text($(this).data("required-message")).show();
+							isValid=false;
+						}
+					});
 
-            if ((!$societyDropdown.val() || $societyDropdown.val() === "0") && !$societyDropdown.is(":disabled")) {
-                $societyError.text("Please select a society.").show();
-                isValid = false;
-            } else if ($societyDropdown.is(":disabled") && !$("input[name='SocietyId']").val()) {
-                // handle case where dropdown is disabled but hidden input has no value
-                $societyError.text("Please select a society.").show();
-                isValid = false;
-            } else {
-                $societyError.text("").hide();
-            }
+					if(!$("input[name='EntryMode']:checked").length){
+						$("input[name='EntryMode']").closest(".item-input").find(".text-danger")
+							.text("Please select a flat entry mode").show();
+						isValid=false;
+					}
 
-        if(!isValid) e.preventDefault();
-    });
-});
+								var $societyDropdown = $("#SocietyId");
+						var $societyError = $societyDropdown.closest(".item-input").find(".text-danger");
 
-function toggleFields(){
-    if($("#RangeMode").is(":checked")){
-        $("#rangeFields").show();
-        $("#manualFields").hide();
+						if ((!$societyDropdown.val() || $societyDropdown.val() === "0") && !$societyDropdown.is(":disabled")) {
+							$societyError.text("Please select a society.").show();
+							isValid = false;
+						} else if ($societyDropdown.is(":disabled") && !$("input[name='SocietyId']").val()) {
+							// handle case where dropdown is disabled but hidden input has no value
+							$societyError.text("Please select a society.").show();
+							isValid = false;
+						} else {
+							$societyError.text("").hide();
+						}
 
-        // Enable range floor and disable manual
-        $("#rangeFields input").prop("disabled", false);
-        $("#manualFields input").prop("disabled", true);
-    } else if($("#ManualMode").is(":checked")){
-        $("#rangeFields").hide();
-        $("#manualFields").show();
+					if(!isValid) e.preventDefault();
+				});
+			});
 
-        // Enable manual floor and disable range
-        $("#rangeFields input").prop("disabled", true);
-        $("#manualFields input").prop("disabled", false);
-    } else {
-        $("#rangeFields, #manualFields").hide();
-        $("#rangeFields input, #manualFields input").prop("disabled", true);
-    }
-}
-            $(document).ready(function(){
-                toggleFields();
-                $("input[name='EntryMode']").change(toggleFields);
-            });
-</script>
+			function toggleFields(){
+				if($("#RangeMode").is(":checked")){
+					$("#rangeFields").show();
+					$("#manualFields").hide();
+
+					// Enable range floor and disable manual
+					$("#rangeFields input").prop("disabled", false);
+					$("#manualFields input").prop("disabled", true);
+				} else if($("#ManualMode").is(":checked")){
+					$("#rangeFields").hide();
+					$("#manualFields").show();
+
+					// Enable manual floor and disable range
+					$("#rangeFields input").prop("disabled", true);
+					$("#manualFields input").prop("disabled", false);
+				} else {
+					$("#rangeFields, #manualFields").hide();
+					$("#rangeFields input, #manualFields input").prop("disabled", true);
+				}
+			}
+						$(document).ready(function(){
+							toggleFields();
+							$("input[name='EntryMode']").change(toggleFields);
+						});
+		</script>
 </body>
 </html>
