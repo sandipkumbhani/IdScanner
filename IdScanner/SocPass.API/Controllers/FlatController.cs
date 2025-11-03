@@ -136,11 +136,11 @@ namespace SocPass.API.Controllers
             return Ok(flats);
         }
         [HttpGet("GetQR")]
-        public async Task<IActionResult> GetQR(int blockid)
+        public async Task<IActionResult> GetQR(int blockid, int eventId)
         {
             try
             {
-                var result = await _flatService.GetMemberQr(blockid);
+                var result = await _flatService.GetMemberQr(blockid, eventId);
                 return Ok(result);
             }
             catch (KeyNotFoundException ex)
@@ -149,11 +149,11 @@ namespace SocPass.API.Controllers
             }
         }
         [HttpGet("GetGuestQR")]
-        public async Task<IActionResult> GetGuestQR(int blockid)
+        public async Task<IActionResult> GetGuestQR(int blockid, int EventId)
         {
             try
             {
-                var result = await _flatService.GetGuestQr(blockid);
+                var result = await _flatService.GetGuestQr(blockid, EventId);
                 return Ok(result);
             }
             catch (KeyNotFoundException ex)

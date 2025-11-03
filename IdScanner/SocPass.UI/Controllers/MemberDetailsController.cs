@@ -20,15 +20,15 @@ namespace SocPass.UI.Controllers
             _globalClass = globalClass;
         }
 
-        [HttpGet("MemberDetails/GetDetails/{memberId}")]
-        public async Task<IActionResult> GetDetails(int memberId)
+        [HttpGet("MemberDetails/GetDetails/{memberId}/{EventId}")]
+        public async Task<IActionResult> GetDetails(int memberId, int EventId)
         {
             if (memberId == 0)
             {
                 return BadRequest("Member Id is not found.");
             }
 
-            var result = await _memberService.GetMemberByMemberId(memberId);
+            var result = await _memberService.GetMemberByMemberId(memberId, EventId);
             if (result == null)
             {
                 return NotFound();
@@ -44,7 +44,7 @@ namespace SocPass.UI.Controllers
             return View("~/Views/MemberDetails/MemberDetails.cshtml", result);
         }
         [HttpPost]
-        public async Task<IActionResult> IsVisited(int memberId)
+        public async Task<IActionResult> IsVisited(int memberId, int EventId)
         {
             if (memberId == 0)
             {
@@ -54,14 +54,15 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int loggedInUserId);
 
-            bool success = await _memberDetailsService.IsVisitedAsync(memberId, loggedInUserId);
+            bool success = await _memberDetailsService.IsVisitedAsync(memberId, EventId,loggedInUserId);
 
             TempData["Message"] = success
                 ? "Member marked as visited successfully."
                 : "Something went wrong. Please try again.";
             TempData["AlertType"] = success ? "success" : "danger";
 
-            return RedirectToAction(nameof(GetDetails), new { memberId });
+            return RedirectToAction(nameof(GetDetails), new { memberId = memberId, EventId = EventId });
+
         }
 
     }

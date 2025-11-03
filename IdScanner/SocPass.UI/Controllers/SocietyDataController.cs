@@ -32,32 +32,39 @@ namespace SocPass.UI.Controllers
             _subscriptionService = subscriptionService;
             _globalClass = globalClass;
         }
-
-        // LIST
         public async Task<IActionResult> SocietyDataList()
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction("AccessDenied", "AccessDenied");
             }
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-            var societyDataList = (await _societyDataService.GetAllSocietyDataAsync()).ToList();
-            ViewBag.societyDataList = societyDataList;
-            ViewBag.IsAdmin = User.IsInRole("Admin");
-            if (!User.IsInRole("Admin"))
+            IEnumerable<SocietyData> SocietyDataList;
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                var societies = await _societyService.GetAllSocietyAsync(userId);
-                var userSocietyName = societies.FirstOrDefault()?.Name ?? "";
-                ViewBag.UserSocietyName = userSocietyName;
+                SocietyDataList = await _societyDataService.GetAllSocietyDataAsync();
             }
             else
             {
-                ViewBag.UserSocietyName = "";
+                var societies = await _societyService.GetAllSocietyAsync(userId);
+                var society = societies.FirstOrDefault();
+
+                if (society != null)
+                {
+                    SocietyDataList = (await _societyDataService.GetAllSocietyDataAsync())
+                                .Where(e => e.Flat.SocietyId == society.SocietyId)
+                                .ToList();
+                }
+                else
+                {
+                    SocietyDataList = new List<SocietyData>();
+                }
             }
-            return View(societyDataList);
+            ViewBag.SocietyDataList = SocietyDataList;
+            return View();
         }
 
         [HttpGet]

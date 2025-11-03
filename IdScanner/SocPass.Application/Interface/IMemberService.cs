@@ -13,9 +13,9 @@ namespace SocPass.Application.Interface
         Task CreateAndUpdateGuestAsync(int flatId, int numberOfAdults, List<int> childAges);
         Task CreateAndUpdateMemberAsync(int flatId, int numberOfAdults, List<int> childAges);
         Task<List<Member>> GetMemberByIdAsync(int flatId);
-        Task<bool> AddMemberPassDateAsync(int blockId, DateTime passDate);
-        Task<Member> GetMemberByMemberId(int memberId);
-        Task<bool> IsVisitedAsync(int memberid, int loggedInUserId);
-        Task<bool> AddGuestPassDateAsync(int blockId, DateTime passDate);
+        Task<bool> AddMemberPassDateAsync(int blockId, int EventId);
+        Task<QRCodeMaster> GetMemberByMemberId(int memberId, int EventId);
+        Task<bool> IsVisitedAsync(int memberid, int EventId, int loggedInUserId);
+        Task<bool> AddGuestPassDateAsync(int blockId, int EventId);
     }
 }

@@ -24,6 +24,7 @@ namespace SocPass.Infrastructure.Data
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<UserFlatMapping> userFlatMappings { get; set; }    
         public DbSet<Event> Events { get; set; }
+        public DbSet<QRCodeMaster> QRCodeMasters { get; set; }
 
     }
 }

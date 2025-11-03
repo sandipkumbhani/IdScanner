@@ -91,25 +91,27 @@ namespace SocPass.UI.Controllers
          
                 int pending = f.TotalMember - (visitedAdults + visitedChildren);
 
+                
+
                 flatReports.Add(new
                 {
                     f.FlatId,
                     f.FlatNumber,
                     f.NumberOfAdult,
-                    f.NumberOfChild,
-                    f.TotalMember,
+                    selectedEvent.EventName,
+                    EventDate = eventDate,
                     VisitedAdults = visitedAdults,
                     VisitedChildren = visitedChildren,
                     Pending = pending,
                     HasMembersForDate = filteredMembers.Any()
-                });
-            }
 
             if (filterDate.HasValue && !flatReports.Any(f => (bool)f.GetType().GetProperty("HasMembersForDate")!.GetValue(f)!))
             {
                 return Json(new object[0]);
             }
 
+                });
+            }
             return Json(flatReports);
         }
 

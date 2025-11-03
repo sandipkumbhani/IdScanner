@@ -1,10 +1,7 @@
-﻿@model SocPass.Domain.Model.Block
+﻿@model SocPass.Domain.Model.Event
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var blockList = ViewBag.blockList as IList<SocPass.Domain.Model.Block> ?? new List<SocPass.Domain.Model.Block>();
-    // IList<SocPass.Domain.Model.Block> blockList = ViewBag.blockList;
-    var isAdmin = (bool)(ViewBag.IsAdmin ?? false);
-    var userSocietyName = ViewBag.UserSocietyName ?? "";
+    var EventsList = ViewBag.EventsList as IList<SocPass.Domain.Model.Event> ?? new List<SocPass.Domain.Model.Event>();
 }
 <html>
 <head>
@@ -14,55 +11,72 @@
     <link href="~/css/site.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/app-style.css" rel="stylesheet" />
+    <link href="~/css/addpagination.css" rel="stylesheet" />
     <link rel="StyleSheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="~/css/addpagination.css" rel="stylesheet" />
-    <title>SocPass | BlocksList</title>
+    <title>SocPass | EventList</title>
 
-</head>
+</head> 
 <body>
     <div class="content-page">
         <div class="content">
             <div class="main-inner container-fluid">
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <div class="page-title-box add">
-                            <h1 class="page-title">Block Master</h1>
-                            <div class="add-btn">
-                                <a href="#" id="btnAddBlock">
-                                    <i class="ri-add-line"></i> <span>Add Block</span>
-                                </a>
+                        <div class="col-12">
+                            <div class="page-title-box add">
+                                <h1 class="page-title">Event</h1>
+                                <div class="add-btn">
+                                    <a href="#" id="btnAddEvent">
+                                        <i class="ri-add-line"></i> <span>Add Event</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-12">
                         <div class="card com-profile-info">
+                            <!-- Top Header -->
                             <div class="table-top-header">
-                                <h4>List of Block</h4>
+                                <h4>List of Event</h4>
                             </div>
+                            <!-- Table -->
                             <div class="table-responsive">
                                 <table id="franchiseTable" class="table dt-responsive nowrap w-100">
                                     <thead>
                                         <tr>
+                                            <th class="dt-orderable-asc dt-orderable-desc">Event Name</th>
                                             <th>Society Name</th>
-                                            <th>Block Number</th>
+                                            <th>Event Location</th>
+                                            <th>Event StartDate</th>
+                                            <th>Event EndDate</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
+                                            <th>Organizer</th>
                                             <th>Action</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var block in blockList)
+                                        @foreach (var events in EventsList)
                                         {
                                             <tr>
-                                                <td>@block.Society.Name</td>
-                                                <td>@block.BlockNumber</td>
+                                                <td>@events.EventName</td>
+                                                <td>@events.Society.Name</td>
+                                                <td>@events.Location</td>
+                                                <td>@events.StartDate.ToString("dd-MM-yyyy")</td>
+                                                <td>@events.EndDate.ToString("dd-MM-yyyy")</td>
+                                                <td>@events.StartTime.ToString(@"hh\:mm")</td>
+                                                <td>@events.EndTime.ToString(@"hh\:mm")</td>
+
+                                                <td>@events.Organizer</td>
                                                 <td>
                                                     <div class="action-items">
-                                                        <a href="@Url.Action("AddBlock", "Block", new { blockid = block.BlockId })" class="icon-btn">
+                                                        <a href="@Url.Action("AddEvent", "Event", new { eventId = events.EventId })" class="icon-btn">
                                                             <i class="ri-edit-2-line"></i>
                                                         </a>
-                                                        <a href="@Url.Action("DeleteBlock", "Block", new { blockid = block.BlockId })" class="icon-btn"
-                                                           onclick="return confirm('Are you sure you want to delete this block?');">
+                                                        <a href="@Url.Action("DeleteEvent", "Event", new { eventId = events.EventId })" class="icon-btn"
+                                                           onclick="return confirm('Are you sure you want to delete this menu?');">
                                                             <i class="ri-delete-bin-3-line"></i>
                                                         </a>
                                                     </div>
@@ -71,9 +85,10 @@
                                         }
                                     </tbody>
                                 </table>
+                                <!-- Bottom Area -->
                                 <div class="datatable-footer-bottom">
                                     <div class="totle-left">
-                                        <span id="totalRecords">Total Reminders: @blockList.Count</span>
+                                        <span id="totalRecords">Total Reminders: 3</span>
                                     </div>
                                     <div id="pagination" class="dataTables_paginate paging_simple_numbers"></div>
                                     <div class="show-page">
@@ -88,17 +103,17 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
-         $(document).on("click", "#btnAddBlock", function () {
-                window.location.href = "/Block/AddBlock";
-            });
+        $(document).on("click", "#btnAddEvent", AddEvent);
+
+        function AddEvent() {
+            window.location.href = "/Event/AddEvent";
+        };
     </script>
-    <script src="~/js/addpagination.js"></script>
 </body>
 </html>
+<script src="~/js/addpagination.js"></script>

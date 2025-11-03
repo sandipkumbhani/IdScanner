@@ -87,7 +87,6 @@
 
 	<script>
 				$(document).ready(function () {
-
 			function loadBlocks(societyId) {
 				$("#Block").empty().append('<option value="">-- Select Block --</option>');
 				$("#flatContainer").empty();
@@ -122,13 +121,14 @@
 			function loadReport() {
 				var blockId = $("#Block").val();
 				var selectedDate = $("#ReportDate").val();
+				var eventId = 1;
 				var container = $("#flatContainer");
 				container.empty();
-
 				if (blockId) {
+					debugger;
 					$.getJSON('@Url.Action("GetFlatsByBlock", "Report")',
-						{ blockId: blockId, selectedDate: selectedDate },
-						function (flats) {
+						{ blockId: blockId, eventId: eventId , selectedDate: selectedDate },
+						function (flats) { 
 
 							if (flats.length === 0) {
 								container.append('<p class="text-danger fw-bold">No records matched for the selected date.</p>');
@@ -193,18 +193,15 @@
 				}
 			}
 
-			// Society dropdown change event
 			$("#Society").change(function () {
 				var societyId = $(this).val();
 				loadBlocks(societyId);
 			});
 
-			// Block or Date change event
 			$("#Block, #ReportDate").change(function () {
 				loadReport();
 			});
 
-			// --- Auto-trigger for preselected society ---
 			var selectedSocietyId = '@selectedSocietyId';
 			if (selectedSocietyId && selectedSocietyId !== "0") {
 				// Preload blocks for the selected society

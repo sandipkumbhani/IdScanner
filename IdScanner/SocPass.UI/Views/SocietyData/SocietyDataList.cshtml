@@ -2,77 +2,24 @@
 @model IEnumerable<SocPass.Domain.Model.SocietyData>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // var societyDataList = Model;
-    IList<SocPass.Domain.Model.SocietyData> societyDataList = ViewBag.societyDataList;
-    var isAdmin = (bool)(ViewBag.IsAdmin ?? false);
-    var userSocietyName = ViewBag.UserSocietyName ?? "";
+    var SocietyDataList = ViewBag.SocietyDataList as IList<SocPass.Domain.Model.SocietyData> ?? new List<SocPass.Domain.Model.SocietyData>();
 }
 <html>
 <head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/css/stylesheet.css" rel="stylesheet" />
     <link href="~/css/addpagination.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.rtl.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.rtl.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/wwwroot/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/wwwroot/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/app-style.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>SocPass | SocietyDataList</title>
 </head>
-<style>
-    /* Pagination container */
-    .dataTables_paginate {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        margin-top: 15px;
-    }
-
-        .dataTables_paginate a,
-        .dataTables_paginate button {
-            min-width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0 12px;
-            font-size: 16px;
-            border-radius: 10px;
-            background: white;
-            color: #000;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border: none;
-        }
-
-            /* Hover */
-            .dataTables_paginate a:hover,
-            .dataTables_paginate button:hover {
-                background: #f0f0f0;
-            }
-
-        /* Active page (match Add Block button) */
-        .dataTables_paginate .current,
-        .dataTables_paginate .page-number.active {
-            background-color: #0466C8; /* Replace with your actual Add Block button bg color */
-            color: #fff !important;
-            font-weight: 600;
-            border: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Disabled */
-        .dataTables_paginate .disabled,
-        .dataTables_paginate button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Previous / Next */
-        .dataTables_paginate .previous a,
-        .dataTables_paginate .next a {
-            font-size: 16px;
-            font-weight: 500;
-            border-radius: 10px;
-        }
-</style>
 <body>
     <div class="content-page">
         <div class="content">
@@ -111,7 +58,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var societyData in societyDataList)
+                                        @foreach (var societyData in SocietyDataList)
                                         {
                                             <tr>
                                                 <td>@societyData.Flat?.Block?.Society?.Name</td>
@@ -161,103 +108,8 @@
     </div> 
 
     <script type="text/javascript">
-         $(document).ready(function () {
-           var isAdmin = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(isAdmin));
-            var userSocietyName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(userSocietyName));
-
-            // Filter rows for non-admin users
-            if (!isAdmin && userSocietyName) {
-                $('#franchiseTable tbody tr').each(function () {
-                    var societyName = $(this).find('td:eq(0)').text().trim();
-                    if (societyName !== userSocietyName) {
-                        $(this).addClass("society-hidden").hide(); // mark filtered rows
-                    }
-                });
-            }
-
-            // Add Block button
-            $(document).on("click", "#btnAddSocietyData", function () {
-                window.location.href = "/SocietyData/AddSocietyData";
-            });
-
-            function getFilteredRows() {
-                return $('#franchiseTable tbody tr').not(".society-hidden");
-            }
-
-            function updateTotalRecords() {
-                var totalFilteredRows = getFilteredRows().length;
-                $('#totalRecords').text('Total Reminders: ' + totalFilteredRows);
-            }
-
-            // Show a specific page
-            var currentPage = 1;
-            function showPage(page, rowsPerPage, $rows) {
-                $rows.hide();
-                var start = (page - 1) * rowsPerPage;
-                $rows.slice(start, start + rowsPerPage).show();
-
-                currentPage = page;
-                updateTotalRecords(); // ✅ always show correct total
-            }
-
-            // Pagination function
-            function paginateTable() {
-                var rowsPerPage = parseInt($('#rowsPerPage').val());
-                var $rows = getFilteredRows();
-
-                var totalRows = $rows.length;
-                var totalPages = Math.ceil(totalRows / rowsPerPage);
-                var $pagination = $('#pagination');
-
-                $pagination.empty();
-
-                // Left arrow
-                if (totalPages > 1) {
-                    $pagination.append('<a href="#" class="page-link page-prev">&lt;</a>');
-                }
-
-                // Numbered pages
-                for (var i = 1; i <= totalPages; i++) {
-                    $pagination.append('<a href="#" class="page-link page-number" data-page="' + i + '">' + i + '</a>');
-                }
-
-                // Right arrow
-                if (totalPages > 1) {
-                    $pagination.append('<a href="#" class="page-link page-next">&gt;</a>');
-                }
-
-                showPage(currentPage, rowsPerPage, $rows);
-                highlightCurrentPage();
-
-                // Click events
-                $pagination.off('click').on('click', '.page-link', function (e) {
-                    e.preventDefault();
-                    if ($(this).hasClass('page-prev')) {
-                        if (currentPage > 1) currentPage--;
-                    } else if ($(this).hasClass('page-next')) {
-                        if (currentPage < totalPages) currentPage++;
-                    } else {
-                        currentPage = parseInt($(this).data('page'));
-                    }
-                    showPage(currentPage, rowsPerPage, $rows);
-                    highlightCurrentPage();
-                });
-
-                function highlightCurrentPage() {
-                    $pagination.find('.page-number').removeClass('active');
-                    $pagination.find('.page-number[data-page="' + currentPage + '"]').addClass('active');
-                }
-
-                // ✅ Always update once on init
-                updateTotalRecords();
-            }
-
-            // Initialize pagination
-            paginateTable();
-            $('#rowsPerPage').change(function () {
-                currentPage = 1;
-                paginateTable();
-            });
+        $(document).on("click", "#btnAddSocietyData", function () {
+            window.location.href = "/SocietyData/AddSocietyData";
         });
     </script>
 </body>

@@ -9,6 +9,6 @@ namespace SocPass.UI.Domain.Interfaces
 {
     public interface IUserFlatMappingRepository
     {
-        Task<List<Member>> GetQrByUserId(int? userid);
+        Task<List<QRCodeMaster>> GetQrByUserId(int? userid, int EventId);
     }
 }

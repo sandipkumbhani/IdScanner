@@ -24,24 +24,32 @@ namespace SocPass.Infrastructure.Repository
             return userFlatMapping;
 
         }
-        public async Task<List<Member>> GetMembersByUserIdAsync(int loginUserId)
+        public async Task<List<QRCodeMaster>> GetQrByUserId(int userId, int? eventId = null)
         {
-            var flatId = await _context.userFlatMappings
-                .Where(x => x.UserId == loginUserId && x.IsActive==true)
-                .Select(x => x.FlatId)
-                .FirstOrDefaultAsync(); 
+            var qrList = await (from ufm in _context.userFlatMappings
+                                where ufm.UserId == userId && ufm.IsActive
+                                let flatId = ufm.FlatId
+                                where flatId != 0
+                                join m in _context.members on flatId equals m.FlatId
+                                where m.IsActive
+                                select m.MemberId)
+                 .Distinct()
+                 .Join(_context.QRCodeMasters.Where(q => q.IsActive),
+                       memberId => memberId,
+                       qr => qr.MemberId,
+                       (memberId, qr) => qr)
+                 .Include(q => q.Member)
+                 .Include(q => q.Event)
+                 .ToListAsync();
 
-            if (flatId == 0)
+            if (eventId.HasValue && eventId.Value != 0)
             {
-                return new List<Member>();
+                qrList = qrList.Where(q => q.EventId == eventId.Value).ToList();
             }
-            var members = await _context.members
-                .Where(m => m.FlatId == flatId && m.IsActive)
-                .ToListAsync();
 
-            return members;
-
+            return qrList;
         }
+
         public async Task<UserFlatMapping> GetMappingByUserId(int userid)
         {
             return await _context.userFlatMappings

@@ -64,22 +64,22 @@ namespace SocPass.API.Controllers
             return Ok(members);
         }
         [HttpPut("AddPassdate")]
-        public async Task<IActionResult> AddPassDate(int blockId, DateTime passDate)
+        public async Task<IActionResult> AddPassDate(int blockId, int EventId)
         {
-            var result = await _memberService.AddMemberPassDateAsync(blockId, passDate);
+            var result = await _memberService.AddMemberPassDateAsync(blockId, EventId);
             return Ok(result);
         }
         [HttpPut("AddGuestPassdate")]
-        public async Task<IActionResult> AddGuestPassDate(int blockId, DateTime passDate)
+        public async Task<IActionResult> AddGuestPassDate(int blockId, int EventId)
         {
-            var result = await _memberService.AddGuestPassDateAsync(blockId, passDate);
+            var result = await _memberService.AddGuestPassDateAsync(blockId, EventId);
             return Ok(result);
         }
         [AllowAnonymous]
         [HttpGet("GetMemberByMemberId")]
-        public async Task<IActionResult> GetmemberById(int memberId)
+        public async Task<IActionResult> GetmemberById(int memberId,int EventId)
         {
-            var result = await _memberService.GetMemberByMemberId(memberId);
+            var result = await _memberService.GetMemberByMemberId(memberId, EventId);
 
             if (result == null)
                 return NotFound();
@@ -88,14 +88,14 @@ namespace SocPass.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost("IsVisited")]
-        public async Task<IActionResult> IsVisitedAsync(int memberId, int loggedInUserId)
+        public async Task<IActionResult> IsVisitedAsync(int memberId,int EventId, int loggedInUserId)
         {
             if (memberId <= 0)
             {
                 return BadRequest(new { Message = "Valid Member Id is required." });
             }
             
-            bool isVisited = await _memberService.IsVisitedAsync(memberId, loggedInUserId);
+            bool isVisited = await _memberService.IsVisitedAsync(memberId, EventId, loggedInUserId);
             if (isVisited)
             {
                 return Ok(new { Message = "Member is visiting." });

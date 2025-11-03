@@ -7,50 +7,50 @@
 <head>
     <title>SocPass | Add Block</title>
 </head>
-    <body>
-<div class="content-page">
-    <div class="content">
-        <div class="main-inner container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card com-profile-info">
-                        <div class="top-details">
-                            <h2 class="page-form-title">Add Block Details</h2>
-                            <form asp-action="AddBlock" asp-controller="Block" method="post" class="row all-custom-class">
+<body>
+    <div class="content-page">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Add Block Details</h2>
+                                <form asp-action="AddBlock" asp-controller="Block" method="post" class="row all-custom-class">
 
-                                <input type="hidden" asp-for="BlockId" />
+                                    <input type="hidden" asp-for="BlockId" />
                                     @if (ViewBag.ErrorMessage != null)
                                     {
-                <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                    }
+                                        <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                     }
 
                                     @if (ViewBag.BlockNumberMsg != null)
                                     {
-            <div class="alert alert-warning">@ViewBag.BlockNumberMsg</div>
+                                        <div class="alert alert-warning">@ViewBag.BlockNumberMsg</div>
                                     }
                                     <div class="col-md-6 mb-3">
-                                    <div class="item-input">
-                                        <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
-                                        @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
+                                        <div class="item-input">
+                                            <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
+                                            @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
 
                                             <select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">
 
-                                            <option value="">-- Select Society --</option>
-                                        </select>
+                                                <option value="">-- Select Society --</option>
+                                            </select>
                                             <input type="hidden" asp-for="SocietyId" />
-                                        <span asp-validation-for="SocietyId" class="text-danger"></span>
+                                            <span asp-validation-for="SocietyId" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                </div>
 
                                     <div class="col-md-6 mb-3">
-                                    <div class="item-input">
-                                        <label asp-for="BlockNumber" class="form-label required fw-semibold fs-6"></label>
-                                        <input asp-for="BlockNumber" class="form-control userinput" />
-                                        <span asp-validation-for="BlockNumber" class="text-danger"></span>
+                                        <div class="item-input">
+                                            <label asp-for="BlockNumber" class="form-label required fw-semibold fs-6"></label>
+                                            <input asp-for="BlockNumber" class="form-control userinput" />
+                                            <span asp-validation-for="BlockNumber" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                @*   <div   class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
+                                    @*   <div   class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
                                         <button type="submit" class="card-link">
                                             <span>Save</span>
                                         </button>
@@ -78,14 +78,14 @@
                                         </a>
                                     </div>
 
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
 

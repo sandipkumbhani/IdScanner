@@ -25,9 +25,9 @@ namespace SocPass.UI.Infrastructure.Provider
             apiCredential = new APICredential(configuration);
             _globalClass = globalClass;
         }
-        public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
+        public async Task<bool> IsVisitedAsync(int memberid, int EventId, int loggedInUserId)
         {
-            var baseUrl = $"{apiCredential.url}Member/IsVisited?memberid={memberid}&loggedInUserId={loggedInUserId}";
+            var baseUrl = $"{apiCredential.url}Member/IsVisited?memberid={memberid}&EventId={EventId}&loggedInUserId={loggedInUserId}";
             var response = await _httpClient.PostAsync(baseUrl, null);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();

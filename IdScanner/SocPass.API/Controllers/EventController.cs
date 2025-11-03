@@ -35,10 +35,24 @@ namespace SocPass.API.Controllers
             var getEvent = await _eventService.GetAllEventAsync();
             return Ok(getEvent);
         }
+        [AllowAnonymous]
+        [HttpGet("getEventBySocietyId")]
+        public async Task<IActionResult> getEventBySocietyId(int SocietyId)
+        {
+            var getEvent = await _eventService.GetEventBySocietyAsync(SocietyId);
+            return Ok(getEvent);
+        }
+        [AllowAnonymous]
+        [HttpGet("getEventByUserId")]
+        public async Task<IActionResult> GetEventByUserId(int userid)
+        {
+            var getEvent = await _eventService.GetEventByUserId(userid);
+            return Ok(getEvent);
+        }
         [HttpPost("Add-Event")]
         public async Task<IActionResult> AddEvent([FromBody] Event events)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) 
             {
                 return BadRequest(ModelState);
             }
@@ -83,5 +97,6 @@ namespace SocPass.API.Controllers
                 }
             }
         }
+
     }
 }

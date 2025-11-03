@@ -30,7 +30,7 @@ namespace SocPass.Infrastructure.Repository
         public async Task<MenuMaster> GetMenuById(int menuid)
         {
             return _context.MenuMasters
-                .FirstOrDefault(e => e.MenuId == menuid);
+                .FirstOrDefault(e => e.MenuId == menuid && e.IsActive==true);
         }
         public async Task DeleteMenuAsync(int menuId)
         {

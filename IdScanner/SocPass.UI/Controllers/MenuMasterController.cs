@@ -11,13 +11,10 @@ namespace SocPass.UI.Controllers
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;
-        private readonly GlobalClass _globalClass;
-        public MenuMasterController(IMenuMasterService menuMasterService,GlobalClass globalClass)
-
+        public MenuMasterController(IMenuMasterService menuMasterService)
         {
             _menuMasterService = menuMasterService
                 ?? throw new ArgumentNullException(nameof(menuMasterService));
-            _globalClass = globalClass;
         }
         public async Task<IActionResult> MenuMasterList()
         {
@@ -32,10 +29,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddMenuMaster(int? id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
@@ -51,10 +44,6 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMenuMAster(MenuMaster menuMaster)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             string NameMsg = string.Empty;
             if (string.IsNullOrEmpty(menuMaster.Name))
             {
@@ -99,10 +88,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteMenuMaster(int id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {

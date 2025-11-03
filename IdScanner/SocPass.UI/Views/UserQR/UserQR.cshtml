@@ -1,13 +1,15 @@
-﻿@model SocPass.Domain.Model.Member
+﻿@model SocPass.Domain.Model.QRCodeMaster
 @{
     Layout = null;
-    IList<SocPass.Domain.Model.Member> qrList = ViewBag.qrList;
+    var eventList = ViewBag.EventList as IEnumerable<SocPass.Domain.Model.Event>;
 }
 <html>
 <head>
     <title>User QR</title>
     <link href="~/css/addpagination.css" rel="stylesheet" />
     <link href="~/css/app-style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
@@ -31,13 +33,6 @@
             align-items: center;
         }
 
-            .table-top-header h4 {
-                margin: 0;
-                color: #000;
-                border-bottom: 1px solid #ddd;
-                padding-bottom: 10px;
-            }
-
         .logout-btn {
             background-color: #d9534f;
             color: #fff;
@@ -48,10 +43,6 @@
             cursor: pointer;
             transition: background 0.3s ease;
         }
-
-            .logout-btn:hover {
-                background-color: #c9302c;
-            }
 
         .qr-container {
             display: flex;
@@ -82,16 +73,6 @@
                 font-weight: 600;
                 color: #000;
             }
-
-        .datatable-footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #ddd;
-            color: #000;
-        }
     </style>
 </head>
 <body>
@@ -103,18 +84,61 @@
             </a>
         </div>
         <hr />
-        <div class="qr-container">
-            @foreach (var qr in qrList)
-            {
-                <div class="qr-item">
-                    <img src="@qr.QRCodeUrl" alt="QR Code" />
-                </div>
-            }
-        </div>
-    </div>
 
-    <script src="~/js/addpagination.js"></script>
-    <script src="~/js/record.js" defer></script>
+        <div class="col-xl-4 col-lg-6">
+            <div class="item-input">
+                <label class="form-label col-form-label required fw-semibold fs-6">Select Event</label>
+                <select id="EventId" name="EventId" class="form-select">
+                    <option value="">-- Select Event --</option>
+                    @if (ViewBag.EventList != null)
+                    {
+                        foreach (var events in eventList)
+                        {
+                            <option value="@events.EventId">@events.EventName</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div id="qrContainer"></div>
+    </div>
+    <script>
+        $(document).ready(function(){
+        $("#EventId").change(function () {
+        var eventId = $(this).val();
+        if (eventId) {
+        $.ajax({
+            url: '@Url.Action("GetQrList", "UserFlatMapping")',
+        type: 'GET',
+        data: { EventId: eventId },
+        success: function (data) {
+        var html = '<div class="qr-container">';
+            if (data && data.length > 0) {
+            $.each(data, function (i, qr) {
+            html += `
+            <div class="qr-item">
+                <img src="${qr.qrCodeUrl}" alt="QR Code" />
+                <span>${qr.eventName}</span>
+                 <span>${qr.isGuest ?  "Guest" : "Resident"}</span>
+            </div>`;
+            });
+            } else {
+            html += "<p>No QR codes found for this event.</p>";
+            }
+            html += '</div>';
+        $("#qrContainer").html(html);
+        },
+        error: function (xhr) {
+        console.error("Error:", xhr.status, xhr.statusText);
+        }
+        });
+        } else {
+        $("#qrContainer").html("<p>Please select an event.</p>");
+        }
+        });
+
+        });
+    </script>
 </body>
 </html>
-

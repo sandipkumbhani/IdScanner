@@ -28,6 +28,8 @@ namespace SocPass.Application.Services
                 Location = events.Location,
                 Organizer = events.Organizer,
                 Society = events.Society,
+                StartTime = events.StartTime,
+                EndTime = events.EndTime,
                 IsActive = true,
                 InsertBy = 1,
                 InsertDate = DateTime.Now,
@@ -76,6 +78,17 @@ namespace SocPass.Application.Services
                 throw new KeyNotFoundException($"Event with Id {eventId} not found");
             }
             await _eventRepository.DeleteEventAsync(existingEvent);
+        }
+        public async Task<List<Event>> GetEventBySocietyAsync(int SocietyId)
+        {
+            var eventList = await _eventRepository.GetEventListBySocietyAsync(SocietyId);
+            return eventList ?? new List<Event>();
+        }
+        public async Task<List<Event>> GetEventByUserId(int userid)
+        {
+            var eventList = await _eventRepository.GetEventListByUserIdAsync(userid);
+            return eventList ?? new List<Event>();
+
         }
     }
 }

@@ -11,9 +11,9 @@ namespace SocPass.UI.Application.Services
         {
             _userFlatMappingRepository = userFlatMappingRepository;
         }
-        public async Task<List<Member>> GetQrByUserId(int? userid)
+        public async Task<List<QRCodeMaster>> GetQrByUserId(int? userid,int EventId)
         {
-            return await _userFlatMappingRepository.GetQrByUserId(userid);
+            return await _userFlatMappingRepository.GetQrByUserId(userid, EventId);
         }
     }
 }

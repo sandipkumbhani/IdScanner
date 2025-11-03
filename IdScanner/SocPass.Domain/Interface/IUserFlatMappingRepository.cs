@@ -10,7 +10,7 @@ namespace SocPass.Domain.Interface
     public interface IUserFlatMappingRepository
     {
         Task<UserFlatMapping> AddFlatMappingAsync(UserFlatMapping userFlatMapping);
-        Task<List<Member>> GetMembersByUserIdAsync(int loginUserId);
+        Task<List<QRCodeMaster>> GetQrByUserId(int userId, int? eventId = null);
         Task UpdateFlatMappingAsync(UserFlatMapping userFlatMapping);
         Task<UserFlatMapping> GetMappingByUserId(int userid);
         Task<UserFlatMapping> GetMappingByFlatId(int? flatId);

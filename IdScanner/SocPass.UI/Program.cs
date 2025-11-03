@@ -61,7 +61,7 @@ app.Use(async (context, next) =>
     context.Response.Headers["Expires"] = "0";
     //await next();
     await next.Invoke();
-});
+    });
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

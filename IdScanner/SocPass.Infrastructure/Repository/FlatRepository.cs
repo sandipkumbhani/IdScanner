@@ -109,44 +109,75 @@ namespace SocPass.Infrastructure.Repository
                 })
                 .ToListAsync();
         }
-        public async Task<List<FlatWithMembersDto>> GetMemberQr(int blockid)
+        //public async Task<List<FlatWithMembersDto>> GetMemberQr(int blockid)
+        //{
+        //    var result = await _context.flats
+        //        .Where(f => f.BlockId == blockid && f.IsActive == true)
+        //        .Select(f => new FlatWithMembersDto
+        //        {
+        //            FlatId = f.FlatId,
+        //            FlatNumber = f.FlatNumber,
+        //            TotalMember = f.TotalMember,
+        //            Members = f.Members
+        //                       .Where(m => m.IsActive && m.IsGuest == false)
+        //                       .Select(m => new MemberDto
+        //                       {
+        //                           MemberId = m.MemberId,
+        //                           QRCodeUrl = m.QRCodeUrl
+        //                       })
+        //                       .ToList()
+        //        })
+        //        .ToListAsync();
+        //    return result;
+        //}
+        public async Task<List<FlatWithMembersDto>> GetMemberQrAsync(int blockid,int eventId)
         {
             var result = await _context.flats
-                .Where(f => f.BlockId == blockid &&f.IsActive == true)
+                .Where(f => f.BlockId == blockid && f.IsActive)
                 .Select(f => new FlatWithMembersDto
                 {
                     FlatId = f.FlatId,
                     FlatNumber = f.FlatNumber,
                     TotalMember = f.TotalMember,
                     Members = f.Members
-                               .Where(m => m.IsActive && m.IsGuest== false)
-                               .Select(m => new MemberDto
-                               {
-                                   MemberId = m.MemberId,
-                                   QRCodeUrl = m.QRCodeUrl
-                               })
-                               .ToList()  
+                        .Where(m => m.IsActive && !m.IsGuest)
+                        .Select(m => new MemberDto
+                        {
+                            MemberId = m.MemberId,
+                            QRCodeUrl = _context.QRCodeMasters
+                                .Where(q => q.MemberId == m.MemberId && q.EventId == eventId && q.IsActive)
+                                .Select(q => q.QRCodeUrl)
+                                .FirstOrDefault()
+                        })
+                        .Where(m => m.QRCodeUrl != null) 
+                        .ToList()
                 })
                 .ToListAsync();
+
             return result;
         }
-        public async Task<List<FlatWithMembersDto>> GetGuestQr(int blockid)
+
+        public async Task<List<FlatWithMembersDto>> GetGuestQr(int blockid, int EventId)
         {
             var result = await _context.flats
-                .Where(f => f.BlockId == blockid && f.IsActive == true)
+                .Where(f => f.BlockId == blockid && f.IsActive)
                 .Select(f => new FlatWithMembersDto
                 {
                     FlatId = f.FlatId,
                     FlatNumber = f.FlatNumber,
                     TotalMember = f.TotalMember,
                     Members = f.Members
-                               .Where(m => m.IsActive && m.IsGuest == true)
-                               .Select(m => new MemberDto
-                               {
-                                   MemberId = m.MemberId,
-                                   QRCodeUrl = m.QRCodeUrl
-                               })
-                               .ToList()
+                        .Where(m => m.IsActive && m.IsGuest)
+                        .Select(m => new MemberDto
+                        {
+                            MemberId = m.MemberId,
+                            QRCodeUrl = _context.QRCodeMasters
+                                .Where(q => q.MemberId == m.MemberId && q.EventId == EventId && q.IsActive)
+                                .Select(q => q.QRCodeUrl)
+                                .FirstOrDefault()
+                        })
+                        .Where(m => m.QRCodeUrl != null)
+                        .ToList()
                 })
                 .ToListAsync();
 
