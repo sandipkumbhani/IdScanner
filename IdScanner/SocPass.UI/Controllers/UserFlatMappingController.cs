@@ -3,6 +3,7 @@ using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
 using SocPass.UI.Filters;
+using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -10,23 +11,45 @@ namespace SocPass.UI.Controllers
     public class UserFlatMappingController : Controller
     {
         private readonly IUserFlatMappingService _userFlatMappingService;
-        private readonly GlobalClass _globalClass;
-        public UserFlatMappingController(IUserFlatMappingService userFlatMappingService,GlobalClass globalClass)
+        private readonly IEventService _eventService;
+        private readonly ISocietyService _societyService;
+        public UserFlatMappingController(IUserFlatMappingService userFlatMappingService, IEventService eventService, ISocietyService societyService)
         {
             _userFlatMappingService = userFlatMappingService;
-            _globalClass = globalClass;
+            _eventService = eventService;
+            _societyService = societyService;
         }
-        public async Task<IActionResult> GetQrByUserId()
+        [HttpGet]
+        public async Task<IActionResult> GetEventList()
         {
-            Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-            Response.Headers["Pragma"] = "no-cache";
-            Response.Headers["Expires"] = "0";
-
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var qrList = await _userFlatMappingService.GetQrByUserId(userId);
-            ViewBag.qrList = qrList;
+
+            IEnumerable<Event> eventList;
+            if (User.IsInRole("Admin"))
+                eventList = await _eventService.GetAllEventAsync();
+            else
+                eventList = await _eventService.GetEventByUserId(userId);
+            ViewBag.EventList = eventList;
             return View("~/Views/UserQR/UserQR.cshtml");
         }
+        [HttpGet("GetQrList")]
+        public async Task<IActionResult> GetQrList(int? EventId)
+        {
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var qrList = await _userFlatMappingService.GetQrByUserId(userId, EventId.Value);
+            var result = qrList.Select(q => new
+            {
+                qrCodeUrl = q.QRCodeUrl,
+                eventName = q.Event?.EventName ?? "N/A",
+                isGuest = q.Member.IsGuest
+            });
+
+            return Json(result);
+        }
+
+
     }
 }

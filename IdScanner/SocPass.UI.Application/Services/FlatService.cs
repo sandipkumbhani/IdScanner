@@ -42,9 +42,9 @@ namespace SocPass.UI.Application.Services
             var result = await _FlatRepository.GetQR(blockid,eventId);
             return result;
         }
-        public async Task<List<Flat>> GetGuestQR(int blockid)
+        public async Task<List<Flat>> GetGuestQR(int blockid, int EventId)
         {
-            var result = await _FlatRepository.GetGuestQR(blockid);
+            var result = await _FlatRepository.GetGuestQR(blockid, EventId);
             return result;
         }
     }

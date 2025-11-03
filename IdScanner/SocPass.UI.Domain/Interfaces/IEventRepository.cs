@@ -15,5 +15,6 @@ namespace SocPass.UI.Domain.Interfaces
         Task<string> UpdateEventAsync(Event events);
         Task<string> DeleteMenuAsync(int eventId);
         Task<List<Event>> GetEventBySocietyId(int SocietyId);
+        Task<List<Event>> GetEventByUserId(int userid);
     }
 }

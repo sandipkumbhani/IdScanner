@@ -16,9 +16,9 @@ namespace SocPass.UI.Application.Services
             _memberDetailsRepository = memberDetailsRepository;
         }
 
-        public async Task<bool> IsVisitedAsync(int memberid, int loggedInUserId)
+        public async Task<bool> IsVisitedAsync(int memberid,int EventId, int loggedInUserId)
         {
-            return await _memberDetailsRepository.IsVisitedAsync(memberid, loggedInUserId);
+            return await _memberDetailsRepository.IsVisitedAsync(memberid, EventId ,loggedInUserId);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using SocPass.Domain.DTO;
+﻿using Microsoft.Extensions.Logging;
+using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace SocPass.Domain.Interface
         Task<List<Flat>> GetFlatsByBlockAsync(int societyId, int blockId);
         Task<List<Flat>> GetFlatByBlockIdAsync(int blockid);
         //Task<List<FlatWithMembersDto>> GetMemberQr(int blockid);
-        Task<List<FlatWithMembersDto>> GetGuestQr(int blockid);
+        Task<List<FlatWithMembersDto>> GetGuestQr(int blockid, int EventId);
 
         Task<List<FlatWithMembersDto>> GetMemberQrAsync(int blockid, int eventId);
     }

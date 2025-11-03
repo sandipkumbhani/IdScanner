@@ -32,6 +32,10 @@ namespace SocPass.UI.Application.Services
         {
             return await _eventRepository.GetEventBySocietyId(SocietyId);
         }
+        public async Task<List<Event>> GetEventByUserId(int userid)
+        {
+            return await _eventRepository.GetEventByUserId(userid);
+        }
 
         public async Task<string?> UpdateEventAsync(Event events)
         {

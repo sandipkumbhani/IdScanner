@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Logging;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Interfaces;
@@ -33,11 +34,11 @@ namespace SocPass.UI.Application.Services
         {
             return await _memberRepository.GeneratePass(blockId, EventId);
         }
-        public async Task<string> GenerateGuestPass(int blockId, DateTime passDate)
+        public async Task<string> GenerateGuestPass(int blockId, int EventId)
         {
-            return await _memberRepository.GenerateGuestPass(blockId, passDate);
+            return await _memberRepository.GenerateGuestPass(blockId, EventId);
         }
-        public async Task<Member> GetMemberByMemberId(int memberId,int EventId)
+        public async Task<QRCodeMaster> GetMemberByMemberId(int memberId,int EventId)
         {
            return await _memberRepository.GetMemberByMemberId(memberId, EventId);
         }

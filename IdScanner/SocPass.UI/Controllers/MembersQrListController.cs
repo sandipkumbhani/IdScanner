@@ -95,7 +95,6 @@ namespace SocPass.UI.Controllers
 
 
         }
-
         [HttpGet]
         public async Task<IActionResult> GuestQrList()
         {
@@ -109,33 +108,38 @@ namespace SocPass.UI.Controllers
             int.TryParse(userIdClaim, out int userId);
 
             IEnumerable<Society> societies;
+            IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
             if (User.IsInRole("Admin"))
             {
-                 societies = await _societyService.GetAllSocietyAsync();
+                societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
+                EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
                 societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+                EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
             }
-
+            ViewBag.EventList = EventList;
             ViewBag.Societies = societies;
             ViewBag.SelectedSocietyId = selectedSocietyId;
             return View("/Views/GuestQrList/GuestQrList.cshtml");
         }
         [HttpPost]
-        public async Task<IActionResult> GenerateGuestPass(int societyId, int blockId, DateTime passDate)
+        public async Task<IActionResult> GenerateGuestPass(int societyId, int blockId, int EventId)
         {
-            if (blockId <= 0 || passDate == default(DateTime) /*|| passDate < DateTime.Today*/)
-            {
-                ViewBag.Error = "Invalid block or date";
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
 
-                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-                int.TryParse(userIdClaim, out int userId);
+            ViewBag.SelectedSocietyId = societyId;
+
+            if (societyId <= 0 || blockId <= 0 || EventId == default)
+            {
+                ViewBag.Error = "Invalid input. Please fill all fields correctly.";
 
                 IEnumerable<Society> societies;
                 if (User.IsInRole("Admin"))
@@ -150,13 +154,11 @@ namespace SocPass.UI.Controllers
                 }
 
                 ViewBag.Societies = societies;
-                ViewBag.SelectedSocietyId = societyId;
-
                 return View();
             }
 
-            await _memberService.GenerateGuestPass(blockId, passDate);
-            var QRlist = await _flatRepository.GetGuestQR(blockId);
+            await _memberService.GenerateGuestPass(blockId, EventId);
+            var QRlist = await _flatRepository.GetGuestQR(blockId, EventId);
 
             return View("/Views/GuestQrList/GuestQr.cshtml", QRlist);
         }

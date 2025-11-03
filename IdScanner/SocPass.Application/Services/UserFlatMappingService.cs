@@ -1,4 +1,5 @@
-﻿using SocPass.Application.Interface;
+﻿using Microsoft.Extensions.Logging;
+using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using System;
@@ -16,9 +17,9 @@ namespace SocPass.Application.Services
         {
             _userFlatMappingRepository = userFlatMappingRepository;
         }
-        public async Task<List<Member>> GetQrByUserId(int usereId)
+        public async Task<List<QRCodeMaster>> GetQrByUserId(int usereId, int? eventId = null)
         {
-            return await _userFlatMappingRepository.GetMembersByUserIdAsync(usereId);
+            return await _userFlatMappingRepository.GetQrByUserId(usereId, eventId);
         }
     }
 }

@@ -69,21 +69,21 @@ namespace SocPass.UI.Infrastructure.Provider
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
-        public async Task<string> GenerateGuestPass(int blockId, DateTime passDate)
+        public async Task<string> GenerateGuestPass(int blockId, int EventId)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}Member/AddGuestPassdate?blockId={blockId}&passDate={passDate:O}";
+            var baseUrl = $"{apiCredential.url}Member/AddGuestPassdate?blockId={blockId}&EventId={EventId}";
             var response = await _httpClient.PutAsync(baseUrl, null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
-        public async Task<Member> GetMemberByMemberId(int? memberId,int EventId)
+        public async Task<QRCodeMaster> GetMemberByMemberId(int? memberId,int EventId)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = apiCredential.url + $"Member/GetMemberByMemberId?memberId={memberId}&EventId{EventId}";
+            var baseUrl = $"{apiCredential.url}Member/GetMemberByMemberId?memberId={memberId}&EventId={EventId}";
             var response = await _httpClient.GetAsync(baseUrl);
             var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Member>(jsonString)!;
+            return JsonConvert.DeserializeObject<QRCodeMaster>(jsonString)!;
         }
     }
 }

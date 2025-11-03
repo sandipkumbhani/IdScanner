@@ -84,5 +84,11 @@ namespace SocPass.Application.Services
             var eventList = await _eventRepository.GetEventListBySocietyAsync(SocietyId);
             return eventList ?? new List<Event>();
         }
+        public async Task<List<Event>> GetEventByUserId(int userid)
+        {
+            var eventList = await _eventRepository.GetEventListByUserIdAsync(userid);
+            return eventList ?? new List<Event>();
+
+        }
     }
 }

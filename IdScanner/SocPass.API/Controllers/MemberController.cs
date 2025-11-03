@@ -70,9 +70,9 @@ namespace SocPass.API.Controllers
             return Ok(result);
         }
         [HttpPut("AddGuestPassdate")]
-        public async Task<IActionResult> AddGuestPassDate(int blockId, DateTime passDate)
+        public async Task<IActionResult> AddGuestPassDate(int blockId, int EventId)
         {
-            var result = await _memberService.AddGuestPassDateAsync(blockId, passDate);
+            var result = await _memberService.AddGuestPassDateAsync(blockId, EventId);
             return Ok(result);
         }
         [AllowAnonymous]
@@ -88,14 +88,14 @@ namespace SocPass.API.Controllers
         }
         [AllowAnonymous]
         [HttpPost("IsVisited")]
-        public async Task<IActionResult> IsVisitedAsync(int memberId, int loggedInUserId)
+        public async Task<IActionResult> IsVisitedAsync(int memberId,int EventId, int loggedInUserId)
         {
             if (memberId <= 0)
             {
                 return BadRequest(new { Message = "Valid Member Id is required." });
             }
             
-            bool isVisited = await _memberService.IsVisitedAsync(memberId, loggedInUserId);
+            bool isVisited = await _memberService.IsVisitedAsync(memberId, EventId, loggedInUserId);
             if (isVisited)
             {
                 return Ok(new { Message = "Member is visiting." });

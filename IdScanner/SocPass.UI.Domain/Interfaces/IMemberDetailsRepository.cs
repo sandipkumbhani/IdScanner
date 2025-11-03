@@ -8,6 +8,6 @@ namespace SocPass.UI.Domain.Interfaces
 {
     public interface IMemberDetailsRepository
     {
-        Task<bool> IsVisitedAsync(int memberid, int loggedInUserId);
+        Task<bool> IsVisitedAsync(int memberid, int EventId, int loggedInUserId);
     }
 }

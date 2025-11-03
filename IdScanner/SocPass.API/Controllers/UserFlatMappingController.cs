@@ -15,11 +15,11 @@ namespace SocPass.API.Controllers
             _userFlatMappingService = userFlatMappingService;
         }
         [HttpGet("GetQrByUserId")]
-        public async Task<IActionResult>GetQrByUserId(int userid)
+        public async Task<IActionResult>GetQrByUserId(int userid,int eventId )
         {
             try
             {
-                var result = await _userFlatMappingService.GetQrByUserId(userid);
+                var result = await _userFlatMappingService.GetQrByUserId(userid,eventId);
                 if (result == null)
                 {
                     return NotFound("User not found.");

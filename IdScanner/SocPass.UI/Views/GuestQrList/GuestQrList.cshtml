@@ -79,7 +79,27 @@
                                                 <div class="text-danger" id="BlockError">Please select a block.</div>
                                             </div>
                                         </div>
+                                        <div class="col-xl-4 col-lg-6">
+                                            <div class="item-input">
+                                                <label class="form-label fw-semibold fs-6">Select Event</label>
+                                                <select id="EventId" name="EventId" class="form-select">
+                                                    <option value="">-- Select Event --</option>
+                                                    @if (ViewBag.EventList != null)
+                                                    {
+                                                        foreach (var events in ViewBag.EventList)
+                                                        {
+                                                            <option value="@events.EventId">@events.EventName</option>
+                                                        }
+                                                    }
+                                                </select>
 
+                                                @if (ViewBag.IsSocietyReadonly)
+                                                {
+                                                    <input type="hidden" name="SocietyId" value="@selectedSocietyId" />
+                                                }
+                                                <div class="text-danger" id="SocietyError">Please select a society.</div>
+                                            </div>
+                                        </div>
                                         <!-- Pass Date -->
                                         <div class="col-xl-4 col-lg-6">
                                             <div class="item-input">

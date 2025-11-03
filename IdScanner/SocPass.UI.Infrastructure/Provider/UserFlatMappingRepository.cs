@@ -25,14 +25,14 @@ namespace SocPass.UI.Infrastructure.Provider
             apiCredential = new APICredential(configuration);
             _globalClass = globalClass;
         }
-        public async Task<List<Member>> GetQrByUserId(int? userid)
+        public async Task<List<QRCodeMaster>> GetQrByUserId(int? userid,int EventId)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}UserFlatMapping/GetQrByUserId?userid={userid}";
+            var baseUrl = $"{apiCredential.url}UserFlatMapping/GetQrByUserId?userid={userid}&EventId={EventId}";
             var response = await _httpClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Member>>(jsonString)!;
+            return JsonConvert.DeserializeObject<List<QRCodeMaster>>(jsonString)!;
         }
     }
 }

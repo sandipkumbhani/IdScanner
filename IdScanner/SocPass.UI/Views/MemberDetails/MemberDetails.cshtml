@@ -1,4 +1,4 @@
-﻿@model SocPass.Domain.Model.Member
+﻿@model SocPass.Domain.Model.QRCodeMaster
 @{
     Layout = null;
 }
@@ -99,33 +99,34 @@
 
                 <table class="table table-bordered align-middle mb-4">
                     <tbody>
+                        <input type="hidden" asp-for="EventId" />
                         <tr>
                             <th>Society Name</th>
-                            <td>@Model.Flat?.Society?.Name</td>
+                            <td>@Model.Member.Flat?.Society?.Name</td>
                         </tr>
                         <tr>
                             <th>Block Number</th>
-                            <td>@Model.Flat?.Block?.BlockNumber</td>
+                            <td>@Model.Member.Flat?.Block?.BlockNumber</td>
                         </tr>
                         <tr>
                             <th>Flat Number</th>
-                            <td>@Model.Flat?.FlatNumber</td>
+                            <td>@Model.Member.Flat?.FlatNumber</td>
                         </tr>
                         <tr>
                             <th>Category</th>
-                            <td>@(Model.IsChild ? "Child" : "Adult")</td>
+                            <td>@(Model.Member.IsChild ? "Child" : "Adult")</td>
                         </tr>
                         <tr>
                             <th>Member Type</th>
-                            <td>@(Model.IsGuest ? "Guest" : "Resident")</td>
-                        </tr>
-                        <tr>
-                            <th>Event Date</th>
-                            <td>@(Model.PassDate.ToString("dd-MM-yyyy"))</td>
+                            <td>@(Model.Member.IsGuest ? "Guest" : "Resident")</td>
                         </tr>
                         <tr>
                             <th>Visited</th>
                             <td>@(Model.Visited ? "Yes" : "No")</td>
+                        </tr>
+                        <tr>
+                            <th>Event Name</th>
+                            <td>@Model.Event.EventName</td>
                         </tr>
                     </tbody>
                 </table>
@@ -135,6 +136,7 @@
                     <form asp-action="IsVisited"
                           asp-controller="MemberDetails"
                           asp-route-memberId="@Model.MemberId"
+                          asp-route-EventId="@Model.EventId"
                           method="post"
                           class="text-center">
                         <button type="submit" class="btn btn-success btn-lg px-5">

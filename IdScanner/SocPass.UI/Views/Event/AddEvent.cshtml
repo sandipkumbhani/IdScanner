@@ -142,7 +142,7 @@
 
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
-                                            <label asp-for="SocietyId" class="form-label col-form-label required fw-semibold fs-6"></label>
+                                            <label asp-for="SocietyId" class="form-label col-form-label required fw-semibold fs-6"><a href="#"></a>Society Name</label>
                                             @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
 
                                             <select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">

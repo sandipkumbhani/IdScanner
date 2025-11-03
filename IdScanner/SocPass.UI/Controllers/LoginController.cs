@@ -71,7 +71,7 @@ namespace SocPass.UI.Controllers
 
                     if (responseToken.UserRoleName.Equals("User", StringComparison.OrdinalIgnoreCase))
                     {
-                        return RedirectToAction("GetQrByUserId", "UserFlatMapping");
+                        return RedirectToAction("GetEventList", "UserFlatMapping");
                     }
                     else if (responseToken.UserRoleName.Equals("Society", StringComparison.OrdinalIgnoreCase))
                     {

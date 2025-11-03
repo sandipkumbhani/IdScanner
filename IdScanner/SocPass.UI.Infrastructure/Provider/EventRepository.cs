@@ -47,6 +47,15 @@ namespace SocPass.UI.Infrastructure.Provider
             var jsonString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Event>>(jsonString)!;
         }
+        public async Task<List<Event>> GetEventByUserId(int userid)
+        {
+            _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+            var baseUrl = apiCredential.url + $"Event/getEventByUserId?userid={userid}";
+            var response = await _httpClinet.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<Event>>(jsonString)!;
+        }
         public async Task<string> AddEventAsync(Event events)
         {
             _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
