@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Interfaces;
 using SocPass.UI.Infrastructure.Provider;
 
@@ -23,6 +24,7 @@ namespace SocPass.UI.Infrastructure.Extension
             services.AddScoped<ISocietyDataRepository, SocietyDataRepository>();
             services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
             return services;
         }
     }
