@@ -15,14 +15,17 @@ namespace SocPass.UI.Controllers
         private readonly IBlockService _blockService;
         private readonly IFlatService _flatService;
         private readonly IMemberService _memberService;
-        private readonly GlobalClass _globalClass;
-        public ReportController(ISocietyService societyService, IBlockService blockService, IFlatService flatService,IMemberService memberService, GlobalClass globalClass)
+        private readonly IEventService _eventService;
+        private readonly IReportService _reportService;
+        public ReportController(ISocietyService societyService, IBlockService blockService, IFlatService flatService,
+            IMemberService memberService, IEventService eventService, IReportService reportService)
         {
             _societyService = societyService;
             _blockService = blockService;
             _flatService = flatService;
             _memberService = memberService;
-            _globalClass = globalClass;
+            _eventService = eventService;
+            _reportService = reportService;
         }
 
         [HttpGet]
@@ -38,21 +41,25 @@ namespace SocPass.UI.Controllers
             int.TryParse(userIdClaim, out int userId);
 
             IEnumerable<Society> societies;
+            IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
             if (User.IsInRole("Admin"))
             {
                 societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
+                EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
                 societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+                EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
             }
 
             ViewBag.Societies = societies;
+            ViewBag.EventList = EventList;
             ViewBag.SelectedSocietyId = selectedSocietyId;
 
             return View("/Views/Report/ReportDataList.cshtml");
@@ -66,53 +73,10 @@ namespace SocPass.UI.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetFlatsByBlock(int blockId, string? selectedDate)
+        public async Task<JsonResult> GetReport(int blockId, int eventId, DateTime startDate)
         {
-            var flats = await _flatService.GetFlatByBlockId(blockId);
-            var flatReports = new List<object>();
-
-            DateOnly? filterDate = null;
-            if (!string.IsNullOrEmpty(selectedDate))
-            {
-                DateOnly.TryParseExact(selectedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate);
-                filterDate = parsedDate;
-            }
-
-            foreach (var f in flats)
-            {
-                var members = await _memberService.GetAllMember(f.FlatId);
-
-                var filteredMembers = filterDate.HasValue
-                    ? members.Where(m => m.PassDate == filterDate.Value).ToList()
-                    : members;
-
-                int visitedAdults = filteredMembers.Count(m => m.Visited && !m.IsChild);
-                int visitedChildren = filteredMembers.Count(m => m.Visited && m.IsChild);
-         
-                int pending = f.TotalMember - (visitedAdults + visitedChildren);
-
-                
-
-                flatReports.Add(new
-                {
-                    f.FlatId,
-                    f.FlatNumber,
-                    f.NumberOfAdult,
-                    selectedEvent.EventName,
-                    EventDate = eventDate,
-                    VisitedAdults = visitedAdults,
-                    VisitedChildren = visitedChildren,
-                    Pending = pending,
-                    HasMembersForDate = filteredMembers.Any()
-
-            if (filterDate.HasValue && !flatReports.Any(f => (bool)f.GetType().GetProperty("HasMembersForDate")!.GetValue(f)!))
-            {
-                return Json(new object[0]);
-            }
-
-                });
-            }
-            return Json(flatReports);
+            var data = await _reportService.GetReportAsync(blockId, eventId, startDate);
+            return Json(data);
         }
 
     }

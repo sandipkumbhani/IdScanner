@@ -105,7 +105,9 @@ namespace SocPass.Infrastructure.Repository
                     FlatNumber = d.FlatNumber,
                     NumberOfAdult = d.NumberOfAdult,
                     NumberOfChild = d.NumberOfChild,
-                    TotalMember = d.TotalMember
+                    TotalMember = d.TotalMember,
+                    SocietyId=d.SocietyId
+                    
                 })
                 .ToListAsync();
         }
