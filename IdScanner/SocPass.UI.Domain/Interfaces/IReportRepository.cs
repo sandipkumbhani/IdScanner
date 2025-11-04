@@ -8,6 +8,6 @@ namespace SocPass.UI.Domain.Interfaces
 {
     public interface IReportRepository 
     {
-        Task<string> GetReportAsync(int blockId, int eventId, DateTime startDate);
+        Task<object> GetReportAsync(int blockId, int eventId, DateTime startDate);
     }
 }

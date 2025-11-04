@@ -128,7 +128,6 @@
                 var container = $("#flatContainer");
                 container.empty();
                 if (blockId) {
-                    debugger;
                     $.getJSON('@Url.Action("GetReport", "Report")',
                         { blockId: blockId, eventId: eventId , startDate: startDate },
                         function (flats) {
@@ -165,12 +164,13 @@
 
                             $.each(flats, function (i, flat) {
                                 table += `<tr>
+                                
                                             <td>${flat.flatNumber}</td>
                                             <td>${flat.numberOfAdult}</td>
                                             <td>${flat.numberOfChild}</td>
                                             <td>${flat.totalMember}</td>
                                             <td>${flat.visitedAdults}</td>
-                                            <td>${flat.visitedChildren}</td>
+                                            <td>${flat.visitedChild}</td>
                                             <td>${flat.pending}</td>
                                           </tr>`;
 
@@ -201,7 +201,7 @@
                 loadBlocks(societyId);
             });
 
-            $("#Block, #ReportDate").change(function () {
+            $("#Block,#ReportDate").change(function () {
                 loadReport();
             });
 
