@@ -66,6 +66,7 @@
                                         <select id="Block" class="form-select">
                                             <option value="">-- Select Block --</option>
                                         </select>
+                                        <div id="EmptyBlockMsg"></div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
@@ -107,111 +108,136 @@
     </div>
 
     <script>
-                $(document).ready(function () {
-            function loadBlocks(societyId) {
-                $("#Block").empty().append('<option value="">-- Select Block --</option>');
-                $("#flatContainer").empty();
+        $(document).ready(function () {
 
-                if (societyId) {
-                    $.getJSON('@Url.Action("GetBlocksBySociety", "Report")', { societyId: societyId }, function (blocks) {
-                        $.each(blocks, function (i, block) {
-                            $("#Block").append($('<option>', { value: block.blockId, text: block.blockName }));
-                        });
-                    });
-                }
+            function showError(inputId, messageId) {
+                $("#" + inputId).addClass("is-invalid");
+                $("#" + messageId).show();
             }
 
-            function loadReport() {
-                var blockId = $("#Block").val();
-                var startDate = $("#ReportDate").val();
-                var eventId =  $("#eventId").val();;
-                var container = $("#flatContainer");
-                container.empty();
-                if (blockId) {
-                    $.getJSON('@Url.Action("GetReport", "Report")',
-                        { blockId: blockId, eventId: eventId , startDate: startDate },
-                        function (flats) {
+            function hideError(inputId, messageId) {
+                $("#" + inputId).removeClass("is-invalid");
+                $("#" + messageId).hide();
+            }
 
-                            if (flats.length === 0) {
-                                container.append('<p class="text-danger fw-bold">No records matched for the selected date.</p>');
-                                return;
-                            }
+            function loadBlocks(societyId) {
+                var $block = $("#Block");
+                var $blockMsg = $("#EmptyBlockMsg");
+                $blockMsg.empty();
+                $block.empty().append('<option value="">-- Select Block --</option>');
+                $("#flatContainer").empty();
 
-                            var totalMembers = 0, totalVisitedAdults = 0, totalVisitedChildren = 0, totalPending = 0;
+                if (!societyId) return;
 
-                            var table = `<table class="table table-bordered table-striped mt-3" style="table-layout: fixed; width: 100%;">
-                                            <colgroup>
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                                <col style="width:14.28%">
-                                            </colgroup>
-                                            <thead>
-                                                <tr>
-                                                    <th>Flat Number</th>
-                                                    <th>Adults</th>
-                                                    <th>Children</th>
-                                                    <th>Total</th>
-                                                    <th>Visited Adults</th>
-                                                    <th>Visited Children</th>
-                                                    <th>Pending</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>`;
+                $.ajax({
+                    url: '@Url.Action("GetBlocksBySociety", "MembersQrList")',
+                    method: 'GET',
+                    data: { societyId: societyId },
+                    dataType: 'json'
+                })
+                .done(function (data) {
+                    if (!data || data.length === 0) {
+                        $block.empty().append('<option value="">-- No Blocks available --</option>');
+                       
+                        return;
+                    }
 
-                            $.each(flats, function (i, flat) {
-                                table += `<tr>
-                                
-                                            <td>${flat.flatNumber}</td>
-                                            <td>${flat.numberOfAdult}</td>
-                                            <td>${flat.numberOfChild}</td>
-                                            <td>${flat.totalMember}</td>
-                                            <td>${flat.visitedAdults}</td>
-                                            <td>${flat.visitedChild}</td>
-                                            <td>${flat.pending}</td>
-                                          </tr>`;
-
-                                totalMembers += flat.totalMember;
-                                totalVisitedAdults += flat.visitedAdults;
-                                totalVisitedChildren += flat.visitedChildren;
-                                totalPending += flat.pending;
-                            });
-
-                            table += `<tr class="fw-bold">
-                                        <td>Total</td>
-                                        <td>-</td>
-                                        <td>-</td>
-                                        <td>${totalMembers}</td>
-                                        <td>${totalVisitedAdults}</td>
-                                        <td>${totalVisitedChildren}</td>
-                                        <td>${totalPending}</td>
-                                      </tr>`;
-
-                            table += '</tbody></table>';
-                            container.append(table);
-                        });
-                }
+                    $.each(data, function (i, block) {
+                        $block.append($('<option>', { value: block.blockId, text: block.blockName }));
+                    });
+                })
+                .fail(function () {
+                    $block.empty().append('<option value="">-- No Blocks available --</option>');
+                    $blockMsg.append('<span class="text-danger">No Blocks found for this Society.</span>');
+                });
             }
 
             $("#Society").change(function () {
                 var societyId = $(this).val();
+                hideError("Society", "SocietyError");
                 loadBlocks(societyId);
             });
 
-            $("#Block,#ReportDate").change(function () {
-                loadReport();
-            });
+            function loadReport() {
+                var blockId = $("#Block").val();
+                var startDate = $("#ReportDate").val();
+                var eventId = $("#eventId").val();
+                var container = $("#flatContainer");
+                container.empty();
+
+                if (!blockId || !eventId || !startDate) return;
+
+                $.ajax({
+                    url: '@Url.Action("GetReport", "Report")',
+                    method: 'GET',
+                    data: { blockId: blockId, eventId: eventId, startDate: startDate },
+                    dataType: 'json'
+                }).done(function (flats) {
+                    if (!flats || flats.length === 0) {
+                        container.append('<p class="text-danger fw-bold">No records matched for the selected date.</p>');
+                        return;
+                    }
+
+                    var totalMembers = 0, totalVisitedAdults = 0, totalVisitedChildren = 0, totalPending = 0;
+                    var totalGuest = 0, totalVisitedGuest = 0, totalPendingGuest = 0;
+
+                    var table = `<table class="table table-bordered table-striped mt-3" style="table-layout: fixed; width: 100%;">
+                                    <colgroup>
+                                      <col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%">
+                                      <col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%">
+                                      <col style="width:10%"><col style="width:10%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                          <th>Flat Number</th><th>Adults</th><th>Children</th><th>Total</th>
+                                          <th>Visited Adults</th><th>Visited Children</th><th>Pending Member</th>
+                                          <th>Total Guest</th><th>Visited Guest</th><th>Pending Guest</th>
+                                        </tr>
+                                    </thead><tbody>`;
+
+                    $.each(flats, function (i, flat) {
+                        table += `<tr>
+                                    <td>${flat.flatNumber}</td>
+                                    <td>${flat.numberOfAdult ?? flat.numberOfAdults ?? 0}</td>
+                                    <td>${flat.numberOfChild ?? flat.numberOfChildren ?? 0}</td>
+                                    <td>${flat.totalMember ?? 0}</td>
+                                    <td>${flat.visitedAdult ?? 0}</td>
+                                    <td>${flat.visitedChild ?? 0}</td>
+                                    <td>${flat.pendingMember ?? 0}</td>
+                                    <td>${flat.totalGuest ?? 0}</td>
+                                    <td>${flat.visitedGuest ?? 0}</td>
+                                    <td>${flat.pendingGuest ?? 0}</td>
+                                  </tr>`;
+
+                        totalMembers += Number(flat.totalMember || 0);
+                        totalVisitedAdults += Number(flat.visitedAdult || 0);
+                        totalVisitedChildren += Number(flat.visitedChild || 0);
+                        totalPending += Number(flat.pendingMember || 0);
+                        totalGuest += Number(flat.totalGuest || 0);
+                        totalVisitedGuest += Number(flat.visitedGuest || 0);
+                        totalPendingGuest += Number(flat.pendingGuest || 0);
+                    });
+
+                    table += `<tr class="fw-bold">
+                                <td>Total</td><td>-</td><td>-</td><td>${totalMembers}</td>
+                                <td>${totalVisitedAdults}</td><td>${totalVisitedChildren}</td><td>${totalPending}</td>
+                                <td>${totalGuest}</td><td>${totalVisitedGuest}</td><td>${totalPendingGuest}</td>
+                              </tr></tbody></table>`;
+
+                    container.append(table);
+                }).fail(function (jqXHR) {
+                    container.append('<p class="text-danger">Error loading report.</p>');
+                    console.error('GetReport failed', jqXHR);
+                });
+            }
+
+            $("#Block,#ReportDate,#eventId").change(loadReport);
 
             var selectedSocietyId = '@selectedSocietyId';
             if (selectedSocietyId && selectedSocietyId !== "0") {
-                // Preload blocks for the selected society
                 loadBlocks(selectedSocietyId);
             }
         });
-
     </script>
 </body>
 </html>

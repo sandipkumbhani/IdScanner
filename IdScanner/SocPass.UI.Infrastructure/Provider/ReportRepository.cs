@@ -37,8 +37,7 @@ namespace SocPass.UI.Infrastructure.Provider
             response.EnsureSuccessStatusCode(); 
             var result = await response.Content.ReadAsStringAsync();
 
-            var reportData = JsonConvert.DeserializeObject<object>(result);
-            return reportData;
+            return JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(result);
         }
 
     }

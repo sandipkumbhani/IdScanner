@@ -354,8 +354,8 @@
 
                 row.find(".childAge").each(function () {
                     var age = $(this).val();
-                    if (age === "" || parseInt(age) < 0 || parseInt(age) > 17) {
-                        $(this).next(".ageError").text("Enter valid age (0–17).");
+                    if (age === "" || parseInt(age) < 1 || parseInt(age) > 17) {
+                        $(this).next(".ageError").text("Enter valid age (1–17).");
                         $(this).addClass("is-invalid");
                         isValid = false;
                     } else {

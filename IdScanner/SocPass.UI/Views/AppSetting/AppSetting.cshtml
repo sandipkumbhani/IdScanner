@@ -4,15 +4,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var societyList = ViewBag.SocietyList as List<SocPass.Domain.Model.Society>;
 }
-
-<style>
-    .field-error {
-        color: red;
-        font-size: 0.875rem;
-        display: none;
-    }
-</style>
-
+<html>
+    <head>
+	<title>SocPass | App Setting</title>
+    </head>
+<body>
 <div class="content-page">
     <div class="content">
         <div class="main-inner container-fluid">
@@ -26,7 +22,6 @@
                                 @Html.HiddenFor(m => m.SubscriptionId)
                                 @Html.HiddenFor(m => m.IsActive, new { @Value = true })
 
-                                <!-- Society Dropdown -->
                                 <div class="col-xl-4 col-lg-6 mb-3">
                                     <div class="item-input">
                                         <label class="form-label fw-semibold fs-6">Society</label>
@@ -38,13 +33,11 @@
                                     </div>
                                 </div>
 
-                                <!-- Allow Name -->
                                 <div class="col-xl-4 col-lg-6 mb-3">
                                     <div class="item-input">
                                         <label class="form-label fw-semibold fs-6">Allow Name</label>
                                         <select asp-for="AllowNoOfName" class="form-control userinput" id="AllowNoOfName">
                                             <option value="">-- Select Value --</option>
-                                            <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -53,13 +46,11 @@
                                     </div>
                                 </div>
 
-                                <!-- Allow Contact -->
                                 <div class="col-xl-4 col-lg-6 mb-3">
                                     <div class="item-input">
                                         <label class="form-label fw-semibold fs-6">Allow Contact</label>
                                         <select asp-for="AllowNoOfContact" class="form-control userinput" id="AllowNoOfContact">
                                             <option value="">-- Select Value --</option>
-                                            <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -68,13 +59,11 @@
                                     </div>
                                 </div>
 
-                                <!-- Allow Email -->
                                 <div class="col-xl-4 col-lg-6 mb-3">
                                     <div class="item-input">
                                         <label class="form-label fw-semibold fs-6">Allow Email</label>
                                         <select asp-for="AllowNoOfEmail" class="form-control userinput" id="AllowNoOfEmail">
                                             <option value="">-- Select Value --</option>
-                                            <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -83,7 +72,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Buttons -->
                                 <div class="button-main d-flex gap-3 mt-4">
                                     <button type="submit" class="card-link">
                                         <i class="ri-save-line"></i> <span>Save</span>
@@ -108,7 +96,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -116,7 +103,6 @@
             var isValid = true;
             $(this).find(".field-error").text("").hide();
 
-            // Validation array for all dropdowns
             var validations = [
                 { selector: "#SocietyId", message: "Please select a society." },
                 { selector: "#AllowNoOfName", message: "Please select how many names are allowed." },
@@ -126,10 +112,13 @@
 
             validations.forEach(function (v) {
                 var element = $(v.selector);
-                // Trigger validation if value is empty (default placeholder)
                 if (element.val() === "") {
                     element.closest(".item-input").find(".text-danger").text(v.message).show();
                     isValid = false;
+                }
+                else
+                {
+					element.closest(".item-input").find(".text-danger").text("").hide();
                 }
             });
 
@@ -137,7 +126,8 @@
         });
     });
 </script>
-
+</body>
+</html>
 
 
 

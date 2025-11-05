@@ -94,6 +94,7 @@
                                                         }
                                                     }
                                                 </select>
+                                                <div class="text-danger" id="EventError">Please select a event.</div>
 
                                                 @if (ViewBag.IsSocietyReadonly)
                                                 {
@@ -102,18 +103,6 @@
                                                 <div class="text-danger" id="SocietyError">Please select a society.</div>
                                             </div>
                                         </div>
-
-                                        <!-- Pass Date -->
-                                        <div class="col-xl-4 col-lg-6">
-                                            <div class="item-input">
-                                                <label for="PassDate" class="form-label fw-semibold fs-6">Pass Date</label>
-                                                <input type="date" class="form-control userinput"
-                                                       id="PassDate" name="PassDate"
-                                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                                <div class="text-danger" id="PassDateError">Please select a pass date.</div>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <!-- Buttons -->
                                     <div class="button-main d-flex gap-3 mt-4">
@@ -168,11 +157,11 @@
                     hideError("Block", "BlockError");
                 }
 
-                if (!$("#PassDate").val()) {
-                    showError("PassDate", "PassDateError");
+                if (!$("#EventId").val()) {
+                    showError("EventId", "EventError");
                     valid = false;
                 } else {
-                    hideError("PassDate", "PassDateError");
+                    hideError("EventId", "EventError");
                 }
 
                 if (!valid) {

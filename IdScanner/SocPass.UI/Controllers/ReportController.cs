@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Globalization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
 using SocPass.UI.Filters;
-using System.Globalization;
-using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -76,7 +77,7 @@ namespace SocPass.UI.Controllers
         public async Task<JsonResult> GetReport(int blockId, int eventId, DateTime startDate)
         {
             var data = await _reportService.GetReportAsync(blockId, eventId, startDate);
-            return Json(data);
+            return new JsonResult(data);
         }
 
     }

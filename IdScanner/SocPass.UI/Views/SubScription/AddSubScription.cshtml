@@ -3,29 +3,29 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	bool isAddMode = Model.StartFrom == DateTime.MinValue;
 
-	// Value to show in input
 	string inputValue = !isAddMode
 						? Model.StartFrom.ToString("yyyy-MM-ddTHH:mm")
 						: string.Empty;
 
-	// Minimum selectable date
 	string minDate = isAddMode
-					 ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")        // Add
+					 ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")        
 					 : Model.StartFrom.ToString("yyyy-MM-ddTHH:mm");
 
 	bool isAddModeend = Model.EndTo == DateTime.MinValue;
 
-	// Value to show in input
 	string inputValueend = !isAddMode
 						? Model.EndTo.ToString("yyyy-MM-ddTHH:mm")
 						: string.Empty;
 
-	// Minimum selectable date
 	string minDateend = isAddMode
-					 ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")        // Add
+					 ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")       
 					 : Model.EndTo.ToString("yyyy-MM-ddTHH:mm");
 }
-<title>SocPass | Add Subscription</title>
+<html>
+<head>
+	<title>SocPass | Add Subscription</title>
+</head>
+<body>
 <div class="content-page">
 	<div class="content">
 		<div class="main-inner container-fluid">
@@ -50,7 +50,6 @@
 								  action="@Url.Action("AddSubScription", "Subscription")">
 								<input type="hidden" name="SubscriptionId" value="@Model.SubscriptionId" />
 
-								<!-- Society Dropdown -->
 								<div class="col-xl-4 col-lg-6 mb-3">
 									<div class="item-input">
 										<label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
@@ -59,14 +58,12 @@
 												class="form-control userinput">
 											<option value="">-- Select Society --</option>
 										</select>
-										@* Display server-side validation error *@
 										<span class="text-danger">
 											@Html.ValidationMessageFor(m => m.SocietyId)
 										</span>
 									</div>
 								</div>
 
-								<!-- Start From -->
 								<div class="col-xl-4 col-lg-6 mb-3">
 									<div class="item-input">
 										<label for="StartFrom" class="form-label required fw-semibold fs-6">Start From</label>
@@ -83,7 +80,6 @@
 									</div>
 								</div>
 
-								<!-- End To -->
 								<div class="col-xl-4 col-lg-6 mb-3">
 									<div class="item-input">
 										<label for="EndTo" class="form-label required fw-semibold fs-6">End To</label>
@@ -100,7 +96,6 @@
 									</div>
 								</div>
 
-								<!-- Buttons -->
 								<div class="button-main d-flex gap-3 mt-4">
 									<button type="submit" class="card-link">
 										<i class="ri-save-line"></i> <span>Save</span>
@@ -125,7 +120,8 @@
 		</div>
 	</div>
 </div>
-
+</body>
+</html>
 
 
 
