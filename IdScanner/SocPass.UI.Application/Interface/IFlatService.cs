@@ -1,4 +1,5 @@
-﻿using SocPass.Domain.Model;
+﻿using SocPass.Domain.DTO;
+using SocPass.Domain.Model;
 
 namespace SocPass.UI.Application.Interface
 {
@@ -9,7 +10,7 @@ namespace SocPass.UI.Application.Interface
         Task<List<Flat>> AddFlatAsync(Flat flat);
         Task<List<Flat>> UpdateFlatAsync(Flat flat);
         Task<List<Flat>> GetFlatByBlockId(int blockid);
-        Task<List<Flat>> GetQR(int blockid, int eventId);
-        Task<List<Flat>> GetGuestQR(int blockid, int EventId);
+        Task<List<FlatWithMembersDto>> GetQR(int blockid, int eventId);
+        Task<List<FlatWithMembersDto>> GetGuestQR(int blockid, int EventId);
     }
 }

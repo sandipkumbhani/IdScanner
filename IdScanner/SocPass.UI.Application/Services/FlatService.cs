@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SocPass.Domain.DTO;
+using SocPass.Domain.Model;
+using SocPass.UI.Application.Interface;
+using SocPass.UI.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SocPass.Domain.Model;
-using SocPass.UI.Application.Interface;
-using SocPass.UI.Domain.Interfaces;
 
 namespace SocPass.UI.Application.Services
 {
@@ -37,12 +38,12 @@ namespace SocPass.UI.Application.Services
             var result = await _FlatRepository.GetFlatByBlockId(blockid);
             return result;
         }
-        public async Task<List<Flat>> GetQR(int blockid, int eventId)
+        public async Task<List<FlatWithMembersDto>> GetQR(int blockid, int eventId)
         {
             var result = await _FlatRepository.GetQR(blockid,eventId);
             return result;
         }
-        public async Task<List<Flat>> GetGuestQR(int blockid, int EventId)
+        public async Task<List<FlatWithMembersDto>> GetGuestQR(int blockid, int EventId)
         {
             var result = await _FlatRepository.GetGuestQR(blockid, EventId);
             return result;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Domain.Comman;
 using SocPass.UI.Domain.Helper;
@@ -127,23 +128,23 @@ namespace SocPass.UI.Infrastructure.Provider
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<Flat>>(json)!;
         }
-        public async Task<List<Flat>> GetQR(int blockid, int eventId)
+        public async Task<List<FlatWithMembersDto>> GetQR(int blockid, int eventId)
         {
             _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}Flat/GetQR?blockid={blockid}&eventId={eventId}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Flat>>(json)!;
+            return JsonConvert.DeserializeObject<List<FlatWithMembersDto>>(json)!;
         }
-        public async Task<List<Flat>> GetGuestQR(int blockid, int EventId)
+        public async Task<List<FlatWithMembersDto>> GetGuestQR(int blockid, int EventId)
         {
             _httpClinet.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
             var baseUrl = $"{apiCredential.url}Flat/GetGuestQR?blockid={blockid}&EventId={EventId}";
             var response = await _httpClinet.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Flat>>(json)!;
+            return JsonConvert.DeserializeObject<List<FlatWithMembersDto>>(json)!;
         }
     }
 }

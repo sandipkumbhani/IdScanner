@@ -1,9 +1,10 @@
-﻿using System;
+﻿using SocPass.Domain.DTO;
+using SocPass.Domain.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SocPass.Domain.Model;
 
 namespace SocPass.UI.Domain.Interfaces
 {
@@ -14,7 +15,7 @@ namespace SocPass.UI.Domain.Interfaces
         Task<List<Flat>> AddFlatAsync(Flat flat);
         Task<List<Flat>> UpdateFlatAsync(Flat flat);
         Task<List<Flat>> GetFlatByBlockId(int blockid);
-        Task<List<Flat>> GetQR(int blockid, int eventId);
-        Task<List<Flat>> GetGuestQR(int blockid, int EventId);
+        Task<List<FlatWithMembersDto>> GetQR(int blockid, int eventId);
+        Task<List<FlatWithMembersDto>> GetGuestQR(int blockid, int EventId);
     }
 }

@@ -72,10 +72,10 @@ namespace SocPass.API.Controllers
         [HttpPut("AddGuestPassdate")]
         public async Task<IActionResult> AddGuestPassDate(int blockId, int EventId)
         {
-            var result = await _memberService.AddGuestPassDateAsync(blockId, EventId);
+            var result = await _memberService.GenerateGuestQRAsync(blockId, EventId);
             return Ok(result);
         }
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetMemberByMemberId")]
         public async Task<IActionResult> GetmemberById(int memberId,int EventId)
         {
@@ -86,7 +86,7 @@ namespace SocPass.API.Controllers
 
             return Ok(result);
         }
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("IsVisited")]
         public async Task<IActionResult> IsVisitedAsync(int memberId,int EventId, int loggedInUserId)
         {

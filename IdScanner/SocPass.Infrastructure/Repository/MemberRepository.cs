@@ -33,16 +33,16 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return member;
         }
-        public async Task UpdateQrCodeAsync(int memberId, string qrCodeUrl)
-        {
-            var user = await _context.members.FindAsync(memberId);
-            if (user != null)
-            {
-                user.QRCodeUrl = qrCodeUrl;
-                _context.members.Update(user);
-                await _context.SaveChangesAsync();
-            }
-        }
+        //public async Task UpdateQrCodeAsync(int memberId, string qrCodeUrl)
+        //{
+        //    var user = await _context.members.FindAsync(memberId);
+        //    if (user != null)
+        //    {
+        //        user.QRCodeUrl = qrCodeUrl;
+        //        _context.members.Update(user);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //}
         public async Task<List<Member>> GetGuestsByFlatIdAsync(int flatId)
         {
             return await _context.members
@@ -135,132 +135,57 @@ namespace SocPass.Infrastructure.Repository
             return true;
 
         }
-        public async Task<bool> AddGuestPassDateAsync(int blockId, int EventId)
+        public async Task<Tuple<IList<QRCodeMaster>, IList<Flat>, IList<Member>>> GenerateGuestQRAsync(int blockId, int eventId)
         {
             var flatIds = await _context.flats
-                .Where(f => f.BlockId == blockId && f.IsActive)
-                .Select(f => f.FlatId)
-                .ToListAsync();
-
-            if (!flatIds.Any())
-                return false;
+                 .Where(f => f.BlockId == blockId && f.IsActive)
+                 .Select(f => f.FlatId)
+                 .ToListAsync();
 
             var members = await _context.members
                 .Where(m => flatIds.Contains(m.FlatId) && m.IsActive && m.IsGuest)
                 .ToListAsync();
 
-            if (!members.Any())
-                return false;
-
             var existingQRGenerated = await _context.QRCodeMasters
-      .Where(q => q.EventId == EventId && q.IsActive).ToListAsync();
+                .Where(q => q.EventId == eventId && q.IsActive)
+                .ToListAsync();
 
             var flatsList = await _context.flats
                 .Include(f => f.Block)
                 .ThenInclude(b => b.Society)
                 .ToListAsync();
 
-            var qrList = new List<QRCodeMaster>();
-            foreach (var member in members)
-            {
-                if (!existingQRGenerated.Any(x => x.MemberId == member.MemberId))
-                {
-                    var flat = flatsList.FirstOrDefault(f => f.FlatId == member.FlatId);
-
-                    string societyName = flat?.Block?.Society?.Name ?? "UnknownSociety";
-                    string blockNumber = flat?.Block?.BlockNumber.ToString() ?? "Block";
-                    string flatNumber = flat?.FlatNumber.ToString() ?? member.FlatId.ToString();
-                    string qrRelativeUrl = await GenerateAndStoreQrAsync(
-                        member.MemberId,
-                        member.IsChild,
-                        societyName,
-                        blockNumber,
-                        flatNumber,
-                        EventId.ToString());
-
-                    qrList.Add(new QRCodeMaster
-                    {
-                        MemberId = member.MemberId,
-                        EventId = EventId,
-                        QRCodeUrl = qrRelativeUrl,
-                        IsActive = true,
-                        Visited = false,
-                        InsertBy = 1,
-                        UpdateBy = 1,
-                        InsertDate = DateTime.Now,
-                        UpdateDate = DateTime.Now
-                    });
-                }
-            }
-
-            _context.QRCodeMasters.AddRange(qrList);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return new Tuple<IList<QRCodeMaster>, IList<Flat>, IList<Member>>(existingQRGenerated, flatsList, members);
         }
-        public async Task<bool> AddMemberPassDateAsync(int blockId, int EventId)
+        public async Task<Tuple<IList<QRCodeMaster>,IList<Flat>,IList<Member>>> AddMemberPassDateAsync(int blockId, int eventId)
         {
             var flatIds = await _context.flats
                 .Where(f => f.BlockId == blockId && f.IsActive)
                 .Select(f => f.FlatId)
                 .ToListAsync();
 
-            if (!flatIds.Any())
-                return false;
-
             var members = await _context.members
                 .Where(m => flatIds.Contains(m.FlatId) && m.IsActive && !m.IsGuest)
                 .ToListAsync();
 
-            if (!members.Any())
-                return false;
-
             var existingQRGenerated = await _context.QRCodeMasters
-      .Where(q => q.EventId == EventId && q.IsActive).ToListAsync();
+                .Where(q => q.EventId == eventId && q.IsActive)
+                .ToListAsync();
 
             var flatsList = await _context.flats
                 .Include(f => f.Block)
                 .ThenInclude(b => b.Society)
                 .ToListAsync();
 
-            var qrList = new List<QRCodeMaster>();
-            foreach (var member in members)
-            {
-                if (!existingQRGenerated.Any(x => x.MemberId == member.MemberId))
-                {
-                    var flat = flatsList.FirstOrDefault(f => f.FlatId == member.FlatId);
-
-                    string societyName = flat?.Block?.Society?.Name ?? "UnknownSociety";
-                    string blockNumber = flat?.Block?.BlockNumber.ToString() ?? "Block";
-                    string flatNumber = flat?.FlatNumber.ToString() ?? member.FlatId.ToString();
-                    string qrRelativeUrl = await GenerateAndStoreQrAsync(
-                        member.MemberId,
-                        member.IsChild,
-                        societyName,
-                        blockNumber,
-                        flatNumber,
-                        EventId.ToString());
-
-                    qrList.Add(new QRCodeMaster
-                    {
-                        MemberId = member.MemberId,
-                        EventId = EventId,
-                        QRCodeUrl = qrRelativeUrl,
-                        IsActive = true,
-                        Visited = false,
-                        InsertBy = 1,
-                        UpdateBy = 1,
-                        InsertDate = DateTime.Now,
-                        UpdateDate = DateTime.Now
-                    });
-                }
-            }
-
-            _context.QRCodeMasters.AddRange(qrList);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return new Tuple<IList<QRCodeMaster>, IList<Flat>, IList<Member>>(existingQRGenerated, flatsList, members);
         }
+
+        public async Task AddQrMasterAsync(IEnumerable<QRCodeMaster> qrList)
+        {
+            await _context.QRCodeMasters.AddRangeAsync(qrList);
+            await _context.SaveChangesAsync();
+        }
+
         private async Task<string> GenerateAndStoreQrAsync(int memberId, bool isChild, string societyName, string blockNumber, string flatNumber, string EventId)
         {
             string qrContentUrl = $"{_baseUrl.BaseUrl}/MemberDetails/GetDetails/{memberId}/{EventId}";

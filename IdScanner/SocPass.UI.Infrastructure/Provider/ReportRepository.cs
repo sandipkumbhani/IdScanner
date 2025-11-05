@@ -32,10 +32,10 @@ namespace SocPass.UI.Infrastructure.Provider
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
 
             var baseUrl = apiCredential.url + $"Report/GetReport?blockId={blockId}&eventId={eventId}&startDate={startDate:yyyy-MM-dd}";
-
             var response = await _httpClient.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode(); 
-            var result = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"API Error: {response.StatusCode}");
 
             return JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(result);
         }
