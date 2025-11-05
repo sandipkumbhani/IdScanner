@@ -206,20 +206,11 @@ namespace SocPass.Infrastructure.Migrations
                     b.Property<bool>("IsGuest")
                         .HasColumnType("bit");
 
-                    b.Property<DateOnly>("PassDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("QRCodeUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long>("UpdateBy")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("Visited")
-                        .HasColumnType("bit");
 
                     b.HasKey("MemberId");
 

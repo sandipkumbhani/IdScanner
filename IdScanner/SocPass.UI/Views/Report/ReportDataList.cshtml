@@ -131,7 +131,6 @@
                     $.getJSON('@Url.Action("GetReport", "Report")',
                         { blockId: blockId, eventId: eventId , startDate: startDate },
                         function (flats) {
-
                             if (flats.length === 0) {
                                 container.append('<p class="text-danger fw-bold">No records matched for the selected date.</p>');
                                 return;
@@ -161,10 +160,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody>`;
-
                             $.each(flats, function (i, flat) {
                                 table += `<tr>
-                                
                                             <td>${flat.flatNumber}</td>
                                             <td>${flat.numberOfAdult}</td>
                                             <td>${flat.numberOfChild}</td>
@@ -197,17 +194,15 @@
             }
 
             $("#Society").change(function () {
-                var societyId = $(this).val();
-                loadBlocks(societyId);
+                loadBlocks($(this).val());
             });
 
-            $("#Block,#ReportDate").change(function () {
+            $("#ReportDate").change(function () {
                 loadReport();
             });
 
             var selectedSocietyId = '@selectedSocietyId';
             if (selectedSocietyId && selectedSocietyId !== "0") {
-                // Preload blocks for the selected society
                 loadBlocks(selectedSocietyId);
             }
         });

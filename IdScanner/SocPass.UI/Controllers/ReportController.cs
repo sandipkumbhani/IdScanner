@@ -64,14 +64,12 @@ namespace SocPass.UI.Controllers
 
             return View("/Views/Report/ReportDataList.cshtml");
         }
-
         [HttpGet]
         public async Task<JsonResult> GetBlocksBySociety(int societyId)
         {
             var blocks = await _blockService.GetBlockBySocietyId(societyId);
             return Json(blocks.Select(b => new { blockId = b.BlockId, blockName = b.BlockNumber }));
         }
-
         [HttpGet]
         public async Task<JsonResult> GetReport(int blockId, int eventId, DateTime startDate)
         {

@@ -1,5 +1,6 @@
- $(document).ready(function () {
-    const table = $('#remindersTable').DataTable({
+$(document).ready(function () {
+    const id = document.querySelector("table").id;
+    const table = id.DataTable({
         responsive: true,
         dom: 'Bfrtip',
         buttons: [
@@ -88,28 +89,19 @@ $(document).ready(function () {
     $('#customFranchiseSearch').on('keyup', function () {
         table.search(this.value).draw();
     });
-
-    // Move pagination to custom div
     $('#franchiseTable_paginate').appendTo('#customFranchisePagination');
-
-    // Filter dropdown logic
     $('.filter-option').on('click', function () {
         const value = $(this).data('value');
         const label = $(this).text();
-
-        // Update filter label after selection
         $('#filterDropdown').text(label === 'All Status' ? 'Filter' : `${label}`);
 
-        // Apply DataTables column filter (status is column 2)
         table.column(2).search(value).draw();
     });
 
-    // Page length
     $('#pageLength').on('change', function () {
         table.page.len(this.value).draw();
     });
 
-    // Update total reminders
     $('#totalList').text(`Total List: ${table.rows().count()}`);
 });
 
@@ -130,7 +122,6 @@ $(document).ready(function () {
         lengthChange: false,
         pageLength: 3,
         columnDefs: [
-            // { orderable: false, targets: [] } // all sortable
             { orderable: false, targets: 'no-sort' }
         ],
         language: {
@@ -141,10 +132,8 @@ $(document).ready(function () {
         }
     });
 
-    // Move export buttons
     table.buttons().container().appendTo('#exportvehicleTypesButtons');
 
-    // Search
     $('#customvehicleTypesSearch').on('keyup', function () {
         table.search(this.value).draw();
     });

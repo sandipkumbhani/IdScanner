@@ -1,4 +1,5 @@
-﻿using SocPass.Domain.Model;
+﻿using SocPass.Domain.DTO;
+using SocPass.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace SocPass.Application.Interface
         Task CreateAndUpdateGuestAsync(int flatId, int numberOfAdults, List<int> childAges);
         Task CreateAndUpdateMemberAsync(int flatId, int numberOfAdults, List<int> childAges);
         Task<List<Member>> GetMemberByIdAsync(int flatId);
-        Task<bool> AddMemberPassDateAsync(int blockId, int EventId);
+        Task<string> AddMemberPassDateAsync(int blockId, int eventId);
         Task<QRCodeMaster> GetMemberByMemberId(int memberId, int EventId);
         Task<bool> IsVisitedAsync(int memberid, int EventId, int loggedInUserId);
-        Task<bool> AddGuestPassDateAsync(int blockId, int EventId);
+        Task<string> GenerateGuestQRAsync(int blockId, int eventId);
     }
 }

@@ -15,9 +15,9 @@ namespace SocPass.Domain.Model
         public int FlatId { get; set; }
         public bool IsChild { get; set; }
         public int ChildAge { get; set; }
-        public string? QRCodeUrl { get; set; }
-        public bool Visited { get; set; }
-        public DateOnly PassDate { get; set; }
+        //public string? QRCodeUrl { get; set; }
+        //public bool Visited { get; set; }
+        //public DateOnly PassDate { get; set; }
         public bool IsGuest { get; set; }
         public bool IsActive { get; set; }
         public long InsertBy { get; set; }

@@ -132,7 +132,7 @@ namespace SocPass.Infrastructure.Repository
         //        .ToListAsync();
         //    return result;
         //}
-        public async Task<List<FlatWithMembersDto>> GetMemberQrAsync(int blockid,int eventId)
+        public async Task<List<FlatWithMembersDto>> GetMemberQrAsync(int blockid, int eventId)
         {
             var result = await _context.flats
                 .Where(f => f.BlockId == blockid && f.IsActive)
@@ -151,14 +151,13 @@ namespace SocPass.Infrastructure.Repository
                                 .Select(q => q.QRCodeUrl)
                                 .FirstOrDefault()
                         })
-                        .Where(m => m.QRCodeUrl != null) 
+                        .Where(m => m.QRCodeUrl != null)
                         .ToList()
                 })
                 .ToListAsync();
 
             return result;
         }
-
         public async Task<List<FlatWithMembersDto>> GetGuestQr(int blockid, int EventId)
         {
             var result = await _context.flats

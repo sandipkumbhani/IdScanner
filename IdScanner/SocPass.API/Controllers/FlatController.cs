@@ -49,6 +49,7 @@ namespace SocPass.API.Controllers
         public async Task<IActionResult> GetAllFlat()
         {
             var flats = await _flatService.GetAllFlatAsync();
+ 
             return Ok(flats);
         }
         //[HttpPut("Update-flat")]
