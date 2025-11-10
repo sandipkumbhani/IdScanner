@@ -1,10 +1,6 @@
 ﻿@model SocPass.Domain.Model.Event
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // string NameMsg = ViewBag.NameMsg;
-    // string DescriptionMsg = ViewBag.DescriptionMsg;
-    // string UrlMsg = ViewBag.UrlMsg;
-    // string IconMsg = ViewBag.IconMsg;
     bool isNew = Model.EventId == 0;
     bool isChecked = Model.IsActive || isNew;
     bool isAddMode = Model.StartDate == DateTime.MinValue;
@@ -36,7 +32,6 @@
     <title>SocPass | AddEvent</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 </head>
 <body>
     <div class="content-page">
@@ -67,14 +62,12 @@
                                         <div class="item-input">
                                             <label for="Description" class="form-label col-form-label required fw-semibold fs-6">Description</label>
                                             <input type="text" class="form-control userinput" id="Description" name="Description" value="@Model.Description">
-
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
                                             <label for="Location" class="form-label col-form-label required fw-semibold fs-6">Event Location</label>
                                             <input type="text" class="form-control userinput" id="Location" name="Location" value="@Model.Location">
-
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-6">
@@ -121,7 +114,7 @@
                                                    id="StartTime" name="StartTime"
                                                    placeholder="Select Start Time"
                                                    required data-val="true"
-                                                   value="@Model.StartDate.ToString(@"hh\:mm")"
+                                                   value="@(Model.StartTime == TimeSpan.Zero ? "" : Model.StartTime.ToString(@"hh\:mm"))"
                                                    data-val-required="Please select a Start Time." />
 
                                         </div>
@@ -133,8 +126,8 @@
                                                    id="EndTime" name="EndTime"
                                                    placeholder="Select Start Time"
                                                    required data-val="true"
-                                                   value="@Model.EndTime.ToString(@"hh\:mm")"
-                                                   data-val-required="Please select a Start Time." />
+                                                   value="@(Model.StartTime == TimeSpan.Zero ? "" : Model.EndTime.ToString(@"hh\:mm"))"
+                                                   data-val-required="Please select a End Time." />
 
                                         </div>
                                     </div>
@@ -249,18 +242,6 @@
                 }
             });
         });
-        //     flatpickr("#StartTime",{
-        //     enableTime: true,
-        //     noCalendar: true,
-        //     dateFormat: "h:i K",
-        //     time_24hr: false
-        // });
-        //  flatpickr("#EndTime",{
-        //     enableTime: true,
-        //     noCalendar: true,
-        //     dateFormat: "h:i K",
-        //     time_24hr: false
-        // });
     </script>
 </body>
 </html>

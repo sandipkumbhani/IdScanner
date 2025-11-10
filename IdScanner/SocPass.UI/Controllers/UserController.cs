@@ -134,7 +134,6 @@ namespace SocPass.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<IActionResult> AddUser(User modelUsers, string action, int? flatId = null)
         {
@@ -143,7 +142,8 @@ namespace SocPass.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            int selectedSociety =(int)modelUsers.SocietyId;
+            //int selectedSociety =(int)modelUsers.SocietyId;
+            int selectedSociety = modelUsers.SocietyId ?? 0;
             string selectedBlock = Request.Form["BlockId"];
             string selectedFlat = Request.Form["FlatId"];
 

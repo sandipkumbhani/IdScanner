@@ -1769,14 +1769,15 @@ td.details-control::before {
 }
 .sign-left{
   width: 40%;
+  height:auto;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.sign-right{
-  width: 60%;
-  position: relative;
+/*.sign-right {
+    width: 60%;
+    position: relative;
 }
 .sign-right img{
   width: 100%;
@@ -1787,6 +1788,24 @@ td.details-control::before {
   object-fit: cover;
   border-radius: 20px;
 }
+*/
+sign-right {
+    width: 60%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sign-right img {
+    width: 100%;
+    height: auto;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 20px;
+}
+
 .inner-sign-info{
   max-width: 415px;
   width: 100%;
@@ -2236,7 +2255,9 @@ body.overlay-active{
     padding: 1.0875rem 0.4rem;
   }
   .navbar-custom{margin-left: 220px;}
-  .content-page{margin-left: 220px;}
+    .content-page {
+        margin-left: 11.46%;
+    }
   .leftside-menu .logo{
     padding: 0px 10px;
   }

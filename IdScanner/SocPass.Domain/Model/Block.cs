@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocPass.Domain.Model
@@ -9,6 +10,7 @@ namespace SocPass.Domain.Model
         public int BlockId { get; set; }
 
         [Required(ErrorMessage = "Please select a society")]
+        [DisplayName("Society Name")]
         public int SocietyId { get; set; }
 
         [Required(ErrorMessage = "Block Number is required")]
