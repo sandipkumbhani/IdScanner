@@ -1,126 +1,146 @@
 ﻿@model SocPass.Domain.Model.SocietyData
 
 @{
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <html>
 <head>
-	<title>Edit Society Data</title>
-	<link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-	<style>
-		.form-control.is-valid,
-		.form-select.is-valid {
-			border-color: #ced4da !important;
-			background-image: none !important;
-			box-shadow: none !important;
-		}
-	</style>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Edit Society Data</title>
+    <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .form-control.is-valid,
+        .form-select.is-valid {
+            border-color: #ced4da !important;
+            background-image: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-	<div class="container mt-4">
-		<h2>Edit Society Data</h2>
+    <div class="content-page">
+        <div class="content">
+            <div class="main-inner container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h1 class="page-title">Edit Society Data</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card com-profile-info">
+                            <div class="top-details">
+                                <h2 class="page-form-title">Society Data</h2>
+                                <div id="messageArea"></div>
+                                <form id="editForm" novalidate>
+                                    <input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
 
-		<form id="editForm" novalidate>
-			<input type="hidden" id="SocietyDataId" value="@Model.SocietyDataId" />
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Society</label>
+                                            <input type="text" class="form-control" value="@Model.Flat?.Block?.Society?.Name" readonly />
+                                        </div>
 
-			<div class="row mb-3">
-				<div class="col-md-4">
-					<label class="form-label">Society</label>
-					<input type="text" class="form-control" value="@Model.Flat?.Block?.Society?.Name" readonly />
-				</div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Block</label>
+                                            <input type="text" class="form-control" value="@Model.Flat?.Block?.BlockNumber" readonly />
+                                        </div>
 
-				<div class="col-md-4">
-					<label class="form-label">Block</label>
-					<input type="text" class="form-control" value="@Model.Flat?.Block?.BlockNumber" readonly />
-				</div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Flat</label>
+                                            <input type="text" class="form-control" value="@Model.Flat?.FlatNumber" readonly />
+                                        </div>
+                                    </div>
 
-				<div class="col-md-4">
-					<label class="form-label">Flat</label>
-					<input type="text" class="form-control" value="@Model.Flat?.FlatNumber" readonly />
-				</div>
-			</div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label for="ContactName" class="form-label">Contact Name</label>
+                                            <input type="text" id="ContactName" class="form-control" value="@Model.ContactName" required />
+                                            <div class="invalid-feedback">Please enter a contact name.</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="ContactNumber" class="form-label">Contact Number</label>
+                                            <input type="tel" id="ContactNumber" class="form-control"
+                                                   value="@Model.ContactNumber"
+                                                   pattern="^[0-9]{10}$" required />
+                                            <div class="invalid-feedback">Please enter a valid 10-digit number.</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="ContactEmail" class="form-label">Contact Email</label>
+                                            <input type="email" id="ContactEmail" class="form-control"
+                                                   value="@Model.ContactEmail" required />
+                                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                                        </div>
+                                    </div>
 
-			<div class="row mb-3">
-				<div class="col-md-4">
-					<label for="ContactName" class="form-label">Contact Name</label>
-					<input type="text" id="ContactName" class="form-control" value="@Model.ContactName" required />
-					<div class="invalid-feedback">Please enter a contact name.</div>
-				</div>
-				<div class="col-md-4">
-					<label for="ContactNumber" class="form-label">Contact Number</label>
-					<input type="tel" id="ContactNumber" class="form-control"
-						   value="@Model.ContactNumber"
-						   pattern="^[0-9]{10}$" required />
-					<div class="invalid-feedback">Please enter a valid 10-digit number.</div>
-				</div>
-				<div class="col-md-4">
-					<label for="ContactEmail" class="form-label">Contact Email</label>
-					<input type="email" id="ContactEmail" class="form-control"
-						   value="@Model.ContactEmail" required />
-					<div class="invalid-feedback">Please enter a valid email address.</div>
-				</div>
-			</div>
+                                    <div class="button-main d-flex gap-3 mt-4">
+                                        <button type="submit" class="card-link">
+                                            <i class="ri-save-line"></i> <span>Save</span>
+                                        </button>
 
-			<div class="button-main d-flex gap-3 mt-4">
-				<button type="submit" class="card-link">
-					<i class="ri-save-line"></i> <span>Save</span>
-				</button>
+                                        @if (Model.SocietyDataId == 0)
+                                        {
+                                            <button type="reset" id="clearBtn" class="card-link outline-bar">
+                                                <i class="ri-refresh-line"></i> <span>Clear</span>
+                                            </button>
+                                        }
 
-				@if (Model.SocietyDataId == 0)
-				{
-					<button type="reset" id="clearBtn" class="card-link outline-bar">
-						<i class="ri-refresh-line"></i> <span>Clear</span>
-					</button>
-				}
+                                        <a href="@Url.Action("SocietyDataList", "SocietyData")" class="card-link outline-bar">
+                                            <i class="bi bi-eye"></i> <span>View</span>
+                                        </a>
+                                    </div>
 
-				<a href="@Url.Action("SocietyDataList", "SocietyData")" class="card-link outline-bar">
-					<i class="bi bi-eye"></i> <span>View</span>
-				</a>
-			</div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-		</form>
-	</div>
 
-	<script>
-		(function () {
-			'use strict'
-			var form = document.getElementById('editForm');
+    <script>
+        (function () {
+            'use strict'
+            var form = document.getElementById('editForm');
 
-			form.addEventListener('submit', function (event) {
-				if (!form.checkValidity()) {
-					event.preventDefault();
-					event.stopPropagation();
-				} else {
-					event.preventDefault();
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    event.preventDefault();
 
-					var model = {
-						SocietyDataId: $("#SocietyDataId").val(),
-						FlatId: "@Model.FlatId",
-						ContactName: $("#ContactName").val(),
-						ContactNumber: $("#ContactNumber").val(),
-						ContactEmail: $("#ContactEmail").val()
-					};
+                    var model = {
+                        SocietyDataId: $("#SocietyDataId").val(),
+                        FlatId: "@Model.FlatId",
+                        ContactName: $("#ContactName").val(),
+                        ContactNumber: $("#ContactNumber").val(),
+                        ContactEmail: $("#ContactEmail").val()
+                    };
 
-					$.ajax({
-						url: '@Url.Action("EditSocietyData", "SocietyData")',
-						type: 'POST',
-						contentType: 'application/json',
-						data: JSON.stringify(model),
-						success: function () {
-							// alert("Updated successfully!");
-							window.location.href = '@Url.Action("SocietyDataList", "SocietyData")';
-						},
-						error: function () {
-							alert("Error updating data.");
-						}
-					});
-				}
+                    $.ajax({
+                        url: '@Url.Action("EditSocietyData", "SocietyData")',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(model),
+                        success: function () {
+                            // alert("Updated successfully!");
+                            window.location.href = '@Url.Action("SocietyDataList", "SocietyData")';
+                        },
+                        error: function () {
+                            alert("Error updating data.");
+                        }
+                    });
+                }
 
-				form.classList.add('was-validated');
-			}, false);
-		})();
-	</script>
+                form.classList.add('was-validated');
+            }, false);
+        })();
+    </script>
 </body>
 </html>

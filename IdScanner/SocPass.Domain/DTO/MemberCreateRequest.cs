@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SocPass.Domain.DTO
+﻿namespace SocPass.Domain.DTO
 {
     public class MemberCreateRequest
     {
@@ -13,3 +7,4 @@ namespace SocPass.Domain.DTO
         public List<int> ChildAges { get; set; } = new List<int>();
     }
 }
+ 

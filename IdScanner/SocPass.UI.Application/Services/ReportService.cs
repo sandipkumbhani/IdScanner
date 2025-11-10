@@ -10,8 +10,8 @@ namespace SocPass.UI.Application.Services
 {
     public class ReportService : IReportService
     {
-        private readonly IReportRepository _reportRepository;
-        public ReportService(IReportRepository reportRepository)
+        private readonly IReportAdapter _reportRepository;
+        public ReportService(IReportAdapter reportRepository)
         {
             _reportRepository = reportRepository;
         }

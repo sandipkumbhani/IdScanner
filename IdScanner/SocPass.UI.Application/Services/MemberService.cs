@@ -14,21 +14,20 @@ namespace SocPass.UI.Application.Services
 {
     public class MemberService : IMemberService
     {
-        private readonly IMemberRepository _memberRepository;
-        public MemberService(IMemberRepository memberRepository)
+        private readonly IMemberAdapter _memberRepository;
+        public MemberService(IMemberAdapter memberRepository)
         {
             _memberRepository = memberRepository;
         }
-        public async Task<List<Member>> GetAllMember(int flatId)
-        {
-            var result = await _memberRepository.GetAllMemberAsync(flatId);
-            return result ?? new List<Member>();
-        }
+        //public async Task<IList<Member>> GetAllMember(int flatId)
+        //{
+        //    var result = await _memberRepository.GetAllMemberAsync(flatId);
+        //    return result ?? new List<Member>();
+        //}
         public async Task<string> AddMemberAsync(MemberCreateRequest memberCreateRequest)
         {
             var result = await _memberRepository.AddMemberAsync(memberCreateRequest);
             return result;
-        
         }
         public async Task<string>GeneratePass(int blockId, int EventId)
         {
@@ -48,10 +47,10 @@ namespace SocPass.UI.Application.Services
             return result;
 
         }
-        public async Task<List<Member>> GetAllMemberAsync(int flatId)
-        {
-            var result = await _memberRepository.GetAllMemberAsync(flatId);
-            return result ?? new List<Member>();
-        }
+        //public async Task<IList<Member>> GetAllMemberAsync(int flatId)
+        //{
+        //    var result = await _memberRepository.GetAllMemberAsync(flatId);
+        //    return result ?? new List<Member>();
+        //}
     }
 }

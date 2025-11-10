@@ -11,7 +11,7 @@ namespace SocPass.Application.Interface
     {
         Task<Subscription> addsubscriptionAsync(Subscription subscription);
         Task<Subscription> GetById(int subscriptionId);
-        Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, Subscription subscription);
+        Task<Subscription> UpdateSubscriptionAsync(Subscription subscription);
         Task DeleteSubscriptionAsync(int subscriptionId);
         Task<List<Subscription>> GetAllSubscription();
         Task<Subscription> GetSubscriptionBySocietyIdAsync(int societyId);

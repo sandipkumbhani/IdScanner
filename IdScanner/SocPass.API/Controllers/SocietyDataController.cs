@@ -9,7 +9,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin,Society")]
+    [Authorize(Roles = "Admin,Society")]
     public class SocietyDataController : Controller
     {
         private readonly ISocietyDataService _societyDataService;
@@ -43,29 +43,17 @@ namespace SocPass.API.Controllers
             }
         }
 
-        [HttpPut("Update-Societydata/{societyDataId}")]
-        public async Task<IActionResult> UpdateMenuAsync(int societyDataId, [FromBody] SocietyData request)
+        [HttpPut("Update-Societydata")]
+        public async Task<IActionResult> UpdateMenuAsync([FromBody] SocietyData societyData)
         {
-            var existingData = await _societyDataService.GetSocietyDataByIdAsync(societyDataId);
-            if (existingData == null && societyDataId != request.SocietyDataId)
+            try
             {
-                return BadRequest("SocietyData ID mismatch.");
+                var updatedData = await _societyDataService.UpdateSocietyDataAsync(societyData);
+                return Ok(updatedData);
             }
-            else if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                try
-                {
-                    var updatedData = await _societyDataService.UpdateSocietyDataAsync(societyDataId, request);
-                    return Ok(updatedData);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { message = ex.Message });
-                }
+                return StatusCode(500, new { message = ex.Message });
             }
         }
         [HttpGet("GetBySocietyDataId")]

@@ -7,7 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin,Society")]
+    [Authorize(Roles = "Admin,Society")]
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;
@@ -47,29 +47,17 @@ namespace SocPass.API.Controllers
             }
         }
         [Authorize(Roles = "Admin")]
-        [HttpPut("Update-Menu/{menuid}")]
-        public async Task<IActionResult> UpdateMenuAsync(int menuid, [FromBody] MenuMaster menuMaster)
+        [HttpPut("Update-Menu")]
+        public async Task<IActionResult> UpdateMenuAsync([FromBody] MenuMaster menuMaster)
         {
-            var existingUser = await _menuMasterService.GetMenuMsaterById(menuid);
-            if (existingUser == null && menuid != menuMaster.MenuId)
+            try
             {
-                return BadRequest("Menu ID mismatch.");
+                var updatedUser = await _menuMasterService.UpdateMenuAsync(menuMaster);
+                return Ok(updatedUser);
             }
-            else if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                try
-                {
-                    var updatedUser = await _menuMasterService.UpdateMenuAsync(menuid, menuMaster);
-                    return Ok(updatedUser);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { message = ex.Message });
-                }
+                return StatusCode(500, new { message = ex.Message });
             }
         }
         [HttpGet("GetByMenuId")]

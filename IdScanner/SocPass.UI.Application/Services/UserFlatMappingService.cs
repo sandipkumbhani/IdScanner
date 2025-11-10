@@ -6,14 +6,14 @@ namespace SocPass.UI.Application.Services
 {
     public class UserFlatMappingService : IUserFlatMappingService
     {
-        private readonly IUserFlatMappingRepository _userFlatMappingRepository;
-        public UserFlatMappingService(IUserFlatMappingRepository userFlatMappingRepository)
+        private readonly IUserFlatMappingAdapter _userFlatMappingAdapter;
+        public UserFlatMappingService(IUserFlatMappingAdapter userFlatMappingAdapter)
         {
-            _userFlatMappingRepository = userFlatMappingRepository;
+            _userFlatMappingAdapter = userFlatMappingAdapter;
         }
-        public async Task<List<QRCodeMaster>> GetQrByUserId(int? userid,int EventId)
+        public async Task<IList<QRCodeMaster>> GetQrByUserId(int? userid,int EventId)
         {
-            return await _userFlatMappingRepository.GetQrByUserId(userid, EventId);
+            return await _userFlatMappingAdapter.GetQrByUserId(userid, EventId);
         }
     }
 }

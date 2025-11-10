@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
-    public class ForgotPasswordRepository : IForgotPasswordRepository
+    public class ForgotPasswordAdapter : IForgotPasswordAdapter
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
 
-        public ForgotPasswordRepository(HttpClient httpClient, IConfiguration configuration)
+        public ForgotPasswordAdapter(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _configuration = configuration;

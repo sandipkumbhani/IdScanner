@@ -12,7 +12,7 @@ namespace SocPass.Domain.Interface
     {
         Task<List<SocietyData>> GetAllSocietyDataAsync();
         Task<SocietyData> AddSocietyDataAsync(SocietyData societyData);
-        Task<SocietyData> GetSocietyDataByIdAsync(int societyDataId);
+        Task<SocietyData> GetSocietyDataByIdAsync(int? SocietyDataId);
         Task UpdateSocietyAsync(SocietyData societyData);
         Task DeleteSocietyAsync(int societyDataId);
 

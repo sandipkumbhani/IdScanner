@@ -18,7 +18,6 @@ namespace SocPass.UI.Controllers
                 ?? throw new ArgumentNullException(nameof(societyService));
             _globalClass = globalClass;
         }
-
         public async Task<IActionResult> SocietyList()
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
@@ -33,17 +32,19 @@ namespace SocPass.UI.Controllers
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
+            Society entity = new Society();
+            string Title = "Add";
             if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction("AccessDenied", "AccessDenied");
             }
-            if (societyId == null)
+            if (societyId != null)
             {
-                return View(new Society());
+                Title = "Edit";
+                entity = await _societyService.GetSocietyByIdAsync(societyId.Value);
             }
-            var society = await _societyService.GetSocietyByIdAsync(societyId.Value);
-            return View(society);
+            ViewBag.Title = Title;
+            return View(entity);
         }
         [HttpPost]
         public async Task<IActionResult> AddSociety(Society society)

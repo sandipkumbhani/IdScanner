@@ -51,12 +51,12 @@ namespace SocPass.Application.Services
             }
             return block;
         }
-        public async Task<Block> UpdateBlockAsync(int blockid,Block block)
+        public async Task<Block> UpdateBlockAsync(Block block)
         {
-            var blockexisting = await _blockRepository.GetBlockByIdAsync(blockid);
+            var blockexisting = await _blockRepository.GetBlockByIdAsync(block.BlockId);
             if(blockexisting == null)
             {
-                throw new KeyNotFoundException($"Block with Id {blockid} not found");
+                throw new KeyNotFoundException($"Block with Id {block.BlockId} not found");
             }
             blockexisting.BlockNumber = block.BlockNumber;
             blockexisting.SocietyId = block.SocietyId;

@@ -45,8 +45,6 @@ namespace SocPass.API.Controllers
             }
             return Ok(societies);
         }
-
-
         [HttpPost("create")]
         public async Task<IActionResult> CreateSociety([FromBody] Society society)
         {
@@ -65,22 +63,12 @@ namespace SocPass.API.Controllers
             }
         }
 
-        [HttpPut("Update-society/{societyId}")]
-        public async Task<IActionResult> UpdateSocietyAsync(int societyId, [FromBody] Society society)
+        [HttpPut("Update-society")]
+        public async Task<IActionResult> UpdateSocietyAsync([FromBody] Society society)
         {
-            var existingSociety = await _societyService.GetById(societyId);
-            if (existingSociety == null)
-            {
-                return NotFound($"Society with ID {societyId} not found.");
-            }
-
-            if (societyId != society.SocietyId)
-            {
-                return BadRequest("Society ID mismatch.");
-            }
             try
             {
-                var updated = await _societyService.UpdateAsync(societyId, society);
+                var updated = await _societyService.UpdateAsync(society);
                 return Ok(updated);
             }
             catch (Exception ex)

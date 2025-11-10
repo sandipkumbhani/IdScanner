@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SocPass.UI.Application.Extension;
+using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Model;
 using SocPass.UI.Filters;
 using SocPass.UI.Infrastructure.Extension;
@@ -31,6 +32,8 @@ builder.Services.AddInfrastrucureService();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<SocPass.UI.Domain.Model.GlobalClass>();
+builder.Services.AddSingleton<APICredential>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -68,25 +71,6 @@ app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
-//app.Use(async (context, next) =>
-//{
-//    var token = context.Session.GetString("Token");
-
-//    var path = context.Request.Path.Value?.ToLower();
-
-//    // Allow unauthenticated access to these endpoints
-//    bool isLoginPage = path.Contains("/login/login");
-//    bool isLogoutPage = path.Contains("/login/logout");
-//    bool isStaticFile = path.Contains("/css") || path.Contains("/js") || path.Contains("/images");
-
-//    if (string.IsNullOrEmpty(token) && !isLoginPage && !isLogoutPage && !isStaticFile && path != "/")
-//    {
-//        context.Response.Redirect("/Login/Login");
-//        return;
-//    }
-
-//    await next();
-//});
 app.UseAuthorization();
 
 

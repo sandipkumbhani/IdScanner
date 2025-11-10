@@ -1,9 +1,7 @@
 ﻿@model IList<SocPass.Domain.DTO.FlatWithMembersDto>
-
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="content-page">
     <div class="content">
         <div class="main-inner container-fluid">
@@ -18,7 +16,6 @@
                 <div class="col-12">
                     <div class="card com-profile-info">
                         <div class="top-details">
-
                             @if (Model != null && Model.Any())
                             {
                                 foreach (var flat in Model)

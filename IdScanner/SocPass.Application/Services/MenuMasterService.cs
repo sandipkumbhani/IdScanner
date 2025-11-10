@@ -63,19 +63,19 @@ namespace SocPass.Application.Services
 
             await _menuMasterRepository.DeleteMenuAsync(id);
         }
-        public async Task<MenuMaster> UpdateMenuAsync(int menuid, MenuMaster modelMenuMaster)
+        public async Task<MenuMaster> UpdateMenuAsync(MenuMaster menuMaster)
         {
 
-            var menuExisting = await _menuMasterRepository.GetMenuById(menuid);
+            var menuExisting = await _menuMasterRepository.GetMenuById(menuMaster.MenuId);
 
             if (menuExisting == null)
             {
-                throw new Exception($"Menu Master with ID {menuid} not found.");
+                throw new Exception($"Menu Master with ID {menuMaster.MenuId} not found.");
             }
-            menuExisting.Name = modelMenuMaster.Name;
-            menuExisting.Description = modelMenuMaster.Description;
-            menuExisting.Icon = modelMenuMaster.Icon;
-            menuExisting.Url = modelMenuMaster.Url;
+            menuExisting.Name = menuMaster.Name;
+            menuExisting.Description = menuMaster.Description;
+            menuExisting.Icon = menuMaster.Icon;
+            menuExisting.Url = menuMaster.Url;
             menuExisting.IsDefault = true;
             menuExisting.IsActive = true;
             menuExisting.InsertBy = 1;

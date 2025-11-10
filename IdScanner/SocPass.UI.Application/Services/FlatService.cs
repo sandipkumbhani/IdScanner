@@ -12,40 +12,40 @@ namespace SocPass.UI.Application.Services
 {
     public class FlatService : IFlatService
     {
-        private readonly IFlatRepository _FlatRepository;
-        public FlatService(IFlatRepository flatRepository)
+        private readonly IFlatAdapter _flatAdapter;
+        public FlatService(IFlatAdapter IFlatAdapter)
         {
-            _FlatRepository = flatRepository;
+            _flatAdapter = IFlatAdapter;
         }
-        public async Task<List<Flat>> GetAllFlatAsync()
+        public async Task<IList<Flat>> GetAllFlatAsync()
         {
-            return await _FlatRepository.GetAllFlatAsync();
+            return await _flatAdapter.GetAllFlatAsync();
         }
-        public async Task<List<Flat?>> GetFlatByIdAsync(int? societyId, int blockId)
+        public async Task<IList<Flat?>> GetFlatByIdAsync(int? societyId, int blockId)
         {
-            return await _FlatRepository.GetFlatByIdAsync(societyId, blockId);
+            return await _flatAdapter.GetFlatByIdAsync(societyId, blockId);
         }
-        public async Task<List<Flat>> AddFlatAsync(Flat flat)
-        {
-            return await _FlatRepository.AddFlatAsync(flat);
-        }
+        //public async Task<List<Flat>> AddFlatAsync(Flat flat)
+        //{
+        //    return await _flatAdapter.AddFlatAsync(flat);
+        //}
         public async Task<List<Flat>> UpdateFlatAsync(Flat flat)
         {
-            return await _FlatRepository.UpdateFlatAsync(flat);
+            return await _flatAdapter.UpdateFlatAsync(flat);
         }
-        public async Task<List<Flat>> GetFlatByBlockId(int blockid)
+        public async Task<IList<Flat>> GetFlatByBlockId(int blockid)
         {
-            var result = await _FlatRepository.GetFlatByBlockId(blockid);
+            var result = await _flatAdapter.GetFlatByBlockId(blockid);
             return result;
         }
-        public async Task<List<FlatWithMembersDto>> GetQR(int blockid, int eventId)
+        public async Task<IList<FlatWithMembersDto>> GetQR(int blockid, int eventId)
         {
-            var result = await _FlatRepository.GetQR(blockid,eventId);
+            var result = await _flatAdapter.GetQR(blockid,eventId);
             return result;
         }
-        public async Task<List<FlatWithMembersDto>> GetGuestQR(int blockid, int EventId)
+        public async Task<IList<FlatWithMembersDto>> GetGuestQR(int blockid, int EventId)
         {
-            var result = await _FlatRepository.GetGuestQR(blockid, EventId);
+            var result = await _flatAdapter.GetGuestQR(blockid, EventId);
             return result;
         }
     }

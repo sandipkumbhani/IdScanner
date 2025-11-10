@@ -65,17 +65,12 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpPut("Update-Block/{blockid}")]
-        public async Task<IActionResult> UpdateBlockAsync(int blockid, [FromBody] Block block)
+        [HttpPut("Update-Block")]
+        public async Task<IActionResult> UpdateBlockAsync([FromBody] Block block)
         {
-            var existingBlock = await _blockService.GetBlockByIdAsync(blockid);
-            if (existingBlock == null)
-            {
-                return NotFound($"Block with ID {blockid} not found.");
-            }
             try
             {
-                var UpdatedBlock = await _blockService.UpdateBlockAsync(blockid, block);
+                var UpdatedBlock = await _blockService.UpdateBlockAsync(block);
                 return Ok(UpdatedBlock);
             }
             catch (Exception ex)

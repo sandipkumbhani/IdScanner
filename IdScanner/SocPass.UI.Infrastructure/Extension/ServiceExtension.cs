@@ -9,22 +9,23 @@ namespace SocPass.UI.Infrastructure.Extension
     {
         public static IServiceCollection AddInfrastrucureService(this IServiceCollection services)
         {
-            services.AddScoped<ILoginRepository, LoginRepository>();
-            services.AddScoped<IForgotPasswordRepository, ForgotPasswordRepository>();
-            services.AddScoped<IGetUserNameByIdRepository, GetUserNameByIdRepository>();
-            services.AddScoped<IResetPasswordRepossitory,ResetPasswordRepossitory>();
-            services.AddScoped<IMenuMasterRepository, MenuMasterRepository>();
-            services.AddScoped<IBlockRepository, BlockRepository>();
-            services.AddScoped<ISocietyRepository, SocietyRepository>();
-            services.AddScoped<IFlatRepository, FlatRepository>();
-            services.AddScoped<IMemberRepository, MemberRepository>();
-            services.AddScoped<IMemberDetailsRepository, MemberDetailsRepository>();
-            services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-            services.AddScoped<IUserRepository,UserRepository>();   
-            services.AddScoped<ISocietyDataRepository, SocietyDataRepository>();
-            services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<ILoginAdapter, LoginAdapter>();
+            services.AddScoped<IForgotPasswordAdapter, ForgotPasswordAdapter>();
+            services.AddScoped<IGetUserNameByIdAdapter, GetUserNameByIdAdapter>();
+            services.AddScoped<IResetPasswordAdapter,ResetPasswordAdapter>();
+            services.AddScoped<IMenuMasterAdapter, MenuMasterAdapter>();
+            services.AddScoped<IBlockAdapter, BlockAdapter>();
+            services.AddScoped<ISocietyAdapter, SocietyAdapter>();
+            services.AddScoped<IFlatAdapter, FlatAdapter>();
+            services.AddScoped<IMemberAdapter, MemberAdapter>();
+            services.AddScoped<IMemberDetailsAdapter, MemberDetailsAdapter>();
+            services.AddScoped<ISubscriptionAdapter, SubscriptionAdapter>();
+            services.AddScoped<IUserAdapter,UserAdapter>();   
+            services.AddScoped<ISocietyDataAdapter, SocietyDataAdapter>();
+            services.AddScoped<IUserFlatMappingAdapter, UserFlatMappingAdapter>();
+            services.AddScoped<IEventAdapter, EventAdapter>();
+            services.AddScoped<IReportAdapter, ReportAdapter>();
+            services.AddScoped<ICommonAdapter, CommonAdapter>();
             return services;
         }
     }

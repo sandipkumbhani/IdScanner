@@ -1,6 +1,7 @@
 ﻿@model SocPass.Domain.Model.Event
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string Title = ViewBag.Title;
     bool isNew = Model.EventId == 0;
     bool isChecked = Model.IsActive || isNew;
     bool isAddMode = Model.StartDate == DateTime.MinValue;
@@ -29,7 +30,7 @@
 }
 <html>
 <head>
-    <title>SocPass | AddEvent</title>
+    <title>SocPass | @Title Event</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>

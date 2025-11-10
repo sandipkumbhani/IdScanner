@@ -12,7 +12,7 @@ namespace SocPass.Application.Interface
         Task<MenuMaster> CreateMenuMasterAsync(MenuMaster MenuMaster);
         Task<List<MenuMaster>> GetModelMenuMastersAsync();
         Task DeleteMenuById(int id);
-        Task<MenuMaster> UpdateMenuAsync(int menuid, MenuMaster menuMaster);
+        Task<MenuMaster> UpdateMenuAsync(MenuMaster menuMaster);
         Task<MenuMaster> GetMenuMsaterById(int id);
 
 

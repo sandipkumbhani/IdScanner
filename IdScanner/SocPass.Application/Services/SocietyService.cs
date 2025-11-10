@@ -55,9 +55,9 @@ namespace SocPass.Application.Services
             }
             return society;
         }
-        public async Task<Society> UpdateAsync(int societyId, Society society)
+        public async Task<Society> UpdateAsync(Society society)
         {
-            var societyExisting = await _societyRepository.GetByIdAsync(societyId);
+            var societyExisting = await _societyRepository.GetByIdAsync(society.SocietyId);
             if (societyExisting == null)
             {
                 throw new KeyNotFoundException("Society with Id {societyId} not found");

@@ -6,12 +6,12 @@ namespace SocPass.UI.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IUserAdapter _userRepository;
+        public UserService(IUserAdapter userRepository)
         {
             _userRepository = userRepository;
         }
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<IList<User>> GetAllUsersAsync()
         {
             return await _userRepository.GetAllUsersAsync();
         }
@@ -23,7 +23,7 @@ namespace SocPass.UI.Application.Services
         {
             return await _userRepository.AddUserAsync(user, flatId);
         }
-        public async Task<User> UpdateUserAsync(User model, int? flatId = null)
+        public async Task<string> UpdateUserAsync(User model, int? flatId = null)
         {
             return await _userRepository.UpdateUserAsync(model, flatId);
         }
@@ -32,7 +32,7 @@ namespace SocPass.UI.Application.Services
             return await _userRepository.DeleteUserAsync(userid);
         }
         //UsrRole
-        public async Task<List<UserRole>> GetAllUserRoleAsync()
+        public async Task<IList<UserRole>> GetAllUserRoleAsync()
         {
             return await _userRepository.GetAllUserRoleAsync();
         }

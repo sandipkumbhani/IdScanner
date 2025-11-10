@@ -10,13 +10,13 @@ namespace SocPass.UI.Application.Services
 {
     public class MemberDetailsService : IMemberDetailsService
     {
-        public readonly IMemberDetailsRepository _memberDetailsRepository;
-        public MemberDetailsService(IMemberDetailsRepository memberDetailsRepository)
+        public readonly IMemberDetailsAdapter _memberDetailsRepository;
+        public MemberDetailsService(IMemberDetailsAdapter memberDetailsRepository)
         {
             _memberDetailsRepository = memberDetailsRepository;
         }
 
-        public async Task<bool> IsVisitedAsync(int memberid,int EventId, int loggedInUserId)
+        public async Task<string> IsVisitedAsync(int memberid,int EventId, int loggedInUserId)
         {
             return await _memberDetailsRepository.IsVisitedAsync(memberid, EventId ,loggedInUserId);
         }

@@ -12,7 +12,7 @@ namespace SocPass.Application.Interface
     {
         Task CreateSocietyDataAsync(SocietyDataCreateRequest request);
         Task<SocietyData> GetSocietyDataByIdAsync(int societyDataId);
-        Task<SocietyData>UpdateSocietyDataAsync(int societyDataId, SocietyData request);
+        Task<SocietyData>UpdateSocietyDataAsync(SocietyData request);
         Task DeleteSocietyDataByIdAsync(int societyDataId);
         Task<List<SocietyData>> GetAllSocietyDataAsync();
         Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId);

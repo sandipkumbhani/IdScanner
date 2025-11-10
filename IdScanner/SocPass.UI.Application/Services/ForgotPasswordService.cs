@@ -5,8 +5,8 @@ namespace SocPass.UI.Application.Services
 {
     public class ForgotPasswordService : IForgotPasswordService
     {
-        private readonly IForgotPasswordRepository _forgotPasswordRepository;
-        public ForgotPasswordService(IForgotPasswordRepository forgotPasswordRepository)
+        private readonly IForgotPasswordAdapter _forgotPasswordRepository;
+        public ForgotPasswordService(IForgotPasswordAdapter forgotPasswordRepository)
         {
             _forgotPasswordRepository = forgotPasswordRepository
                 ?? throw new ArgumentNullException(nameof(forgotPasswordRepository));

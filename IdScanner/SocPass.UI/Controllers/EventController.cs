@@ -75,7 +75,7 @@ namespace SocPass.UI.Controllers
                 }
                 var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
                 int.TryParse(userIdClaim, out int userId);
-
+                string Title;
                 IEnumerable<Society> societies;
                 if (User.IsInRole("Admin"))
                 {
@@ -88,6 +88,7 @@ namespace SocPass.UI.Controllers
 
                 if (eventId == 0)
                 {
+                    Title = "Add";
                     var newEvent = new Event();
 
                     if (!User.IsInRole("Admin"))
@@ -104,15 +105,16 @@ namespace SocPass.UI.Controllers
                         ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name");
                         ViewBag.IsSocietyReadonly = false;
                     }
-
+                    ViewBag.Title = Title;
                     return View(newEvent);
                 }
-
+                Title = "Edit";
                 var existingEvent = await _eventService.GetEventById(eventId);
                 var eventModel = existingEvent ?? new Event();
 
                 ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", eventModel.SocietyId);
                 ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
+                ViewBag.Title = Title;
 
                 return View(eventModel);
             }
@@ -126,7 +128,7 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddEvent(Event events)
         {
-           
+
             if (events.EventId == 0)
             {
                 await _eventService.AddEventAsync(events);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
@@ -9,27 +10,24 @@ using System.Text;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
-    public class UserRepository : IUserRepository
+    public class UserAdapter : IUserAdapter
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
-        private GlobalClass _globalClass;
-        public UserRepository(HttpClient httpClient, IConfiguration configuration, GlobalClass globalClass)
+        private readonly GlobalClass _globalClass;
+        private readonly ICommonAdapter _commonAdapter;
+        public UserAdapter(HttpClient httpCleint, IConfiguration configuration, GlobalClass globalClass, ICommonAdapter commonAdapter)
         {
-            _httpClient = httpClient;
+            _httpClient = httpCleint;
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
             _globalClass = globalClass;
+            _commonAdapter = commonAdapter;
         }
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<IList<User>> GetAllUsersAsync()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = apiCredential.url + "User/get-all-user";
-            var response = await _httpClient.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<User>>(json)!;
+            return await _commonAdapter.GetAsync<IList<User>>($"User/get-all-user");
         }
         public async Task<User> AddUserAsync(User user, int? flatId = null)
         {
@@ -92,7 +90,6 @@ namespace SocPass.UI.Infrastructure.Provider
                     throw new Exception($"API Error ({response.StatusCode}): {responseData}");
                 }
             }
-
             try
             {
                 var createdUser = JsonConvert.DeserializeObject<User>(responseData);
@@ -106,67 +103,23 @@ namespace SocPass.UI.Infrastructure.Provider
 
         public async Task<User> GetUsersByIdAsync(int? id)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            if (id == null)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
-            var baseUrl = apiCredential.url + $"User/GetById?userid={id}";
-            var response = await _httpClient.GetAsync(baseUrl);
-
-            if (!response.IsSuccessStatusCode)
-                throw new Exception($"Failed to get user. Status code: {response.StatusCode}");
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<User>(jsonString)!;
+            return await _commonAdapter.GetAsync<User>($"User/GetById?userid={id}");
         }
-        public async Task<User> UpdateUserAsync(User user, int? flatId = null)
+        public async Task<string> UpdateUserAsync(User user, int? flatId = null)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = apiCredential.url + $"User/Update-User/{user.UserId}?flatId={flatId}";
-            var jsonContent = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync(baseUrl, jsonContent);
-
-            if (!response.IsSuccessStatusCode)
-                throw new Exception($"Failed to update user. Status code: {response.StatusCode}");
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<User>(jsonString)!;
+            return await _commonAdapter.PutAsync($"User/Update-User?flatId={flatId}", user);
         }
         public async Task<string> DeleteUserAsync(int id)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}User/Delete-User?id={id}";
-            var response = await _httpClient.DeleteAsync(baseUrl);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to delete user. Status code: {response.StatusCode}");
-            }
-            return await response.Content.ReadAsStringAsync();
+            return await _commonAdapter.DeleteAsync<string>($"User/Delete-User?id={id}");
         }
-        public async Task<List<UserRole>> GetAllUserRoleAsync()
+        public async Task<IList<UserRole>> GetAllUserRoleAsync()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = apiCredential.url + "UserRole/get-all-userRole";
-            var response = await _httpClient.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<UserRole>>(json)!;
+            return await _commonAdapter.GetAsync<IList<UserRole>>($"UserRole/get-all-userRole");
         }
         public async Task<UserRole> GetRoleNameByIdAsync(long? id)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
-
-            var baseUrl = apiCredential.url + $"UserRole/GetUserRoleById?id={id}";
-            var response = await _httpClient.GetAsync(baseUrl);
-            if (!response.IsSuccessStatusCode)
-                throw new Exception($"Failed to get user. Status code: {response.StatusCode}");
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<UserRole>(jsonString)!;
+            return await _commonAdapter.GetAsync<UserRole>($"UserRole/GetUserRoleById?id={id}");
         }
     }
 }

@@ -11,17 +11,17 @@ namespace SocPass.UI.Application.Services
 {
     public class SocietyService:ISocietyService
     {
-        private readonly ISocietyRepository _societyRepository;
-        public SocietyService(ISocietyRepository societyRepository)
+        private readonly ISocietyAdapter _societyRepository;
+        public SocietyService(ISocietyAdapter societyRepository)
         {
             _societyRepository = societyRepository;
         }
-        public async Task<List<Society>> GetAllSocietyAsync(int userId)
+        public async Task<IList<Society>> GetAllSocietyAsync(int userId)
         {
             return await _societyRepository.GetAllSocietyAsync(userId);
         }
 
-        public async Task<List<Society>> GetAllSocietyAsync()
+        public async Task<IList<Society>> GetAllSocietyAsync()
         {
             return await _societyRepository.GetAllSocietyAsync();
         }

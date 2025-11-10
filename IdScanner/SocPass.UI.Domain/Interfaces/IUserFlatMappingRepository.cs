@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SocPass.UI.Domain.Interfaces
 {
-    public interface IUserFlatMappingRepository
+    public interface IUserFlatMappingAdapter
     {
-        Task<List<QRCodeMaster>> GetQrByUserId(int? userid, int EventId);
+        Task<IList<QRCodeMaster>> GetQrByUserId(int? userid, int EventId);
     }
 }
