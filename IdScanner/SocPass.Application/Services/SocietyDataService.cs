@@ -66,9 +66,9 @@ namespace SocPass.Application.Services
             }
         }
 
-        public async Task<SocietyData> UpdateSocietyDataAsync(int societyDataId, SocietyData request)
+        public async Task<SocietyData> UpdateSocietyDataAsync(SocietyData societyData)
         {
-            var existingData = await _societyDataRepository.GetSocietyDataByIdAsync(societyDataId);
+            var existingData = await _societyDataRepository.GetSocietyDataByIdAsync(societyData.SocietyDataId);
             if (existingData == null)
                 throw new Exception("SocietyData record not found.");
 
@@ -81,10 +81,10 @@ namespace SocPass.Application.Services
             //existingData.UpdateBy = 1;
             //existingData.UpdateDate = DateTime.Now;
 
-            existingData.ContactName = request.ContactName;
-            existingData.ContactNumber = request.ContactNumber;
-            existingData.ContactEmail = request.ContactEmail;
-            existingData.FlatId = request.FlatId;
+            existingData.ContactName = societyData.ContactName;
+            existingData.ContactNumber = societyData.ContactNumber;
+            existingData.ContactEmail = societyData.ContactEmail;
+            existingData.FlatId = societyData.FlatId;
             existingData.IsActive = true;
             existingData.UpdateBy = 1;
             existingData.UpdateDate = DateTime.Now;
@@ -113,7 +113,6 @@ namespace SocPass.Application.Services
 
             await _societyDataRepository.DeleteSocietyAsync(societyDataId);
         }
-
         public async Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId)
         {
             var societyData = await _societyDataRepository.GetSocietyDataByFlatId(flatId);

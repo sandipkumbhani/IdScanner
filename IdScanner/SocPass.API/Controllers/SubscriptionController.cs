@@ -25,14 +25,14 @@ namespace SocPass.API.Controllers
             try
             {
                 var addSubscription = await _subscriptionService.addsubscriptionAsync(subscription);
-                return Ok(addSubscription );
+                return Ok(addSubscription);
             }
             catch (KeyNotFoundException ex)
             {
                 return Ok($"someting Went Wrong");
             }
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById(int subscriptionId)
         {
@@ -61,29 +61,17 @@ namespace SocPass.API.Controllers
             }
         }
 
-        [HttpPut("Update-Subscription/{subscriptionId}")]
-        public async Task<IActionResult> UpdateMenuAsync(int subscriptionId, [FromBody] Subscription subscription)
+        [HttpPut("Update-Subscription")]
+        public async Task<IActionResult> UpdateMenuAsync([FromBody] Subscription subscription)
         {
-            var subscriptionUpdate = await _subscriptionService.GetById(subscriptionId);
-            if (subscriptionUpdate == null && subscriptionId != subscription.SubscriptionId)
+            try
             {
-                return BadRequest("Menu ID mismatch.");
+                var updatedUser = await _subscriptionService.UpdateSubscriptionAsync(subscription);
+                return Ok(updatedUser);
             }
-            else if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                try
-                {
-                    var updatedUser = await _subscriptionService.UpdateSubscriptionAsync(subscriptionId, subscription);
-                    return Ok(updatedUser);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { message = ex.Message });
-                }
+                return StatusCode(500, new { message = ex.Message });
             }
         }
         [HttpDelete("Delete-Subscription")]
@@ -115,7 +103,7 @@ namespace SocPass.API.Controllers
             try
             {
                 bool exists = await _subscriptionService.ExistsSocietyDataAsync(societyId, subscriptionId);
-                return Ok(exists); 
+                return Ok(exists);
             }
             catch
             {

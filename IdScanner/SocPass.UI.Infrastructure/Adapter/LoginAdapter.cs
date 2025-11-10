@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using SocPass.Domain.DTO;
 using SocPass.UI.Domain.Comman;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
@@ -12,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
-    public class LoginRepository : ILoginRepository
+    public class LoginAdapter : ILoginAdapter
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
 
-        public LoginRepository(HttpClient httpClient, IConfiguration configuration)
+        public LoginAdapter(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _configuration = configuration;

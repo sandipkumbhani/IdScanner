@@ -52,7 +52,7 @@ namespace SocPass.API.Controllers
         [HttpPost("Add-Event")]
         public async Task<IActionResult> AddEvent([FromBody] Event events)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -72,31 +72,20 @@ namespace SocPass.API.Controllers
                 return Ok($"Event with ID {eventId} not found: {ex.Message}");
             }
         }
-        [HttpPut("Update-Event/{eventId}")]
-        public async Task<IActionResult> UpdateMenuAsync(int eventId, [FromBody] Event events)
+        [HttpPut("Update-Event")]
+        public async Task<IActionResult> UpdateMenuAsync([FromBody] Event events)
         {
-            var existingEvent = await _eventService.GetEventByIdAsync(eventId);
-            if (existingEvent == null && eventId != events.EventId)
+
+            try
             {
-                return BadRequest("Event ID mismatch.");
+                var updatedEvent = await _eventService.UpdateEventAsync(events);
+                return Ok(updatedEvent);
             }
-            else if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                try
-                {
-                    var updatedEvent = await _eventService.UpdateEventAsync(events);
-                    return Ok(updatedEvent);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { message = ex.Message });
-                }
+                return StatusCode(500, new { message = ex.Message });
             }
         }
-
     }
+
 }

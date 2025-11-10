@@ -2,10 +2,11 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isNew = Model.BlockId == 0;
+    string Title = ViewBag.Title; ;
 }
 <html>
 <head>
-    <title>SocPass | Add Block</title>
+    <title>SocPass | @Title Block</title>
 </head>
 <body>
     <div class="content-page">

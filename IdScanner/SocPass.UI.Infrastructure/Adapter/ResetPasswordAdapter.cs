@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure
 {
-    public class ResetPasswordRepossitory : IResetPasswordRepossitory
+    public class ResetPasswordAdapter : IResetPasswordAdapter
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
 
-        public ResetPasswordRepossitory(HttpClient httpClient, IConfiguration configuration)
+        public ResetPasswordAdapter(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _configuration = configuration;

@@ -49,12 +49,12 @@ namespace SocPass.Application.Services
         {
             return await _subscriptionRepository.GetSubscriptionBySocietyIdAsync(societyId);
         }
-        public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, Subscription subscription)
+        public async Task<Subscription> UpdateSubscriptionAsync(Subscription subscription)
         {
-            var subscriptionUpdate = await _subscriptionRepository.GetById(subscriptionId);
+            var subscriptionUpdate = await _subscriptionRepository.GetById(subscription.SubscriptionId);
             if (subscriptionUpdate == null)
             {
-                throw new Exception($"Menu Master with ID {subscriptionId} not found.");
+                throw new Exception($"Subscription with ID {subscription.SubscriptionId} not found.");
             }
             subscriptionUpdate.StartFrom= subscription.StartFrom;
             subscriptionUpdate.EndTo = subscription.EndTo;

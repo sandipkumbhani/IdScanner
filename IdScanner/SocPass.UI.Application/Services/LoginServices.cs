@@ -7,8 +7,8 @@ namespace SocPass.UI.Application.Services
 {
     public class LoginServices : ILoginServices
     {
-        private readonly ILoginRepository _loginRepository;
-        public LoginServices(ILoginRepository loginRepository)
+        private readonly ILoginAdapter _loginRepository;
+        public LoginServices(ILoginAdapter loginRepository)
         {
             _loginRepository = loginRepository;
         }

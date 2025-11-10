@@ -1,6 +1,7 @@
 ﻿@model SocPass.Domain.Model.QRCodeMaster
 @{
     Layout = null;
+    var isToday = Model.Event.StartDate.Date == DateTime.Now.Date;
 }
 
 <!DOCTYPE html>
@@ -77,6 +78,12 @@
             max-width: 700px;
         }
 
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: red;
+        }
+
         }
     </style>
 </head>
@@ -89,7 +96,12 @@
             </div>
 
             <div class="card-body">
-
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-@TempData["AlertType"] text-center">
+                        @TempData["Message"]
+                    </div>
+                }
                 @if (!string.IsNullOrEmpty(ViewBag.Message))
                 {
                     <div class="alert alert-@ViewBag.AlertType text-center">
@@ -128,6 +140,10 @@
                             <th>Event Name</th>
                             <td>@Model.Event.EventName</td>
                         </tr>
+                        <tr>
+                            <th>Event Date</th>
+                            <td>@Model.Event.StartDate.ToString("yyyy-MM-dd")</td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -139,8 +155,12 @@
                           asp-route-EventId="@Model.EventId"
                           method="post"
                           class="text-center">
-                        <button type="submit" class="btn btn-success btn-lg px-5">
-                            <i class="bi bi-check-circle-fill"></i> Mark as Visited
+                        <button type="submit"
+                                class="btn btn-success btn-lg px-5"
+                                style="background-color: @(isToday ? "#157347" : "red")"
+                                @(isToday ? "" : "disabled")>
+                            <i class="bi bi-check-circle-fill" ></i>
+                            @(isToday ? "Mark as Visited" : "Event not started yet")
                         </button>
                     </form>
                 }

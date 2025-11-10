@@ -13,7 +13,7 @@ namespace SocPass.Application.Interface
         Task<Society> GetById(int societyId);
         Task<List<Society>> GetAllSocietyAsync(int userId);
         Task<List<Society>> GetAllSocietyAsync();
-        Task<Society> UpdateAsync(int societyId, Society society);
+        Task<Society> UpdateAsync(Society society);
         Task DeleteSocietyById(int society);
     }
 }

@@ -75,7 +75,7 @@ namespace SocPass.API.Controllers
             var result = await _memberService.GenerateGuestQRAsync(blockId, EventId);
             return Ok(result);
         }
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("GetMemberByMemberId")]
         public async Task<IActionResult> GetmemberById(int memberId,int EventId)
         {
@@ -86,7 +86,7 @@ namespace SocPass.API.Controllers
 
             return Ok(result);
         }
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost("IsVisited")]
         public async Task<IActionResult> IsVisitedAsync(int memberId,int EventId, int loggedInUserId)
         {
@@ -95,15 +95,20 @@ namespace SocPass.API.Controllers
                 return BadRequest(new { Message = "Valid Member Id is required." });
             }
             
-            bool isVisited = await _memberService.IsVisitedAsync(memberId, EventId, loggedInUserId);
-            if (isVisited)
-            {
-                return Ok(new { Message = "Member is visiting." });
-            }
-            else
-            {
-                return Ok(new { Message = "Member is already visiting." });
-            }
+            string isVisited = await _memberService.IsVisitedAsync(memberId, EventId, loggedInUserId);
+            return Ok(isVisited);
+            //if (isVisited)
+            //{
+            //    return Ok(new { Message = "Member is visiting." });
+            //}
+            //else if(isVisited==false)
+            //{
+            //    return Ok(new { Message = "Event not start at." });
+            //}
+            //else
+            //{
+            //    return Ok(new { Message = "Member is already visiting." });
+            //}
         }
 
 

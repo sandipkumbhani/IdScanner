@@ -6,8 +6,8 @@ namespace SocPass.UI.Application.Services
 {
     public class ResetPasswordService : IResetPasswordService
     {
-        private readonly IResetPasswordRepossitory _resetPasswordRepository;
-        public ResetPasswordService(IResetPasswordRepossitory resetPasswordRepository)
+        private readonly IResetPasswordAdapter _resetPasswordRepository;
+        public ResetPasswordService(IResetPasswordAdapter resetPasswordRepository)
         {
             _resetPasswordRepository = resetPasswordRepository;
         }

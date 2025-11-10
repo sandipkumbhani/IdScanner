@@ -6,13 +6,13 @@ namespace SocPass.UI.Application.Services
 {
     public class BlockService : IBlockService
     {
-        private readonly IBlockRepository _blockRepository;   
-        public BlockService(IBlockRepository blockRepository)
+        private readonly IBlockAdapter _blockRepository;   
+        public BlockService(IBlockAdapter blockRepository)
         {
             _blockRepository = blockRepository;
         }
 
-        public async Task<List<Block>> GetAllBlockAsync()
+        public async Task<IList<Block>> GetAllBlockAsync()
         {
              return await _blockRepository.GetAllBlockAsync();
         }
@@ -32,7 +32,7 @@ namespace SocPass.UI.Application.Services
         {
             return await _blockRepository.UpdateBlockAsync(block);
         }
-        public async Task<List<Block>> GetBlockBySocietyId(int? societyId)
+        public async Task<IList<Block>> GetBlockBySocietyId(int? societyId)
         {
             return await _blockRepository.GetBlockBySocietyId(societyId);
         }

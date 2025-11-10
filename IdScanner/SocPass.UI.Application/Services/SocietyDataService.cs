@@ -13,13 +13,13 @@ namespace SocPass.UI.Application.Services
 {
     public class SocietyDataService : ISocietyDataService
     {
-        private readonly ISocietyDataRepository _societyDataRepository;
-        public SocietyDataService(ISocietyDataRepository societyDataRepository)
+        private readonly ISocietyDataAdapter _societyDataRepository;
+        public SocietyDataService(ISocietyDataAdapter societyDataRepository)
         {
             _societyDataRepository = societyDataRepository;
         }
 
-        public async Task<List<SocietyData>> GetAllSocietyDataAsync()
+        public async Task<IList<SocietyData>> GetAllSocietyDataAsync()
         {
             return await _societyDataRepository.GetAllSocietyData();
         }
@@ -40,10 +40,10 @@ namespace SocPass.UI.Application.Services
         {
             return await _societyDataRepository.DeleteSocietyDataAsync(societyDataId);
         }
-        public async Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId)
-        {
-            return await _societyDataRepository.GetSocietyDataByFlatId(flatId);
-        }
+        //public async Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId)
+        //{
+        //    return await _societyDataRepository.GetSocietyDataByFlatId(flatId);
+        //}
 
     }
 }

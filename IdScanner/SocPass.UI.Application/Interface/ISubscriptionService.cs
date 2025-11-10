@@ -4,7 +4,7 @@ namespace SocPass.UI.Application.Interface
 {
     public interface ISubscriptionService
     {
-        Task<List<Subscription>> GetAllSubscription();
+        Task<IList<Subscription>> GetAllSubscription();
         Task<string> AddSubscriptionAsync(Subscription subscription);
         Task<Subscription> GetSubscriptionByIdAsync(int? subscriptionId);
         Task<string> UpdateSubscriptionAsync(Subscription subscription);

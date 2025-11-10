@@ -85,7 +85,8 @@ namespace SocPass.Infrastructure.Repository
                     Event = m.Event != null ? new Event
                     {
                         EventId = m.Event.EventId,
-                        EventName = m.Event.EventName
+                        EventName = m.Event.EventName,
+                         StartDate = m.Event.StartDate
                     } : null,
 
                     Member = m.Member != null ? new Member
@@ -117,24 +118,34 @@ namespace SocPass.Infrastructure.Repository
                 })
                 .FirstOrDefaultAsync();
         }
-        public async Task<bool> IsVisitedAsync(int memberid, int EventId, int loggedInUserId)
+        public async Task<string> IsVisitedAsync(int memberId, int eventId, int loggedInUserId)
         {
             var entity = await _context.QRCodeMasters
-    .FirstOrDefaultAsync(x => x.MemberId == memberid && x.EventId == EventId);
+                .Include(e => e.Event)
+                .FirstOrDefaultAsync(x => x.MemberId == memberId && x.EventId == eventId);
 
             if (entity == null)
-                return false;
+                return "NotFound";
 
-            if (!entity.Visited)
+            var today = DateTime.Now.Date;
+            var eventDate = entity.Event.StartDate.Date;
+
+            if (entity.Visited)
+                return "AlreadyVisited";
+
+            if (eventDate != today)
             {
-                entity.Visited = true;
-                entity.UpdateDate = DateTime.Now;
-                entity.UpdateBy = loggedInUserId;
-                await _context.SaveChangesAsync();
+                return "InvalidDate";
             }
-            return true;
 
+            entity.Visited = true;
+            entity.UpdateDate = DateTime.Now;
+            entity.UpdateBy = loggedInUserId;
+
+            await _context.SaveChangesAsync();
+            return "Visited";
         }
+
         public async Task<Tuple<IList<QRCodeMaster>, IList<Flat>, IList<Member>>> GenerateGuestQRAsync(int blockId, int eventId)
         {
             var flatIds = await _context.flats

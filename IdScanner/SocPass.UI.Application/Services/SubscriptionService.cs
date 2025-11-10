@@ -6,12 +6,12 @@ namespace SocPass.UI.Application.Services
 {
     public class SubscriptionService : ISubscriptionService
     {
-        private  readonly ISubscriptionRepository _subscriptionRepository;
-        public SubscriptionService(ISubscriptionRepository subscriptionRepository)
+        private  readonly ISubscriptionAdapter _subscriptionRepository;
+        public SubscriptionService(ISubscriptionAdapter subscriptionRepository)
         {
             _subscriptionRepository = subscriptionRepository;
         }
-        public async Task<List<Subscription>> GetAllSubscription()
+        public async Task<IList<Subscription>> GetAllSubscription()
         {
             return await _subscriptionRepository.GetAllSubscriptionAsync();
         }

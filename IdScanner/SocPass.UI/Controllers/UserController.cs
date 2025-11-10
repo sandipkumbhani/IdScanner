@@ -28,21 +28,18 @@ namespace SocPass.Controllers
             if (string.IsNullOrEmpty(_globalClass.Token))
                 return RedirectToAction("Login", "Login");
 
-            // Extract current user context
             var currentUserRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int currentUserId);
 
             IList<User> userList = new List<User>();
 
-            // 🔹 Admin – full visibility
             if (User.IsInRole("Admin"))
             {
                 userList = await _userServices.GetAllUsersAsync();
             }
             else
             {
-                // 🔹 Society User – limited visibility
                 var societies = await _Societyservices.GetAllSocietyAsync(currentUserId);
                 var assignedSociety = societies.FirstOrDefault();
 
@@ -55,12 +52,10 @@ namespace SocPass.Controllers
                 }
                 else
                 {
-                    // Fallback – no associated society, return empty set
                     userList = new List<User>();
                 }
 
             }
-
             ViewBag.UserList = userList;
 
             return View("~/Views/User/UserList.cshtml");
@@ -79,8 +74,6 @@ namespace SocPass.Controllers
 
             IEnumerable<Society> societies;
             Society assignedSociety = null;
-
-            // --- Role-based data isolation ---
             if (User.IsInRole("Admin"))
             {
                 societies = await _Societyservices.GetAllSocietyAsync();
@@ -96,19 +89,14 @@ namespace SocPass.Controllers
 
             ViewBag.Societies = societies;
             await InitViewBag();
-
-            // --- Initialize user model ---
             User user = id == null ? new User() : await _userServices.GetUserByIdAsync(id.Value);
 
-            // --- Auto-assign society if not explicitly set ---
             if (!User.IsInRole("Admin") && assignedSociety != null && user.SocietyId == 0)
                 user.SocietyId = assignedSociety.SocietyId;
 
-            // --- Safe prefetch for block and flat ---
             int? selectedBlockId = null;
             int? selectedFlatId = null;
 
-            
             if ((User.IsInRole("Society") || User.IsInRole("Admin")) && user.SocietyId > 0)
             {
                 var blocks = await _blockService.GetBlockBySocietyId(user.SocietyId);
@@ -124,16 +112,11 @@ namespace SocPass.Controllers
                 }
             }
 
-            // --- Always provide prefilled ViewBag data ---
             ViewBag.SelectedSocietyId = user.SocietyId > 0 ? user.SocietyId : assignedSociety?.SocietyId;
-            //ViewBag.SelectedBlockId = selectedBlockId;
-            //ViewBag.SelectedFlatId = selectedFlatId;
             ViewBag.AssignedSocietyId = assignedSociety?.SocietyId;
 
             return View(user);
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> AddUser(User modelUsers, string action, int? flatId = null)
@@ -142,12 +125,10 @@ namespace SocPass.Controllers
             {
                 return RedirectToAction("Login", "Login");
             }
-
-            int selectedSociety =(int)modelUsers.SocietyId;
+            int selectedSociety =  modelUsers.SocietyId ?? 0;
             string selectedBlock = Request.Form["BlockId"];
             string selectedFlat = Request.Form["FlatId"];
 
-            // 🔹 Local function to restore dropdowns
             void SetSelectedDropdowns()
             {
                 ViewBag.SelectedSocietyId = selectedSociety;

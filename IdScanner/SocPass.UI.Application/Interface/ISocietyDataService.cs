@@ -5,11 +5,11 @@ namespace SocPass.UI.Application.Interface
 {
     public interface ISocietyDataService
     {
-        Task<List<SocietyData>> GetAllSocietyDataAsync();
+        Task<IList<SocietyData>> GetAllSocietyDataAsync();
         Task<SocietyData> GetSocietyDataByIdAsync(int? societyDataId);
         Task<string> AddSocietyDataAsync(SocietyDataCreateRequest societyData);
         Task<string> UpdateSocietyDataAsync(SocietyData societyData);
         Task<string> DeleteSocietyDataAsync(int societyDataId);
-        Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId);
+        //Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId);
     }
 }

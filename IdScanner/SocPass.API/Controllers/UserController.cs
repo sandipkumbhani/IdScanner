@@ -32,7 +32,7 @@ namespace SocPass.API.Controllers
             }
             try
             {
-                var result = await _userService.CreateUserAsync(user,flatId);
+                var result = await _userService.CreateUserAsync(user, flatId);
                 return Ok(result);
             }
             catch (EmailAlreadyExistsException ex)
@@ -61,29 +61,17 @@ namespace SocPass.API.Controllers
                 return Ok($"User with ID {id} not found: {ex.Message}");
             }
         }
-        [HttpPut("Update-User/{userid}")]
-        public async Task<IActionResult> UpdateUserAsync(int userid, [FromBody] User user, int? flatId = null)
+        [HttpPut("Update-User")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] User user, int? flatId = null)
         {
-            var existingUser = await _userService.GetUserDetailsById(userid);
-            if (existingUser == null && userid != user.UserId)
+            try
             {
-                return BadRequest("User ID mismatch.");
+                var updatedUser = await _userService.UpdateUserAsync(user, flatId);
+                return Ok(updatedUser);
             }
-            else if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                return BadRequest(ModelState);
-            }
-            else
-            {
-                try
-                {
-                    var updatedUser = await _userService.UpdateUserAsync(userid, user, flatId);
-                    return Ok(updatedUser);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { message = ex.Message });
-                }
+                return StatusCode(500, new { message = ex.Message });
             }
         }
         [HttpGet("GetById")]

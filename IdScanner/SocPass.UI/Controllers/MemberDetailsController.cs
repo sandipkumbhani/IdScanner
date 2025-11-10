@@ -19,30 +19,39 @@ namespace SocPass.UI.Controllers
             _memberService = memberService;
             _globalClass = globalClass;
         }
-
         [HttpGet("MemberDetails/GetDetails/{memberId}/{EventId}")]
         public async Task<IActionResult> GetDetails(int memberId, int EventId)
         {
             if (memberId == 0)
             {
-                return BadRequest("Member Id is not found.");
+                TempData["Message"] = "Member ID is not valid.";
+                TempData["AlertType"] = "danger";
+                return RedirectToAction("Error", "Home");
             }
 
             var result = await _memberService.GetMemberByMemberId(memberId, EventId);
             if (result == null)
             {
-                return NotFound();
+                TempData["Message"] = "Member or event details not found.";
+                TempData["AlertType"] = "danger";
+                return RedirectToAction("Error", "Home");
             }
-            string? Message = string.Empty;
-            if (result.Visited && TempData["Message"] == null)
-                Message = "This member has already visited.";
-            else
-                Message = TempData["Message"] != null ? TempData["Message"].ToString() : "";
-            ViewBag.Message = Message;
-            ViewBag.AlertType = TempData["AlertType"] == null ? "danger" : TempData["AlertType"];
 
+            string message;
+            if (result.Visited && TempData["Message"] == null)
+            {
+                message = "This member has already visited.";
+                ViewBag.AlertType = "info";
+            }
+            else
+            {
+                message = TempData["Message"]?.ToString() ?? string.Empty;
+                ViewBag.AlertType = TempData["AlertType"]?.ToString() ?? "secondary";
+            }
+            ViewBag.Message = message;
             return View("~/Views/MemberDetails/MemberDetails.cshtml", result);
         }
+
         [HttpPost]
         public async Task<IActionResult> IsVisited(int memberId, int EventId)
         {
@@ -54,12 +63,25 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int loggedInUserId);
 
-            bool success = await _memberDetailsService.IsVisitedAsync(memberId, EventId,loggedInUserId);
+            var result = await _memberDetailsService.IsVisitedAsync(memberId, EventId,loggedInUserId);
 
-            TempData["Message"] = success
-                ? "Member marked as visited successfully."
-                : "Something went wrong. Please try again.";
-            TempData["AlertType"] = success ? "success" : "danger";
+            switch (result)
+            {
+                case "Success":
+                    TempData["Message"] = "Member marked as visited successfully.";
+                    TempData["AlertType"] = "success";
+                    break;
+                case "AlreadyVisited":
+                    TempData["Message"] = "Member has already been marked as visited.";
+                    TempData["AlertType"] = "info";
+                    break;
+
+                case "NotToday":
+                    TempData["Message"] = "You can only mark as visited on the event date.";
+                    TempData["AlertType"] = "warning";
+                    break;
+
+            }
 
             return RedirectToAction(nameof(GetDetails), new { memberId = memberId, EventId = EventId });
 

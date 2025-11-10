@@ -2,6 +2,6 @@
 {
     public interface IMemberDetailsService
     {
-        Task<bool> IsVisitedAsync(int memberid, int EventId,int loggedInUserId);
+        Task<string> IsVisitedAsync(int memberid, int EventId,int loggedInUserId);
     }
 }

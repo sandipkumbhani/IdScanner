@@ -18,7 +18,7 @@ namespace SocPass.Domain.Interface
         Task DeleteMemberAsync(int memberId);
         Task<Tuple<IList<QRCodeMaster>, IList<Flat>, IList<Member>>> AddMemberPassDateAsync(int blockId, int eventId);
         //Task<bool> AddMemberPassDateAsync(int blockId, int EventId);
-        Task<bool> IsVisitedAsync(int memberid, int EventId, int loggedInUserId);
+        Task<string> IsVisitedAsync(int memberId, int eventId, int loggedInUserId);
         Task<Tuple<IList<QRCodeMaster>, IList<Flat>, IList<Member>>> GenerateGuestQRAsync(int blockId, int eventId);
         Task<QRCodeMaster?> GetMemberByMemberIdAsync(int memberId, int eventId);
         Task AddQrMasterAsync(IEnumerable<QRCodeMaster> qrList);

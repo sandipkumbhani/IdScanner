@@ -14,7 +14,7 @@ namespace SocPass.UI.Controllers
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
         private readonly GlobalClass _globalClass;
-        public BlockController(IBlockService blockService, ISocietyService societyService,GlobalClass globalClass)
+        public BlockController(IBlockService blockService, ISocietyService societyService, GlobalClass globalClass)
         {
             _blockService = blockService;
             _societyService = societyService;
@@ -56,9 +56,10 @@ namespace SocPass.UI.Controllers
             ViewBag.blockList = blocklist.ToList();
             return View();
         }
-         [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> AddBlock(int? blockid)
         {
+            string Title;
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
@@ -81,7 +82,7 @@ namespace SocPass.UI.Controllers
             if (blockid == null)
             {
                 var newBlock = new Block();
-
+                Title = "Add";
                 if (!User.IsInRole("Admin"))
                 {
                     var assignedSociety = societies.FirstOrDefault();
@@ -96,13 +97,14 @@ namespace SocPass.UI.Controllers
                     ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name");
                     ViewBag.IsSocietyReadonly = false;
                 }
-
+                ViewBag.Title = Title;
                 return View(newBlock);
             }
-
+            Title = "Edit";
             var block = await _blockService.GetBlockByIdAsync(blockid.Value);
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
             ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
+            ViewBag.Title = Title;
 
             return View(block);
         }
@@ -129,7 +131,7 @@ namespace SocPass.UI.Controllers
             {
                 ViewBag.BlockNumberMsg = "Please enter block number.";
                 return View(block);
-            } 
+            }
             try
             {
                 string message;
@@ -159,7 +161,7 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteBlock(int blockid)
         {
-             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction("AccessDenied", "AccessDenied");

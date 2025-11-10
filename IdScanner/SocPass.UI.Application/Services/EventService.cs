@@ -11,12 +11,12 @@ namespace SocPass.UI.Application.Services
 {
     public class EventService : IEventService
     {
-        private readonly IEventRepository _eventRepository;
-        public EventService(IEventRepository eventRepository)
+        private readonly IEventAdapter _eventRepository;
+        public EventService(IEventAdapter eventRepository)
         {
             _eventRepository = eventRepository;
         }
-        public async Task<List<Event>> GetAllEventAsync()
+        public async Task<IList<Event>> GetAllEventAsync()
         {
             return await _eventRepository.GetAllEventAsync();
         }
@@ -28,15 +28,14 @@ namespace SocPass.UI.Application.Services
         {
             return await _eventRepository.GetEventByIdAsync(eventId);
         }
-        public async Task<List<Event>> GetEventBySocietyId(int SocietyId)
+        public async Task<IList<Event>> GetEventBySocietyId(int SocietyId)
         {
             return await _eventRepository.GetEventBySocietyId(SocietyId);
         }
-        public async Task<List<Event>> GetEventByUserId(int userid)
+        public async Task<IList<Event>> GetEventByUserId(int userid)
         {
             return await _eventRepository.GetEventByUserId(userid);
         }
-
         public async Task<string?> UpdateEventAsync(Event events)
         {
             return await _eventRepository.UpdateEventAsync(events);

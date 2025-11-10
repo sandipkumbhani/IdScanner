@@ -37,14 +37,14 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return societyData;
         }
-        public async Task<SocietyData> GetSocietyDataByIdAsync(int societyDataId)
+        public async Task<SocietyData> GetSocietyDataByIdAsync(int? SocietyDataId)
         {
             return await _context.SocietyData
        .Include(sd => sd.Flat)                    
            .ThenInclude(f => f.Block)            
                .ThenInclude(b => b.Society)      
        .Where(sd => sd.IsActive)                
-       .FirstOrDefaultAsync(sd => sd.SocietyDataId == societyDataId);
+       .FirstOrDefaultAsync(sd => sd.SocietyDataId == SocietyDataId);
         }
 
         public async Task UpdateSocietyAsync(SocietyData societyData)

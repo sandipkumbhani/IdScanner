@@ -100,15 +100,15 @@ namespace SocPass.Application.Services
 
             await _userRepository.DeleteAsync(deleteUser);
         }
-        public async Task<User> UpdateUserAsync(int userid, User user, int? flatId = null)
+        public async Task<User> UpdateUserAsync(User user, int? flatId = null)
         {
             var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
 
-            var userExisting = await _userRepository.GetUserById(userid);
+            var userExisting = await _userRepository.GetUserById(user.UserId);
 
             if (userExisting == null)
             {
-                throw new Exception($"User with ID {userid} not found.");
+                throw new Exception($"User with ID {user.UserId} not found.");
             }
             userExisting.Name = user.Name;
             userExisting.EmailId = user.EmailId;
@@ -124,7 +124,8 @@ namespace SocPass.Application.Services
 
             if (role.Name == "User" && flatId.HasValue)
             {
-                var existingMapping = await _userFlatMappingRepository.GetMappingByUserId(userid);
+                var existingMapping = await _userFlatMappingRepository.GetMappingByUserId(user.UserId);
+
                 if (existingMapping != null)
                 {
                     existingMapping.FlatId = flatId.Value;

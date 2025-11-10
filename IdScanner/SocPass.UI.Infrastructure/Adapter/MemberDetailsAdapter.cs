@@ -11,27 +11,28 @@ using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
-    public class MemberDetailsRepository : IMemberDetailsRepository
+    public class MemberDetailsAdapter : IMemberDetailsAdapter
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private APICredential apiCredential;
         private GlobalClass _globalClass;
 
-        public MemberDetailsRepository(HttpClient httpClient, IConfiguration configuration, GlobalClass globalClass)
+        public MemberDetailsAdapter(HttpClient httpClient, IConfiguration configuration, GlobalClass globalClass)
         {
             _httpClient = httpClient;
             _configuration = configuration;
             apiCredential = new APICredential(configuration);
             _globalClass = globalClass;
         }
-        public async Task<bool> IsVisitedAsync(int memberid, int EventId, int loggedInUserId)
+        public async Task<string> IsVisitedAsync(int memberId, int eventId, int loggedInUserId)
         {
-            var baseUrl = $"{apiCredential.url}Member/IsVisited?memberid={memberid}&EventId={EventId}&loggedInUserId={loggedInUserId}";
-            var response = await _httpClient.PostAsync(baseUrl, null);
-            response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
-            return response.IsSuccessStatusCode;
+            var url = $"{apiCredential.url}Member/IsVisited?memberid={memberId}&EventId={eventId}&loggedInUserId={loggedInUserId}";
+            var response = await _httpClient.PostAsync(url, null);
+
+            var json = await response.Content.ReadAsStringAsync();
+            return json; 
         }
+
     }
 }

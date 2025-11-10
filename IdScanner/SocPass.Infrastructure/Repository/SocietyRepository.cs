@@ -23,7 +23,7 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return society;
         }
-        public async Task<Society>  GetByIdAsync(int societyid)
+        public async Task<Society> GetByIdAsync(int societyid)
         {
             return await _context.societies.Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.SocietyId == societyid);
         }
@@ -49,7 +49,7 @@ namespace SocPass.Infrastructure.Repository
                         SocietyId = s.SocietyId,
                         Name = s.Name,
                         Address = s.Address,
-                        Email= s.Email,
+                        Email = s.Email,
                         Contact = s.Contact,
                         Contact2 = s.Contact2,
                         IsActive = s.IsActive
@@ -81,7 +81,7 @@ namespace SocPass.Infrastructure.Repository
         {
             return await _context.societies.Where(x => x.IsActive == true).OrderBy(x => x.Name).ToListAsync();
         }
-      
+
         public async Task UpdateSocietyAsync(Society society)
         {
             _context.societies.Update(society);

@@ -6,8 +6,8 @@ namespace SocPass.UI.Application.Services
 {
     public class GetUserNameByIdService : IGetUserNameByIdService
     {
-        private readonly IGetUserNameByIdRepository _getUserNameByIdRepository;
-        public GetUserNameByIdService(IGetUserNameByIdRepository getUserNameByIdRepository)
+        private readonly IGetUserNameByIdAdapter _getUserNameByIdRepository;
+        public GetUserNameByIdService(IGetUserNameByIdAdapter getUserNameByIdRepository)
         {
             _getUserNameByIdRepository = getUserNameByIdRepository ?? throw new ArgumentNullException(nameof(getUserNameByIdRepository));
         }

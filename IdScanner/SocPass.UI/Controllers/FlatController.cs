@@ -98,7 +98,6 @@ namespace SocPass.UI.Controllers
                 societies = await _societyService.GetAllSocietyAsync(userId);
             }
             Flat flat;
-
             if (societyId == null || blockId == 0)
             {
                 flat = new Flat();
@@ -137,7 +136,6 @@ namespace SocPass.UI.Controllers
 
             if (User.IsInRole("Admin"))
             {
-                // Admin → all societies
                 societies = await _societyService.GetAllSocietyAsync();
             }
             else
