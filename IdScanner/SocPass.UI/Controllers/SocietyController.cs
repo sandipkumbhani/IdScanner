@@ -2,12 +2,11 @@
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
-using SocPass.UI.Filters;
 using System.Security.Claims;
-
+using SocPass.UI.Filters;
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin")]
     public class SocietyController : Controller
     {
         private readonly ISocietyService _societyService;
@@ -23,7 +22,7 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            IList<Society> SocietyList = await _societyService.GetAllSocietyAsync(userId);
+            IList<Society> SocietyList = await _societyService.GetSocietyByUserId(userId);
             ViewBag.SocietyList = SocietyList;
             return View("~/Views/Society/SocietyList.cshtml");
         }
@@ -34,10 +33,6 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             Society entity = new Society();
             string Title = "Add";
-            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             if (societyId != null)
             {
                 Title = "Edit";
@@ -49,10 +44,6 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSociety(Society society)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             if (society.SocietyId == 0)
             {
                 await _societyService.AddSocietyAsync(society);

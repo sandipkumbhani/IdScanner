@@ -206,7 +206,7 @@
                 if (!societyId) return;
 
         $.ajax({
-            url: '@Url.Action("GetBlocksBySociety", "Member")',
+            url: '@Url.Action("GetBlocksBySociety", "Block")',
             method: 'GET',
             data: { societyId: societyId },
             dataType: 'json'
@@ -254,7 +254,7 @@
                 $("#flatsLabel").hide();
 
                 if (blockId) {
-                    $.getJSON('@Url.Action("GetFlatsByBlock", "Member")', { blockId: blockId }, function (data) {
+                    $.getJSON('@Url.Action("GetFlatsByBlock", "Flat")', { blockId: blockId }, function (data) {
                         if(data.length === 0)
                         {
                          $("#excelSection").hide();

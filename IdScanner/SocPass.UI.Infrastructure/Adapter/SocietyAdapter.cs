@@ -24,9 +24,9 @@ namespace SocPass.UI.Infrastructure.Provider
             _globalClass = globalClass;
             _commonAdapter = commonAdapter;
         }
-        public async Task<IList<Society>> GetAllSocietyAsync(int userId)
+        public async Task<IList<Society>> GetSocietyByUserId(int userId)
         {
-            return await _commonAdapter.GetAsync<IList<Society>>($"Society/getAllSociety?userId={userId}");
+            return await _commonAdapter.GetAsync<IList<Society>>($"Society/GetSocietyByUserId?userId={userId}");
         }
 
         public async Task<IList<Society>> GetAllSocietyAsync()

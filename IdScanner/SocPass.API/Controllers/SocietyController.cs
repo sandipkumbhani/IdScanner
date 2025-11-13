@@ -30,19 +30,17 @@ namespace SocPass.API.Controllers
             }
         }
         [AllowAnonymous]
+        [HttpGet("GetSocietyByUserId")]
+        public async Task<IActionResult> GetSocietyByUserId([FromQuery] int? userId)
+        {
+            List<Society> societies = await _societyService.GetSocietyUserIdAsync(userId.Value);
+            return Ok(societies);
+        }
+        [AllowAnonymous]
         [HttpGet("getAllSociety")]
         public async Task<IActionResult> GetAllSociety([FromQuery] int? userId)
         {
-            List<Society> societies;
-
-            if (userId.HasValue)
-            {
-                societies = await _societyService.GetAllSocietyAsync(userId.Value);
-            }
-            else
-            {
-                societies = await _societyService.GetAllSocietyAsync();
-            }
+            List<Society> societies = await _societyService.GetAllSocietyAsync();
             return Ok(societies);
         }
         [HttpPost("create")]

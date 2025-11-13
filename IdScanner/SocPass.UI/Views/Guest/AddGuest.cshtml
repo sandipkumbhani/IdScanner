@@ -158,22 +158,6 @@
 			margin-bottom: 0.25rem;
 			padding: 6px 10px;
 		}
-
-	/* === Reserve Consistent Space for Validation === */
-	/* .text-danger.small {
-				display: block;
-				min-height: 18px;
-				visibility: hidden;
-				font-size: 13px;
-				line-height: 1.2;
-				margin-top: 2px;
-			}
-
-				.text-danger.small.show-error {
-					visibility: visible;
-				} */
-
-	/* === Cosmetic: Dynamic Row Styling === */
 	.dynamicRow {
 		background-color: #f8f9fa;
 		border-radius: 8px;
@@ -308,7 +292,7 @@
 			if (!societyId) return;
 
 	$.ajax({
-		url: '@Url.Action("GetBlocksBySociety", "Member")',
+		url: '@Url.Action("GetBlocksBySociety", "Block")',
 		method: 'GET',
 		data: { societyId: societyId },
 		dataType: 'json'
@@ -364,7 +348,7 @@
 			if (!blockId) return;
 
 			$.ajax({
-				url: '@Url.Action("GetFlatsByBlock", "Member")',
+				url: '@Url.Action("GetFlatsByBlock", "Flat")',
 				method: 'GET',
 				data: { blockId: blockId },
 				dataType: 'json'

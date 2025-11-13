@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
-using SocPass.UI.Filters;
 using System.Security.Claims;
-
+using SocPass.UI.Filters;
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin", "Society")]
     public class FlatController : Controller
     {
         private readonly IFlatService _flatService;
@@ -28,11 +27,6 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> FlatList()
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -45,7 +39,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                var societies = await _societyService.GetAllSocietyAsync(userId);
+                var societies = await _societyService.GetSocietyByUserId(userId);
                 var society = societies.FirstOrDefault();
                 if (society != null)
                 {
@@ -59,31 +53,12 @@ namespace SocPass.UI.Controllers
                 }
             }
             ViewBag.FlatList = FlatList.ToList();
-            //ViewBag.IsAdmin = User.IsInRole("Admin");
-
-            //// Pass user's society name if not admin
-            //if (!User.IsInRole("Admin"))
-            //{
-            //    var societies = await _societyService.GetAllSocietyAsync(userId);
-            //    var userSocietyName = societies.FirstOrDefault()?.Name ?? "";
-            //    ViewBag.UserSocietyName = userSocietyName;
-            //}
-            //else
-            //{
-            //    ViewBag.UserSocietyName = "";
-            //}
-
             return View();
         }
         [HttpGet]
         public async Task<IActionResult> AddFlat(int? societyId, int blockId)
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -95,7 +70,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
+                societies = await _societyService.GetSocietyByUserId(userId);
             }
             Flat flat;
             if (societyId == null || blockId == 0)
@@ -140,7 +115,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                var assignedSociety = await _societyService.GetAllSocietyAsync(userId);
+                var assignedSociety = await _societyService.GetSocietyByUserId(userId);
                 societies = assignedSociety; 
                 flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0; 
             }
@@ -150,7 +125,6 @@ namespace SocPass.UI.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Pass validation errors to view
                 return View(flat);
             }
 
@@ -172,14 +146,13 @@ namespace SocPass.UI.Controllers
             }
         }
         [HttpGet]
-        public async Task<JsonResult> GetBlocksBySociety(int societyId)
+        public async Task<JsonResult> GetFlatsByBlock(int blockId)
         {
-            var blocks = await _blockService.GetBlockBySocietyId(societyId);
-            var result = blocks.Select(d => new
+            var flats = await _flatService.GetFlatByBlockId(blockId);
+            var result = flats.Select(f => new
             {
-                blockId = d.BlockId,
-                blockNumber = d.BlockNumber
-                
+                flatId = f.FlatId,
+                flatNumber = f.FlatNumber
             });
             return Json(result);
         }

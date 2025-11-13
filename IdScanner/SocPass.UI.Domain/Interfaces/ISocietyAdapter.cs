@@ -9,7 +9,7 @@ namespace SocPass.UI.Domain.Interfaces
 {
     public interface ISocietyAdapter
     {
-        Task<IList<Society>> GetAllSocietyAsync(int userId);
+        Task<IList<Society>> GetSocietyByUserId(int userId);
         Task<IList<Society>> GetAllSocietyAsync();
         Task<Society> GetSocietyByIdAsync(int? societyId);
         Task<string> AddSocietyAsync(Society society);

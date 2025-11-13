@@ -11,7 +11,6 @@ namespace SocPass.UI.Application.Services
             _forgotPasswordRepository = forgotPasswordRepository
                 ?? throw new ArgumentNullException(nameof(forgotPasswordRepository));
         }
-
         public async Task<string> ForgotPasswordAsync(string email)
         {
             var emailid = await _forgotPasswordRepository.ForgotPasswordByEmailAsync(email);

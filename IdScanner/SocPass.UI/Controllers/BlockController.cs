@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin","Society")]
     public class BlockController : Controller
     {
         private readonly IBlockService _blockService;
@@ -23,29 +23,24 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> BlockList()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
             IEnumerable<Block> blocklist;
-
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
                 blocklist = await _blockService.GetAllBlockAsync();
             }
             else
             {
-                var societies = await _societyService.GetAllSocietyAsync(userId);
+                var societies = await _societyService.GetSocietyByUserId(userId);
                 var society = societies.FirstOrDefault();
 
                 if (society != null)
                 {
                     blocklist = (await _blockService.GetAllBlockAsync())
-                                .Where(e => e.SocietyId == society.SocietyId)
-                                .ToList();
+                                 .Where(e => e.SocietyId == society.SocietyId)
+                                 .ToList();
                 }
                 else
                 {
@@ -60,24 +55,17 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> AddBlock(int? blockid)
         {
             string Title;
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
             IEnumerable<Society> societies;
-
             if (User.IsInRole("Admin"))
             {
                 societies = await _societyService.GetAllSocietyAsync();
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
+                societies = await _societyService.GetSocietyByUserId(userId);
             }
             if (blockid == null)
             {
@@ -122,7 +110,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
+                societies = await _societyService.GetSocietyByUserId(userId);
             }
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
             ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
@@ -161,15 +149,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteBlock(int blockid)
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             try
             {
                 await _blockService.DeleteBlockAsync(blockid);
@@ -180,6 +159,17 @@ namespace SocPass.UI.Controllers
                 ViewBag.ErrorMessage = $"User with ID {blockid} not found: {ex.Message}";
                 return View("Error");
             }
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetBlocksBySociety(int societyId)
+        {
+            var blocks = await _blockService.GetBlockBySocietyId(societyId);
+            var result = blocks.Select(b => new
+            {
+                blockId = b.BlockId,
+                blockName = b.BlockNumber
+            });
+            return Json(result);
         }
     }
 }

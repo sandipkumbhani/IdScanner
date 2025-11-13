@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using SocPass.UI.Application.Extension;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Model;
-using SocPass.UI.Filters;
 using SocPass.UI.Infrastructure.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,10 +20,10 @@ builder.Services.AddControllersWithViews()
     {
         options.HtmlHelperOptions.ClientValidationEnabled = true;
     });
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(typeof(AuthorizeTokenAttribute));
-});
+//builder.Services.AddControllersWithViews(options =>
+//{
+//    options.Filters.Add(typeof(AuthorizeTokenAttribute));
+//});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationService();

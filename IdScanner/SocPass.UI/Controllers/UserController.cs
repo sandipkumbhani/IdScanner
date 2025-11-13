@@ -3,9 +3,10 @@ using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
 using System.Security.Claims;
-
+using SocPass.UI.Filters;
 namespace SocPass.Controllers
 {
+    [AuthorizeToken("Admin", "Society")]
     public class UserController : Controller
     {
         IUserService _userServices;
@@ -21,13 +22,9 @@ namespace SocPass.Controllers
             _blockService = blockService;
             _flatService = flatService;
         }
-
         [HttpGet]
         public async Task<IActionResult> UserList()
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-                return RedirectToAction("Login", "Login");
-
             var currentUserRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int currentUserId);
@@ -40,12 +37,11 @@ namespace SocPass.Controllers
             }
             else
             {
-                var societies = await _Societyservices.GetAllSocietyAsync(currentUserId);
+                var societies = await _Societyservices.GetSocietyByUserId(currentUserId);
                 var assignedSociety = societies.FirstOrDefault();
 
                 if (assignedSociety != null)
                 {
-                    // Filter user list by assigned society
                     userList = (await _userServices.GetAllUsersAsync())
                                 .Where(u => u.SocietyId == assignedSociety.SocietyId && u.UserRole.Name != "Society")
                                 .ToList();
@@ -54,7 +50,6 @@ namespace SocPass.Controllers
                 {
                     userList = new List<User>();
                 }
-
             }
             ViewBag.UserList = userList;
 
@@ -64,14 +59,9 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> AddUser(int? id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-                return RedirectToAction("Login", "Login");
-
             ViewBag.CurrentRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
             IEnumerable<Society> societies;
             Society assignedSociety = null;
             if (User.IsInRole("Admin"))
@@ -81,7 +71,7 @@ namespace SocPass.Controllers
             }
             else
             {
-                societies = await _Societyservices.GetAllSocietyAsync(userId);
+                societies = await _Societyservices.GetSocietyByUserId(userId);
                 assignedSociety = societies.FirstOrDefault();
 
                 ViewBag.IsSocietyReadonly = true;
@@ -121,11 +111,7 @@ namespace SocPass.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(User modelUsers, string action, int? flatId = null)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
-            int selectedSociety =  modelUsers.SocietyId ?? 0;
+            int selectedSociety = modelUsers.SocietyId ?? 0;
             string selectedBlock = Request.Form["BlockId"];
             string selectedFlat = Request.Form["FlatId"];
 
@@ -167,7 +153,7 @@ namespace SocPass.Controllers
                 return View(modelUsers);
             }
             try
-            { 
+            {
                 if (modelUsers.UserId == 0)
                 {
                     await _userServices.AddUserAsync(modelUsers, flatId);
@@ -175,7 +161,7 @@ namespace SocPass.Controllers
                 }
                 else
                 {
-                    await _userServices.UpdateUserAsync(modelUsers,flatId);
+                    await _userServices.UpdateUserAsync(modelUsers, flatId);
                     TempData["SuccessMessage"] = "User updated successfully.";
                 }
 
@@ -199,10 +185,6 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            if (string.IsNullOrEmpty(_globalClass.Token))
-            {
-                return RedirectToAction("Login", "Login");
-            }
             try
             {
                 await _userServices.Deleteuserasync(id);
@@ -240,7 +222,7 @@ namespace SocPass.Controllers
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var societies = await _Societyservices.GetAllSocietyAsync(userId);
+            var societies = await _Societyservices.GetSocietyByUserId(userId);
             ViewBag.SocietyList = societies;
             ViewBag.Societies = societies;
             IList<UserRole> userRoles = await _userServices.GetAllUserRoleAsync();

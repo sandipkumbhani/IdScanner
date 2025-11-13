@@ -21,13 +21,12 @@
                                 foreach (var flat in Model)
                                 {
                                     <div class="mb-4">
-                                        <h5>Flat : @flat.FlatNumber (Total Member : @flat.TotalMember)</h5>
+                                        <h5>Flat : @flat.FlatNumber</h5>
                                         <div class="d-flex flex-wrap gap-3">
                                             @foreach (var member in flat.Members)
                                             {
                                                 <div class="text-center">
                                                     <img src="@member.QRCodeUrl" style="width:200px; height:200px;" />
-                                                    <div>Member: @member.MemberId</div>
                                                 </div>
                                             }
                                         </div>

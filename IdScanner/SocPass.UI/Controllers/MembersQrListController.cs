@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
-using SocPass.UI.Domain.Model;
-using SocPass.UI.Filters;
 using System.Security.Claims;
+using SocPass.UI.Filters;
 
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin", "Society")]
     public class MembersQrListController : Controller
     {
         private readonly IMemberService _memberService;
@@ -29,11 +28,6 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> MemberQrList()
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -49,7 +43,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
+                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
                 EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
@@ -61,7 +55,7 @@ namespace SocPass.UI.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> GeneratePass(int societyId, int blockId, int EventId)
+        public async Task<IActionResult> GenerateMemberPass(int societyId, int blockId, int EventId)
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
@@ -81,7 +75,7 @@ namespace SocPass.UI.Controllers
                 }
                 else
                 {
-                    societies = await _societyService.GetAllSocietyAsync(userId);
+                    societies = await _societyService.GetSocietyByUserId(userId);
                     ViewBag.IsSocietyReadonly = true;
                 }
 
@@ -89,7 +83,7 @@ namespace SocPass.UI.Controllers
 
                 return View("/Views/MembersQrList/MembersQrList.cshtml");
             }
-            await _memberService.GeneratePass(blockId, EventId);
+            await _memberService.GenerateMemberPass(blockId, EventId);
             var qrList = await _flatRepository.GetQR(blockId, EventId);
             return View("/Views/MembersQrList/QrList.cshtml", qrList);
 
@@ -99,11 +93,6 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> GuestQrList()
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -119,7 +108,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
+                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
                 EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
@@ -149,7 +138,7 @@ namespace SocPass.UI.Controllers
                 }
                 else
                 {
-                    societies = await _societyService.GetAllSocietyAsync(userId);
+                    societies = await _societyService.GetSocietyByUserId(userId);
                     ViewBag.IsSocietyReadonly = true;
                 }
 
@@ -161,18 +150,6 @@ namespace SocPass.UI.Controllers
             var QRlist = await _flatRepository.GetGuestQR(blockId, EventId);
 
             return View("/Views/GuestQrList/GuestQr.cshtml", QRlist);
-        }
-
-
-        [HttpGet]
-        public async Task<JsonResult> GetBlocksBySociety(int societyId)
-        {
-            var blocks = await _blockService.GetBlockBySocietyId(societyId);
-            var result = blocks.Select(b => new {
-                blockId = b.BlockId,
-                blockName = b.BlockNumber
-            });
-            return Json(result);
         }
     }
 }

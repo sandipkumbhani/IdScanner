@@ -14,7 +14,7 @@ namespace SocPass.UI.Application.Interface
     {
         //Task<IList<Member>> GetAllMember(int flatId);
         Task<string> AddMemberAsync(MemberCreateRequest memberCreateRequest);
-        Task<string> GeneratePass(int blockId, int EventId);
+        Task<string> GenerateMemberPass(int blockId, int EventId);
         //Task<IList<Member>> GetAllMemberAsync(int flatId);
         Task<QRCodeMaster> GetMemberByMemberId(int memberId, int EventId);
         Task<string> AddAndUpdateGuestAsync(MemberCreateRequest memberCreateRequest);

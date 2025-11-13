@@ -1,6 +1,5 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
@@ -9,20 +8,20 @@ using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin", "Society")]
     public class MemberController : Controller
     {
         private readonly IMemberService _memberService;
         private readonly IBlockService _blockService;
         private readonly ISocietyService _societyService;
-        private readonly IFlatService _flatRepository;
+        private readonly IFlatService _flatService;
         private readonly GlobalClass _globalClass;
         public MemberController(IMemberService memberService, IBlockService blockService, ISocietyService societyService, IFlatService flatService, GlobalClass globalClass)
         {
             _memberService = memberService;
             _blockService = blockService;
             _societyService = societyService;
-            _flatRepository = flatService;
+            _flatService = flatService;
             _globalClass = globalClass;
 
         }
@@ -30,11 +29,6 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> AddMember()
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -48,7 +42,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
+                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
             }
             ViewBag.Societies = societies;
@@ -68,9 +62,7 @@ namespace SocPass.UI.Controllers
             {
                 var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
                 int.TryParse(userIdClaim, out int userId);
-
                 IEnumerable<Society> societies;
-
                 if (User.IsInRole("Admin"))
                 {
                     societies = await _societyService.GetAllSocietyAsync();
@@ -78,7 +70,7 @@ namespace SocPass.UI.Controllers
                 }
                 else
                 {
-                    societies = await _societyService.GetAllSocietyAsync(userId);
+                    societies = await _societyService.GetSocietyByUserId(userId);
                     ViewBag.IsSocietyReadonly = true;
                 }
 
@@ -94,40 +86,10 @@ namespace SocPass.UI.Controllers
                 redirectUrl = Url.Action("MemberList", "Member")
             });
         }
-
-        [HttpGet]
-        public async Task<JsonResult> GetBlocksBySociety(int societyId)
-        {
-            var blocks = await _blockService.GetBlockBySocietyId(societyId);
-            var result = blocks.Select(b => new
-            {
-                blockId = b.BlockId,
-                blockName = b.BlockNumber
-            });
-            return Json(result);
-        }
-
-
-        [HttpGet]
-        public async Task<JsonResult> GetFlatsByBlock(int blockId)
-        {
-            var flats = await _flatRepository.GetFlatByBlockId(blockId);
-            var result = flats.Select(f => new
-            {
-                flatId = f.FlatId,
-                flatNumber = f.FlatNumber
-            });
-            return Json(result);
-        }
         [HttpGet]
         public async Task<IActionResult> AddGuest()
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
@@ -140,7 +102,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
+                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
             }
             ViewBag.Societies = societies;
@@ -169,7 +131,7 @@ namespace SocPass.UI.Controllers
                 }
                 else
                 {
-                    societies = await _societyService.GetAllSocietyAsync(userId);
+                    societies = await _societyService.GetSocietyByUserId(userId);
                     ViewBag.IsSocietyReadonly = true;
                 }
 
@@ -184,7 +146,7 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DownloadTemplate(int societyId, int blockId)
         {
-            var flats = await _flatRepository.GetFlatByBlockId(blockId);
+            var flats = await _flatService.GetFlatByBlockId(blockId);
 
             using (var workbook = new XLWorkbook())
             {
@@ -235,7 +197,7 @@ namespace SocPass.UI.Controllers
                         .Select(x => int.Parse(x.Trim()))
                         .ToList();
 
-                    var flat = (await _flatRepository.GetAllFlatAsync())
+                    var flat = (await _flatService.GetAllFlatAsync())
                                .FirstOrDefault(f => f.FlatNumber == flatNumber);
 
                     if (flat != null)

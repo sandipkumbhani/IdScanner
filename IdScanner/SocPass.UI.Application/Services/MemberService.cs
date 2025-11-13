@@ -29,9 +29,9 @@ namespace SocPass.UI.Application.Services
             var result = await _memberRepository.AddMemberAsync(memberCreateRequest);
             return result;
         }
-        public async Task<string>GeneratePass(int blockId, int EventId)
+        public async Task<string> GenerateMemberPass(int blockId, int EventId)
         {
-            return await _memberRepository.GeneratePass(blockId, EventId);
+            return await _memberRepository.GenerateMemberPass(blockId, EventId);
         }
         public async Task<string> GenerateGuestPass(int blockId, int EventId)
         {
@@ -45,7 +45,6 @@ namespace SocPass.UI.Application.Services
         {
             var result = await _memberRepository.AddAndUpdateGuestAsync(memberCreateRequest);
             return result;
-
         }
         //public async Task<IList<Member>> GetAllMemberAsync(int flatId)
         //{
