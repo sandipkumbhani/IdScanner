@@ -3,7 +3,9 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <title>SocPass | Add Guest</title>
-
+<head>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
 <div class="content-page">
 	<div class="content">
 		<div class="main-inner container-fluid">
@@ -14,19 +16,16 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="row">
 				<div class="col-12">
 					<div class="card com-profile-info">
 						<div class="top-details">
 							<h2 class="page-form-title">Add Guest Details</h2>
-
 							<form id="guestForm">
 								<div class="form-section row">
 									<!-- Society -->
 									<div class="col-md-4 form-field">
 										<label class="form-label">Select Society</label>
-
 										<select id="Society" name="SocietyId" class="form-select" @(ViewBag.IsSocietyReadonly ? "disabled" : "")>
 											<option value="">-- Select Society --</option>
 											@if (ViewBag.Societies != null)
@@ -44,15 +43,12 @@
 												}
 											}
 										</select>
-
 										@if (ViewBag.IsSocietyReadonly)
 										{
 											<input type="hidden" name="SocietyId" value="@Model.SocietyId" />
 										}
-
 										<div class="text-danger" id="societyError"></div>
 									</div>
-
 									<!-- Block -->
 									<div class="col-md-4 form-field">
 										<label class="form-label">Select Block</label>
@@ -62,7 +58,6 @@
 										<span class="text-danger" id="blockError"></span>
 										<div id="EmptyBlockMsg"></div>
 									</div>
-
 									<!-- Flat -->
 									<div class="col-md-4 form-field">
 										<label class="form-label">Select Flat</label>
@@ -73,11 +68,8 @@
 										<div id="EmptyFlatMsg"></div>
 									</div>
 								</div>
-
-
 								<!-- Dynamic Inputs -->
 								<div id="flatInputsContainer" class="mt-3"></div>
-
 								<!-- Buttons -->
 								@* <div class="col-12 mt-3 d-flex gap-2">
 									<button type="button" id="saveFlatBtnGlobal" class="btn btn-primary">
@@ -86,23 +78,17 @@
 									<button type="reset" id="clearBtn" class="btn btn-outline-secondary">Clear</button>
 									<a href="@Url.Action("FlatList", "Flat")" class="btn btn-outline-dark">View</a>
 								</div> *@
-
 								<div class="button-main d-flex gap-3 mt-4">
 									<button type="button" id="saveFlatBtnGlobal" class="card-link">
 										<i class="ri-save-line"></i> <span>Save</span>
 									</button>
-
-
 									<button type="reset" id="clearBtn" class="card-link outline-bar">
 										<i class="ri-refresh-line"></i> <span>Clear</span>
 									</button>
-
-
 									<a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar">
 										<i class="bi bi-eye"></i> <span>View</span>
 									</a>
 								</div>
-
 							</form>
 						</div>
 					</div>
@@ -111,29 +97,22 @@
 		</div>
 	</div>
 </div>
-
 <style>
-
 	/* .error-message {
-				color: red;
-				font-size: 0.875rem;
-				margin-top: 2px;
-			} */
-
+					color: red;
+					font-size: 0.875rem;
+					margin-top: 2px;
+				} */
 	.is-invalid {
 		border-color: red !important;
 	}
-
 	/* --- Layout-Stable Validation Design (Finalized) --- */
-
-
 	.form-section {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1rem;
 		align-items: flex-start; /* Ensures top alignment across fields */
 	}
-
 		/* === Grid Uniformity === */
 		.form-section .col-md-4 {
 			display: flex;
@@ -142,14 +121,12 @@
 			flex: 1 1 30%; /* Equal-width responsive columns */
 			min-width: 250px; /* Prevent collapse on smaller screens */
 		}
-
 		/* === Consistent Label Styling === */
 		.form-section label {
 			font-weight: 600;
 			margin-bottom: 4px;
 			min-height: 20px; /* Locks label height for even alignment */
 		}
-
 		/* === Uniform Input Heights === */
 		.form-section .form-control,
 		.form-section .form-select {
@@ -158,41 +135,35 @@
 			margin-bottom: 0.25rem;
 			padding: 6px 10px;
 		}
-
 	/* === Reserve Consistent Space for Validation === */
 	/* .text-danger.small {
-				display: block;
-				min-height: 18px;
-				visibility: hidden;
-				font-size: 13px;
-				line-height: 1.2;
-				margin-top: 2px;
-			}
-
-				.text-danger.small.show-error {
-					visibility: visible;
-				} */
-
+					display: block;
+					min-height: 18px;
+					visibility: hidden;
+					font-size: 13px;
+					line-height: 1.2;
+					margin-top: 2px;
+				}
+					.text-danger.small.show-error {
+						visibility: visible;
+					} */
 	/* === Cosmetic: Dynamic Row Styling === */
 	.dynamicRow {
-		background-color: #f8f9fa;
+		background-color: #F8F9FA;
 		border-radius: 8px;
 		padding: 1rem;
 		margin-bottom: 1rem;
 	}
-
 		/* Maintain alignment inside dynamic row as well */
 		.dynamicRow .col-md-4 {
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-start;
 		}
-
 	/* === Optional Corporate Polish === */
 	button.btn {
 		min-width: 90px;
 	}
-
 	/* Prevent society dropdown from offsetting vertically */
 	#Society {
 		margin-top: 0 !important;
@@ -210,15 +181,14 @@
 	.childAgeLabel {
 		margin-bottom: 0px; /* consistent label spacing */
 	}
-
 </style>
+4:56
 <script>
 	$(document).ready(function () {
-
+		
 		// --- Dropdown Validation ---
 		function validateDropdowns() {
 			let valid = true;
-
 			// Society
 			if ($("#Society").val() === "") {
 				$("#societyError").text("Please select a society.");
@@ -228,7 +198,6 @@
 				$("#societyError").text("");
 				$("#Society").removeClass("is-invalid");
 			}
-
 			// Block
 			if ($("#Block").val() === "") {
 				$("#blockError").text("Please select a block.");
@@ -238,7 +207,6 @@
 				$("#blockError").text("");
 				$("#Block").removeClass("is-invalid");
 			}
-
 			// Flat
 			if ($("#Flat").val() === "") {
 				$("#flatError").text("Please select a flat.");
@@ -248,14 +216,11 @@
 				$("#flatError").text("");
 				$("#Flat").removeClass("is-invalid");
 			}
-
 			return valid;
 		}
-
 		// --- Dynamic Row Validation ---
 		function validateDynamicRow(row) {
 			let valid = true;
-
 			// Adults
 			let adults = row.find(".adults").val();
 			if (adults === "" || parseInt(adults) < 0) {
@@ -266,7 +231,6 @@
 				row.find(".adults").removeClass("is-invalid");
 				row.find(".adultError").removeClass("text-danger").text("");
 			}
-
 			// Children
 			let children = row.find(".flatChildren").val();
 			if (children === "" || parseInt(children) < 0) {
@@ -277,7 +241,6 @@
 				row.find(".flatChildren").removeClass("is-invalid");
 				row.find(".childrenError").removeClass("text-danger").text("");
 			}
-
 			// Child Ages
 			row.find(".childAgesContainer input").each(function () {
 				let age = $(this).val();
@@ -291,22 +254,18 @@
 					errorSpan.removeClass("text-danger").text("");
 				}
 			});
-
 			return valid;
 		}
-
 		// --- Load blocks for a society ---
 		function loadBlocks(societyId, selectedBlockId = null) {
+			debugger;
 			var $blockDropdown = $("#Block");
 			var $blockempty = $("#EmptyBlockMsg");
 			$blockempty.empty();
-
 			$blockDropdown.empty().append('<option value="">-- Select Block --</option>');
 			$("#Flat").empty().append('<option value="">-- Select Flat --</option>');
 			$("#flatInputsContainer").empty();
-
 			if (!societyId) return;
-
 	$.ajax({
 		url: '@Url.Action("GetBlocksBySociety", "Member")',
 		method: 'GET',
@@ -318,12 +277,10 @@
 			$blockDropdown.empty().append('<option value="">-- No Blocks available --</option>');
 			return;
 		}
-
 		$.each(data, function (i, block) {
 			var selected = selectedBlockId == block.blockId ? 'selected' : '';
 			$blockDropdown.append('<option value="' + block.blockId + '" ' + selected + '>' + block.blockName + '</option>');
 		});
-
 		if (selectedBlockId) {
 			$blockDropdown.trigger('change');
 		}
@@ -334,25 +291,20 @@
 		$blockempty.append('<span class="text-danger">' + msg + '</span>');
 	});
 		}
-
 		// --- On Society change ---
 		$("#Society").change(function () {
 			var societyId = $(this).val();
-
 			// Clear related errors
 			$("#blockError, #flatError").text("");
 			$("#Block, #Flat").removeClass("is-invalid");
-
 			loadBlocks(societyId);
 		});
-
 		// --- Prefill logic ---
 		var prefilledSocietyId = $("#Society").val();
 		var prefilledBlockId = '@Model.BlockId';
 		if (prefilledSocietyId) {
 			loadBlocks(prefilledSocietyId, prefilledBlockId);
 		}
-
 		// --- Load Flats on Block Change ---
 		$("#Block").change(function () {
 			let blockId = $(this).val();
@@ -362,7 +314,6 @@
 			$("#flatError").text("");
 			$("#Flat").removeClass("is-invalid");
 			if (!blockId) return;
-
 			$.ajax({
 				url: '@Url.Action("GetFlatsByBlock", "Member")',
 				method: 'GET',
@@ -374,7 +325,6 @@
 					$("#EmptyFlatMsg").append('<span class="text-danger">No flats found for the selected block.</span>');
 					return;
 				}
-
 				$.each(data, function (i, f) {
 					$("#Flat").append($('<option>', { value: f.flatId, text: f.flatNumber }));
 				});
@@ -383,15 +333,12 @@
 				$("#EmptyFlatMsg").append('<span class="text-danger">Unable to load flats for the selected block.</span>');
 			});
 		});
-
 		// --- Flat Selection Generates Dynamic Inputs ---
 		$("#Flat").change(function () {
 			let flatId = $(this).val();
 			if (!flatId) return;
-
 			let container = $("#flatInputsContainer");
 			container.empty();
-
 			let row = $(`
 				<div class="dynamicRow row border p-3 rounded mb-2">
 					<div class="col-md-4">
@@ -410,43 +357,33 @@
 					</div>
 				</div>
 			`);
-
 			container.append(row);
-
 			// Generate Child Age Inputs
 			row.find(".flatChildren").on("input change", function () {
 				let count = parseInt($(this).val()) || 0;
 				let ageContainer = $(this).closest(".dynamicRow").find(".childAgesContainer");
 				let ageLabel = $(this).closest(".dynamicRow").find(".childAgeLabel");
-
 				ageContainer.empty();
 				count > 0 ? ageLabel.show() : ageLabel.hide();
-
 				for (let i = 0; i < count; i++) {
 					ageContainer.append(`
-
 							<input type="number" class="form-control childAge" min="0" max="17" placeholder="Child ${i + 1} Age">
 							<span class="mt-1 childAgeError"></span>
-
 					`);
 				}
 			});
 		});
-
 		// --- Save Button ---
 		$("#saveFlatBtnGlobal").click(function () {
 			let isDropdownsValid = validateDropdowns();
 			let row = $("#flatInputsContainer .dynamicRow");
-
 			// If flat not selected, row won't exist → show flat error
 			if (row.length === 0) {
 				$("#flatError").text("Please select a flat.");
 				$("#Flat").addClass("is-invalid");
 				return;
 			}
-
 			let isDynamicRowValid = validateDynamicRow(row);
-
 			// Prevent submit if any invalid
 			if (!isDropdownsValid || !isDynamicRowValid) {
 				// Optional: Scroll to first error
@@ -458,7 +395,6 @@
 				}
 				return;
 			}
-
 			let payload = {
 				FlatId: $("#Flat").val(),
 				NumberOfAdults: parseInt(row.find(".adults").val() || 0),
@@ -466,7 +402,6 @@
 					return parseInt($(this).val());
 				}).get()
 			};
-
 			$.ajax({
 				url: '@Url.Action("AddGuest", "Member")',
 				type: 'POST',
@@ -484,7 +419,6 @@
 				}
 			});
 		});
-
 		// --- Clear Button ---
 		$("#clearBtn").click(function () {
 			$("#Block,#Flat").val('').trigger('change');
@@ -492,12 +426,5 @@
 			$(".text-danger.small").removeClass("show-error").text("");
 			$(".form-select, .form-control").removeClass("is-invalid");
 		});
-
 	});
 </script>
-
-
-
-
-
-

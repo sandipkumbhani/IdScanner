@@ -1775,9 +1775,10 @@ td.details-control::before {
   align-items: center;
   justify-content: center;
 }
-/*.sign-right {
+.sign-right {
     width: 60%;
     position: relative;
+    height:contain;
 }
 .sign-right img{
   width: 100%;
@@ -1788,8 +1789,8 @@ td.details-control::before {
   object-fit: cover;
   border-radius: 20px;
 }
-*/
-sign-right {
+
+/*sign-right {
     width: 60%;
     position: relative;
     overflow: hidden;
@@ -1804,7 +1805,7 @@ sign-right {
     max-height: 90vh;
     object-fit: contain;
     border-radius: 20px;
-}
+}*/
 
 .inner-sign-info{
   max-width: 415px;

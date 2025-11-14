@@ -64,6 +64,7 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> AddUser(int? id)
         {
+            string Title;
             if (string.IsNullOrEmpty(_globalClass.Token))
                 return RedirectToAction("Login", "Login");
 
@@ -90,7 +91,10 @@ namespace SocPass.Controllers
             ViewBag.Societies = societies;
             await InitViewBag();
             User user = id == null ? new User() : await _userServices.GetUserByIdAsync(id.Value);
-
+            if(id == null)
+                Title = "Add";
+            else
+                Title = "Edit";
             if (!User.IsInRole("Admin") && assignedSociety != null && user.SocietyId == 0)
                 user.SocietyId = assignedSociety.SocietyId;
 
@@ -114,7 +118,7 @@ namespace SocPass.Controllers
 
             ViewBag.SelectedSocietyId = user.SocietyId > 0 ? user.SocietyId : assignedSociety?.SocietyId;
             ViewBag.AssignedSocietyId = assignedSociety?.SocietyId;
-
+            ViewBag.Title = Title;
             return View(user);
         }
 

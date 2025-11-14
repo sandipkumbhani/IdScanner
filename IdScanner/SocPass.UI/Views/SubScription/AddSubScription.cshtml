@@ -1,4 +1,4 @@
-﻿@model SocPass.Domain.Model.Subscription
+﻿@* @model SocPass.Domain.Model.Subscription
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	bool isAddMode = Model.StartFrom == DateTime.MinValue;
@@ -20,7 +20,28 @@
 	string minDateend = isAddMode
 					 ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")       
 					 : Model.EndTo.ToString("yyyy-MM-ddTHH:mm");
+} *@
+
+@model SocPass.Domain.Model.Subscription
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	bool isAddMode = Model.StartFrom == DateTime.MinValue;
+	bool isAddModeend = Model.EndTo == DateTime.MinValue;
+
+	string inputValue = !isAddMode
+						? Model.StartFrom.ToString("yyyy-MM-ddTHH:mm")
+						: string.Empty;
+
+	string inputValueend = !isAddModeend
+						? Model.EndTo.ToString("yyyy-MM-ddTHH:mm")
+						: string.Empty;
+
+	// Always keep min date as current date, even during edit
+	string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+	string minDateend = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
 }
+
 <html>
 <head>
 	<title>SocPass | Add Subscription</title>

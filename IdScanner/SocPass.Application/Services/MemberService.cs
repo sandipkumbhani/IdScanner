@@ -331,7 +331,11 @@ namespace SocPass.Application.Services
         }
         private async Task<string> GenerateAndStoreQrAsync(int memberId, bool isChild, string societyName, string blockNumber, string flatNumber, string EventId)
         {
-            string qrContentUrl = $"{_baseUrl.BaseUrl}/MemberDetails/GetDetails/{memberId}/{EventId}";
+            //string qrContentUrl = $"{_baseUrl.BaseUrl}/MemberDetails/GetDetails/{memberId}/{EventId}";
+            string rawData = $"{memberId}|{EventId}";
+            string encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(rawData));
+            string qrContentUrl = $"{_baseUrl.BaseUrl}/MemberDetails/GetDetails/{encoded}";
+
             //string qrContentUrl = $"http://localhost:5109/MemberDetails/GetDetails/{memberId}";
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
             using (QRCodeData qrData = qrGenerator.CreateQrCode(qrContentUrl, QRCodeGenerator.ECCLevel.Q))
@@ -364,8 +368,8 @@ namespace SocPass.Application.Services
                     }
 
                     string contentRoot = Directory.GetCurrentDirectory();
-                    string wwwroot = Path.Combine(@"D:\Broadsy\Projects\IdScanner\IdScanner\SocPass.UI", "wwwroot");
-
+                    string wwwroot = Path.Combine(@"D:\Broadsy\Project\IdScanner\SocPass.UI", "wwwroot");
+                
                     string nestedFolder = Path.Combine(wwwroot, "QRCodes",
                                                       EventId,
                                                       societyName,

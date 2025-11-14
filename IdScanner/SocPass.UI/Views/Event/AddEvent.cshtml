@@ -1,4 +1,4 @@
-﻿@model SocPass.Domain.Model.Event
+﻿@* @model SocPass.Domain.Model.Event
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     string Title = ViewBag.Title;
@@ -27,7 +27,33 @@
     string minDateend = isAddMode
                      ? DateTime.Now.ToString("yyyy-MM-dd")
                      : Model.EndDate.ToString("yyyy-MM-dd");
+} *@
+
+@model SocPass.Domain.Model.Event
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string Title = ViewBag.Title;
+    bool isNew = Model.EventId == 0;
+    bool isChecked = Model.IsActive || isNew;
+
+    // Handle Start Date logic
+    bool isAddMode = Model.StartDate == DateTime.MinValue;
+    string inputValue = !isAddMode
+                        ? Model.StartDate.ToString("yyyy-MM-dd")
+                        : string.Empty;
+
+    // Always use current date as minimum selectable date (for both add & edit)
+    string minDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+    // Handle End Date logic
+    bool isAddModeEnd = Model.EndDate == DateTime.MinValue;
+    string inputValueEnd = !isAddModeEnd
+                        ? Model.EndDate.ToString("yyyy-MM-dd")
+                        : string.Empty;
+
+    string minDateEnd = DateTime.Now.ToString("yyyy-MM-dd");
 }
+
 <html>
 <head>
     <title>SocPass | @Title Event</title>
@@ -98,7 +124,7 @@
                                             <label for="EndDate" class="form-label col-form-label required fw-semibold fs-6">End Date</label>
                                             <input type="date" class="form-control userinput"
                                                    id="EndDate" name="EndDate"
-                                                   value="@inputValueend"
+                                                   value="@inputValueEnd"
                                                    min="@minDate"
                                                    required data-val="true"
                                                    data-val-required="Please select a End Date and Time." />

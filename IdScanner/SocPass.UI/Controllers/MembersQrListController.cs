@@ -92,8 +92,6 @@ namespace SocPass.UI.Controllers
             await _memberService.GeneratePass(blockId, EventId);
             var qrList = await _flatRepository.GetQR(blockId, EventId);
             return View("/Views/MembersQrList/QrList.cshtml", qrList);
-
-
         }
         [HttpGet]
         public async Task<IActionResult> GuestQrList()
