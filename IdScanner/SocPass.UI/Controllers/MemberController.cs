@@ -31,20 +31,16 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Society> societies;
-
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
             if (User.IsInRole("Admin"))
             {
-                // Admin sees all societies
-                societies = await _societyService.GetAllSocietyAsync();
-                ViewBag.IsSocietyReadonly = false;
+                ViewBag.IsSocietyReadonly = false;  
             }
             else
             {
-                societies = await _societyService.GetSocietyByUserId(userId);
-                ViewBag.IsSocietyReadonly = true;
+                ViewBag.IsSocietyReadonly = true; 
             }
+           
             ViewBag.Societies = societies;
             var model = new MemberCreateRequest();
             if (!User.IsInRole("Admin"))
@@ -58,32 +54,11 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMember([FromBody] MemberCreateRequest model)
         {
-            if (!ModelState.IsValid)
-            {
-                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-                int.TryParse(userIdClaim, out int userId);
-                IEnumerable<Society> societies;
-                if (User.IsInRole("Admin"))
-                {
-                    societies = await _societyService.GetAllSocietyAsync();
-                    ViewBag.IsSocietyReadonly = false;
-                }
-                else
-                {
-                    societies = await _societyService.GetSocietyByUserId(userId);
-                    ViewBag.IsSocietyReadonly = true;
-                }
-
-                ViewBag.Societies = societies;
-                return View(model);
-            }
-
             await _memberService.AddMemberAsync(model);
             return Json(new
             {
                 success = true,
                 message = "Member added successfully!",
-                redirectUrl = Url.Action("MemberList", "Member")
             });
         }
         [HttpGet]
@@ -93,18 +68,16 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            IEnumerable<Society> societies;
-
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
             if (User.IsInRole("Admin"))
             {
-                societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
             }
             else
             {
-                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
             }
+
             ViewBag.Societies = societies;
             var guestmodel = new MemberCreateRequest();
             if (!User.IsInRole("Admin"))
@@ -117,30 +90,7 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddGuest([FromBody] MemberCreateRequest memberCreateRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-                int.TryParse(userIdClaim, out int userId);
-
-                IEnumerable<Society> societies;
-
-                if (User.IsInRole("Admin"))
-                {
-                    societies = await _societyService.GetAllSocietyAsync();
-                    ViewBag.IsSocietyReadonly = false;
-                }
-                else
-                {
-                    societies = await _societyService.GetSocietyByUserId(userId);
-                    ViewBag.IsSocietyReadonly = true;
-                }
-
-                ViewBag.Societies = societies;
-                return View("AddGuest", memberCreateRequest);
-            }
-
-            await _memberService.AddAndUpdateGuestAsync(memberCreateRequest);
-
+            var result = await _memberService.AddAndUpdateGuestAsync(memberCreateRequest);
             return RedirectToAction("FlatList", "Flat");
         }
         [HttpGet]

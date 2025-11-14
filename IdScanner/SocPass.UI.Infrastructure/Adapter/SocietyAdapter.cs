@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using SocPass.Domain.Model;
 using SocPass.UI.Domain.Comman;
 using SocPass.UI.Domain.Helper;
@@ -24,6 +23,7 @@ namespace SocPass.UI.Infrastructure.Provider
             _globalClass = globalClass;
             _commonAdapter = commonAdapter;
         }
+        
         public async Task<IList<Society>> GetSocietyByUserId(int userId)
         {
             return await _commonAdapter.GetAsync<IList<Society>>($"Society/GetSocietyByUserId?userId={userId}");

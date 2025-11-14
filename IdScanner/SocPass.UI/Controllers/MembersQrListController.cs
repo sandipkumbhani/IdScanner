@@ -31,19 +31,17 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            IEnumerable<Society> societies;
             IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
             if (User.IsInRole("Admin"))
             {
-                societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
                 EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
-                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
                 EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
@@ -59,30 +57,7 @@ namespace SocPass.UI.Controllers
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
             ViewBag.SelectedSocietyId = societyId;
-
-            if (societyId <= 0 || blockId <= 0 || EventId == default)
-            {
-                ViewBag.Error = "Invalid input. Please fill all fields correctly.";
-
-                // Repopulate societies for the dropdown
-                IEnumerable<Society> societies;
-                if (User.IsInRole("Admin"))
-                {
-                    societies = await _societyService.GetAllSocietyAsync();
-                    ViewBag.IsSocietyReadonly = false;
-                }
-                else
-                {
-                    societies = await _societyService.GetSocietyByUserId(userId);
-                    ViewBag.IsSocietyReadonly = true;
-                }
-
-                ViewBag.Societies = societies;
-
-                return View("/Views/MembersQrList/MembersQrList.cshtml");
-            }
             await _memberService.GenerateMemberPass(blockId, EventId);
             var qrList = await _flatRepository.GetQR(blockId, EventId);
             return View("/Views/MembersQrList/QrList.cshtml", qrList);
@@ -95,20 +70,17 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Society> societies;
             IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
             if (User.IsInRole("Admin"))
             {
-                societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
                 EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
-                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
                 EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
@@ -123,29 +95,7 @@ namespace SocPass.UI.Controllers
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
             ViewBag.SelectedSocietyId = societyId;
-
-            if (societyId <= 0 || blockId <= 0 || EventId == default)
-            {
-                ViewBag.Error = "Invalid input. Please fill all fields correctly.";
-
-                IEnumerable<Society> societies;
-                if (User.IsInRole("Admin"))
-                {
-                    societies = await _societyService.GetAllSocietyAsync();
-                    ViewBag.IsSocietyReadonly = false;
-                }
-                else
-                {
-                    societies = await _societyService.GetSocietyByUserId(userId);
-                    ViewBag.IsSocietyReadonly = true;
-                }
-
-                ViewBag.Societies = societies;
-                return View();
-            }
-
             await _memberService.GenerateGuestPass(blockId, EventId);
             var QRlist = await _flatRepository.GetGuestQR(blockId, EventId);
 

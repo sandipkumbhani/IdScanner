@@ -35,7 +35,7 @@ namespace SocPass.UI.Controllers
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var societies = await _societyService.GetSocietyByUserId(userId);
+            var societies = await _societyService.GetAllSocietyAsync();
             ViewBag.SocietyList = societies;
 
             Subscription model;
@@ -105,7 +105,7 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            var societies = await _societyService.GetSocietyByUserId(userId);
+            var societies = await _societyService.GetAllSocietyAsync();
             ViewBag.SocietyList = societies;
 
             Subscription model;
@@ -132,16 +132,6 @@ namespace SocPass.UI.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            if (!ModelState.IsValid)
-            {
-                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-                int.TryParse(userIdClaim, out int userId);
-                var societies = await _societyService.GetSocietyByUserId(userId);
-                ViewBag.SocietyList = societies;
-
-                return View("~/Views/SubScription/AppSetting.cshtml", subscription);
-            }
-
             var existing = await _subscriptionService.GetSubscriptionBySocietyIdAsync(subscription.SocietyId);
 
             if (existing != null)

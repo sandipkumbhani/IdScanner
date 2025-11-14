@@ -220,9 +220,9 @@ namespace SocPass.Controllers
         }
         private async Task InitViewBag()
         {
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-            var societies = await _Societyservices.GetSocietyByUserId(userId);
+            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            //int.TryParse(userIdClaim, out int userId);
+            var societies = await _Societyservices.GetAllSocietyAsync();
             ViewBag.SocietyList = societies;
             ViewBag.Societies = societies;
             IList<UserRole> userRoles = await _userServices.GetAllUserRoleAsync();

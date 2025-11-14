@@ -43,7 +43,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                var societies = await _societyService.GetSocietyByUserId(userId);
+                var societies = await _societyService.GetAllSocietyAsync();
                 var society = societies.FirstOrDefault();
 
                 if (society != null)
@@ -67,23 +67,18 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Society> societies;
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
             int selectedSocietyId = 0;
             if (User.IsInRole("Admin"))
             {
-                societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
             }
             else
             {
-                // User sees only assigned societies
-                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
-
             ViewBag.Societies = societies;
             ViewBag.SelectedSocietyId = selectedSocietyId;
             return View(new SocietyDataCreateRequest());
@@ -127,7 +122,7 @@ namespace SocPass.UI.Controllers
 
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            ViewBag.Societies = await _societyService.GetSocietyByUserId(userId);
+            ViewBag.Societies = await _societyService.GetAllSocietyAsync();
             if (societyData.Flat?.Block?.SocietyId != null)
             {
                 ViewBag.Blocks = await _blockService.GetBlockBySocietyId(societyData.Flat.Block.SocietyId);
@@ -136,7 +131,6 @@ namespace SocPass.UI.Controllers
             {
                 ViewBag.Flats = await _flatService.GetFlatByBlockId(societyData.Flat.BlockId);
             }
-
             ViewBag.SavedSocietyId = societyData.Flat?.Block?.SocietyId ?? 0;
             ViewBag.SavedBlockId = societyData.Flat?.BlockId ?? 0;
             ViewBag.SavedFlatId = societyData.FlatId;

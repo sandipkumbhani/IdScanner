@@ -55,15 +55,18 @@ namespace SocPass.Infrastructure.Repository
         {
             return await _context.blocks
                 .Where(d => d.SocietyId == societyId)
+                .Include(x => x.Society)
                 .Where(x => x.IsActive == true)
                 .OrderBy(x => x.BlockNumber)
                 .Select(d => new Block
                 {
                     BlockId = d.BlockId,
-                    BlockNumber = d.BlockNumber
+                    BlockNumber = d.BlockNumber,
+                    Society = d.Society  
                 })
                 .ToListAsync();
         }
+
 
     }
 }

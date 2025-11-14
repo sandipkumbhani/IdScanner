@@ -21,7 +21,7 @@ namespace SocPass.API.Controllers
             var guest = await _memberService.GetGuestByIdAsync(flatId);
             return Ok(guest);
         }
-        [HttpPut("Update-Guest")]
+        [HttpPut("Add-Update-Guest")]
         public async Task<IActionResult> CreateAndUpdateGuestAsync([FromBody] MemberCreateRequest request)
         {
             try
@@ -63,14 +63,14 @@ namespace SocPass.API.Controllers
             var members = await _memberService.GetMemberByIdAsync(flatId);
             return Ok(members);
         }
-        [HttpPut("AddPassdate")]
-        public async Task<IActionResult> AddPassDate(int blockId, int EventId)
+        [HttpPut("GenerateMemberQR")]
+        public async Task<IActionResult> GenerateMemberQRAsync(int blockId, int EventId)
         {
-            var result = await _memberService.AddMemberPassDateAsync(blockId, EventId);
+            var result = await _memberService.GenerateMemberQRAsync(blockId, EventId);
             return Ok(result);
         }
-        [HttpPut("AddGuestPassdate")]
-        public async Task<IActionResult> AddGuestPassDate(int blockId, int EventId)
+        [HttpPut("GenerateGuestQR")]
+        public async Task<IActionResult> GenerateGuestQRAsync(int blockId, int EventId)
         {
             var result = await _memberService.GenerateGuestQRAsync(blockId, EventId);
             return Ok(result);

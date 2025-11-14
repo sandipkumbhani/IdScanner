@@ -34,7 +34,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                var societies = await _societyService.GetSocietyByUserId(userId);
+                var societies = await _societyService.GetAllSocietyAsync();
                 var society = societies.FirstOrDefault();
 
                 if (society != null)
@@ -69,14 +69,15 @@ namespace SocPass.UI.Controllers
                 int.TryParse(userIdClaim, out int userId);
                 string Title;
                 IEnumerable<Society> societies;
-                if (User.IsInRole("Admin"))
-                {
-                    societies = await _societyService.GetAllSocietyAsync();
-                }
-                else
-                {
-                    societies = await _societyService.GetSocietyByUserId(userId);
-                }
+                societies = await _societyService.GetAllSocietyAsync();
+                //if (User.IsInRole("Admin"))
+                //{
+                //    societies = await _societyService.GetAllSocietyAsync();
+                //}
+                //else
+                //{
+                //    societies = await _societyService.GetSocietyByUserId(userId);
+                //}
 
                 if (eventId == 0)
                 {

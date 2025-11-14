@@ -1,15 +1,21 @@
-﻿using SocPass.Application.Interface;
+﻿using Microsoft.AspNetCore.Http;
+using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.Application.Services
 {
     public class BlockService : IBlockService
     {
         private readonly IBlockRepository _blockRepository;
-        public BlockService(IBlockRepository blockRepository)
+        private readonly ISocietyRepository _societyRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public BlockService(IBlockRepository blockRepository, IHttpContextAccessor httpContextAccessor, ISocietyRepository societyRepository)
         {
             _blockRepository = blockRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _societyRepository = societyRepository;
         }
         public async Task<Block> CreateBlockAsync(Block block)
         {
@@ -38,7 +44,29 @@ namespace SocPass.Application.Services
         }
         public async Task<List<Block>> GetAllBlockAsync()
         {
-            var newBlock = await _blockRepository.GetAllBlockAsync();
+            string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var newBlock = new List<Block>();
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                 newBlock  = await _blockRepository.GetAllBlockAsync();
+            }
+            else
+            {
+                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var society = societies.FirstOrDefault();
+
+                if (society != null)
+                {
+                    newBlock = await _blockRepository.GetBlocksBySocietyIdAsync(society.SocietyId);
+                           
+                }
+                else
+                {
+                    newBlock = new List<Block>();
+                }
+            }
             return newBlock ?? new List<Block>();
         }
 

@@ -38,7 +38,7 @@ namespace SocPass.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet("getAllSociety")]
-        public async Task<IActionResult> GetAllSociety([FromQuery] int? userId)
+        public async Task<IActionResult> GetAllSociety()
         {
             List<Society> societies = await _societyService.GetAllSocietyAsync();
             return Ok(societies);

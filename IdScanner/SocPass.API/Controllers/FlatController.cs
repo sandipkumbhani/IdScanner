@@ -7,7 +7,7 @@ namespace SocPass.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin,Society")]
+    [Authorize(Roles = "Admin,Society")]
     public class FlatController : Controller
     {
         private readonly IFlatService _flatService;
@@ -49,7 +49,7 @@ namespace SocPass.API.Controllers
         public async Task<IActionResult> GetAllFlat()
         {
             var flats = await _flatService.GetAllFlatAsync();
- 
+
             return Ok(flats);
         }
         //[HttpPut("Update-flat")]

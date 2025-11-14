@@ -35,12 +35,12 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> AddAndUpdateGuestAsync(MemberCreateRequest memberCreateRequest)
         {
-            return await _commonAdapter.PutAsync("Member/Update-Guest", memberCreateRequest);
+            return await _commonAdapter.PutAsync("Member/Add-Update-Guest", memberCreateRequest);
         }
         public async Task<string> GenerateMemberPass(int blockId, int EventId)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}Member/AddPassdate?blockId={blockId}&EventId={EventId}";
+            var baseUrl = $"{apiCredential.url}Member/GenerateMemberQR?blockId={blockId}&EventId={EventId}";
             var response = await _httpClient.PutAsync(baseUrl, null); 
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -48,7 +48,7 @@ namespace SocPass.UI.Infrastructure.Provider
         public async Task<string> GenerateGuestPass(int blockId, int EventId)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}Member/AddGuestPassdate?blockId={blockId}&EventId={EventId}";
+            var baseUrl = $"{apiCredential.url}Member/GenerateGuestQR?blockId={blockId}&EventId={EventId}";
             var response = await _httpClient.PutAsync(baseUrl, null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();

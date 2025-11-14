@@ -31,20 +31,17 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Society> societies;
             IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
             if (User.IsInRole("Admin"))
             {
-                societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
                 EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
-                societies = await _societyService.GetSocietyByUserId(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
                 EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);

@@ -39,7 +39,7 @@ namespace SocPass.UI.Controllers
             }
             else
             {
-                var societies = await _societyService.GetSocietyByUserId(userId);
+                var societies = await _societyService.GetAllSocietyAsync();
                 var society = societies.FirstOrDefault();
                 if (society != null)
                 {
@@ -62,16 +62,8 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            IEnumerable<Society> societies;
-
-            if (User.IsInRole("Admin"))
-            {
-                societies = await _societyService.GetAllSocietyAsync();
-            }
-            else
-            {
-                societies = await _societyService.GetSocietyByUserId(userId);
-            }
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
+            
             Flat flat;
             if (societyId == null || blockId == 0)
             {
@@ -107,18 +99,19 @@ namespace SocPass.UI.Controllers
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
 
-            IEnumerable<Society> societies;
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
+            flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
 
-            if (User.IsInRole("Admin"))
-            {
-                societies = await _societyService.GetAllSocietyAsync();
-            }
-            else
-            {
-                var assignedSociety = await _societyService.GetSocietyByUserId(userId);
-                societies = assignedSociety; 
-                flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0; 
-            }
+            //if (User.IsInRole("Admin"))
+            //{
+            //    societies = await _societyService.GetAllSocietyAsync();
+            //}
+            //else
+            //{
+            //    var assignedSociety = await _societyService.GetSocietyByUserId(userId);
+            //    societies = assignedSociety; 
+            //    flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0; 
+            //}
 
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
             ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");

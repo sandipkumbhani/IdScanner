@@ -217,7 +217,7 @@ namespace SocPass.Application.Services
                 }
             }
         }
-        public async Task<string> AddMemberPassDateAsync(int blockId, int eventId)
+        public async Task<string> GenerateMemberQRAsync(int blockId, int eventId)
         {
             var (existingQRGenerated, flatsList, members) = await _memberRepository.AddMemberPassDateAsync(blockId, eventId);
             var qrList = new List<QRCodeMaster>();
