@@ -9,18 +9,11 @@ namespace SocPass.UI.Controllers
     public class ReportController : Controller
     {
         private readonly ISocietyService _societyService;
-        private readonly IBlockService _blockService;
-        private readonly IFlatService _flatService;
-        private readonly IMemberService _memberService;
         private readonly IEventService _eventService;
         private readonly IReportService _reportService;
-        public ReportController(ISocietyService societyService, IBlockService blockService, IFlatService flatService,
-            IMemberService memberService, IEventService eventService, IReportService reportService)
+        public ReportController(ISocietyService societyService, IBlockService blockService,IEventService eventService, IReportService reportService)
         {
             _societyService = societyService;
-            _blockService = blockService;
-            _flatService = flatService;
-            _memberService = memberService;
             _eventService = eventService;
             _reportService = reportService;
         }
@@ -31,22 +24,19 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
             IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
+            IEnumerable<Event> EventList = await _eventService.GetAllEventAsync();
             if (User.IsInRole("Admin"))
             {
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
-                EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
-                EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
             }
-
             ViewBag.Societies = societies;
             ViewBag.EventList = EventList;
             ViewBag.SelectedSocietyId = selectedSocietyId;

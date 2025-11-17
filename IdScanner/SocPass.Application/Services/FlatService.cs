@@ -1,21 +1,21 @@
-﻿using SocPass.Application.Interface;
+﻿using Microsoft.AspNetCore.Http;
+using SocPass.Application.Interface;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Claims;
 namespace SocPass.Application.Services
 {
     public class FlatService : IFlatService
     {
         private readonly IFlatRepository _flatRepository;
-        public FlatService(IFlatRepository flatRepository)
+        private readonly ISocietyRepository _societyRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public FlatService(IFlatRepository flatRepository,IHttpContextAccessor httpContextAccessor,ISocietyRepository societyRepository)
         {
             _flatRepository = flatRepository;
+            _societyRepository = societyRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<List<Flat>> CreateFlatAsync(Flat flat)
         {
@@ -109,13 +109,32 @@ namespace SocPass.Application.Services
         }
         public async Task<List<Flat>> GetAllFlatAsync()
         {
-            var result = await _flatRepository.GetAllFlatAsync();
-            if (result == null)
+            var flatList = (await _flatRepository.GetAllFlatAsync()).ToList();
+            string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var FlatList = new List<Flat>();
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                throw new KeyNotFoundException("List not Found");
-
+                FlatList = await _flatRepository.GetAllFlatAsync();
             }
-            return result;
+            else
+            {
+                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var society = societies.FirstOrDefault();
+
+                if (society != null)
+                {
+                    FlatList = flatList
+                                .Where(e => e.SocietyId == society.SocietyId)
+                                .ToList();
+                }
+                else
+                {
+                    FlatList = new List<Flat>();
+                }
+            }
+            return FlatList ?? new List<Flat>();
         }
         public async Task<Flat> GetByIdAsync(int flatid)
         {

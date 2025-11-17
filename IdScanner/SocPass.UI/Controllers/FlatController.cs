@@ -26,32 +26,7 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> FlatList()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            var flatList = (await _flatService.GetAllFlatAsync()).ToList();
-
-            ICollection<Flat> FlatList;
-            if(string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                FlatList = await _flatService.GetAllFlatAsync();
-            }
-            else
-            {
-                var societies = await _societyService.GetAllSocietyAsync();
-                var society = societies.FirstOrDefault();
-                if (society != null)
-                {
-                    FlatList = flatList
-                                .Where(e => e.SocietyId == society.SocietyId)
-                                .ToList();
-                }
-                else
-                {
-                    FlatList = new List<Flat>();
-                }
-            }
+            ICollection<Flat> FlatList = await _flatService.GetAllFlatAsync();
             ViewBag.FlatList = FlatList.ToList();
             return View();
         }

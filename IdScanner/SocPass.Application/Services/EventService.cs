@@ -1,20 +1,21 @@
-﻿using SocPass.Application.Interface;
+﻿using Microsoft.AspNetCore.Http;
+using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace SocPass.Application.Services
 {
     public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
-        public EventService(IEventRepository eventRepository)
+        private readonly ISocietyRepository _societyRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public EventService(IEventRepository eventRepository, ISocietyRepository societyRepository, IHttpContextAccessor httpContextAccessor)
         {
             _eventRepository = eventRepository;
+            _societyRepository = societyRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<Event> AddEventAsync(Event events)
         {
@@ -40,7 +41,29 @@ namespace SocPass.Application.Services
         }
         public async Task<List<Event>> GetAllEventAsync()
         {
-            var eventList = await _eventRepository.GetAllEventsAsync();
+            string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var eventList = new List<Event>();
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                 eventList = await _eventRepository.GetAllEventsAsync();
+            }
+            else
+            {
+                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var society = societies.FirstOrDefault();
+
+                if (society != null)
+                {
+                    eventList = await _eventRepository.GetEventListBySocietyAsync(society.SocietyId);
+
+                }
+                else
+                {
+                    eventList = new List<Event>();
+                }
+            }
             return eventList ?? new List<Event>();
         }
         public async Task<Event?> GetEventByIdAsync(int eventId)

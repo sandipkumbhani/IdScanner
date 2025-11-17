@@ -33,30 +33,27 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> SocietyDataList()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-            IEnumerable<SocietyData> SocietyDataList;
-            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                SocietyDataList = await _societyDataService.GetAllSocietyDataAsync();
-            }
-            else
-            {
-                var societies = await _societyService.GetAllSocietyAsync();
-                var society = societies.FirstOrDefault();
+            IEnumerable<SocietyData> SocietyDataList = await _societyDataService.GetAllSocietyDataAsync();
+            //if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    SocietyDataList = await _societyDataService.GetAllSocietyDataAsync();
+            //}
+            //else
+            //{
+            //    var societies = await _societyService.GetAllSocietyAsync();
+            //    var society = societies.FirstOrDefault();
 
-                if (society != null)
-                {
-                    SocietyDataList = (await _societyDataService.GetAllSocietyDataAsync())
-                                .Where(e => e.Flat.SocietyId == society.SocietyId)
-                                .ToList();
-                }
-                else
-                {
-                    SocietyDataList = new List<SocietyData>();
-                }
-            }
+            //    if (society != null)
+            //    {
+            //        SocietyDataList = (await _societyDataService.GetAllSocietyDataAsync())
+            //                    .Where(e => e.Flat.SocietyId == society.SocietyId)
+            //                    .ToList();
+            //    }
+            //    else
+            //    {
+            //        SocietyDataList = new List<SocietyData>();
+            //    }
+            //}
             ViewBag.SocietyDataList = SocietyDataList;
             return View();
         }

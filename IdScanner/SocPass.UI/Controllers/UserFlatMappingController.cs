@@ -24,11 +24,7 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            IEnumerable<Event> eventList;
-            if (User.IsInRole("Admin"))
-                eventList = await _eventService.GetAllEventAsync();
-            else
-                eventList = await _eventService.GetEventByUserId(userId);
+            IEnumerable<Event> eventList = await _eventService.GetAllEventAsync();
             ViewBag.EventList = eventList;
             return View("~/Views/UserQR/UserQR.cshtml");
         }

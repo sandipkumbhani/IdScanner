@@ -18,43 +18,11 @@ namespace SocPass.UI.Controllers
             _societyService = societyService;
 
         }
-
         [HttpGet]
         public async Task<IActionResult> EventList()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Event> eventList;
-
-            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                eventList = await _eventService.GetAllEventAsync();
-            }
-            else
-            {
-                var societies = await _societyService.GetAllSocietyAsync();
-                var society = societies.FirstOrDefault();
-
-                if (society != null)
-                {
-                    eventList = (await _eventService.GetAllEventAsync())
-                                .Where(e => e.SocietyId == society.SocietyId)
-                                .ToList();
-                }
-                else
-                {
-                    eventList = new List<Event>();
-                }
-            }
-
+            IEnumerable<Event> eventList = await _eventService.GetAllEventAsync();
             ViewBag.EventsList = eventList.ToList();
-            //ViewBag.IsAdmin = role == "Admin";
-
-            //ViewBag.UserSocietyName = (await _societyService.GetSocietyUserIdAsync(userId))
-            //    .FirstOrDefault()?.Name ?? "";
-
             return View("~/Views/Event/EventList.cshtml");
         }
 
@@ -70,15 +38,6 @@ namespace SocPass.UI.Controllers
                 string Title;
                 IEnumerable<Society> societies;
                 societies = await _societyService.GetAllSocietyAsync();
-                //if (User.IsInRole("Admin"))
-                //{
-                //    societies = await _societyService.GetAllSocietyAsync();
-                //}
-                //else
-                //{
-                //    societies = await _societyService.GetSocietyByUserId(userId);
-                //}
-
                 if (eventId == 0)
                 {
                     Title = "Add";

@@ -3,10 +3,8 @@ using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
 using System.Security.Claims;
-using SocPass.UI.Filters;
 namespace SocPass.Controllers
 {
-    [AuthorizeToken("Admin", "Society")]
     public class UserController : Controller
     {
         IUserService _userServices;
@@ -25,23 +23,23 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> UserList()
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+                return RedirectToAction("Login", "Login");
             var currentUserRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int currentUserId);
-
             IList<User> userList = new List<User>();
-
             if (User.IsInRole("Admin"))
             {
                 userList = await _userServices.GetAllUsersAsync();
             }
             else
             {
-                var societies = await _Societyservices.GetSocietyByUserId(currentUserId);
+                var societies = await _Societyservices.GetAllSocietyAsync();
                 var assignedSociety = societies.FirstOrDefault();
-
                 if (assignedSociety != null)
                 {
+                    // Filter user list by assigned society
                     userList = (await _userServices.GetAllUsersAsync())
                                 .Where(u => u.SocietyId == assignedSociety.SocietyId && u.UserRole.Name != "Society")
                                 .ToList();
@@ -52,13 +50,14 @@ namespace SocPass.Controllers
                 }
             }
             ViewBag.UserList = userList;
-
             return View("~/Views/User/UserList.cshtml");
         }
-
         [HttpGet]
         public async Task<IActionResult> AddUser(int? id)
         {
+            string Title;
+            if (string.IsNullOrEmpty(_globalClass.Token))
+                return RedirectToAction("Login", "Login");
             ViewBag.CurrentRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
@@ -71,22 +70,21 @@ namespace SocPass.Controllers
             }
             else
             {
-                societies = await _Societyservices.GetSocietyByUserId(userId);
+                societies = await _Societyservices.GetAllSocietyAsync();
                 assignedSociety = societies.FirstOrDefault();
-
                 ViewBag.IsSocietyReadonly = true;
             }
-
             ViewBag.Societies = societies;
             await InitViewBag();
             User user = id == null ? new User() : await _userServices.GetUserByIdAsync(id.Value);
-
+            if (id == null)
+                Title = "Add";
+            else
+                Title = "Edit";
             if (!User.IsInRole("Admin") && assignedSociety != null && user.SocietyId == 0)
                 user.SocietyId = assignedSociety.SocietyId;
-
             int? selectedBlockId = null;
             int? selectedFlatId = null;
-
             if ((User.IsInRole("Society") || User.IsInRole("Admin")) && user.SocietyId > 0)
             {
                 var blocks = await _blockService.GetBlockBySocietyId(user.SocietyId);
@@ -94,34 +92,34 @@ namespace SocPass.Controllers
                 if (firstBlock != null)
                 {
                     selectedBlockId = firstBlock.BlockId;
-
                     var flats = await _flatService.GetFlatByBlockId(firstBlock.BlockId);
                     var firstFlat = flats.FirstOrDefault();
                     if (firstFlat != null)
                         selectedFlatId = firstFlat.FlatId;
                 }
             }
-
             ViewBag.SelectedSocietyId = user.SocietyId > 0 ? user.SocietyId : assignedSociety?.SocietyId;
             ViewBag.AssignedSocietyId = assignedSociety?.SocietyId;
-
+            ViewBag.Title = Title;
             return View(user);
         }
-
         [HttpPost]
         public async Task<IActionResult> AddUser(User modelUsers, string action, int? flatId = null)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            //int selectedSociety =(int)modelUsers.SocietyId;
             int selectedSociety = modelUsers.SocietyId ?? 0;
             string selectedBlock = Request.Form["BlockId"];
             string selectedFlat = Request.Form["FlatId"];
-
             void SetSelectedDropdowns()
             {
                 ViewBag.SelectedSocietyId = selectedSociety;
                 ViewBag.SelectedBlockId = selectedBlock;
                 ViewBag.SelectedFlatId = selectedFlat;
             }
-
             if (string.IsNullOrEmpty(modelUsers.Name))
             {
                 ViewBag.ErrorMessage = "Please enter name.";
@@ -164,7 +162,6 @@ namespace SocPass.Controllers
                     await _userServices.UpdateUserAsync(modelUsers, flatId);
                     TempData["SuccessMessage"] = "User updated successfully.";
                 }
-
                 return RedirectToAction("UserList");
             }
             catch (InvalidOperationException ex)
@@ -185,6 +182,10 @@ namespace SocPass.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            if (string.IsNullOrEmpty(_globalClass.Token))
+            {
+                return RedirectToAction("Login", "Login");
+            }
             try
             {
                 await _userServices.Deleteuserasync(id);
@@ -220,8 +221,8 @@ namespace SocPass.Controllers
         }
         private async Task InitViewBag()
         {
-            //var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            //int.TryParse(userIdClaim, out int userId);
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
             var societies = await _Societyservices.GetAllSocietyAsync();
             ViewBag.SocietyList = societies;
             ViewBag.Societies = societies;

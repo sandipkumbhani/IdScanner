@@ -44,8 +44,8 @@ namespace SocPass.Application.Services
         }
         public async Task<List<Block>> GetAllBlockAsync()
         {
-            string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
+            var role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
             var newBlock = new List<Block>();
             if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))

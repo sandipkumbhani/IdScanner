@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 using SocPass.Application.Interface;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
+using System.Security.Claims;
 
 namespace SocPass.Application.Services
 {
@@ -15,19 +11,52 @@ namespace SocPass.Application.Services
     {
         private readonly ISocietyDataRepository _societyDataRepository;
         private readonly IFlatRepository _flatRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISocietyRepository _societyRepository;
 
-        public SocietyDataService(ISocietyDataRepository societyDataRepository, IFlatRepository flatRepository)
+        public SocietyDataService(ISocietyDataRepository societyDataRepository, IFlatRepository flatRepository,
+            IHttpContextAccessor httpContextAccessor, ISocietyRepository societyRepository)
         {
             _societyDataRepository = societyDataRepository;
             _flatRepository = flatRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _societyRepository = societyRepository;
         }
 
+        //public async Task<List<SocietyData>> GetAllSocietyDataAsync()
+        //{
+        //    var societyDataList =  await _societyDataRepository.GetAllSocietyDataAsync();
+        //    return societyDataList ?? new List<SocietyData>();
+
+        //}
         public async Task<List<SocietyData>> GetAllSocietyDataAsync()
         {
-            var societyDataList =  await _societyDataRepository.GetAllSocietyDataAsync();
-            return societyDataList ?? new List<SocietyData>();
-
+            string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            var SocietyDataList = new List<SocietyData>();
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                SocietyDataList = await _societyDataRepository.GetAllSocietyDataAsync();
+            }
+            else
+            {
+                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var society = societies.FirstOrDefault();
+                if (society != null)
+                {
+                    SocietyDataList = (await _societyDataRepository.GetAllSocietyDataAsync())
+                                 .Where(e => e.Flat.SocietyId == society.SocietyId)
+                                 .ToList();
+                }
+                else
+                {
+                    SocietyDataList = new List<SocietyData>();
+                }
+            }
+            return SocietyDataList ?? new List<SocietyData>();
         }
+
 
         public async Task CreateSocietyDataAsync(SocietyDataCreateRequest request)
         {

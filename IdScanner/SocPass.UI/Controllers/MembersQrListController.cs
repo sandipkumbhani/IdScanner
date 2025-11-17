@@ -28,23 +28,18 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> MemberQrList()
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
             IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
+            IEnumerable<Event> EventList = await _eventService.GetAllEventAsync();
             if (User.IsInRole("Admin"))
             {
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
-                EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
-                EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
             }
             ViewBag.EventList = EventList;
             ViewBag.Societies = societies;
@@ -69,21 +64,19 @@ namespace SocPass.UI.Controllers
         {
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-            IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
+            int.TryParse(userIdClaim, out int userId);
             IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
+            IEnumerable<Event> EventList = await _eventService.GetAllEventAsync();
             if (User.IsInRole("Admin"))
             {
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
-                EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
-                EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
             }
             ViewBag.EventList = EventList;
             ViewBag.Societies = societies;
