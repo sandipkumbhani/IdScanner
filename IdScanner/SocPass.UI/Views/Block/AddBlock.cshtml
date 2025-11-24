@@ -2,7 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool isNew = Model.BlockId == 0;
-    string Title = ViewBag.Title; ;
+    string Title = ViewBag.Title;
 }
 <html>
 <head>
@@ -27,7 +27,6 @@
                                     <div class="col-md-6 mb-3">
                                         <div class="item-input">
                                             <label asp-for="SocietyId" class="form-label required fw-semibold fs-6"></label>
-                                            @* <select asp-for="SocietyId" asp-items="@(new SelectList(ViewBag.SocietyList, "SocietyId", "Name"))" class="form-control userinput"> *@
 
                                             <select asp-for="SocietyId" asp-items="@(ViewBag.SocietyList)" class="form-control userinput" disabled="@(ViewBag.IsSocietyReadonly ? "disabled" : null)">
 

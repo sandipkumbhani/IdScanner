@@ -1,29 +1,30 @@
 ﻿@model SocPass.Domain.Model.Subscription
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    bool isAddMode = Model.StartFrom == DateTime.MinValue;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	bool isAddMode = Model.StartFrom == DateTime.MinValue;
+	bool isAddModeend = Model.EndTo == DateTime.MinValue;
 
     string inputValue = !isAddMode
                         ? Model.StartFrom.ToString("yyyy-MM-ddTHH:mm")
                         : string.Empty;
 
-    string minDate = isAddMode
-                     ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")
-                     : Model.StartFrom.ToString("yyyy-MM-ddTHH:mm");
+	string inputValueend = !isAddModeend
+						? Model.EndTo.ToString("yyyy-MM-ddTHH:mm")
+						: string.Empty;
 
-    bool isAddModeend = Model.EndTo == DateTime.MinValue;
-
-    string inputValueend = !isAddMode
-                        ? Model.EndTo.ToString("yyyy-MM-ddTHH:mm")
-                        : string.Empty;
-
-    string minDateend = isAddMode
-                     ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm")
-                     : Model.EndTo.ToString("yyyy-MM-ddTHH:mm");
+	// Always keep min date as current date, even during edit
+	string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
+	string minDateend = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
 }
+
 <html>
 <head>
-    <title>SocPass | Add Subscription</title>
+	<title>SocPass | Add Subscription</title>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
 </head>
 <body>
     <div class="content-page">

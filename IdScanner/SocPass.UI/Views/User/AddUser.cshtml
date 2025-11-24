@@ -12,26 +12,24 @@
     var preFlat = ViewBag.SelectedFlatId;
     string UserRoleMsg = ViewBag.UserRoleMsg;
 }
-<html>
-<head>
-    <title>SocPass | @ViewBag.Title User</title>
-    <style>
-        .content-page {
-            margin-left: 144px;
-        }
-    </style>
-</head>
+<style>
+	.content-page {
+		margin-left: 144px;
+	}
+</style>
+
 <body>
-    <div class="content-page">
-        <div class="content">
-            <div class="main-inner container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="page-title-box">
-                            <h1 class="page-title">User Profile</h1>
-                        </div>
-                    </div>
-                </div>
+	<div class="content-page">
+		<div class="content">
+			<div class="main-inner container-fluid">
+				<div class="row">
+					<div class="col-12">
+						<div class="page-title-box">
+							<h1 class="page-title">User Profile</h1>
+						</div>
+					</div>
+				</div>
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card com-profile-info">
@@ -82,21 +80,22 @@
                                             @* <select class="form-select" id="UserRoleId" name="UserRoleId" @(Model.UserId != 0 ? "disabled" : "")> *@
                                             <select id="UserRoleId" name="UserRoleId" class="form-select"
                                                     @(Model.UserId != 0 || (ViewBag.CurrentRole?.ToString().ToLower().Contains("society") ?? false) ? "disabled" : "")>
-                                                <option value="0">-- Select Role --</option>
+												<option value="0">-- Select Role --</option>
                                                 @foreach (var item in ViewBag.RoleList)
-                                                {
-                                                    <option value="@item.UserRoleId" selected="@(Model.UserRoleId == item.UserRoleId ? "selected" : null)">
-                                                        @item.Name
-                                                    </option>
-                                                }
-                                            </select>
+												{
+													<option value="@item.UserRoleId" selected="@(Model.UserRoleId == item.UserRoleId ? "selected" : null)">
+														@item.Name
+													</option>
+												}
+											</select>
                                             <input type="hidden" name="UserRoleId" value="@Model.UserRoleId" />
-                                            <span class="text-danger" id="roleError"></span>
-                                        </div>
-                                    </div>
-                                    <!-- Society -->
-                                    <div class="col-md-4">
-                                        <label class="form-label">Select Society</label>
+											<span class="text-danger" id="roleError"></span>
+										</div>
+									</div>
+
+									<!-- Society -->
+									<div class="col-md-4">
+										<label class="form-label">Select Society</label>
                                         <select id="SocietyId" name="SocietyId" class="form-select"
                                                 @(
                                                                                                 (ViewBag.CurrentRole?.ToString().ToLower().Contains("society") ?? false)
@@ -114,49 +113,53 @@
                                         </select>
                                         <input type="hidden" name="SocietyId" value="@Model.SocietyId" />
                                         <span class="text-danger" id="societyError"></span>
-                                    </div>
-                                    <!-- Block -->
-                                    <div class="col-md-4">
-                                        <label class="form-label">Select Block</label>
-                                        <select id="Block" name="BlockId" class="form-select">
-                                            <option value="">-- Select Block --</option>
-                                        </select>
-                                        <span class="text-danger" id="blockError"></span>
+
+									</div>
+
+
+									<!-- Block -->
+									<div class="col-md-4">
+										<label class="form-label">Select Block</label>
+										<select id="Block" name="BlockId" class="form-select">
+											<option value="">-- Select Block --</option>
+										</select>
+										<span class="text-danger" id="blockError"></span>
                                         <div id="EmptyBlockMsg"></div>
-                                    </div>
-                                    <!-- Flat -->
-                                    <div class="col-md-4">
-                                        <label class="form-label">Select Flat</label>
-                                        <select id="Flat" name="FlatId" class="form-select">
-                                            <option value="">-- Select Flat --</option>
-                                        </select>
-                                        <span class="text-danger" id="flatError"></span>
+									</div>
+
+									<!-- Flat -->
+									<div class="col-md-4">
+										<label class="form-label">Select Flat</label>
+										<select id="Flat" name="FlatId" class="form-select">
+											<option value="">-- Select Flat --</option>
+										</select>
+										<span class="text-danger" id="flatError"></span>
                                         <div id="EmptyFlatMsg"></div>
                                     </div>
                                     <!-- Action Buttons -->
-                                    <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
-                                        <button type="submit" class="card-link">
-                                            <i class="ri-save-line"></i>
-                                            <span>Save</span>
-                                        </button>
-                                        @if (Model.UserId == 0)
-                                        {
-                                            <button type="reset" class="card-link outline-bar">
-                                                <i class="ri-refresh-line"></i><span>Clear</span>
-                                            </button>
-                                        }
-                                        <a href="@Url.Action("UserList", "User")" class="card-link outline-bar">
-                                            <span>View</span>
-                                        </a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+									<div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
+										<button type="submit" class="card-link">
+											<i class="ri-save-line"></i>
+											<span>Save</span>
+										</button>
+										@if (Model.UserId == 0)
+										{
+											<button type="reset" class="card-link outline-bar">
+												<i class="ri-refresh-line"></i><span>Clear</span>
+											</button>
+										}
+										<a href="@Url.Action("UserList", "User")" class="card-link outline-bar">
+											<span>View</span>
+										</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
                 $(document).ready(function () {
@@ -316,15 +319,15 @@
                         var valid = true;
                         $("#societyError, #blockError, #flatError, #nameError").text("");
                         if (societySection.is(":visible") && !$("#SocietyId").val()) {
-                            $("#societyError").text("Please select a Society.");
+                            $("#societyError").text("Please Select a Society.");
                             valid = false;
                         }
                         if (blockSection.is(":visible") && !$("#Block").val()) {
-                            $("#blockError").text("Please select a Block.");
+                            $("#blockError").text("Please Select a Block.");
                             valid = false;
                         }
                         if (flatSection.is(":visible") && !$("#Flat").val()) {
-                            $("#flatError").text("Please select a Flat.");
+                            $("#flatError").text("Please Select a Flat.");
                             valid = false;
                         }
                         if (!$("#Name").val()) {
@@ -336,10 +339,10 @@
                         var email = $("#EmailId").val();
                         var emailPattern = @Html.Raw(@"/^[^@\s]+@[^@\s]+\.[^@\s]+$/");
                         if (!email) {
-                            $("#emailError").text("Please enter Email.");
+                            $("#emailError").text("Please Enter Email.");
                             valid = false;
                         } else if (!emailPattern.test(email)) {
-                            $("#emailError").text("Please enter a valid Email.");
+                            $("#emailError").text("Please Enter a Valid Email.");
                             valid = false;
                         } else {
                         }
@@ -347,9 +350,10 @@
                       var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
                         if (!password) {
-                            $("#passwordError").text("Please enter Password.");
+                            $("#passwordError").text("Please Enter Password.");
                             valid = false;
                         } else if (!passwordPattern.test(password)) {
+                            console.log(!passwordPattern.test(password))
                             $("#passwordError").text("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
                             valid = false;
                         } else {
@@ -366,7 +370,7 @@
                         }
                         var selectedValue = $("#UserRoleId").val();
                         if (selectedValue === null || selectedValue === "" || selectedValue === "0") {
-                            $("#roleError").text("Please select an option.");
+                            $("#roleError").text("Please Select a Role.");
                             valid = false;
                         } else {
                             $("#roleError").text("");
@@ -404,4 +408,3 @@
                 });
     </script>
 </body>
-</html>

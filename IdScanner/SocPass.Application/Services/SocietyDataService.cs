@@ -22,9 +22,10 @@ namespace SocPass.Application.Services
             _httpContextAccessor = httpContextAccessor;
             _societyRepository = societyRepository;
         }
+        
         public async Task<List<SocietyData>> GetSocietyDataAsync()
         {
-            var role = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
+            string role = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
             var SocietyDataList = new List<SocietyData>();
@@ -92,8 +93,9 @@ namespace SocPass.Application.Services
         {
             var existingData = await _societyDataRepository.GetSocietyDataByIdAsync(societyData.SocietyDataId);
             if (existingData == null)
+            {
                 throw new Exception("SocietyData record not found.");
-
+            }
             existingData.ContactName = societyData.ContactName;
             existingData.ContactNumber = societyData.ContactNumber;
             existingData.ContactEmail = societyData.ContactEmail;
@@ -101,7 +103,6 @@ namespace SocPass.Application.Services
             existingData.IsActive = true;
             existingData.UpdateBy = 1;
             existingData.UpdateDate = DateTime.Now;
-
             await _societyDataRepository.UpdateSocietyAsync(existingData);
             return existingData;
         }

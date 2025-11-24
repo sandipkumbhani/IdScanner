@@ -23,7 +23,6 @@ namespace SocPass.UI.Controllers
             _societyService = societyService;
             _flatService = flatService;
             _globalClass = globalClass;
-
         }
         [HttpGet]
         public async Task<IActionResult> AddMember()
@@ -86,14 +85,12 @@ namespace SocPass.UI.Controllers
                 ws.Cell(1, 2).Value = "NumberOfAdults";
                 ws.Cell(1, 3).Value = "NumberOfChildren";
                 ws.Cell(1, 4).Value = "ChildrenAges (comma separated)";
-
                 int row = 2;
                 foreach (var flat in flats)
                 {
                     ws.Cell(row, 1).Value = flat.FlatNumber;
                     row++;
                 }
-
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);

@@ -124,24 +124,6 @@
 										</div>
 									</div>
 
-									<!-- IsActive -->
-									<div class="col-md-6 mb-3 d-flex align-items-center">
-										<input type="checkbox" name="IsActive" id="IsActive" class="form-check-input" value="true" @(isChecked ? "checked" : "") style="transform: scale(1.3); margin-top: 2px;" />
-										<label for="IsActive" class="form-label fw-semibold mb-0 ms-2" style="font-size:16px;">Is Active</label>
-									</div>
-
-									@* <!-- Buttons -->
-                                <div class="col-12">
-                                    <div class="button-main d-flex gap-2 mt-3">
-                                        <button type="submit" class="card-link"><i class="ri-save-line"></i><span>Save</span></button>
-                                        @if (isNew)
-                                        {
-                                            <button type="reset" class="card-link outline-bar"><span>Clear</span></button>
-                                        }
-                                        <a href="@Url.Action("FlatList", "Flat")" class="card-link outline-bar"><span>View</span></a>
-                                    </div>
-                                </div> *@
-
 									<div class="button-main d-flex gap-3 mt-4">
 										<button type="submit" id="saveFlatBtnGlobal" class="card-link">
 											<i class="ri-save-line"></i> <span>Save</span>

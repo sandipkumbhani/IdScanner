@@ -39,6 +39,10 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSociety(Society society)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(society);
+            }
             if (society.SocietyId == 0)
             {
                 await _societyService.AddSocietyAsync(society);

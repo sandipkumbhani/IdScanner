@@ -22,7 +22,7 @@ namespace SocPass.Infrastructure.Repository
 
         public async Task<List<Block>> GetBlockAsync()
         {
-            return await _context.blocks.Where(x => x.IsActive == true).Include(e => e.Society).OrderBy(e => e.Society.Name).ThenBy(e => e.BlockNumber).ToListAsync();
+            return await _context.blocks.Where(x => x.IsActive == true && x.Society.IsActive == true).Include(e => e.Society).OrderBy(e => e.Society.Name).ThenBy(e => e.BlockNumber).ToListAsync();
         }
 
         public async Task<Block> GetBlockByIdAsync(int blockid)

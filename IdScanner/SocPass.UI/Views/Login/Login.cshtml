@@ -59,8 +59,7 @@
                                     <div class="form-input position-relative">
                                         <input class="form-control" type="password" id="password" name="password" required="" placeholder="" ,required />
                                         <div class="show-hide">
-                                            <span class="show">
-                                            </span>
+                                            <span class="show ri-eye-line"></span>
                                         </div>
                                         <div class="invalid-feedback"><i class="ri-information-line"></i> Password field cannot be blank!</div>
                                     </div>
@@ -82,7 +81,7 @@
                     </div>
                 </div>
                 <div class="sign-right">  
-                    <img src="~/images/loginpage_image.png" alt="" />
+                    <img src="~/images/loginpage_image.jpeg" alt="" />
                 </div>
             </div>
         </div>
@@ -114,5 +113,22 @@
     <script src="~/js/datatable-init.js"></script>
     <!-- Script App JS -->
     <script src="~/js/script-app.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".show-hide .show").on("click", function () {
+                var passwordInput = $("#password");
+                var inputType = passwordInput.attr("type");
+
+                if (inputType === "password") {
+                    passwordInput.attr("type", "text");
+                    $(this).addClass("ri-eye-off-line").removeClass("ri-eye-line");
+                } else {
+                    passwordInput.attr("type", "password");
+                    $(this).addClass("ri-eye-line").removeClass("ri-eye-off-line");
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
