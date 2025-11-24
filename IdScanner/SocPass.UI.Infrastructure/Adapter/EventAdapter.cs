@@ -15,9 +15,9 @@ namespace SocPass.UI.Infrastructure.Provider
         {
             _commonAdapter = commonAdapter;
         }
-        public async Task<IList<Event>> GetAllEventAsync()
+        public async Task<IList<Event>> GetEventAsync()
         {
-            return await _commonAdapter.GetAsync<IList<Event>>("Event/getAllEvents");
+            return await _commonAdapter.GetAsync<IList<Event>>("Event/getEvents");
         }
         public async Task<IList<Event>> GetEventBySocietyId(int SocietyId)
         {

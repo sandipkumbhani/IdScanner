@@ -45,10 +45,10 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpGet("getAllFlat")]
-        public async Task<IActionResult> GetAllFlat()
+        [HttpGet("GetFlat")]
+        public async Task<IActionResult> GetFlat()
         {
-            var flats = await _flatService.GetAllFlatAsync();
+            var flats = await _flatService.GetFlatAsync();
 
             return Ok(flats);
         }

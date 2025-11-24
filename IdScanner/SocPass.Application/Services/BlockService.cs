@@ -22,7 +22,7 @@ namespace SocPass.Application.Services
            
             var existingBlocks = await _blockRepository.GetBlocksBySocietyIdAsync(block.SocietyId);
             var checkBlockExisting = existingBlocks
-                .FirstOrDefault(b => b.BlockNumber.Trim().ToLower() == block.BlockNumber.Trim().ToLower());
+                .FirstOrDefault(b => b.BlockNumber?.Trim().ToLower() == block.BlockNumber?.Trim().ToLower());
 
             if (checkBlockExisting != null)
             {
@@ -42,7 +42,7 @@ namespace SocPass.Application.Services
 
             return await _blockRepository.CreateBlockAsync(newBlock);
         }
-        public async Task<List<Block>> GetAllBlockAsync()
+        public async Task<List<Block>> GetBlockAsync()
         {
             var role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UserId")?.Value;
@@ -50,11 +50,11 @@ namespace SocPass.Application.Services
             var newBlock = new List<Block>();
             if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                 newBlock  = await _blockRepository.GetAllBlockAsync();
+                 newBlock  = await _blockRepository.GetBlockAsync();
             }
             else
             {
-                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var societies = await _societyRepository.GetSocietyAsync(userId);
                 var society = societies.FirstOrDefault();
 
                 if (society != null)
@@ -62,12 +62,8 @@ namespace SocPass.Application.Services
                     newBlock = await _blockRepository.GetBlocksBySocietyIdAsync(society.SocietyId);
                            
                 }
-                else
-                {
-                    newBlock = new List<Block>();
-                }
             }
-            return newBlock ?? new List<Block>();
+            return newBlock;
         }
 
         public async Task<Block> GetBlockByIdAsync(int blockid)
@@ -96,13 +92,13 @@ namespace SocPass.Application.Services
             return block;
         }
         public async Task DeleteBlockByIdAsync(int blockid)
-        {
+        { 
             var blockexisting = await _blockRepository.GetBlockByIdAsync(blockid);
             if (blockexisting == null)
             {
                 throw new KeyNotFoundException($"Block with Id {blockid} not found");
             }
-            await _blockRepository.DeleteBlockAsync(blockexisting);
+            await _blockRepository.DeleteBlockAsync(blockid);
         }
         public async Task<List<Block>> GetBlocksBySocietyIdAsync(int societyId)
         {

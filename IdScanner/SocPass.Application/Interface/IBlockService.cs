@@ -10,7 +10,7 @@ namespace SocPass.Application.Interface
     public interface IBlockService
     {
         Task<Block> CreateBlockAsync(Block block);
-        Task<List<Block>> GetAllBlockAsync();
+        Task<List<Block>> GetBlockAsync();
         Task<Block> GetBlockByIdAsync(int blockid);
         Task<Block> UpdateBlockAsync(Block block);
         Task DeleteBlockByIdAsync(int blockid);

@@ -28,29 +28,17 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddMember()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
-            if (User.IsInRole("Admin"))
-            {
-                ViewBag.IsSocietyReadonly = false;  
-            }
-            else
-            {
-                ViewBag.IsSocietyReadonly = true; 
-            }
-           
-            ViewBag.Societies = societies;
+            bool isAdmin = User.IsInRole("Admin");
+            var societies = await _societyService.GetSocietyAsync();
             var model = new MemberCreateRequest();
-            if (!User.IsInRole("Admin"))
+            if (!isAdmin)
             {
                 model.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
-
+            ViewBag.IsSocietyReadonly = !isAdmin;
+            ViewBag.Societies = societies;
             return View(model);
         }
-
         [HttpPost]
         public async Task<IActionResult> AddMember([FromBody] MemberCreateRequest model)
         {
@@ -64,27 +52,18 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddGuest()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
+            bool isAdmin = User.IsInRole("Admin");
+            var societies = await _societyService.GetSocietyAsync();
 
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
-            if (User.IsInRole("Admin"))
+            var guest = new MemberCreateRequest();
+            if (!isAdmin)
             {
-                ViewBag.IsSocietyReadonly = false;
-            }
-            else
-            {
-                ViewBag.IsSocietyReadonly = true;
+                guest.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
 
+            ViewBag.IsSocietyReadonly = !isAdmin;
             ViewBag.Societies = societies;
-            var guestmodel = new MemberCreateRequest();
-            if (!User.IsInRole("Admin"))
-            {
-                guestmodel.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
-            }
-            return View("/Views/Guest/AddGuest.cshtml", guestmodel);
+            return View("/Views/Guest/AddGuest.cshtml", guest);
         }
 
         [HttpPost]
@@ -147,7 +126,7 @@ namespace SocPass.UI.Controllers
                         .Select(x => int.Parse(x.Trim()))
                         .ToList();
 
-                    var flat = (await _flatService.GetAllFlatAsync())
+                    var flat = (await _flatService.GetFlatAsync())
                                .FirstOrDefault(f => f.FlatNumber == flatNumber);
 
                     if (flat != null)

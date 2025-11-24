@@ -5,7 +5,7 @@ namespace SocPass.UI.Application.Interface
 {
     public interface ISocietyDataService
     {
-        Task<IList<SocietyData>> GetAllSocietyDataAsync();
+        Task<IList<SocietyData>> GetSocietyDataAsync();
         Task<SocietyData> GetSocietyDataByIdAsync(int? societyDataId);
         Task<string> AddSocietyDataAsync(SocietyDataCreateRequest societyData);
         Task<string> UpdateSocietyDataAsync(SocietyData societyData);

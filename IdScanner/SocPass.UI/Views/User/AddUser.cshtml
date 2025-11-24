@@ -40,14 +40,14 @@
                                 <form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
                                     <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
                                     <!-- Name -->
+                                    @if (ViewBag.ErrorMessage != null)
+                                    {
+                                        <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                    }
                                     <div class="col-xl-4 col-lg-6">
                                         <div class="item-input">
                                             <label for="Name" class="form-label required fw-semibold fs-6">Name</label>
                                             <input type="text" class="form-control userinput" id="Name" name="Name" value="@Model.Name">
-                                            @* @if (!string.IsNullOrEmpty(NameMsg))
-                                            {
-                                                <span class="text-danger">@NameMsg</span>
-                                            } *@
                                             <span class="text-danger" id="nameError"></span>
                                         </div>
                                     </div>
@@ -56,10 +56,6 @@
                                         <div class="item-input">
                                             <label for="EmailId" class="form-label required fw-semibold fs-6">Email</label>
                                             <input type="text" class="form-control userinput" id="EmailId" name="EmailId" value="@Model.EmailId">
-                                            @* @if (!string.IsNullOrEmpty(EmailMsg))
-                                            {
-                                                <span class="text-danger">@EmailMsg</span>
-                                            } *@
                                             <span class="text-danger" id="emailError"></span>
                                         </div>
                                     </div>
@@ -68,10 +64,6 @@
                                         <div class="item-input">
                                             <label for="Password" class="form-label required fw-semibold fs-6">Password</label>
                                             <input type="password" class="form-control userinput" id="Password" name="Password" value="@Model.Password">
-                                            @* @if (!string.IsNullOrEmpty(passwordMsg))
-                                            {
-                                                <span class="text-danger">@passwordMsg</span>
-                                            } *@
                                             <span class="text-danger" id="passwordError"></span>
                                         </div>
                                     </div>
@@ -80,10 +72,6 @@
                                         <div class="item-input">
                                             <label for="ConfirmPassword" class="form-label required fw-semibold fs-6">Confirm Password</label>
                                             <input type="password" class="form-control userinput" id="ConfirmPassword" name="ConfirmPassword" value="@Model.Password">
-                                            @* @if (!string.IsNullOrEmpty(ConfirmPasswordMsg))
-                                            {
-                                                <span class="text-danger">@ConfirmPasswordMsg</span>
-                                            } *@
                                             <span class="text-danger" id="confirmpasswordError"></span>
                                         </div>
                                     </div>
@@ -145,10 +133,6 @@
                                         <span class="text-danger" id="flatError"></span>
                                         <div id="EmptyFlatMsg"></div>
                                     </div>
-                                    @if (ViewBag.ErrorMessage != null)
-                                    {
-                                        <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                    }
                                     <!-- Action Buttons -->
                                     <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
                                         <button type="submit" class="card-link">
@@ -203,15 +187,15 @@
                         societySection.show();
                         blockSection.show();
                         flatSection.show();
-                        $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
+                        $.getJSON('/Block/GetBlocksBySociety', { societyId: societyId })
                         .done(function(data) {
                             $("#Block").empty().append('<option value="">-- Select Block --</option>');
                             $.each(data, function(i, block) {
-                                $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
+                                $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
                             });
                             if (blockId) {
                                 $("#Block").val(blockId).trigger("change");
-                                $.getJSON('/User/GetFlatsByBlock', { blockId: blockId })
+                                $.getJSON('/Flat/GetFlatsByBlock', { blockId: blockId })
                                 .done(function(data) {
                                     $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
                                     $.each(data, function(i, flat) {
@@ -278,7 +262,7 @@
                         //     });
                         // });
                           $.ajax({
-                        url: '@Url.Action("GetBlocksBySociety", "Member")',
+                        url: '@Url.Action("GetBlocksBySociety", "Block")',
                         method: 'GET',
                         data: { societyId: societyId },
                         dataType: 'json'
@@ -306,7 +290,7 @@
                         $flatmsg.empty();
                         if (!blockId) return;
                        $.ajax({
-                        url: '@Url.Action("GetFlatsByBlock", "User")',
+                        url: '@Url.Action("GetFlatsByBlock", "Flat")',
                         method: 'GET',
                         data: { blockId: blockId },
                         dataType: 'json'
@@ -358,10 +342,10 @@
                             $("#emailError").text("Please enter a valid Email.");
                             valid = false;
                         } else {
-                            $("#emailError").text("");
                         }
                         var password = $("#Password").val();
-                        var passwordPattern = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[\W_]).{8,}$/;
+                      var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
                         if (!password) {
                             $("#passwordError").text("Please enter Password.");
                             valid = false;

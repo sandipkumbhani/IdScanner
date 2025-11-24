@@ -1,32 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
-using SocPass.Domain.DTO;
+﻿using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 using SocPass.UI.Domain.Comman;
-using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
-using SocPass.UI.Domain.Model;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
     public class SocietyDataAdapter : ISocietyDataAdapter
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-        private APICredential apiCredential;
-        private GlobalClass _globalClass;
         private readonly ICommonAdapter _commonAdapter;
 
-        public SocietyDataAdapter(HttpClient httpCleint, IConfiguration configuration, GlobalClass globalClass, ICommonAdapter commonAdapter)
+        public SocietyDataAdapter(ICommonAdapter commonAdapter)
         {
-            _httpClient = httpCleint;
-            _configuration = configuration;
-            apiCredential = new APICredential(configuration);
-            _globalClass = globalClass;
             _commonAdapter = commonAdapter;
         }
-        public async Task<IList<SocietyData>> GetAllSocietyData()
+        public async Task<IList<SocietyData>> GetSocietyDataAsync()
         {
-            return await _commonAdapter.GetAsync<IList<SocietyData>>($"SocietyData/Get-All-SocietyData");
+            return await _commonAdapter.GetAsync<IList<SocietyData>>($"SocietyData/Get-SocietyData");
         }
         public async Task<SocietyData> GetSocietyDataByIdAsync(int? societyDataId)
         {

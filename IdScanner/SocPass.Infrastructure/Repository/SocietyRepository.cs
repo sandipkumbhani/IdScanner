@@ -27,7 +27,7 @@ namespace SocPass.Infrastructure.Repository
         {
             return await _context.societies.Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.SocietyId == societyid);
         }
-        public async Task<List<Society>> GetAllSocietyAsync(int userId)
+        public async Task<List<Society>> GetSocietyAsync(int userId)
         {
             var user = await _context.users
                 .Include(u => u.Society)
@@ -42,7 +42,7 @@ namespace SocPass.Infrastructure.Repository
                 user.UserRole.Name == "Admin")
             {
                 return await _context.societies
-                    .Where(s => s.IsActive)
+                    .Where(s => s.IsActive == true)
                     .OrderBy(s => s.Name)
                     .Select(s => new Society
                     {
@@ -87,9 +87,9 @@ namespace SocPass.Infrastructure.Repository
             _context.societies.Update(society);
             _context.SaveChanges();
         }
-        public async Task DeleteSocietyAsync(Society society)
+        public async Task DeleteSocietyAsync(int society)
         {
-            var existingSociety = await _context.societies.FindAsync(society.SocietyId);
+            var existingSociety = await _context.societies.FindAsync(society);
             if (existingSociety != null)
             {
                 existingSociety.IsActive = false;

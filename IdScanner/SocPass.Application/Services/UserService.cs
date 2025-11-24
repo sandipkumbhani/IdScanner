@@ -1,9 +1,11 @@
-﻿using SocPass.Application.Interface;
+﻿using Microsoft.AspNetCore.Http;
+using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,12 +16,16 @@ namespace SocPass.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IUserRoleRepository _userRoleRepository;
         private readonly IUserFlatMappingRepository _userFlatMappingRepository;
-
-        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository, IUserFlatMappingRepository userFlatMappingRepository)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISocietyRepository _societyRepository;
+        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository, 
+            IUserFlatMappingRepository userFlatMappingRepository, IHttpContextAccessor httpContextAccessor, ISocietyRepository societyRepository)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
             _userFlatMappingRepository = userFlatMappingRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _societyRepository = societyRepository;
         }
         public async Task<User> CreateUserAsync(User user, int? flatId = null)
         {
@@ -70,26 +76,35 @@ namespace SocPass.Application.Services
             }
             return result;
         }
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<List<User>> GetUsersAsync()
         {
-            var users = await _userRepository.GetAllUsersAsync();
+            var role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
 
-            return users.Select(user => new User
+            List<User> userList = new List<User>();
+
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                UserId = user.UserId,
-                Name = user.Name,
-                EmailId = user.EmailId,
-                UserRoleId = user.UserRoleId,
-                SocietyId = user.SocietyId,
-                IsActive = user.IsActive,
-                InsertBy = user.InsertBy,
-                InsertDate = user.InsertDate,
-                UpdateBy = user.UpdateBy,
-                UpdateDate = user.UpdateDate,
-                UserRole = user.UserRole
+                userList = await _userRepository.GetUsersAsync();
+            }
+            else
+            {
+                var societies = await _societyRepository.GetSocietyAsync(userId);
+                var assignedSociety = societies.FirstOrDefault();
 
-            }).ToList();
+                if (assignedSociety != null)
+                {
+                    userList = (await _userRepository.GetUsersAsync())
+                                .Where(u => u.SocietyId == assignedSociety.SocietyId
+                                         && u.UserRole.Name != "Society")
+                                .ToList();
+                }
+            }
+
+            return userList;
         }
+
         public async Task DeleteUserById(int id)
         {
             var deleteUser = await _userRepository.GetUserById(id);
@@ -98,7 +113,7 @@ namespace SocPass.Application.Services
                 throw new KeyNotFoundException($"User ID {id} not found.");
             }
 
-            await _userRepository.DeleteAsync(deleteUser);
+            await _userRepository.DeleteAsync(id);
         }
         public async Task<User> UpdateUserAsync(User user, int? flatId = null)
         {

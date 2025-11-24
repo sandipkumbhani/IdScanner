@@ -10,10 +10,10 @@ namespace SocPass.Domain.Interface
     public interface IBlockRepository
     {
         Task<Block> CreateBlockAsync(Block block);
-        Task<List<Block>> GetAllBlockAsync();
+        Task<List<Block>> GetBlockAsync();
         Task<Block> GetBlockByIdAsync(int blockid);
         Task UpdateBlockAsync(Block block);
-        Task DeleteBlockAsync(Block block);
+        Task DeleteBlockAsync(int blockid);
         Task<List<Block>> GetBlocksBySocietyIdAsync(int societyId);
 
     }

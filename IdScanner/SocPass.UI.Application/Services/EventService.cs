@@ -11,9 +11,9 @@ namespace SocPass.UI.Application.Services
         {
             _eventRepository = eventRepository;
         }
-        public async Task<IList<Event>> GetAllEventAsync()
+        public async Task<IList<Event>> GetEventAsync()
         {
-            return await _eventRepository.GetAllEventAsync();
+            return await _eventRepository.GetEventAsync();
         }
         public async Task<string> AddEventAsync(Event events)
         {

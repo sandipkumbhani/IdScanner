@@ -27,26 +27,25 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> MemberQrList()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            bool isAdmin = User.IsInRole("Admin");
+
+            var societies = await _societyService.GetSocietyAsync();
+            var events = await _eventService.GetEventAsync();
+
             int selectedSocietyId = 0;
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
-            IEnumerable<Event> EventList = await _eventService.GetAllEventAsync();
-            if (User.IsInRole("Admin"))
+
+            if (!isAdmin)
             {
-                ViewBag.IsSocietyReadonly = false;
-                selectedSocietyId = 0;
-            }
-            else
-            {
-                ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
-            ViewBag.EventList = EventList;
+            ViewBag.IsSocietyReadonly = !isAdmin;
             ViewBag.Societies = societies;
+            ViewBag.EventList = events;
             ViewBag.SelectedSocietyId = selectedSocietyId;
-            return View("/Views/MembersQrList/MembersQrList.cshtml");
 
+            return View("/Views/MembersQrList/MembersQrList.cshtml");
         }
+
         [HttpPost]
         public async Task<IActionResult> GenerateMemberPass(int societyId, int blockId, int EventId)
         {
@@ -62,27 +61,23 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> GuestQrList()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            bool isAdmin = User.IsInRole("Admin");
+            var societies = await _societyService.GetSocietyAsync();
+            var events = await _eventService.GetEventAsync();
             int selectedSocietyId = 0;
-            int.TryParse(userIdClaim, out int userId);
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
-            IEnumerable<Event> EventList = await _eventService.GetAllEventAsync();
-            if (User.IsInRole("Admin"))
+
+            if (!isAdmin)
             {
-                ViewBag.IsSocietyReadonly = false;
-                selectedSocietyId = 0;
-            }
-            else
-            {
-                ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
-            ViewBag.EventList = EventList;
+            ViewBag.IsSocietyReadonly = !isAdmin;
             ViewBag.Societies = societies;
+            ViewBag.EventList = events;
             ViewBag.SelectedSocietyId = selectedSocietyId;
+
             return View("/Views/GuestQrList/GuestQrList.cshtml");
         }
+
         [HttpPost]
         public async Task<IActionResult> GenerateGuestPass(int societyId, int blockId, int EventId)
         {

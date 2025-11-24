@@ -19,18 +19,13 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> SocietyList()
         {
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            IList<Society> SocietyList = await _societyService.GetSocietyByUserId(userId);
+            IList<Society> SocietyList = await _societyService.GetSocietyAsync();
             ViewBag.SocietyList = SocietyList;
             return View("~/Views/Society/SocietyList.cshtml");
         }
         [HttpGet]
         public async Task<IActionResult> AddSociety(int? societyId)
         {
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             Society entity = new Society();
             string Title = "Add";
             if (societyId != null)

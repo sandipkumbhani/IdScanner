@@ -17,9 +17,9 @@ namespace SocPass.UI.Application.Services
         {
             _flatAdapter = IFlatAdapter;
         }
-        public async Task<IList<Flat>> GetAllFlatAsync()
+        public async Task<IList<Flat>> GetFlatAsync()
         {
-            return await _flatAdapter.GetAllFlatAsync();
+            return await _flatAdapter.GetFlatAsync();
         }
         public async Task<IList<Flat?>> GetFlatByIdAsync(int? societyId, int blockId)
         {

@@ -12,7 +12,7 @@ namespace SocPass.Domain.Interface
     public interface IFlatRepository
     {
         Task<Flat> CreateFlatAsync(Flat flat);
-        Task<List<Flat>> GetAllFlatAsync();
+        Task<List<Flat>> GetFlatAsync();
         Task<Flat> GetById(int flatId);
         //Task UpdateAsync(Flat flat);
         Task<Flat?> GetFlatByPositionAsync(int societyId, int blockId);

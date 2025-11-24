@@ -32,17 +32,17 @@ namespace SocPass.Application.Services
             };
             return await _societyRepository.CreateSocietyAsync(newSociety);
         }
-        public async Task<List<Society>> GetAllSocietyAsync()
+        public async Task<List<Society>> GetSocietyAsync()
         {
             var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var newSociety = await _societyRepository.GetAllSocietyAsync(userId);
+            var newSociety = await _societyRepository.GetSocietyAsync(userId);
             return newSociety ?? new List<Society>();
         }
 
         public async Task<List<Society>> GetSocietyUserIdAsync(int userId)
         {
-            var newSociety = await _societyRepository.GetAllSocietyAsync(userId);
+            var newSociety = await _societyRepository.GetSocietyAsync(userId);
             return newSociety ?? new List<Society>();
         }
 
@@ -84,7 +84,7 @@ namespace SocPass.Application.Services
                 throw new KeyNotFoundException($"Society ID {society} not found.");
             }
 
-            await _societyRepository.DeleteSocietyAsync(deleteSociety);
+            await _societyRepository.DeleteSocietyAsync(society);
         }
 
     }

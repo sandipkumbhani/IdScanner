@@ -25,9 +25,9 @@ namespace SocPass.UI.Infrastructure.Provider
             _globalClass = globalClass;
             _commonAdapter = commonAdapter;
         }
-        public async Task<IList<User>> GetAllUsersAsync()
+        public async Task<IList<User>> GetUsersAsync()
         {
-            return await _commonAdapter.GetAsync<IList<User>>($"User/get-all-user");
+            return await _commonAdapter.GetAsync<IList<User>>($"User/get-user");
         }
         public async Task<User> AddUserAsync(User user, int? flatId = null)
         {

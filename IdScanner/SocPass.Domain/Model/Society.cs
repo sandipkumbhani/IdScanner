@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace SocPass.Domain.Model
 {
-    public class Society
+    public class Society : BaseModel
     {
         [Key]
         public int SocietyId { get; set; }
@@ -29,25 +23,13 @@ namespace SocPass.Domain.Model
         [RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Enter a valid 10-digit mobile number starting with 6-9")]
         public string? Contact { get; set; }
 
-        ////[Required(ErrorMessage = "Secondary contact number is required")]
-        //[Display(Name = "Secondary Contact")]
-        ////[RegularExpression(@"^[6-9]\d{9}$", ErrorMessage = "Enter a valid 10-digit mobile number starting with 6-9")]
-        //[DataType(DataType.PhoneNumber)]
-        //public string? Contact2 { get; set; } = string.Empty;
-
         [Display(Name = "Secondary Contact")]
         [RegularExpression(@"(^$|^[6-9]\d{9}$)", ErrorMessage = "Enter a valid 10-digit mobile number starting with 6-9")]
         public string? Contact2 { get; set; }
 
-
-        public bool IsActive { get; set; }
-        public long InsertBy { get; set; }
-        public DateTime InsertDate { get; set; }
-        public long UpdateBy { get; set; }
-        public DateTime UpdateDate { get; set; }
-         [JsonIgnore] 
+        [JsonIgnore]
         public ICollection<User>? Users { get; set; }
-        [JsonIgnore] 
+        [JsonIgnore]
         public ICollection<Subscription>? Subscriptions { get; set; }
     }
 

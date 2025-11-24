@@ -20,25 +20,22 @@ namespace SocPass.UI.Controllers
 
         [HttpGet]
         public async Task<IActionResult> MemberReport()
-        { 
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
+        {
+            bool isAdmin = User.IsInRole("Admin");
+
+            var societies = await _societyService.GetSocietyAsync();
+            var events = await _eventService.GetEventAsync();
+
             int selectedSocietyId = 0;
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
-            IEnumerable<Event> EventList = await _eventService.GetAllEventAsync();
-            if (User.IsInRole("Admin"))
+
+            if (!isAdmin)
             {
-                ViewBag.IsSocietyReadonly = false;
-                selectedSocietyId = 0;
-            }
-            else
-            {
-                ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
+
+            ViewBag.IsSocietyReadonly = !isAdmin;
             ViewBag.Societies = societies;
-            ViewBag.EventList = EventList;
+            ViewBag.EventList = events;
             ViewBag.SelectedSocietyId = selectedSocietyId;
 
             return View("/Views/Report/ReportDataList.cshtml");

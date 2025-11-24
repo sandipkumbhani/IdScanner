@@ -10,9 +10,9 @@ namespace SocPass.Domain.Interface
     public interface IEventRepository
     {
         Task<Event> AddEventAsync(Event events);
-        Task<List<Event>> GetAllEventsAsync();
+        Task<List<Event>> GetEventsAsync();
         Task<Event> UpdateEventAsync(Event events);
-        Task DeleteEventAsync(Event events);
+        Task DeleteEventAsync(int eventId);
         Task<Event?> GetEventByIdAsync(int eventId);
         Task<List<Event>> GetEventListBySocietyAsync(int societyId);
         Task<List<Event>> GetEventListByUserIdAsync(int userid);

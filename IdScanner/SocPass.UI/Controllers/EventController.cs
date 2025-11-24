@@ -21,62 +21,51 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> EventList()
         {
-            IEnumerable<Event> eventList = await _eventService.GetAllEventAsync();
+            IEnumerable<Event> eventList = await _eventService.GetEventAsync();
             ViewBag.EventsList = eventList.ToList();
             return View("~/Views/Event/EventList.cshtml");
         }
-
 
         [HttpGet]
         public async Task<IActionResult> AddEvent(int eventId)
         {
             try
             {
-                var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-                var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-                int.TryParse(userIdClaim, out int userId);
-                string Title;
-                IEnumerable<Society> societies;
-                societies = await _societyService.GetAllSocietyAsync();
+                bool isAdmin = User.IsInRole("Admin");
+
+                var societies = await _societyService.GetSocietyAsync();
+                var model = new Event();
+                string title;
+
                 if (eventId == 0)
                 {
-                    Title = "Add";
-                    var newEvent = new Event();
+                    title = "Add";
 
-                    if (!User.IsInRole("Admin"))
+                    if (!isAdmin)
                     {
                         var assignedSociety = societies.FirstOrDefault();
                         if (assignedSociety != null)
-                            newEvent.SocietyId = assignedSociety.SocietyId;
-
-                        ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", newEvent.SocietyId);
-                        ViewBag.IsSocietyReadonly = true;
+                            model.SocietyId = assignedSociety.SocietyId;
                     }
-                    else
-                    {
-                        ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name");
-                        ViewBag.IsSocietyReadonly = false;
-                    }
-                    ViewBag.Title = Title;
-                    return View(newEvent);
                 }
-                Title = "Edit";
-                var existingEvent = await _eventService.GetEventById(eventId);
-                var eventModel = existingEvent ?? new Event();
+                else
+                {
+                    title = "Edit";
+                    model = await _eventService.GetEventById(eventId) ?? new Event();
+                }
+                ViewBag.Title = title;
+                ViewBag.IsSocietyReadonly = !isAdmin;
+                ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", model.SocietyId);
 
-                ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", eventModel.SocietyId);
-                ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
-                ViewBag.Title = Title;
-
-                return View(eventModel);
+                return View(model);
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = "An error occurred while loading event details: " + ex.Message;
+                ViewBag.ErrorMessage = $"An error occurred while loading event details: {ex.Message}";
                 return View(new Event());
             }
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> AddEvent(Event events)
         {

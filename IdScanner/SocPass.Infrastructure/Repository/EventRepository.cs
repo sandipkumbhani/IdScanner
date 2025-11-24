@@ -2,11 +2,6 @@
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using SocPass.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Infrastructure.Repository
 {
@@ -24,7 +19,7 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return events;
         }
-        public async Task<List<Event>> GetAllEventsAsync()
+        public async Task<List<Event>> GetEventsAsync()
         {
             return await _context.Events
                 .Include(e => e.Society)    
@@ -73,23 +68,21 @@ namespace SocPass.Infrastructure.Repository
 
             return qrList.Select(x=>x.Event).Distinct().ToList();
         }
-
         public async Task<List<Event>> GetEventListByUserAsync(int userId)
         {
             return await _context.Events
                 .Include(e => e.Society)
                 .ToListAsync();
         }
-
         public async Task<Event> UpdateEventAsync(Event events)
         {
             _context.Events.Update(events);
             await _context.SaveChangesAsync();
             return events;
         }
-        public async Task DeleteEventAsync(Event events)
+        public async Task DeleteEventAsync(int eventId)
         {
-            var existingEvent = await _context.Events.FindAsync(events.EventId);
+            var existingEvent = await _context.Events.FindAsync(eventId);
             if (existingEvent != null)
             {
                 existingEvent.IsActive = false;

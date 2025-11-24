@@ -4,7 +4,7 @@ namespace SocPass.UI.Application.Interface
 {
     public interface  IUserService
     {
-        Task<IList<User>> GetAllUsersAsync();
+        Task<IList<User>> GetUsersAsync();
         Task<User?> GetUserByIdAsync(int userId);
         Task<User> AddUserAsync(User user, int? flatId = null);
         Task<string> UpdateUserAsync(User model, int? flatId = null);

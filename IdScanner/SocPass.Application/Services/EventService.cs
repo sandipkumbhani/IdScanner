@@ -39,7 +39,7 @@ namespace SocPass.Application.Services
             };
             return await _eventRepository.AddEventAsync(events);
         }
-        public async Task<List<Event>> GetAllEventAsync()
+        public async Task<List<Event>> GetEventAsync()
         {
             string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
@@ -47,11 +47,11 @@ namespace SocPass.Application.Services
             var eventList = new List<Event>();
             if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                 eventList = await _eventRepository.GetAllEventsAsync();
+                 eventList = await _eventRepository.GetEventsAsync();
             }
             else
             {
-                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var societies = await _societyRepository.GetSocietyAsync(userId);
                 var society = societies.FirstOrDefault();
 
                 if (society != null)
@@ -100,7 +100,7 @@ namespace SocPass.Application.Services
             {
                 throw new KeyNotFoundException($"Event with Id {eventId} not found");
             }
-            await _eventRepository.DeleteEventAsync(existingEvent);
+            await _eventRepository.DeleteEventAsync(eventId);
         }
         public async Task<List<Event>> GetEventBySocietyAsync(int SocietyId)
         {

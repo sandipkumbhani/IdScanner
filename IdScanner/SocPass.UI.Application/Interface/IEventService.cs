@@ -9,7 +9,7 @@ namespace SocPass.UI.Application.Interface
 {
     public interface IEventService
     {
-        Task<IList<Event>> GetAllEventAsync();
+        Task<IList<Event>> GetEventAsync();
         Task<Event?> GetEventById(int eventId);
         Task<string> AddEventAsync(Event events);
         Task<string?> UpdateEventAsync(Event events);

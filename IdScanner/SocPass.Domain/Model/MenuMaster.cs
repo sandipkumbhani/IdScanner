@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SocPass.Domain.Model
 {
-    public class MenuMaster
+    public class MenuMaster :BaseModel
     {
         [Key]
         public int MenuId { get; set; }
@@ -19,10 +19,5 @@ namespace SocPass.Domain.Model
         public string? Icon { get; set; }
         public string? Url { get; set; }
         public bool IsDefault { get; set; }
-        public bool IsActive { get; set; }
-        public long InsertBy { get; set; }
-        public DateTime InsertDate { get; set; }
-        public long UpdateBy { get; set; }
-        public DateTime UpdateDate { get; set; }
     }
 }

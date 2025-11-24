@@ -1,11 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
-using System.Threading.Tasks;
-using MailKit.Security;
 using SocPass.Application.Interface;
 
 namespace SocPass.Application.Services

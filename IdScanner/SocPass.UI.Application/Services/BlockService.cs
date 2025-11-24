@@ -12,9 +12,9 @@ namespace SocPass.UI.Application.Services
             _blockRepository = blockRepository;
         }
 
-        public async Task<IList<Block>> GetAllBlockAsync()
+        public async Task<IList<Block>> GetBlockAsync()
         {
-             return await _blockRepository.GetAllBlockAsync();
+             return await _blockRepository.GetBlockAsync();
         }
         public async Task<string> DeleteBlockAsync(int blockid)
         {

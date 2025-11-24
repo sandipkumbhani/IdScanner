@@ -2,11 +2,6 @@
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using SocPass.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Infrastructure.Repository
 {
@@ -25,7 +20,7 @@ namespace SocPass.Infrastructure.Repository
             return block;
         }
 
-        public async Task<List<Block>> GetAllBlockAsync()
+        public async Task<List<Block>> GetBlockAsync()
         {
             return await _context.blocks.Where(x => x.IsActive == true).Include(e => e.Society).OrderBy(e => e.Society.Name).ThenBy(e => e.BlockNumber).ToListAsync();
         }
@@ -33,7 +28,7 @@ namespace SocPass.Infrastructure.Repository
         public async Task<Block> GetBlockByIdAsync(int blockid)
         {
             return await _context.blocks.Include(e => e.Society)
-                  .Where(x => x.IsActive == true).FirstOrDefaultAsync(e => e.BlockId == blockid);
+                  .Where(x => x.IsActive == true).FirstAsync(e => e.BlockId == blockid);
         }
 
         public async Task UpdateBlockAsync(Block block)
@@ -42,9 +37,9 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteBlockAsync(Block block)
+        public async Task DeleteBlockAsync(int blockid)
         {
-            var existingBlock = await _context.blocks.FindAsync(block.BlockId);
+            var existingBlock = await _context.blocks.FindAsync(blockid);
             if (existingBlock != null)
             {
                 existingBlock.IsActive = false;
@@ -54,19 +49,10 @@ namespace SocPass.Infrastructure.Repository
         public async Task<List<Block>> GetBlocksBySocietyIdAsync(int societyId)
         {
             return await _context.blocks
-                .Where(d => d.SocietyId == societyId)
                 .Include(x => x.Society)
-                .Where(x => x.IsActive == true)
+                .Where(d => d.SocietyId == societyId && d.IsActive)
                 .OrderBy(x => x.BlockNumber)
-                .Select(d => new Block
-                {
-                    BlockId = d.BlockId,
-                    BlockNumber = d.BlockNumber,
-                    Society = d.Society  
-                })
                 .ToListAsync();
         }
-
-
     }
 }

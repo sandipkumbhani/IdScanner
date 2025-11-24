@@ -17,17 +17,9 @@ namespace SocPass.UI.Infrastructure.Provider
 {
     public class MenuMasterAdapter : IMenuMasterAdapter
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-        private APICredential apiCredential;
-        private readonly GlobalClass _globalClass;
         private readonly ICommonAdapter _commonAdapter;
-        public MenuMasterAdapter(HttpClient httpCleint, IConfiguration configuration,GlobalClass globalClass, ICommonAdapter commonAdapter)
+        public MenuMasterAdapter(ICommonAdapter commonAdapter)
         {
-            _httpClient = httpCleint;
-            _configuration = configuration;
-            apiCredential = new APICredential(configuration);
-            _globalClass = globalClass;
             _commonAdapter = commonAdapter;
         }
         public async Task<IList<MenuMaster>> GetAllMenuAsync()

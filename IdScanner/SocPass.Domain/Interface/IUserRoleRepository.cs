@@ -12,7 +12,7 @@ namespace SocPass.Domain.Interface
         Task<UserRole> AddUserRoleAsync(UserRole userRole);
         Task<List<UserRole>> GetAllUsersRole();
         Task UserRoleUpdateAsync(UserRole userRole);
-        Task DeleteRoleAsync(UserRole userRole);
+        Task DeleteRoleAsync(int roleid);
         Task<UserRole> GetUserRoleById(int roleid);
     }
 }

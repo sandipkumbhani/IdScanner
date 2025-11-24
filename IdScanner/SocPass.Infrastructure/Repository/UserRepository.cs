@@ -27,7 +27,7 @@ namespace SocPass.Infrastructure.Repository
         {
             return await _context.users.AnyAsync(u => u.EmailId == email && u.IsActive == true);
         }
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<List<User>> GetUsersAsync()
         {
             return await _context.users.Include(x => x.UserRole).Include(x=>x.Society).Where(u => u.IsActive).OrderBy(u => u.Name).ToListAsync();
         }
@@ -37,9 +37,9 @@ namespace SocPass.Infrastructure.Repository
                 .FirstOrDefaultAsync(e => e.UserId == id && e.IsActive==true);
             return user;
         }
-        public async Task DeleteAsync(User user)
+        public async Task DeleteAsync(int id)
         {
-            var existingMenu = await _context.users.FindAsync(user.UserId);
+            var existingMenu = await _context.users.FindAsync(id);
             if (existingMenu != null)
             {
                 existingMenu.IsActive = false;

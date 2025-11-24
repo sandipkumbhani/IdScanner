@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
 
@@ -29,10 +28,10 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpGet("getAllEvents")]
-        public async Task<IActionResult> GetAllEvennt()
+        [HttpGet("getEvents")]
+        public async Task<IActionResult> GetEvennt()
         {
-            var getEvent = await _eventService.GetAllEventAsync();
+            var getEvent = await _eventService.GetEventAsync();
             return Ok(getEvent);
         }
         [AllowAnonymous]

@@ -1,11 +1,6 @@
 ﻿using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Application.Services
 {
@@ -53,7 +48,7 @@ namespace SocPass.Application.Services
                 throw new KeyNotFoundException($"UserRole ID {roleid} not found.");
             }
 
-            await _userRoleRepository.DeleteRoleAsync(deleteUserRole);
+            await _userRoleRepository.DeleteRoleAsync(roleid);
         }
         public async Task<UserRole> UpdateUserRoleAsync(int roleid, UserRole userRole)
         {

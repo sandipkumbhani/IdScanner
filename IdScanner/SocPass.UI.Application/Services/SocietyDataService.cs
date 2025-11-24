@@ -19,9 +19,9 @@ namespace SocPass.UI.Application.Services
             _societyDataRepository = societyDataRepository;
         }
 
-        public async Task<IList<SocietyData>> GetAllSocietyDataAsync()
+        public async Task<IList<SocietyData>> GetSocietyDataAsync()
         {
-            return await _societyDataRepository.GetAllSocietyData();
+            return await _societyDataRepository.GetSocietyDataAsync();
         }
 
         public async Task<SocietyData> GetSocietyDataByIdAsync(int? societyDataId)

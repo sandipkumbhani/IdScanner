@@ -18,7 +18,7 @@ namespace SocPass.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<List<SocietyData>> GetAllSocietyDataAsync()
+        public async Task<List<SocietyData>> GetSocietyDataAsync()
         {
          return await _context.SocietyData
         .Include(sd => sd.Flat)

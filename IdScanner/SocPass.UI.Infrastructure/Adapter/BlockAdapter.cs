@@ -12,9 +12,9 @@ namespace SocPass.UI.Infrastructure.Provider
         {
             _commonAdapter = commonAdapter;
         }
-        public async Task<IList<Block>> GetAllBlockAsync()
+        public async Task<IList<Block>> GetBlockAsync()
         {
-            return await _commonAdapter.GetAsync<IList<Block>>("Block/GetAllBlock");
+            return await _commonAdapter.GetAsync<IList<Block>>("Block/GetBlock");
         }
         public async Task<Block> GetBlockByIdAsync(int? blockid)
         {

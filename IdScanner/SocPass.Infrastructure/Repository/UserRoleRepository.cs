@@ -2,11 +2,6 @@
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using SocPass.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Infrastructure.Repository
 {
@@ -32,9 +27,9 @@ namespace SocPass.Infrastructure.Repository
             return _context.Roles
                 .FirstOrDefault(e => e.UserRoleId == roleid);
         }
-        public async Task DeleteRoleAsync(UserRole userRole)
+        public async Task DeleteRoleAsync(int roleid)
         {
-            var existingRole = await _context.Roles.FindAsync(userRole.UserRoleId);
+            var existingRole = await _context.Roles.FindAsync(roleid);
             if (existingRole != null)
             {
                 existingRole.IsActive = false;

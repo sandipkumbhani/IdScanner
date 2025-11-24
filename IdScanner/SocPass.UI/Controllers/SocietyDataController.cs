@@ -33,27 +33,7 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> SocietyDataList()
         {
-            IEnumerable<SocietyData> SocietyDataList = await _societyDataService.GetAllSocietyDataAsync();
-            //if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    SocietyDataList = await _societyDataService.GetAllSocietyDataAsync();
-            //}
-            //else
-            //{
-            //    var societies = await _societyService.GetAllSocietyAsync();
-            //    var society = societies.FirstOrDefault();
-
-            //    if (society != null)
-            //    {
-            //        SocietyDataList = (await _societyDataService.GetAllSocietyDataAsync())
-            //                    .Where(e => e.Flat.SocietyId == society.SocietyId)
-            //                    .ToList();
-            //    }
-            //    else
-            //    {
-            //        SocietyDataList = new List<SocietyData>();
-            //    }
-            //}
+            IEnumerable<SocietyData> SocietyDataList = await _societyDataService.GetSocietyDataAsync();
             ViewBag.SocietyDataList = SocietyDataList;
             return View();
         }
@@ -61,26 +41,23 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSocietyData()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
+            bool isAdmin = User.IsInRole("Admin");
+
+            var societies = await _societyService.GetSocietyAsync();
+
             int selectedSocietyId = 0;
-            if (User.IsInRole("Admin"))
+
+            if (!isAdmin)
             {
-                ViewBag.IsSocietyReadonly = false;
-                selectedSocietyId = 0;
-            }
-            else
-            {
-                ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
+
+            ViewBag.IsSocietyReadonly = !isAdmin;
             ViewBag.Societies = societies;
             ViewBag.SelectedSocietyId = selectedSocietyId;
+
             return View(new SocietyDataCreateRequest());
         }
-
         [HttpPost]
         public async Task<IActionResult> AddSocietyData([FromBody] SocietyDataCreateRequest request)
         {
@@ -119,7 +96,7 @@ namespace SocPass.UI.Controllers
 
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            ViewBag.Societies = await _societyService.GetAllSocietyAsync();
+            ViewBag.Societies = await _societyService.GetSocietyAsync();
             if (societyData.Flat?.Block?.SocietyId != null)
             {
                 ViewBag.Blocks = await _blockService.GetBlockBySocietyId(societyData.Flat.Block.SocietyId);

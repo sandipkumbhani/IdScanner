@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace SocPass.API.Controllers
 {
@@ -16,10 +15,10 @@ namespace SocPass.API.Controllers
         {
             _blockService = blockService;
         }
-        [HttpGet("GetAllBlock")]
-        public async Task<IActionResult> GetAllBlock()
+        [HttpGet("GetBlock")]
+        public async Task<IActionResult> GetBlock()
         {
-            var blocks = await _blockService.GetAllBlockAsync();
+            var blocks = await _blockService.GetBlockAsync();
             return Ok(blocks);
         }
         [HttpPost("Create-Block")]
@@ -82,8 +81,7 @@ namespace SocPass.API.Controllers
         [HttpDelete("Delete-Block")]
         public async Task<IActionResult> DeleteBlockAsync(int blockid)
         {
-            var existingBlock = await _blockService.GetBlockByIdAsync(blockid);
-            if (existingBlock == null)
+            if (blockid == null)
             {
                 return NotFound($"Block with ID {blockid} not found.");
             }

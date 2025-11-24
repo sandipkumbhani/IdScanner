@@ -4,7 +4,6 @@ using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
 using SocPass.UI.Filters;
-using System.Security.Claims;
 
 namespace SocPass.UI.Controllers
 {
@@ -23,80 +22,43 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> BlockList()
         {
-           var blocklist = await _blockService.GetAllBlockAsync();
+           var blocklist = await _blockService.GetBlockAsync();
             ViewBag.blockList = blocklist;
             return View();
         }
         [HttpGet]
         public async Task<IActionResult> AddBlock(int? blockid)
         {
-            string Title;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
+            bool isAdmin = User.IsInRole("Admin");
+            var societies = await _societyService.GetSocietyAsync();
+            Block model;
+            string title;
 
-            IEnumerable<Society> societies;
-            societies = await _societyService.GetAllSocietyAsync();
-            //if (User.IsInRole("Admin"))
-            //{
-            //    societies = await _societyService.GetAllSocietyAsync();
-            //}
-            //else
-            //{
-            //    societies = await _societyService.GetSocietyByUserId(userId);
-            //}
             if (blockid == null)
             {
-                var newBlock = new Block();
-                Title = "Add";
-                if (!User.IsInRole("Admin"))
+                title = "Add";
+                model = new Block();
+                if (!isAdmin)
                 {
                     var assignedSociety = societies.FirstOrDefault();
                     if (assignedSociety != null)
-                        newBlock.SocietyId = assignedSociety.SocietyId;
-
-                    ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", newBlock.SocietyId);
-                    ViewBag.IsSocietyReadonly = true;
+                        model.SocietyId = assignedSociety.SocietyId;
                 }
-                else
-                {
-                    ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name");
-                    ViewBag.IsSocietyReadonly = false;
-                }
-                ViewBag.Title = Title;
-                return View(newBlock);
             }
-            Title = "Edit";
-            var block = await _blockService.GetBlockByIdAsync(blockid.Value);
-            ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
-            ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
-            ViewBag.Title = Title;
+            else
+            {
+                title = "Edit";
+                model = await _blockService.GetBlockByIdAsync(blockid.Value);
+            }
+            ViewBag.Title = title;
+            ViewBag.IsSocietyReadonly = !isAdmin;
+            ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", model.SocietyId);
 
-            return View(block);
+            return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> AddBlock(Block block)
         {
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Society> societies;
-            societies = await _societyService.GetAllSocietyAsync();
-            //if (User.IsInRole("Admin"))
-            //{
-            //    societies = await _societyService.GetAllSocietyAsync();
-            //}
-            //else
-            //{
-            //    societies = await _societyService.GetSocietyByUserId(userId);
-            //}
-            ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
-            ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
-
-            if (string.IsNullOrEmpty(block.BlockNumber))
-            {
-                ViewBag.BlockNumberMsg = "Please enter block number.";
-                return View(block);
-            }
             try
             {
                 string message;
@@ -114,7 +76,6 @@ namespace SocPass.UI.Controllers
                     ViewBag.ErrorMessage = message;
                     return View(block);
                 }
-                TempData["SuccessMessage"] = message;
                 return RedirectToAction("BlockList");
             }
             catch (Exception ex)
@@ -137,6 +98,7 @@ namespace SocPass.UI.Controllers
                 return View("Error");
             }
         }
+
         [HttpGet]
         public async Task<JsonResult> GetBlocksBySociety(int societyId)
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocPass.Domain.Model
 {
-    public class User
+    public class User : BaseModel
     {
         [Key]
         public int UserId { get; set; }
@@ -23,11 +23,7 @@ namespace SocPass.Domain.Model
         [NotMapped]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string? ConfirmPassword { get; set; }
-        public bool IsActive { get; set; }
-        public long InsertBy { get; set; }
-        public DateTime InsertDate { get; set; }
-        public long UpdateBy { get; set; }
-        public DateTime UpdateDate { get; set; }
+   
         [ForeignKey("SocietyId")]
         public virtual Society? Society { get; set; }
         [ForeignKey("UserRoleId")]

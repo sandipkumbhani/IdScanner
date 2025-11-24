@@ -19,7 +19,7 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return flat;
         }
-        public async Task<List<Flat>> GetAllFlatAsync()
+        public async Task<List<Flat>> GetFlatAsync()
         {
             return await _context.flats.Include(X => X.Society).Include(X => X.Block).OrderBy(X => X.Society.Name).ThenBy(X => X.Block.BlockNumber).ThenBy(X => X.FloorNumber).ThenBy(X => X.FlatNumber).Where(X => X.IsActive == true).ToListAsync();
         }
@@ -47,12 +47,12 @@ namespace SocPass.Infrastructure.Repository
         public async Task<List<Flat>> UpdateRangeAsync(List<Flat> flats)
         {
             _context.flats.UpdateRange(flats);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();   
             return flats;
         }
         public async Task<Flat> GetFlatByNumberAsync(int societyId, int blockId, int flatNumber)
         {
-            return await _context.flats
+            return await _context.flats  
                 .FirstOrDefaultAsync(f => f.SocietyId == societyId
                                        && f.BlockId == blockId
                                        && f.FlatNumber == flatNumber.ToString());

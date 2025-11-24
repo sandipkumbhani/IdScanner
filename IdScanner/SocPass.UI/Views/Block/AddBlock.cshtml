@@ -23,11 +23,6 @@
                                     @if (ViewBag.ErrorMessage != null)
                                     {
                                         <div class="text-danger">@ViewBag.ErrorMessage</div>
-                                     }
-
-                                    @if (ViewBag.BlockNumberMsg != null)
-                                    {
-                                        <div class="alert alert-warning">@ViewBag.BlockNumberMsg</div>
                                     }
                                     <div class="col-md-6 mb-3">
                                         <div class="item-input">
@@ -50,17 +45,6 @@
                                             <span asp-validation-for="BlockNumber" class="text-danger"></span>
                                         </div>
                                     </div>
-
-                                    @*   <div   class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
-                                        <button type="submit" class="card-link">
-                                            <span>Save</span>
-                                        </button>
-                                    @if (isNew)
-                                    {
-                                        <button type="reset" class="card-link outline-bar">Clear</button>
-                                    }
-                                    <a asp-action="BlockList" asp-controller="Block" class="card-link outline-bar">View</a>
-                                </div> *@
 
                                     <div class="button-main d-flex gap-3 mt-4">
                                         <button type="submit" id="saveFlatBtnGlobal" class="card-link">

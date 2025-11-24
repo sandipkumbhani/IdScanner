@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SocPass.Domain.Model;
+﻿using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Interfaces;
 
@@ -16,14 +11,9 @@ namespace SocPass.UI.Application.Services
         {
             _societyRepository = societyRepository;
         }
-        public async Task<IList<Society>> GetSocietyByUserId(int userId)
+        public async Task<IList<Society>> GetSocietyAsync()
         {
-            return await _societyRepository.GetSocietyByUserId(userId);
-        }
-
-        public async Task<IList<Society>> GetAllSocietyAsync()
-        {
-            return await _societyRepository.GetAllSocietyAsync();
+            return await _societyRepository.GetSocietyAsync();
         }
 
         public async Task<Society> GetSocietyByIdAsync(int? societyId)

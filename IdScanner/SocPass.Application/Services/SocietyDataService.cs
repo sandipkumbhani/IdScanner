@@ -22,31 +22,24 @@ namespace SocPass.Application.Services
             _httpContextAccessor = httpContextAccessor;
             _societyRepository = societyRepository;
         }
-
-        //public async Task<List<SocietyData>> GetAllSocietyDataAsync()
-        //{
-        //    var societyDataList =  await _societyDataRepository.GetAllSocietyDataAsync();
-        //    return societyDataList ?? new List<SocietyData>();
-
-        //}
-        public async Task<List<SocietyData>> GetAllSocietyDataAsync()
+        public async Task<List<SocietyData>> GetSocietyDataAsync()
         {
-            string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
+            var role = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
             var SocietyDataList = new List<SocietyData>();
             if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                SocietyDataList = await _societyDataRepository.GetAllSocietyDataAsync();
+                SocietyDataList = await _societyDataRepository.GetSocietyDataAsync();
             }
             else
             {
-                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var societies = await _societyRepository.GetSocietyAsync(userId);
                 var society = societies.FirstOrDefault();
                 if (society != null)
                 {
-                    SocietyDataList = (await _societyDataRepository.GetAllSocietyDataAsync())
-                                 .Where(e => e.Flat.SocietyId == society.SocietyId)
+                    SocietyDataList = (await _societyDataRepository.GetSocietyDataAsync())
+                                 .Where(e => e.Flat?.SocietyId == society.SocietyId)
                                  .ToList();
                 }
                 else
@@ -81,7 +74,7 @@ namespace SocPass.Application.Services
                 var newSocietyData = new SocietyData
                 {
                     FlatId = request.FlatId,
-                    ContactName = request.ContactName.ElementAtOrDefault(i), // First element in first row, etc.
+                    ContactName = request.ContactName.ElementAtOrDefault(i), 
                     ContactNumber = request.ContactNumber.ElementAtOrDefault(i),
                     ContactEmail = request.ContactEmail.ElementAtOrDefault(i),
                     IsActive = true,
@@ -101,15 +94,6 @@ namespace SocPass.Application.Services
             if (existingData == null)
                 throw new Exception("SocietyData record not found.");
 
-            // Pick the first element from the lists, if available
-            //existingData.ContactName = request.ContactName.ElementAtOrDefault(0) ?? existingData.ContactName;
-            //existingData.ContactNumber = request.ContactNumber.ElementAtOrDefault(0) ?? existingData.ContactNumber;
-            //existingData.ContactEmail = request.ContactEmail.ElementAtOrDefault(0) ?? existingData.ContactEmail;
-            //existingData.FlatId = request.FlatId;
-            //existingData.IsActive = true;
-            //existingData.UpdateBy = 1;
-            //existingData.UpdateDate = DateTime.Now;
-
             existingData.ContactName = societyData.ContactName;
             existingData.ContactNumber = societyData.ContactNumber;
             existingData.ContactEmail = societyData.ContactEmail;
@@ -121,7 +105,7 @@ namespace SocPass.Application.Services
             await _societyDataRepository.UpdateSocietyAsync(existingData);
             return existingData;
         }
-        public async Task<SocietyData> GetSocietyDataByIdAsync(int societyDataId)
+        public async Task<SocietyData>  GetSocietyDataByIdAsync(int societyDataId)
         {
             var societyData = await _societyDataRepository.GetSocietyDataByIdAsync(societyDataId);
             if (societyData == null)

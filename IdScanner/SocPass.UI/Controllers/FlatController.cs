@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
 using SocPass.UI.Domain.Model;
-using System.Security.Claims;
 using SocPass.UI.Filters;
 namespace SocPass.UI.Controllers
 {
@@ -26,76 +25,31 @@ namespace SocPass.UI.Controllers
         }
         public async Task<IActionResult> FlatList()
         {
-            ICollection<Flat> FlatList = await _flatService.GetAllFlatAsync();
+            ICollection<Flat> FlatList = await _flatService.GetFlatAsync();
             ViewBag.FlatList = FlatList.ToList();
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> AddFlat(int? societyId, int blockId)
+        public async Task<IActionResult> AddFlat()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
+            bool isAdmin = User.IsInRole("Admin");
+            var societies = await _societyService.GetSocietyAsync();
 
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
-            
-            Flat flat;
-            if (societyId == null || blockId == 0)
+            var flat = new Flat();
+
+            if (!isAdmin)
             {
-                flat = new Flat();
-
-                if (!User.IsInRole("Admin"))
-                {
-                    var assignedSociety = societies.FirstOrDefault();
-                    if (assignedSociety != null)
-                        flat.SocietyId = assignedSociety.SocietyId;
-
-                    ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
-                    ViewBag.IsSocietyReadonly = true;
-                }
-                else
-                {
-                    ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name");
-                    ViewBag.IsSocietyReadonly = false;
-                }
-                return View(flat);
+                flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
             }
 
-            var flatList = await _flatService.GetFlatByIdAsync(societyId, blockId);
-            flat = flatList.FirstOrDefault() ?? new Flat();
             ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
-            ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
+            ViewBag.IsSocietyReadonly = !isAdmin;
             return View(flat);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddFlat(Flat flat)
         {
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
-            flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
-
-            //if (User.IsInRole("Admin"))
-            //{
-            //    societies = await _societyService.GetAllSocietyAsync();
-            //}
-            //else
-            //{
-            //    var assignedSociety = await _societyService.GetSocietyByUserId(userId);
-            //    societies = assignedSociety; 
-            //    flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0; 
-            //}
-
-            ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
-            ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
-
-            if (!ModelState.IsValid)
-            {
-                return View(flat);
-            }
-
             try
             {
                 await _flatService.UpdateFlatAsync(flat);

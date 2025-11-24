@@ -60,7 +60,6 @@ namespace SocPass.API.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpPut("Update-Subscription")]
         public async Task<IActionResult> UpdateMenuAsync([FromBody] Subscription subscription)
         {

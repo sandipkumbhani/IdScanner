@@ -9,7 +9,7 @@ namespace SocPass.UI.Domain.Interfaces
 {
     public interface IBlockAdapter
     {
-        Task<IList<Block>> GetAllBlockAsync();
+        Task<IList<Block>> GetBlockAsync();
         Task<string> DeleteBlockAsync(int blockid);
         Task<string> AddBlockAsync(Block block);
         Task<Block> GetBlockByIdAsync(int? blockid);

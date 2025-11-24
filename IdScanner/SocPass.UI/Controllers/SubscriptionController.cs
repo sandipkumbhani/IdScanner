@@ -35,7 +35,7 @@ namespace SocPass.UI.Controllers
         {
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-            var societies = await _societyService.GetAllSocietyAsync();
+            var societies = await _societyService.GetSocietyAsync();
             ViewBag.SocietyList = societies;
 
             Subscription model;
@@ -66,7 +66,7 @@ namespace SocPass.UI.Controllers
             {
                 var errormessage ="This society already has a subscription.";
                 ViewBag.ErrorMessage = errormessage;
-                var SocietyList = await _societyService.GetAllSocietyAsync();
+                var SocietyList = await _societyService.GetSocietyAsync();
                 ViewBag.SocietyList = SocietyList;
                 return View("AddSubScription", subscription);
             }
@@ -102,25 +102,15 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AppSetting(int? subscriptionId)
         {
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            var societies = await _societyService.GetAllSocietyAsync();
+            var societies = await _societyService.GetSocietyAsync();
             ViewBag.SocietyList = societies;
 
-            Subscription model;
-            if (subscriptionId.HasValue && subscriptionId.Value > 0)
-            {
-                model = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId.Value);
-                if (model == null)
-                {
-                    return NotFound();
-                }
-            }
-            else
-            {
-                model = new Subscription();
-            }
+            Subscription model = subscriptionId is > 0
+                ? await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId.Value)
+                : new Subscription();
+
+            if (subscriptionId is > 0 && model == null)
+                return NotFound();
 
             return View("~/Views/AppSetting/AppSetting.cshtml", model);
         }

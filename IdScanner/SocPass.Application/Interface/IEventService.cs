@@ -11,7 +11,7 @@ namespace SocPass.Application.Interface
     {
         Task<Event> AddEventAsync(Event events);
         Task<Event?> GetEventByIdAsync(int eventId);
-        Task<List<Event>> GetAllEventAsync();
+        Task<List<Event>> GetEventAsync();
         Task DeleteEventAsync(int eventId);
         Task<Event> UpdateEventAsync(Event events);
         Task<List<Event>> GetEventBySocietyAsync(int SocietyId);

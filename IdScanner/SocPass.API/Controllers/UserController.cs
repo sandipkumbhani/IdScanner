@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
 using SocPass.Domain.Model;
-using System.Data;
 using static SocPass.Application.Services.UserService;
 
 namespace SocPass.API.Controllers
@@ -17,10 +16,10 @@ namespace SocPass.API.Controllers
         {
             _userService = userService;
         }
-        [HttpGet("get-all-user")]
-        public async Task<IActionResult> GetAllUsers()
+        [HttpGet("get-user")]
+        public async Task<IActionResult> GetUsers()
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetUsersAsync();
             return Ok(users);
         }
         [HttpPost("create")]

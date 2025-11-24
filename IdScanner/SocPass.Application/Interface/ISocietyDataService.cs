@@ -14,7 +14,7 @@ namespace SocPass.Application.Interface
         Task<SocietyData> GetSocietyDataByIdAsync(int societyDataId);
         Task<SocietyData>UpdateSocietyDataAsync(SocietyData request);
         Task DeleteSocietyDataByIdAsync(int societyDataId);
-        Task<List<SocietyData>> GetAllSocietyDataAsync();
+        Task<List<SocietyData>> GetSocietyDataAsync();
         Task<List<SocietyData>> GetSocietyDataByFlatId(int flatId);
     }
 }

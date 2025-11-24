@@ -9,18 +9,10 @@ namespace SocPass.UI.Infrastructure.Provider
 {
     public class SocietyAdapter : ISocietyAdapter
     {
-        private readonly HttpClient _httpClinet;
-        private readonly IConfiguration _configuration;
-        private APICredential apiCredential;
-        private GlobalClass _globalClass;
         private readonly ICommonAdapter _commonAdapter;
 
-        public SocietyAdapter(HttpClient httpClient, IConfiguration configuration, GlobalClass globalClass, ICommonAdapter commonAdapter)
+        public SocietyAdapter(ICommonAdapter commonAdapter)
         {
-            _httpClinet = httpClient;
-            _configuration = configuration;
-            apiCredential = new APICredential(configuration);
-            _globalClass = globalClass;
             _commonAdapter = commonAdapter;
         }
         
@@ -29,9 +21,9 @@ namespace SocPass.UI.Infrastructure.Provider
             return await _commonAdapter.GetAsync<IList<Society>>($"Society/GetSocietyByUserId?userId={userId}");
         }
 
-        public async Task<IList<Society>> GetAllSocietyAsync()
+        public async Task<IList<Society>> GetSocietyAsync()
         {
-            return await _commonAdapter.GetAsync<IList<Society>>($"Society/getAllSociety");
+            return await _commonAdapter.GetAsync<IList<Society>>($"Society/getSociety");
         }   
 
         public async Task<Society> GetSocietyByIdAsync(int? societyId)

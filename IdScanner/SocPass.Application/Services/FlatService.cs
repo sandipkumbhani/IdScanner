@@ -107,20 +107,20 @@ namespace SocPass.Application.Services
             }
             return createdFlats;
         }
-        public async Task<List<Flat>> GetAllFlatAsync()
+        public async Task<List<Flat>> GetFlatAsync()
         {
-            var flatList = (await _flatRepository.GetAllFlatAsync()).ToList();
+            var flatList = (await _flatRepository.GetFlatAsync()).ToList();
             string role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
             var FlatList = new List<Flat>();
             if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
             {
-                FlatList = await _flatRepository.GetAllFlatAsync();
+                FlatList = await _flatRepository.GetFlatAsync();
             }
             else
             {
-                var societies = await _societyRepository.GetAllSocietyAsync(userId);
+                var societies = await _societyRepository.GetSocietyAsync(userId);
                 var society = societies.FirstOrDefault();
 
                 if (society != null)

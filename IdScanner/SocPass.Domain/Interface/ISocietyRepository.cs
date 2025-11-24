@@ -10,10 +10,10 @@ namespace SocPass.Domain.Interface
     public interface ISocietyRepository
     {
         Task<Society> CreateSocietyAsync(Society society);
-        Task<List<Society>> GetAllSocietyAsync(int userId);
+        Task<List<Society>> GetSocietyAsync(int userId);
         Task<List<Society>> GetAllSocietyAsync();
         Task<Society> GetByIdAsync(int societyid);
         Task UpdateSocietyAsync(Society society);
-        Task DeleteSocietyAsync(Society society);
+        Task DeleteSocietyAsync(int society);
     }
 }

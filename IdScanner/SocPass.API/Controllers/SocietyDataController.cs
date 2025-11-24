@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocPass.Application.Interface;
-using SocPass.Application.Services;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
 
@@ -18,10 +17,10 @@ namespace SocPass.API.Controllers
             _societyDataService = societyDataService;
         }
 
-        [HttpGet("Get-All-SocietyData")]
-        public async Task<IActionResult> GetAllSocietyData()
+        [HttpGet("Get-SocietyData")]
+        public async Task<IActionResult> GetSocietyData()
         {
-            var societyData = await _societyDataService.GetAllSocietyDataAsync();
+            var societyData = await _societyDataService.GetSocietyDataAsync();
             return Ok(societyData);
         }
 
@@ -70,7 +69,7 @@ namespace SocPass.API.Controllers
             }
 
         }
-
+            
         [HttpDelete("Delete-SocietyData")]
         public async Task<IActionResult> DeleteSocietyAsync(int societyDataId)
         {

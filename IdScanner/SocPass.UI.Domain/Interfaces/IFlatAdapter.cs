@@ -10,7 +10,7 @@ namespace SocPass.UI.Domain.Interfaces
 {
     public interface IFlatAdapter
     {
-        Task<IList<Flat>> GetAllFlatAsync();
+        Task<IList<Flat>> GetFlatAsync();
         Task<IList<Flat?>> GetFlatByIdAsync(int? societyId, int blockId);
         //Task<List<Flat>> AddFlatAsync(Flat flat);
         Task<List<Flat>> UpdateFlatAsync(Flat flat);

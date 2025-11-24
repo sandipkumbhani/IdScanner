@@ -4,7 +4,7 @@ namespace SocPass.UI.Domain.Interfaces
 {
     public interface IUserAdapter
     {
-        Task<IList<User>> GetAllUsersAsync();
+        Task<IList<User>> GetUsersAsync();
         Task<User> GetUsersByIdAsync(int? id);
         Task<User> AddUserAsync(User user, int? flatId = null);
         Task<string> UpdateUserAsync(User user, int? flatId = null);

@@ -4,8 +4,7 @@ namespace SocPass.UI.Application.Interface
 {
     public interface ISocietyService
     {
-        Task<IList<Society>> GetSocietyByUserId(int userId);
-        Task<IList<Society>> GetAllSocietyAsync();
+        Task<IList<Society>> GetSocietyAsync();
         Task<Society> GetSocietyByIdAsync(int? societyId);
         Task<string> AddSocietyAsync(Society society);
         Task<string> UpdateSocietyAsync(Society society);

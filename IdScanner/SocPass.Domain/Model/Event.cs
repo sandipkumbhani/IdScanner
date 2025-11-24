@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocPass.Domain.Model
 {
-    public class Event
+    public class Event : BaseModel
     {
         [Key]
         public int EventId { get; set; }
@@ -36,11 +36,6 @@ namespace SocPass.Domain.Model
 
         [MaxLength(100)]
         public string? Organizer { get; set; }
-        public bool IsActive { get; set; }
-        public long InsertBy { get; set; }
-        public DateTime InsertDate { get; set; }
-        public long UpdateBy { get; set; }
-        public DateTime UpdateDate { get; set; }
         [ForeignKey("SocietyId")]
         public virtual Society? Society { get; set; }
     }

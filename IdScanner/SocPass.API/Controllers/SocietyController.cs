@@ -37,10 +37,10 @@ namespace SocPass.API.Controllers
             return Ok(societies);
         }
         [AllowAnonymous]
-        [HttpGet("getAllSociety")]
-        public async Task<IActionResult> GetAllSociety()
+        [HttpGet("getSociety")]
+        public async Task<IActionResult> GetSociety()
         {
-            List<Society> societies = await _societyService.GetAllSocietyAsync();
+            List<Society> societies = await _societyService.GetSocietyAsync();
             return Ok(societies);
         }
         [HttpPost("create")]
