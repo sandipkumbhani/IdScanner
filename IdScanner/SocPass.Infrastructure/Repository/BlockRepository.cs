@@ -2,11 +2,6 @@
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using SocPass.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Infrastructure.Repository
 {
@@ -27,7 +22,7 @@ namespace SocPass.Infrastructure.Repository
 
         public async Task<List<Block>> GetAllBlockAsync()
         {
-            return await _context.blocks.Where(x => x.IsActive == true).Include(e => e.Society).OrderBy(e => e.Society.Name).ThenBy(e => e.BlockNumber).ToListAsync();
+            return await _context.blocks.Where(x => x.IsActive == true && x.Society.IsActive == true).Include(e => e.Society).OrderBy(e => e.Society.Name).ThenBy(e => e.BlockNumber).ToListAsync();
         }
 
         public async Task<Block> GetBlockByIdAsync(int blockid)
@@ -55,15 +50,18 @@ namespace SocPass.Infrastructure.Repository
         {
             return await _context.blocks
                 .Where(d => d.SocietyId == societyId)
+                .Include(x => x.Society)
                 .Where(x => x.IsActive == true)
                 .OrderBy(x => x.BlockNumber)
                 .Select(d => new Block
-                {
+                { 
                     BlockId = d.BlockId,
-                    BlockNumber = d.BlockNumber
+                    BlockNumber = d.BlockNumber,
+                    Society = d.Society  
                 })
                 .ToListAsync();
         }
+
 
     }
 }

@@ -2,15 +2,11 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     var blockList = ViewBag.blockList as IList<SocPass.Domain.Model.Block> ?? new List<SocPass.Domain.Model.Block>();
-    // IList<SocPass.Domain.Model.Block> blockList = ViewBag.blockList;
-    var isAdmin = (bool)(ViewBag.IsAdmin ?? false);
-    var userSocietyName = ViewBag.UserSocietyName ?? "";
 }
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <link href="~/css/stylesheet.css" rel="stylesheet" />
-    @* <link href="~/css/addpagination.css" rel="stylesheet" /> *@
     <link href="~/css/site.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/app-style.css" rel="stylesheet" />

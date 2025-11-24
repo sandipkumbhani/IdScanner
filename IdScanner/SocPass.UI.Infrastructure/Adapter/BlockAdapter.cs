@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SocPass.Domain.Model;
+﻿using SocPass.Domain.Model;
 using SocPass.UI.Domain.Comman;
 using SocPass.UI.Domain.Interfaces;
 
@@ -13,7 +12,6 @@ namespace SocPass.UI.Infrastructure.Provider
         {
             _commonAdapter = commonAdapter;
         }
-
         public async Task<IList<Block>> GetAllBlockAsync()
         {
             return await _commonAdapter.GetAsync<IList<Block>>("Block/GetAllBlock");
@@ -39,15 +37,6 @@ namespace SocPass.UI.Infrastructure.Provider
             {
                 var statusCode = ex.StatusCode?.ToString() ?? "Unknown";
                 var errorContent = ex.Message;
-                //try
-                //{
-                //    var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto<object>>(errorContent);
-                //    if (!string.IsNullOrEmpty(errorResponse?.Message))
-                //        return errorResponse.Message;
-                //}
-                //catch
-                //{
-                //}
                 if (statusCode == "Conflict")
                 {
                     return $"Block '{block.BlockNumber}' already exists in this society.";

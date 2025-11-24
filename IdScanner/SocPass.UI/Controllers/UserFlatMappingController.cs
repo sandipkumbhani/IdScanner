@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
-using SocPass.UI.Domain.Model;
-using SocPass.UI.Filters;
 using System.Security.Claims;
+using SocPass.UI.Filters;
 
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin","Society","User")]
     public class UserFlatMappingController : Controller
     {
         private readonly IUserFlatMappingService _userFlatMappingService;
@@ -25,12 +24,7 @@ namespace SocPass.UI.Controllers
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Event> eventList;
-            if (User.IsInRole("Admin"))
-                eventList = await _eventService.GetAllEventAsync();
-            else
-                eventList = await _eventService.GetEventByUserId(userId);
+            IEnumerable<Event> eventList = await _eventService.GetAllEventAsync();
             ViewBag.EventList = eventList;
             return View("~/Views/UserQR/UserQR.cshtml");
         }

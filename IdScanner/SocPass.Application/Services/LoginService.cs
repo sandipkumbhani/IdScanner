@@ -90,6 +90,7 @@ namespace SocPass.Application.Services
             var Cliams = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim("userid", user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email,user.EmailId ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, roleName)

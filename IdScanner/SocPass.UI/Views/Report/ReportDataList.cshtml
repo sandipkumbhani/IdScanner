@@ -130,7 +130,7 @@
                 if (!societyId) return;
 
                 $.ajax({
-                    url: '@Url.Action("GetBlocksBySociety", "MembersQrList")',
+                    url: '@Url.Action("GetBlocksBySociety", "Block")',
                     method: 'GET',
                     data: { societyId: societyId },
                     dataType: 'json'

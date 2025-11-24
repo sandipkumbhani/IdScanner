@@ -38,7 +38,7 @@
                             <div class="top-details">
                                 <h2 class="page-form-title">Add QR Generate Details</h2>
 
-                                <form id="qrForm" method="post" action="@Url.Action("GeneratePass", "MembersQrList")">
+                                <form id="qrForm" method="post" action="@Url.Action("GenerateMemberPass", "MembersQrList")">
                                     <div class="row g-3">
                                         <!-- Society -->
                                         <div class="col-xl-4 col-lg-6">
@@ -186,7 +186,7 @@
                 hideError("Society", "SocietyError");
                 if (!societyId) return;
                  $.ajax({
-                url: '@Url.Action("GetBlocksBySociety", "MembersQrList")',
+                url: '@Url.Action("GetBlocksBySociety", "Block")',
                 method: 'GET',
                 data: { societyId: societyId },
                 dataType: 'json'
@@ -214,29 +214,29 @@
                 container.empty();
                 hideError("Block", "BlockError");
 
-                if (blockId) {
-                    $.getJSON('@Url.Action("GetFlatsByBlock", "MembersQrList")', { blockId: blockId }, function (data) {
-                        $.each(data, function (i, flat) {
-                            var flatRow = $(`
-                                <div class="flat-row mb-3 p-2 border rounded">
-                                    <div><strong>Flat:</strong> ${flat.flatNumber}</div>
-                                    <div><strong>Total Members:</strong> ${flat.totalMember}</div>
-                                    <div class="qr-row d-flex flex-wrap gap-2 mt-2"></div>
-                                </div>
-                            `);
+                // if (blockId) {
+                //     $.getJSON('@Url.Action("GetFlatsByBlock", "MembersQrList")', { blockId: blockId }, function (data) {
+                //         $.each(data, function (i, flat) {
+                //             var flatRow = $(`
+                //                 <div class="flat-row mb-3 p-2 border rounded">
+                //                     <div><strong>Flat:</strong> ${flat.flatNumber}</div>
+                //                     <div><strong>Total Members:</strong> ${flat.totalMember}</div>
+                //                     <div class="qr-row d-flex flex-wrap gap-2 mt-2"></div>
+                //                 </div>
+                //             `);
 
-                            var qrRow = flatRow.find(".qr-row");
-                            $.each(flat.members, function (j, member) {
-                                if (member.qrCodeUrl) {
-                                    qrRow.append(`<img src="${member.qrCodeUrl}" alt="QR" width="100" height="100"
-                                        style="border:1px solid #ccc; border-radius:8px;">`);
-                                }
-                            });
+                //             var qrRow = flatRow.find(".qr-row");
+                //             $.each(flat.members, function (j, member) {
+                //                 if (member.qrCodeUrl) {
+                //                     qrRow.append(`<img src="${member.qrCodeUrl}" alt="QR" width="100" height="100"
+                //                         style="border:1px solid #ccc; border-radius:8px;">`);
+                //                 }
+                //             });
 
-                            container.append(flatRow);
-                        });
-                    });
-                }
+                //             container.append(flatRow);
+                //         });
+                //     });
+                // }
             });
 
             // Trigger change on page load if society is already selected

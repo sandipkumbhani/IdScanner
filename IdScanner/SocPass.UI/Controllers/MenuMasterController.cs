@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
-using SocPass.UI.Domain.Model;
-using SocPass.UI.Filters;
 using System.Security.Claims;
+using SocPass.UI.Filters;
 
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin")]
     public class MenuMasterController : Controller
     {
         private readonly IMenuMasterService _menuMasterService;
@@ -25,11 +24,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> AddMenuMaster(int? id)
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             string Title;
             if (id == null)
             {
@@ -89,11 +83,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteMenuMaster(int id)
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (!string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             try
             {
                 await _menuMasterService.DeleteMenuAsync(id);

@@ -1,20 +1,18 @@
-﻿using SocPass.Application.Interface;
+﻿using Microsoft.AspNetCore.Http;
+using SocPass.Application.Interface;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Application.Services
 {
     public class SocietyService : ISocietyService
     {
         private ISocietyRepository _societyRepository;
-        public SocietyService(ISocietyRepository societyRepository)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public SocietyService(ISocietyRepository societyRepository, IHttpContextAccessor httpContextAccessor)
         {
             _societyRepository = societyRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<Society> CreateSocietyAsync(Society society)
         {
@@ -34,15 +32,17 @@ namespace SocPass.Application.Services
             };
             return await _societyRepository.CreateSocietyAsync(newSociety);
         }
-        public async Task<List<Society>> GetAllSocietyAsync(int userId)
+        public async Task<List<Society>> GetAllSocietyAsync()
         {
+            var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
             var newSociety = await _societyRepository.GetAllSocietyAsync(userId);
             return newSociety ?? new List<Society>();
         }
 
-        public async Task<List<Society>> GetAllSocietyAsync()
+        public async Task<List<Society>> GetSocietyUserIdAsync(int userId)
         {
-            var newSociety = await _societyRepository.GetAllSocietyAsync();
+            var newSociety = await _societyRepository.GetAllSocietyAsync(userId);
             return newSociety ?? new List<Society>();
         }
 
@@ -62,18 +62,18 @@ namespace SocPass.Application.Services
             {
                 throw new KeyNotFoundException("Society with Id {societyId} not found");
             }
-            societyExisting.Name= society.Name;
+            societyExisting.Name = society.Name;
             societyExisting.Address = society.Address;
             societyExisting.Email = society.Email;
             societyExisting.Contact = society.Contact;
             societyExisting.Contact2 = society.Contact2;
             societyExisting.IsActive = true;
             societyExisting.InsertBy = 1;
-            societyExisting.InsertDate= DateTime.Now;
+            societyExisting.InsertDate = DateTime.Now;
             societyExisting.UpdateBy = 1;
-            societyExisting.UpdateDate= DateTime.Now;
+            societyExisting.UpdateDate = DateTime.Now;
 
-            await _societyRepository.UpdateSocietyAsync(societyExisting);   
+            await _societyRepository.UpdateSocietyAsync(societyExisting);
             return society;
         }
         public async Task DeleteSocietyById(int society)

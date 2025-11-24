@@ -1,30 +1,19 @@
-﻿using System.Globalization;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
-using SocPass.UI.Domain.Model;
+using System.Security.Claims;
 using SocPass.UI.Filters;
-
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin", "Society")]
     public class ReportController : Controller
     {
         private readonly ISocietyService _societyService;
-        private readonly IBlockService _blockService;
-        private readonly IFlatService _flatService;
-        private readonly IMemberService _memberService;
         private readonly IEventService _eventService;
         private readonly IReportService _reportService;
-        public ReportController(ISocietyService societyService, IBlockService blockService, IFlatService flatService,
-            IMemberService memberService, IEventService eventService, IReportService reportService)
+        public ReportController(ISocietyService societyService, IBlockService blockService,IEventService eventService, IReportService reportService)
         {
             _societyService = societyService;
-            _blockService = blockService;
-            _flatService = flatService;
-            _memberService = memberService;
             _eventService = eventService;
             _reportService = reportService;
         }
@@ -33,43 +22,26 @@ namespace SocPass.UI.Controllers
         public async Task<IActionResult> MemberReport()
         { 
             var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
             int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Society> societies;
-            IEnumerable<Event> EventList;
             int selectedSocietyId = 0;
+            IEnumerable<Society> societies = await _societyService.GetAllSocietyAsync();
+            IEnumerable<Event> EventList = await _eventService.GetAllEventAsync();
             if (User.IsInRole("Admin"))
             {
-                societies = await _societyService.GetAllSocietyAsync();
                 ViewBag.IsSocietyReadonly = false;
                 selectedSocietyId = 0;
-                EventList = await _eventService.GetAllEventAsync();
             }
             else
             {
-                societies = await _societyService.GetAllSocietyAsync(userId);
                 ViewBag.IsSocietyReadonly = true;
                 selectedSocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
-                EventList = await _eventService.GetEventBySocietyId(selectedSocietyId);
             }
-
             ViewBag.Societies = societies;
             ViewBag.EventList = EventList;
             ViewBag.SelectedSocietyId = selectedSocietyId;
 
             return View("/Views/Report/ReportDataList.cshtml");
-        }
-        [HttpGet]
-        public async Task<JsonResult> GetBlocksBySociety(int societyId)
-        {
-            var blocks = await _blockService.GetBlockBySocietyId(societyId);
-            return Json(blocks.Select(b => new { blockId = b.BlockId, blockName = b.BlockNumber }));
         }
         [HttpGet]
         public async Task<JsonResult> GetReport(int blockId, int eventId, DateTime startDate)

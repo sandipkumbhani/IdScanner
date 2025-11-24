@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SocPass.Domain.Model;
 using SocPass.UI.Application.Interface;
-using SocPass.UI.Filters;
 using System.Security.Claims;
+using SocPass.UI.Filters;
 
 namespace SocPass.UI.Controllers
 {
-    [AuthorizeToken]
+    [AuthorizeToken("Admin", "Society")]
     public class EventController : Controller
     {
         private readonly IEventService _eventService;
@@ -21,44 +21,8 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> EventList()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
-
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            IEnumerable<Event> eventList;
-
-            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                eventList = await _eventService.GetAllEventAsync();
-            }
-            else
-            {
-                var societies = await _societyService.GetAllSocietyAsync(userId);
-                var society = societies.FirstOrDefault();
-
-                if (society != null)
-                {
-                    eventList = (await _eventService.GetAllEventAsync())
-                                .Where(e => e.SocietyId == society.SocietyId)
-                                .ToList();
-                }
-                else
-                {
-                    eventList = new List<Event>();
-                }
-            }
-
+            IEnumerable<Event> eventList = await _eventService.GetAllEventAsync();
             ViewBag.EventsList = eventList.ToList();
-            //ViewBag.IsAdmin = role == "Admin";
-
-            //ViewBag.UserSocietyName = (await _societyService.GetAllSocietyAsync(userId))
-            //    .FirstOrDefault()?.Name ?? "";
-
             return View("~/Views/Event/EventList.cshtml");
         }
 
@@ -69,23 +33,11 @@ namespace SocPass.UI.Controllers
             try
             {
                 var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-                if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-                {
-                    return RedirectToAction("AccessDenied", "AccessDenied");
-                }
                 var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
                 int.TryParse(userIdClaim, out int userId);
                 string Title;
                 IEnumerable<Society> societies;
-                if (User.IsInRole("Admin"))
-                {
-                    societies = await _societyService.GetAllSocietyAsync();
-                }
-                else
-                {
-                    societies = await _societyService.GetAllSocietyAsync(userId);
-                }
-
+                societies = await _societyService.GetAllSocietyAsync();
                 if (eventId == 0)
                 {
                     Title = "Add";
@@ -142,11 +94,6 @@ namespace SocPass.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteEvent(int eventId)
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (string.Equals(role, "User", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("AccessDenied", "AccessDenied");
-            }
             try
             {
                 await _eventService.DeleteEventAsync(eventId);

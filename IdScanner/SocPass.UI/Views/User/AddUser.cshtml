@@ -1,7 +1,7 @@
 ﻿@model SocPass.Domain.Model.User
 @{
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	// IList<SocPass.Domain.Model.UserRole> RoleList = ViewBag.RoleList;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // IList<SocPass.Domain.Model.UserRole> RoleList = ViewBag.RoleList;
     string NameMsg = ViewBag.NameMsg;
     string EmailMsg = ViewBag.EmailMsg;
     string passwordMsg = ViewBag.passwordMsg;
@@ -12,15 +12,11 @@
     var preFlat = ViewBag.SelectedFlatId;
     string UserRoleMsg = ViewBag.UserRoleMsg;
 }
-<html>
-    <head>
-    <title>SocPass | @ViewBag.Title User</title>
 <style>
 	.content-page {
 		margin-left: 144px;
 	}
 </style>
-</head>
 
 <body>
 	<div class="content-page">
@@ -39,7 +35,6 @@
                         <div class="card com-profile-info">
                             <div class="top-details">
                                 <h2 class="page-form-title">Profile Details</h2>
-                               
                                 <form id="addUserForm" class="row all-custom-class" method="post" action="@Url.Action("AddUser", "User")">
                                     <input type="hidden" id="UserId" name="UserId" value="@Model.UserId" />
                                     <!-- Name -->
@@ -132,7 +127,6 @@
                                                 </option>
                                             }
                                         </select>
-
                                         <input type="hidden" name="SocietyId" value="@Model.SocietyId" />
                                         <span class="text-danger" id="societyError"></span>
 
@@ -163,7 +157,6 @@
                                     {
                                         <div class="text-danger">@ViewBag.ErrorMessage</div>
                                     }
-
                                     <!-- Action Buttons -->
 									<div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
 										<button type="submit" class="card-link">
@@ -190,302 +183,250 @@
 	</div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-
-            var societySection = $("#SocietyId").closest(".col-md-4");
-            var blockSection = $("#Block").closest(".col-md-4");
-            var flatSection = $("#Flat").closest(".col-md-4");
-
-            // Initially hide
-            societySection.hide();
-            blockSection.hide();
-            flatSection.hide();
-
-            var currentUserRole = '@CurrentRole'.toLowerCase();
-            var isEdit = parseInt($("#UserId").val()) > 0;
-
-            function toggleFieldsByRole(roleText) {
-                var role = $.trim(roleText).toLowerCase();
-                societySection.hide();
-                blockSection.hide();
-                flatSection.hide();
-
-                if (role.indexOf("society") >= 0) {
-                    societySection.show();
-                } else if (role.indexOf("user") >= 0) {
-                    societySection.show();
-                    blockSection.show();
-                    flatSection.show();
-                }
-            }
-
-            function prefillDropdowns(societyId, blockId, flatId) {
-                if (!societyId) return;
-
-                societySection.show();
-                blockSection.show();
-                flatSection.show();
-
-                $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
-                .done(function(data) {
-                    $("#Block").empty().append('<option value="">-- Select Block --</option>');
-                    $.each(data, function(i, block) {
-                        $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
-                    });
-
-                    if (blockId) {
-                        $("#Block").val(blockId).trigger("change");
-
-                        $.getJSON('/User/GetFlatsByBlock', { blockId: blockId })
+                $(document).ready(function () {
+                    var societySection = $("#SocietyId").closest(".col-md-4");
+                    var blockSection = $("#Block").closest(".col-md-4");
+                    var flatSection = $("#Flat").closest(".col-md-4");
+                    // Initially hide
+                    societySection.hide();
+                    blockSection.hide();
+                    flatSection.hide();
+                    var currentUserRole = '@CurrentRole'.toLowerCase();
+                    var isEdit = parseInt($("#UserId").val()) > 0;
+                    function toggleFieldsByRole(roleText) {
+                        var role = $.trim(roleText).toLowerCase();
+                        societySection.hide();
+                        blockSection.hide();
+                        flatSection.hide();
+                        if (role.indexOf("society") >= 0) {
+                            societySection.show();
+                        } else if (role.indexOf("user") >= 0) {
+                            societySection.show();
+                            blockSection.show();
+                            flatSection.show();
+                        }
+                    }
+                    function prefillDropdowns(societyId, blockId, flatId) {
+                        if (!societyId) return;
+                        societySection.show();
+                        blockSection.show();
+                        flatSection.show();
+                        $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
                         .done(function(data) {
-                            $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-                            $.each(data, function(i, flat) {
-                                $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
+                            $("#Block").empty().append('<option value="">-- Select Block --</option>');
+                            $.each(data, function(i, block) {
+                                $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
                             });
-
-                            if (flatId) {
-                                $("#Flat").val(flatId);
+                            if (blockId) {
+                                $("#Block").val(blockId).trigger("change");
+                                $.getJSON('/User/GetFlatsByBlock', { blockId: blockId })
+                                .done(function(data) {
+                                    $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                                    $.each(data, function(i, flat) {
+                                        $("#Flat").append('<option value="' + flat.flatId + '">' + flat.flatNumber + '</option>');
+                                    });
+                                    if (flatId) {
+                                        $("#Flat").val(flatId);
+                                    }
+                                });
                             }
                         });
                     }
-                });
-            }
-        var preSociety = '@(preSociety ?? "")';
-        var preBlock = '@(preBlock ?? "")';
-        var preFlat = '@(preFlat ?? "")';
-        
-        if (preSociety && preSociety !== "0") {
-          
-            prefillDropdowns(preSociety, preBlock, preFlat);
-        }
-
-            // Handle society-login user
-            if (currentUserRole.indexOf("society") >= 0) {
-                $("#UserRoleId option").each(function () {
-                    if ($(this).text().toLowerCase().indexOf("user") >= 0) {
-                        $(this).prop("selected", true);
+                var preSociety = '@(preSociety ?? "")';
+                var preBlock = '@(preBlock ?? "")';
+                var preFlat = '@(preFlat ?? "")';
+                if (preSociety && preSociety !== "0") {
+                    prefillDropdowns(preSociety, preBlock, preFlat);
+                }
+                    // Handle society-login user
+                    if (currentUserRole.indexOf("society") >= 0) {
+                        $("#UserRoleId option").each(function () {
+                            if ($(this).text().toLowerCase().indexOf("user") >= 0) {
+                                $(this).prop("selected", true);
+                            }
+                        });
+                        $("#UserRoleId").prop("disabled", true);
+                        toggleFieldsByRole("user");
+                        // Prefill dropdowns for society user
+                        // var preSelectedSociety = '@ViewBag.SelectedSocietyId';
+                        // var preSelectedBlock = '@ViewBag.SelectedBlockId';
+                        // var preSelectedFlat = '@ViewBag.SelectedFlatId';
+                        // prefillDropdowns(preSelectedSociety, preSelectedBlock, preSelectedFlat);
                     }
+                    // Admin or general edit scenario
+                    if (!currentUserRole.includes("society") && isEdit) {
+                        var editSocietyId = $("#SocietyId").val();
+                        var editBlockId = '@ViewBag.SelectedBlockId';
+                        var editFlatId = '@ViewBag.SelectedFlatId';
+                        prefillDropdowns(editSocietyId, editBlockId, editFlatId);
+                    }
+                    // On page load: toggle visibility based on selected role
+                    var initialRoleText = $("#UserRoleId option:selected").text();
+                    toggleFieldsByRole(initialRoleText);
+                    if (isEdit) {
+                        $("#UserRoleId").prop("disabled", true);
+                    }
+                    // Role change
+                    $("#UserRoleId").change(function () {
+                        if (!isEdit) toggleFieldsByRole($("#UserRoleId option:selected").text());
+                    });
+                    // Load Blocks dynamically
+                    $("#SocietyId").change(function () {
+                        var societyId = $(this).val();
+                        $("#Block").empty().append('<option value="">-- Select Block --</option>');
+                        $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                        $("#societyError").text("");
+                        var $blockempty = $("#EmptyBlockMsg");
+                    $blockempty.empty();
+                        if (!societyId) return;
+                        // $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
+                        // .done(function(data) {
+                        //     $.each(data, function(i, block) {
+                        //         $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
+                        //     });
+                        // });
+                          $.ajax({
+                        url: '@Url.Action("GetBlocksBySociety", "Member")',
+                        method: 'GET',
+                        data: { societyId: societyId },
+                        dataType: 'json'
+                    })
+                    .done(function (data) {
+                        if (!data || data.length === 0) {
+                            $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                            return;
+                        }
+                        $.each(data, function (i, block) {
+                            $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
+                        });
+                    })
+                    .fail(function () {
+                        $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
+                        $blockempty.append('<span class="text-danger">No Blocks found for this Society.</span>');
+                    });
+                    });
+                    // Load Flats dynamically
+                    $("#Block").change(function () {
+                        var blockId = $(this).val();
+                        $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
+                        $("#blockError").text("");
+                        var $flatmsg = $("#EmptyFlatMsg");
+                        $flatmsg.empty();
+                        if (!blockId) return;
+                       $.ajax({
+                        url: '@Url.Action("GetFlatsByBlock", "User")',
+                        method: 'GET',
+                        data: { blockId: blockId },
+                        dataType: 'json'
+                    }).done(function (data) {
+                        if (!data || data.length === 0) {
+                            $("#Flat").empty().append('<option value="">-- No Flats available --</option>');
+                            $("#EmptyFlatMsg").append('<span class="text-danger">No flats found for the selected block.</span>');
+                            return;
+                        }
+                        $.each(data, function (i, f) {
+                            $("#Flat").append($('<option>', { value: f.flatId, text: f.flatNumber }));
+                        });
+                    }).fail(function () {
+                        $("#Flat").empty().append('<option value="">-- No Flats available --</option>');
+                        $("#EmptyFlatMsg").append('<span class="text-danger">Unable to load flats for the selected block.</span>');
+                    });
+                    });
+                    $("#Flat").change(function () {
+                        $("#flatError").text("");
+                    });
+                    // Form validation (existing)
+                    $("form").submit(function (e) {
+                        var valid = true;
+                        $("#societyError, #blockError, #flatError, #nameError").text("");
+                        if (societySection.is(":visible") && !$("#SocietyId").val()) {
+                            $("#societyError").text("Please Select a Society.");
+                            valid = false;
+                        }
+                        if (blockSection.is(":visible") && !$("#Block").val()) {
+                            $("#blockError").text("Please Select a Block.");
+                            valid = false;
+                        }
+                        if (flatSection.is(":visible") && !$("#Flat").val()) {
+                            $("#flatError").text("Please Select a Flat.");
+                            valid = false;
+                        }
+                        if (!$("#Name").val()) {
+                            $("#nameError").text("Please Enter Name.");
+                            valid = false;
+                        } else {
+                            $("#nameError").text("");
+                        }
+                        var email = $("#EmailId").val();
+                        var emailPattern = @Html.Raw(@"/^[^@\s]+@[^@\s]+\.[^@\s]+$/");
+                        if (!email) {
+                            $("#emailError").text("Please Enter Email.");
+                            valid = false;
+                        } else if (!emailPattern.test(email)) {
+                            $("#emailError").text("Please Enter a Valid Email.");
+                            valid = false;
+                        } else {
+                            $("#emailError").text("");
+                        }
+                        var password = $("#Password").val();
+                        debugger;
+                        var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+                        if (!password) {
+                            $("#passwordError").text("Please Enter Password.");
+                            valid = false;
+                        } else if (!passwordPattern.test(password)) {
+                            console.log(!passwordPattern.test(password))
+                            $("#passwordError").text("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
+                            valid = false;
+                        } else {
+                            $("#passwordError").text("");
+                        }
+                        if (!$("#ConfirmPassword").val()) {
+                            $("#confirmpasswordError").text("Please Enter Password.");
+                            valid = false;
+                        } else if ($("#Password").val() !== $("#ConfirmPassword").val()) {
+                            $("#confirmpasswordError").text("Passwords do not match.");
+                            valid = false;
+                        } else {
+                            $("#confirmpasswordError").text("");
+                        }
+                        var selectedValue = $("#UserRoleId").val();
+                        if (selectedValue === null || selectedValue === "" || selectedValue === "0") {
+                            $("#roleError").text("Please Select a Role.");
+                            valid = false;
+                        } else {
+                            $("#roleError").text("");
+                        }
+                        if (!valid) e.preventDefault();
+                    });
+                    $("#UserRoleId").on("change", function () {
+                    $("input[name='UserRoleId']").val($(this).val());
                 });
-                $("#UserRoleId").prop("disabled", true);
-
-                toggleFieldsByRole("user");
-
-                // Prefill dropdowns for society user
-                // var preSelectedSociety = '@ViewBag.SelectedSocietyId';
-                // var preSelectedBlock = '@ViewBag.SelectedBlockId';
-                // var preSelectedFlat = '@ViewBag.SelectedFlatId';
-                // prefillDropdowns(preSelectedSociety, preSelectedBlock, preSelectedFlat);
-            }
-
-            // Admin or general edit scenario
-            if (!currentUserRole.includes("society") && isEdit) {
-                var editSocietyId = $("#SocietyId").val();
-                var editBlockId = '@ViewBag.SelectedBlockId';
-                var editFlatId = '@ViewBag.SelectedFlatId';
-                prefillDropdowns(editSocietyId, editBlockId, editFlatId);
-            }
-
-            // On page load: toggle visibility based on selected role
-            var initialRoleText = $("#UserRoleId option:selected").text();
-            toggleFieldsByRole(initialRoleText);
-
-            if (isEdit) {
-                $("#UserRoleId").prop("disabled", true);
-            }
-
-            // Role change
-            $("#UserRoleId").change(function () {
-                if (!isEdit) toggleFieldsByRole($("#UserRoleId option:selected").text());
-            });
-
-            // Load Blocks dynamically
-            $("#SocietyId").change(function () {
-                var societyId = $(this).val();
-                $("#Block").empty().append('<option value="">-- Select Block --</option>');
-                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-                $("#societyError").text("");
-                var $blockempty = $("#EmptyBlockMsg");
-            $blockempty.empty();
-                if (!societyId) return;
-
-                // $.getJSON('/User/GetBlocksBySociety', { societyId: societyId })
-                // .done(function(data) {
-                //     $.each(data, function(i, block) {
-                //         $("#Block").append('<option value="' + block.blockId + '">' + block.blockNumber + '</option>');
-                //     });
-                // });
-
-                  $.ajax({
-                url: '@Url.Action("GetBlocksBySociety", "Member")',
-                method: 'GET',
-                data: { societyId: societyId },
-                dataType: 'json'
-            })
-            .done(function (data) {
-                if (!data || data.length === 0) {
-                    $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
-                    return;
-                }
-
-                $.each(data, function (i, block) {
-                    $("#Block").append('<option value="' + block.blockId + '">' + block.blockName + '</option>');
+                $("#SocietyId").on("change", function () {
+                    $("input[name='SocietyId']").val($(this).val());
                 });
-
-            })
-            .fail(function () {
-                $("#Block").empty().append('<option value="">-- No Blocks available --</option>');
-                $blockempty.append('<span class="text-danger">No Blocks found for this Society.</span>');
-            });
-            });
-
-            // Load Flats dynamically
-            $("#Block").change(function () {
-                var blockId = $(this).val();
-                $("#Flat").empty().append('<option value="">-- Select Flat --</option>');
-                $("#blockError").text("");
-                var $flatmsg = $("#EmptyFlatMsg");
-                $flatmsg.empty();
-
-                if (!blockId) return;
-
-               $.ajax({
-                url: '@Url.Action("GetFlatsByBlock", "Member")',
-                method: 'GET',
-                data: { blockId: blockId },
-                dataType: 'json'
-            }).done(function (data) {
-                if (!data || data.length === 0) {
-                    $("#Flat").empty().append('<option value="">-- No Flats available --</option>');
-                    $("#EmptyFlatMsg").append('<span class="text-danger">No flats found for the selected block.</span>');
-                    return;
-                }
-
-                $.each(data, function (i, f) {
-                    $("#Flat").append($('<option>', { value: f.flatId, text: f.flatNumber }));
+                            $("form").on("submit", function () {
+                    var roleVal = $("#UserRoleId").val();
+                    var societyVal = $("#SocietyId").val();
+                    $("input[type='hidden'][name='UserRoleId']").val(roleVal);
+                    $("input[type='hidden'][name='SocietyId']").val(societyVal);
                 });
-            }).fail(function () {
-                $("#Flat").empty().append('<option value="">-- No Flats available --</option>');
-                $("#EmptyFlatMsg").append('<span class="text-danger">Unable to load flats for the selected block.</span>');
-            });
-            });
-
-            $("#Flat").change(function () {
-                $("#flatError").text("");
-            });
-
-            // Form validation (existing)
-            $("form").submit(function (e) {
-                var valid = true;
-
-                $("#societyError, #blockError, #flatError, #nameError").text("");
-
-                if (societySection.is(":visible") && !$("#SocietyId").val()) {
-                    $("#societyError").text("Please select a Society.");
-                    valid = false;
-                }
-
-                if (blockSection.is(":visible") && !$("#Block").val()) {
-                    $("#blockError").text("Please select a Block.");
-                    valid = false;
-                }
-
-                if (flatSection.is(":visible") && !$("#Flat").val()) {
-                    $("#flatError").text("Please select a Flat.");
-                    valid = false;
-                }
-
-                if (!$("#Name").val()) {
-                    $("#nameError").text("Please Enter Name.");
-                    valid = false;
-                } else {
-                    $("#nameError").text("");
-                }
-
-                var email = $("#EmailId").val();
-                var emailPattern = @Html.Raw(@"/^[^@\s]+@[^@\s]+\.[^@\s]+$/");
-                if (!email) {
-                    $("#emailError").text("Please enter Email.");
-                    valid = false;
-                } else if (!emailPattern.test(email)) {
-                    $("#emailError").text("Please enter a valid Email.");
-                    valid = false;
-                } else {
-                    $("#emailError").text("");
-                }
-
-                var password = $("#Password").val();
-                var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-
-                if (!password) {
-                    $("#passwordError").text("Please enter Password.");
-                    valid = false;
-                } else if (!passwordPattern.test(password)) {
-                    $("#passwordError").text("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.");
-                    valid = false;
-                } else {
-                    $("#passwordError").text("");
-                }
-
-                if (!$("#ConfirmPassword").val()) {
-                    $("#confirmpasswordError").text("Please Enter Password.");
-                    valid = false;
-                } else if ($("#Password").val() !== $("#ConfirmPassword").val()) {
-                    $("#confirmpasswordError").text("Passwords do not match.");
-                    valid = false;
-                } else {
-                    $("#confirmpasswordError").text("");
-                }
-
-                var selectedValue = $("#UserRoleId").val();
-                if (selectedValue === null || selectedValue === "" || selectedValue === "0") {
-                    $("#roleError").text("Please select an option.");
-                    valid = false;
-                } else {
-                    $("#roleError").text("");
-                }
-
-                if (!valid) e.preventDefault();
-            });
-
-            $("#UserRoleId").on("change", function () {
-            $("input[name='UserRoleId']").val($(this).val());
-        });
-
-        $("#SocietyId").on("change", function () {
-            $("input[name='SocietyId']").val($(this).val());
-        });
-
-                    $("form").on("submit", function () {
-            var roleVal = $("#UserRoleId").val();
-            var societyVal = $("#SocietyId").val();
-
-            $("input[type='hidden'][name='UserRoleId']").val(roleVal);
-            $("input[type='hidden'][name='SocietyId']").val(societyVal);
-        });
-
-                  $("form").on("reset", function (e) {
-            e.preventDefault(); // prevent default HTML reset
-
-            var currentRoleVal = $("#UserRoleId").val();
-            var currentSocietyVal = $("#SocietyId").val();
-
-            // clear only text and password fields
-            $(this).find("input[type='text'], input[type='password']").val("");
-            $(".text-danger.small").text("");
-
-            // restore dropdown selections after reset
-            setTimeout(function () {
-                if (currentRoleVal) $("#UserRoleId").val(currentRoleVal);
-                if (currentSocietyVal) $("#SocietyId").val(currentSocietyVal);
-
-                // sync hidden inputs again
-                $("input[name='UserRoleId']").val(currentRoleVal);
-                $("input[name='SocietyId']").val(currentSocietyVal);
-            }, 50);
-        });
-
-        });
-
+        $("form").on("reset", function (e) {
+                    e.preventDefault(); // prevent default HTML reset
+                    var currentRoleVal = $("#UserRoleId").val();
+                    var currentSocietyVal = $("#SocietyId").val();
+                    // clear only text and password fields
+                    $(this).find("input[type='text'], input[type='password']").val("");
+                    $(".text-danger.small").text("");
+                    // restore dropdown selections after reset
+                    setTimeout(function () {
+                        if (currentRoleVal) $("#UserRoleId").val(currentRoleVal);
+                        if (currentSocietyVal) $("#SocietyId").val(currentSocietyVal);
+                        // sync hidden inputs again
+                        $("input[name='UserRoleId']").val(currentRoleVal);
+                        $("input[name='SocietyId']").val(currentSocietyVal);
+                    }, 50);
+                });
+                });
     </script>
 </body>
-</html>

@@ -102,12 +102,12 @@
                         @TempData["Message"]
                     </div>
                 }
-                @if (!string.IsNullOrEmpty(ViewBag.Message))
+               @*  @if (!string.IsNullOrEmpty(ViewBag.Message))
                 {
                     <div class="alert alert-@ViewBag.AlertType text-center">
                         @ViewBag.Message
                     </div>
-                }
+                } *@
 
                 <table class="table table-bordered align-middle mb-4">
                     <tbody>
@@ -167,6 +167,5 @@
             </div>
         </div>
     </div>
-
-</body>
+ </body>
 </html>

@@ -11,7 +11,7 @@ namespace SocPass.Application.Interface
     {
         Task<Society> CreateSocietyAsync(Society society);
         Task<Society> GetById(int societyId);
-        Task<List<Society>> GetAllSocietyAsync(int userId);
+        Task<List<Society>> GetSocietyUserIdAsync(int userId);
         Task<List<Society>> GetAllSocietyAsync();
         Task<Society> UpdateAsync(Society society);
         Task DeleteSocietyById(int society);

@@ -121,36 +121,33 @@ namespace SocPass.UI.Infrastructure.Provider
 
             return responseData; 
         }
-        public async Task<TResponse> addUpdateMemberAndGuestAsync<TRequest, TResponse>(string endpoint, TRequest data)
-        {
-            _httpClinet.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+        //public async Task<TResponse> addUpdateMemberAndGuestAsync<TRequest, TResponse>(string endpoint, TRequest data)
+        //{
+        //    _httpClinet.DefaultRequestHeaders.Authorization =
+        //        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
 
-            var baseUrl = _apiCredential.url + endpoint;
-            var json = JsonConvert.SerializeObject(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+        //    var baseUrl = _apiCredential.url + endpoint;
+        //    var json = JsonConvert.SerializeObject(data);
+        //    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClinet.PutAsync(baseUrl, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
+        //    var response = await _httpClinet.PutAsync(baseUrl, content);
+        //    var responseContent = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new HttpRequestException(
-                    $"API Error ({response.StatusCode}): {responseContent}",
-                    null,
-                    response.StatusCode);
-            }
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        throw new HttpRequestException(
+        //            $"API Error ({response.StatusCode}): {responseContent}",
+        //            null,
+        //            response.StatusCode);
+        //    }
 
-            if (typeof(TResponse) == typeof(string))
-            {
-                return (TResponse)(object)responseContent;
-            }
+        //    if (typeof(TResponse) == typeof(string))
+        //    {
+        //        return (TResponse)(object)responseContent;
+        //    }
 
-            return JsonConvert.DeserializeObject<TResponse>(responseContent)!;
-        }
-
-
-
+        //    return JsonConvert.DeserializeObject<TResponse>(responseContent)!;
+        //}
 
     }
 }

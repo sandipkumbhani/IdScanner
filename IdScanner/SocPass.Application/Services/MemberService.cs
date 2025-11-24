@@ -1,19 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using QRCoder;
 using SocPass.Application.Interface;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Application.Services
 {
@@ -225,7 +217,7 @@ namespace SocPass.Application.Services
                 }
             }
         }
-        public async Task<string> AddMemberPassDateAsync(int blockId, int eventId)
+        public async Task<string> GenerateMemberQRAsync(int blockId, int eventId)
         {
             var (existingQRGenerated, flatsList, members) = await _memberRepository.AddMemberPassDateAsync(blockId, eventId);
             var qrList = new List<QRCodeMaster>();
@@ -331,12 +323,7 @@ namespace SocPass.Application.Services
         }
         private async Task<string> GenerateAndStoreQrAsync(int memberId, bool isChild, string societyName, string blockNumber, string flatNumber, string EventId)
         {
-            //string qrContentUrl = $"{_baseUrl.BaseUrl}/MemberDetails/GetDetails/{memberId}/{EventId}";
-            string rawData = $"{memberId}|{EventId}";
-            string encoded = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(rawData));
-            string qrContentUrl = $"{_baseUrl.BaseUrl}/MemberDetails/GetDetails/{encoded}";
-
-            //string qrContentUrl = $"http://localhost:5109/MemberDetails/GetDetails/{memberId}";
+            string qrContentUrl = $"{_baseUrl.BaseUrl}/MemberDetails/GetDetails/{memberId}/{EventId}";
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
             using (QRCodeData qrData = qrGenerator.CreateQrCode(qrContentUrl, QRCodeGenerator.ECCLevel.Q))
             using (var qrCode = new PngByteQRCode(qrData))
@@ -368,8 +355,9 @@ namespace SocPass.Application.Services
                     }
 
                     string contentRoot = Directory.GetCurrentDirectory();
-                    string wwwroot = Path.Combine(@"D:\Broadsy\Project\IdScanner\SocPass.UI", "wwwroot");
-                
+                    contentRoot = contentRoot.Replace("API", "UI");
+                    string wwwroot = Path.Combine(contentRoot, "wwwroot");
+
                     string nestedFolder = Path.Combine(wwwroot, "QRCodes",
                                                       EventId,
                                                       societyName,
@@ -387,13 +375,6 @@ namespace SocPass.Application.Services
                                            $"{Uri.EscapeDataString(blockNumber)}/" +
                                            $"{Uri.EscapeDataString(flatNumber)}/" +
                                            qrFileName;
-                    //var member = await _context.QRCodeMasters.FindAsync(memberId);
-                    //if (member != null)
-                    //{
-                    //    member.QRCodeUrl = qrRelativeUrl;
-                    //    _context.QRCodeMasters.Update(member);
-                    //    await _context.SaveChangesAsync();
-                    //}
                     return qrRelativeUrl;
                 }
             }

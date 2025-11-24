@@ -1,18 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SocPass.Domain.Model;
-using SocPass.UI.Domain.Comman;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
 using SocPass.UI.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
@@ -38,7 +28,6 @@ namespace SocPass.UI.Infrastructure.Provider
         public async Task<IList<Member>> GetAllMemberAsync(int flatId)
         {
             return await _commonAdapter.GetAsync<IList<Member>>("Member/GetMemberByid?flatId={flatId}");
-            
         }
         public async Task<string> AddMemberAsync(MemberCreateRequest memberCreateRequest)
         {
@@ -46,13 +35,12 @@ namespace SocPass.UI.Infrastructure.Provider
         }
         public async Task<string> AddAndUpdateGuestAsync(MemberCreateRequest memberCreateRequest)
         {
-            return await _commonAdapter.PutAsync("Member/Update-Guest", memberCreateRequest);
+            return await _commonAdapter.PutAsync("Member/Add-Update-Guest", memberCreateRequest);
         }
-
-        public async Task<string> GeneratePass(int blockId, int EventId)
+        public async Task<string> GenerateMemberPass(int blockId, int EventId)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}Member/AddPassdate?blockId={blockId}&EventId={EventId}";
+            var baseUrl = $"{apiCredential.url}Member/GenerateMemberQR?blockId={blockId}&EventId={EventId}";
             var response = await _httpClient.PutAsync(baseUrl, null); 
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -60,14 +48,14 @@ namespace SocPass.UI.Infrastructure.Provider
         public async Task<string> GenerateGuestPass(int blockId, int EventId)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
-            var baseUrl = $"{apiCredential.url}Member/AddGuestPassdate?blockId={blockId}&EventId={EventId}";
+            var baseUrl = $"{apiCredential.url}Member/GenerateGuestQR?blockId={blockId}&EventId={EventId}";
             var response = await _httpClient.PutAsync(baseUrl, null);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
         public async Task<QRCodeMaster> GetMemberByMemberId(int? memberId,int EventId)
         {
-            return await _commonAdapter.GetAsync<QRCodeMaster>($"Member/GetMemberByMemberId?memberId={memberId}&EventId={EventId}");
+            return await _commonAdapter.PostAsync<QRCodeMaster>($"Member/GetMemberByMemberId?memberId={memberId}&EventId={EventId}");
         }
     }
 }

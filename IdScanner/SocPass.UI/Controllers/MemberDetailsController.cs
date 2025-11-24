@@ -37,18 +37,12 @@ namespace SocPass.UI.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            string message;
             if (result.Visited && TempData["Message"] == null)
             {
-                message = "This member has already visited.";
-                ViewBag.AlertType = "info";
+                TempData["Message"] = "Member has already been marked as visited.";
+                TempData["AlertType"] = "info";
             }
-            else
-            {
-                message = TempData["Message"]?.ToString() ?? string.Empty;
-                ViewBag.AlertType = TempData["AlertType"]?.ToString() ?? "secondary";
-            }
-            ViewBag.Message = message;
+
             return View("~/Views/MemberDetails/MemberDetails.cshtml", result);
         }
 
@@ -67,10 +61,11 @@ namespace SocPass.UI.Controllers
 
             switch (result)
             {
-                case "Success":
+                case "Visited":
                     TempData["Message"] = "Member marked as visited successfully.";
                     TempData["AlertType"] = "success";
                     break;
+
                 case "AlreadyVisited":
                     TempData["Message"] = "Member has already been marked as visited.";
                     TempData["AlertType"] = "info";
@@ -81,12 +76,13 @@ namespace SocPass.UI.Controllers
                     TempData["AlertType"] = "warning";
                     break;
 
+                default:
+                    TempData["Message"] = "An error occurred.";
+                    TempData["AlertType"] = "danger";
+                    break;
             }
-
             return RedirectToAction(nameof(GetDetails), new { memberId = memberId, EventId = EventId });
-
         }
-
     }
 }
 

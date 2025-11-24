@@ -12,7 +12,7 @@ namespace SocPass.UI.Domain.Interfaces
         Task<T> PostAsync<T>(string endpoint, object? data = null);
         Task<string> PutAsync<TRequest>(string endpoint, TRequest data);
         Task<string> DeleteAsync<TResponse>(string endpoint);
-        Task<TResponse> addUpdateMemberAndGuestAsync<TRequest, TResponse>(string endpoint, TRequest data);
+        //Task<TResponse> addUpdateMemberAndGuestAsync<TRequest, TResponse>(string endpoint, TRequest data);
 
     }
 }
