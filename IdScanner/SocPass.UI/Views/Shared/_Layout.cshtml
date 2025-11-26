@@ -47,30 +47,7 @@
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <a class="nav-link dropdown-toggle nav-user" href="#" id="userDropdown"
-                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="account-user-avatar">
-                        <img src="~/images/avatar-1.png" alt="user-image" width="40" class="rounded-circle">
-                    </span>
-                    <span class="ms-2">@await Component.InvokeAsync("UserName")</span>
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-end profile-dropdown" aria-labelledby="userDropdown">
-                    <div class="dropdown-header noti-title">
-                        <h6 class="text-overflow m-0">Welcome !</h6>
-                    </div>
-                    <a class="nav-link" href="../Logout/Logout">
-                        <button type="submit" class="dropdown-item">
-                            <span>Logout</span>
-                        </button>
-                    </a>
-                </div>
+               @await Component.InvokeAsync("UserName")
             </div>
         </nav>
     </header>

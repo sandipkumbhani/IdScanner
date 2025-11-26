@@ -7,7 +7,7 @@ namespace SocPass.UI.Domain.Interfaces
         Task<IList<User>> GetUsersAsync();
         Task<User> GetUsersByIdAsync(int? id);
         Task<User> AddUserAsync(User user, int? flatId = null);
-        Task<string> UpdateUserAsync(User user, int? flatId = null);
+        Task<User> UpdateUserAsync(User user, int? flatId = null);
         Task<string> DeleteUserAsync(int id);
         //UserRole
         Task<IList<UserRole>> GetAllUserRoleAsync();

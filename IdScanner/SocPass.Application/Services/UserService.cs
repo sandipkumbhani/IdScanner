@@ -18,7 +18,7 @@ namespace SocPass.Application.Services
         private readonly IUserFlatMappingRepository _userFlatMappingRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISocietyRepository _societyRepository;
-        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository, 
+        public UserService(IUserRepository userRepository, IUserRoleRepository userRoleRepository,
             IUserFlatMappingRepository userFlatMappingRepository, IHttpContextAccessor httpContextAccessor, ISocietyRepository societyRepository)
         {
             _userRepository = userRepository;
@@ -46,7 +46,7 @@ namespace SocPass.Application.Services
                 }
             }
 
-                var newUser = new User
+            var newUser = new User
             {
                 Name = user.Name,
                 EmailId = user.EmailId,
@@ -104,7 +104,6 @@ namespace SocPass.Application.Services
 
             return userList;
         }
-
         public async Task DeleteUserById(int id)
         {
             var deleteUser = await _userRepository.GetUserById(id);
@@ -118,12 +117,23 @@ namespace SocPass.Application.Services
         public async Task<User> UpdateUserAsync(User user, int? flatId = null)
         {
             var role = await _userRoleRepository.GetUserRoleById(user.UserRoleId);
-
             var userExisting = await _userRepository.GetUserById(user.UserId);
 
             if (userExisting == null)
-            {
                 throw new Exception($"User with ID {user.UserId} not found.");
+
+            if (!string.Equals(userExisting.EmailId, user.EmailId, StringComparison.OrdinalIgnoreCase))
+            {
+                bool emailExists = await _userRepository.EmailExistsAsync(user.EmailId);
+                if (emailExists)
+                    throw new EmailAlreadyExistsException("This email is already registered.");
+            }
+
+            if (role.Name == "User")
+            {
+                var checkFlatExisting = await _userFlatMappingRepository.GetMappingByFlatId(flatId);
+                if (checkFlatExisting != null && checkFlatExisting.FlatId == flatId)
+                    throw new FlatAlreadyExistsException("Flat already exists.");
             }
             userExisting.Name = user.Name;
             userExisting.EmailId = user.EmailId;
@@ -153,7 +163,7 @@ namespace SocPass.Application.Services
         }
         public async Task<User?> GetUserDetailsById(int userid)
         {
-            var UserDetails =await _userRepository.GetUserById(userid);
+            var UserDetails = await _userRepository.GetUserById(userid);
             if (UserDetails == null)
             {
                 throw new KeyNotFoundException($"User Id with ID {userid} not found.");

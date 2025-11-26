@@ -18,6 +18,16 @@ namespace SocPass.Application.Services
         }
         public async Task<MenuMaster> CreateMenuMasterAsync(MenuMaster MenuMaster)
         {
+            var existingMenus = await _menuMasterRepository.GetAllMenuAsync();
+
+            var duplicateOrder = existingMenus
+                .Any(m => m.MenuOrder == MenuMaster.MenuOrder);
+
+            if (duplicateOrder)
+            {
+                throw new InvalidOperationException($"Menu Order '{MenuMaster.MenuOrder}' already exists.");
+            }
+
             var menuMaster = new MenuMaster
             {
                 Name = MenuMaster.Name,
@@ -25,6 +35,7 @@ namespace SocPass.Application.Services
                 Icon = MenuMaster.Icon,
                 Url = MenuMaster.Url,
                 IsDefault = MenuMaster.IsDefault,
+                MenuOrder = MenuMaster.MenuOrder,
                 IsActive = true,
                 InsertBy = 1,
                 InsertDate = DateTime.Now,

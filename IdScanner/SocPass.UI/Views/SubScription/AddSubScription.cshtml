@@ -13,7 +13,6 @@
 						? Model.EndTo.ToString("yyyy-MM-ddTHH:mm")
 						: string.Empty;
 
-	// Always keep min date as current date, even during edit
 	string minDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
 	string minDateend = DateTime.Now.ToString("yyyy-MM-ddTHH:mm");
 }
@@ -79,7 +78,6 @@
                                             </span>
                                         </div>
                                     </div>
-
                                     <div class="col-xl-4 col-lg-6 mb-3">
                                         <div class="item-input">
                                             <label for="EndTo" class="form-label required fw-semibold fs-6">End To</label>

@@ -1,20 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Org.BouncyCastle.Asn1.Ocsp;
-using QRCoder;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
 using SocPass.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Infrastructure.Repository
 {
@@ -33,16 +22,6 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return member;
         }
-        //public async Task UpdateQrCodeAsync(int memberId, string qrCodeUrl)
-        //{
-        //    var user = await _context.members.FindAsync(memberId);
-        //    if (user != null)
-        //    {
-        //        user.QRCodeUrl = qrCodeUrl;
-        //        _context.members.Update(user);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
         public async Task<List<Member>> GetGuestsByFlatIdAsync(int flatId)
         {
             return await _context.members

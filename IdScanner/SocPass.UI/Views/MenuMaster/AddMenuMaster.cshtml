@@ -5,7 +5,8 @@
     string NameMsg = ViewBag.NameMsg;
     string DescriptionMsg = ViewBag.DescriptionMsg;
     string UrlMsg = ViewBag.UrlMsg;
-	string IconMsg = ViewBag.IconMsg;
+    string IconMsg = ViewBag.IconMsg;
+    string OrderMsg = ViewBag.OrderMsg;
     string userRole = ViewBag.UserRole as string ?? "";
     bool isAdmin = string.Equals(userRole, "Admin", StringComparison.OrdinalIgnoreCase);
     bool isNew = Model.MenuId == 0;
@@ -75,7 +76,21 @@
                                             }
                                         </div>
                                     </div>
-                                    
+                                    <div class="col-xl-4 col-lg-6">
+                                        <div class="item-input">
+                                            <label for="MenuOrder" class="form-label col-form-label required fw-semibold fs-6">Menu Order</label>
+                                            <input type="text" class="form-control userinput" id="MenuOrder" name="MenuOrder" value="@Model.MenuOrder">
+                                            @if (ViewBag.ErrorMessage != null)
+                                            {
+                                                <div class="text-danger">@ViewBag.ErrorMessage</div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(OrderMsg))
+                                            {
+                                                <span class="text-danger">@OrderMsg</span>
+                                            }
+                                        </div>
+                                    </div>
+
 
                                     <div class="button-main" style="display: flex; gap: 12px; margin-top: 20px;">
                                         <button type="submit" class="card-link">
@@ -84,16 +99,16 @@
                                                 Save
                                             </span>
                                         </button>
-                                        
+
                                         @if (Model.MenuId == 0)
-										{
+                                        {
                                             <button type="reset" class="card-link outline-bar">
-                                            <i class="ri-refresh-line"></i><span>Clear</span>
+                                                <i class="ri-refresh-line"></i><span>Clear</span>
                                             </button>
                                         }
-                                        
+
                                         <a href="@Url.Action("MenuMasterList", "MenuMaster")" class="card-link outline-bar">
-                                        <i class="bi bi-eye"></i><span>View</span>
+                                            <i class="bi bi-eye"></i><span>View</span>
                                         </a>
                                     </div>
                                 </form>

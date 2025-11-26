@@ -18,10 +18,6 @@ namespace SocPass.Infrastructure.Repository
             _context = context;
         }
 
-        //public async Task<User?> GetByEmailAsync(string email)
-        //{
-        //    return await _context.users.FirstOrDefaultAsync(u => u.EmailId == email && u.IsActive);
-        //}
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.users

@@ -22,10 +22,9 @@ namespace SocPass.Infrastructure.Repository
         {
             return await _context.Roles.Where(u => u.IsActive).ToListAsync();
         }
-        public async Task<UserRole> GetUserRoleById(int roleid)
+        public async Task<UserRole?> GetUserRoleById(int roleid)
         {
-            return _context.Roles
-                .FirstOrDefault(e => e.UserRoleId == roleid);
+            return _context.Roles.FirstOrDefault(e => e.UserRoleId == roleid);
         }
         public async Task DeleteRoleAsync(int roleid)
         {

@@ -1,17 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SocPass.Domain.Model;
+﻿using SocPass.Domain.Model;
 using SocPass.UI.Domain.Comman;
-using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
-using SocPass.UI.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {
@@ -36,19 +25,27 @@ namespace SocPass.UI.Infrastructure.Provider
             {
                 var response = await _commonAdapter.PostAsync<CommanResponseDto<MenuMaster>>("MenuMaster/Menu-Master", menuMaster);
 
-                return response?.Message ?? "Menu added successfully.";
+                if (response == null)
+                    return "Unexpected null response from API.";
+
+                if (response.IsSuccess)
+                    return response.Message ?? "Menu added successfully.";
+                return response.Message ?? "Failed to create Menu.";
             }
             catch (HttpRequestException ex)
             {
-                return $"Failed to connect to the server: {ex.Message}";
-            }
-            catch (JsonException ex)
-            {
-                return $"Invalid response format from server: {ex.Message}";
+                var statusCode = ex.StatusCode?.ToString() ?? "Unknown";
+                var errorContent = ex.Message;
+                if (statusCode == "Conflict")
+                {
+                    return $"Menu Order '{menuMaster.MenuOrder}' already exists.";
+                }
+
+                return $"Failed to create block. Server responded with {statusCode}: {errorContent}";
             }
             catch (Exception ex)
             {
-                return $"An unexpected error occurred: {ex.Message}";
+                return $"Unexpected error occurred while creating block: {ex.Message}";
             }
         }
         public async Task<string> UpdateMenuAsync(MenuMaster menuMaster)

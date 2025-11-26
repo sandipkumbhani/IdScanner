@@ -66,7 +66,6 @@ namespace SocPass.Application.Services
             }
 
 
-            // Get the maximum length among the lists
             int count = Math.Max(request.ContactName.Count,
                                  Math.Max(request.ContactNumber.Count, request.ContactEmail.Count));
 

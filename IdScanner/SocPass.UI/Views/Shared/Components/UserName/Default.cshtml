@@ -1,8 +1,23 @@
-﻿@model string
+﻿@model SocPass.Domain.Model.User
 
-@if (!string.IsNullOrEmpty(Model))
-{
-    <span class="navbar-text ms-auto" style="font-size:20px; color:black;">
-        @Model
+ <a class="nav-link nav-user d-flex align-items-center"
+   href="#" id="userDropdown" role="button"
+   data-bs-toggle="dropdown" aria-expanded="false">
+    @if (ViewBag.role != "Admin" && !string.IsNullOrWhiteSpace(Model.SubscriptionMessage))
+    {
+        <span class="badge bg-warning text-dark me-2 px-3 py-2 rounded-pill shadow-sm" style="font-size:16px">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            @Model.SubscriptionMessage
+        </span>
+    }
+    <span class="account-user-avatar me-2">
+        <img src="~/images/avatar-1.png"
+             alt="user-image"
+             width="40"
+             height="40"
+             class="rounded-circle border border-2 border-primary shadow-sm">
     </span>
-}
+    <span class="navbar-text ms-auto" style="font-size:20px; color:black;">
+        @Model.Name
+    </span>
+</a>

@@ -12,18 +12,47 @@ namespace SocPass.Infrastructure.Repository
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public async Task<User> GetUserNameAsync(int userid)
+        public async Task<User> GetUserNameAsync(int userId)
         {
-            var userName = await _context.users
-            .Where(u => u.UserId == userid)
-            .Select(u => u.Name)
-            .FirstOrDefaultAsync();
-            return new User
+            var result = await _context.users
+                .Where(u => u.UserId == userId)
+                .Select(u => new
+                {
+                    u.Name,
+                    EndTo = u.Society.Subscriptions
+                        .OrderByDescending(s => s.EndTo)
+                        .Select(s => s.EndTo)
+                        .FirstOrDefault()
+                })
+                .FirstOrDefaultAsync();
+
+            string subscriptionMessage = " ";
+
+            if (result != null)
             {
-                UserId = userid,
-                Name = userName
-            };
+                if (result.EndTo != default)
+                {
+                    int remainingDays = (result.EndTo.Date - DateTime.Now.Date).Days;
+
+                    if (remainingDays < 0)
+                        subscriptionMessage = "Subscription expired!";
+                    else if (remainingDays <= 2)
+                        subscriptionMessage = $"Subscription expires in {remainingDays} day's!";
+                    //else
+                    //    subscriptionMessage = $"Subscription active until {result.EndTo:dd-MMM-yyyy}";
+                }
+
+                return new User
+                {
+                    UserId = userId,
+                    Name = result.Name,
+                    SubscriptionMessage = subscriptionMessage
+                };
+            }
+
+            return null;
         }
+
 
     }
 }

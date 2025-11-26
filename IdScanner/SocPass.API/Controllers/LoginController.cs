@@ -35,7 +35,7 @@ namespace SocPass.API.Controllers
                         ErrorMessage = "Invalid Email or password"
                     });
                 }
-
+                
                 return Ok(new CommanResponseDto
                 {
                     StatusCode = 200,

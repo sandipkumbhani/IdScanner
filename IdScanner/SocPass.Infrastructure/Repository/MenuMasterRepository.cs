@@ -25,7 +25,7 @@ namespace SocPass.Infrastructure.Repository
         }
         public async Task<List<MenuMaster>> GetAllMenuAsync()
         {
-            return await _context.MenuMasters.Where(u => u.IsActive).OrderBy(x=>x.Name).ToListAsync();
+            return await _context.MenuMasters.Where(u => u.IsActive).OrderBy(x=>x.MenuOrder).ToListAsync();
         }
         public async Task<MenuMaster> GetMenuById(int menuid)
         {
@@ -46,19 +46,6 @@ namespace SocPass.Infrastructure.Repository
             _context.MenuMasters.Update(menuMaster);
             _context.SaveChanges();
         }
-        //public async Task<List<MenuMaster>> GetMenusByUserIdAsync(long userId)
-        //{
-        //    var menus = await (from um in _context.MenuMasters
-        //                       join m in _context.MenuMasters on um.MenuId equals m.MenuId
-        //                       where um.UserId == userId
-        //                             && um.IsActive
-        //                             && m.IsActive
-        //                             && m.IsDefault
-        //                       select m)
-        //              .Distinct()
-        //              .ToListAsync();
-
-        //    return menus;
-        //}
+       
     }
 }

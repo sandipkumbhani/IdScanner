@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocPass.UI.Application.Interface;
+using System.Security.Claims;
 
 namespace SocPass.UI.Views.ViewComponents
 {
@@ -12,20 +13,12 @@ namespace SocPass.UI.Views.ViewComponents
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            string userName = null;
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            ViewBag.role = role;
+            int.TryParse(HttpContext.User?.FindFirst("UserId")?.Value, out int userId);
+            var user = await _getUserNameByIdService.GetUserNameByIdAsync(userId);
 
-            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
-            int.TryParse(userIdClaim, out int userId);
-
-            if (!string.IsNullOrEmpty(userIdClaim))
-            {
-                var user = await _getUserNameByIdService.GetUserNameByIdAsync(userId);
-                if (user != null && !string.IsNullOrEmpty(user.Name))
-                {
-                    userName = user.Name;
-                }
-            }
-            return View("Default", userName);
+            return View("Default", user);
         }
 
     }

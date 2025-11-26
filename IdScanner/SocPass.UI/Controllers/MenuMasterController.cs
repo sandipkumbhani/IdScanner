@@ -64,20 +64,44 @@ namespace SocPass.UI.Controllers
                 IconMsg = "Please Enter Icon Class.";
                 ViewBag.IconMsg = IconMsg;
             }
+            string OrderMsg = string.Empty;
+            if (menuMaster.MenuOrder <= 0)
+            {
+                OrderMsg = "Please Enter Menu Order.";
+                ViewBag.OrderMsg = OrderMsg;
+            }
 
-            if (ViewBag.NameMsg != null || ViewBag.DescriptionMsg != null || ViewBag.UrlMsg != null || ViewBag.IconMsg != null)
+            if (ViewBag.NameMsg != null || ViewBag.DescriptionMsg != null || ViewBag.UrlMsg != null || ViewBag.IconMsg != null || ViewBag.OrderMsg != null)
             {
                 return View(menuMaster);
             }
-            if (menuMaster.MenuId == 0)
+            try
             {
-                await _menuMasterService.AddMenuAsync(menuMaster);
+                string message;
+
+                if (menuMaster.MenuId == 0)
+                {
+                    message = await _menuMasterService.AddMenuAsync(menuMaster);
+                }
+                else
+                {
+                    message = await _menuMasterService.UpdateMenuAsync(menuMaster);
+                }
+
+                if (message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+                {
+                    ViewBag.ErrorMessage = message;
+                    return View(menuMaster);
+                }
+
+                TempData["SuccessMessage"] = "Menu saved successfully!";
+                return RedirectToAction("MenuMasterList");
             }
-            else
+            catch (Exception ex)
             {
-                await _menuMasterService.UpdateMenuAsync(menuMaster);
+                ViewBag.ErrorMessage = ex.Message;
+                return View(menuMaster);
             }
-            return RedirectToAction("MenuMasterList");
         }
 
         [HttpGet]

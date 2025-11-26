@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
@@ -100,15 +99,48 @@ namespace SocPass.UI.Infrastructure.Provider
                 throw new Exception("Unexpected response format from API: " + responseData);
             }
         }
-
         public async Task<User> GetUsersByIdAsync(int? id)
         {
             return await _commonAdapter.GetAsync<User>($"User/GetById?userid={id}");
         }
-        public async Task<string> UpdateUserAsync(User user, int? flatId = null)
+        public async Task<User> UpdateUserAsync(User user, int? flatId = null)
         {
-            return await _commonAdapter.PutAsync($"User/Update-User?flatId={flatId}", user);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _globalClass.Token);
+
+            var baseUrl = $"{apiCredential.url}User/Update-User?flatId={flatId}";
+            var requestJson = JsonConvert.SerializeObject(user);
+            var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(baseUrl, requestContent);
+            var responseData = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                var errorResponse = JsonConvert.DeserializeObject<CommanResponseDto>(responseData);
+                var message = errorResponse?.Message ?? "Duplicate entry.";
+
+                if (message.Contains("email", StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException("This email is already registered.");
+
+                if (message.Contains("flat", StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException("This flat is already assigned.");
+
+                throw new InvalidOperationException(message);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"API Error ({response.StatusCode}): {responseData}");
+            }
+
+            return JsonConvert.DeserializeObject<User>(responseData)!;
         }
+
+        //public async Task<string> UpdateUserAsync(User user, int? flatId = null)
+        //{
+        //    return await _commonAdapter.PutAsync($"User/Update-User?flatId={flatId}", user);
+        //}
         public async Task<string> DeleteUserAsync(int id)
         {
             return await _commonAdapter.DeleteAsync<string>($"User/Delete-User?id={id}");

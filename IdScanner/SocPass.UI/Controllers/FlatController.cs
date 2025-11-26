@@ -50,6 +50,19 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFlat(Flat flat)
         {
+            var userIdClaim = HttpContext.User?.FindFirst("UserId")?.Value;
+            int.TryParse(userIdClaim, out int userId);
+
+            IEnumerable<Society> societies = await _societyService.GetSocietyAsync();
+            flat.SocietyId = societies.FirstOrDefault()?.SocietyId ?? 0;
+            ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", flat.SocietyId);
+            ViewBag.IsSocietyReadonly = !User.IsInRole("Admin");
+
+            if (!ModelState.IsValid)
+            {
+                return View(flat);
+            }
+
             try
             {
                 await _flatService.UpdateFlatAsync(flat);

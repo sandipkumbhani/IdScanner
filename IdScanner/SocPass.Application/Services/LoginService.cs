@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SocPass.Application.Interface;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Interface;
 using SocPass.Domain.Model;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace SocPass.Application.Services
 {
@@ -35,7 +30,7 @@ namespace SocPass.Application.Services
             _userRoleRepository = userRoleRepository;
         }
         public async Task<LoginUserDTO?> LoginAsync(string email, string password)
-       {
+        {
             try
             {
                 var user = await _loginRepository.GetByEmailAsync(email);

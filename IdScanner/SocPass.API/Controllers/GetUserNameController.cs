@@ -19,7 +19,7 @@ namespace SocPass.API.Controllers
             if (user == null || string.IsNullOrEmpty(user.Name))
                 return NotFound(new { message = "User not found." });
 
-            return Ok(new { name = user.Name });
+            return Ok(user);
         }
 
     }

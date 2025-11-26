@@ -52,24 +52,6 @@ namespace SocPass.API.Controllers
 
             return Ok(flats);
         }
-        //[HttpPut("Update-flat")]
-        //public async Task<IActionResult> UpdateFlatAsync([FromBody] Flat flat)
-        //{
-        //    if (flat == null)
-        //    {
-        //        return NotFound("Id Not found");
-        //    }
-        //    try
-        //    {
-        //        var updated = await _flatService.UpdateFlatAsync(flat);
-        //        return Ok(updated);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return NotFound(new { message = ex.Message });
-        //    }
-        //}
-
         [HttpPut("Update-flat")]
         public async Task<IActionResult> UpdateFlatAsync([FromBody] Flat flat)
         {

@@ -68,7 +68,6 @@ namespace SocPass.Application.Services
 
                     };
                     var result = await _memberRepository.AddMemberAsync(newAdult);
-                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
             if (children.Count() > childAges.Count)
@@ -107,7 +106,6 @@ namespace SocPass.Application.Services
                         UpdateDate = DateTime.Now
                     };
                     var result = await _memberRepository.AddMemberAsync(newChild);
-                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
         }
@@ -169,7 +167,6 @@ namespace SocPass.Application.Services
                         UpdateDate = DateTime.Now
                     };
                     var result = await _memberRepository.AddMemberAsync(newAdult);
-                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
 
@@ -213,7 +210,6 @@ namespace SocPass.Application.Services
                         UpdateDate = DateTime.Now
                     };
                     var result = await _memberRepository.AddMemberAsync(newChild);
-                    //await updatedQrAsync(result.MemberId, result.IsChild);
                 }
             }
         }

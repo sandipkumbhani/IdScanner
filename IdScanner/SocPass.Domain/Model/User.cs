@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocPass.Domain.Model
 {
@@ -23,11 +18,12 @@ namespace SocPass.Domain.Model
         [NotMapped]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string? ConfirmPassword { get; set; }
-   
         [ForeignKey("SocietyId")]
         public virtual Society? Society { get; set; }
         [ForeignKey("UserRoleId")]
         public virtual UserRole? UserRole { get; set; }
+        [NotMapped]
+        public string? SubscriptionMessage { get; set; }
     }
 }
 

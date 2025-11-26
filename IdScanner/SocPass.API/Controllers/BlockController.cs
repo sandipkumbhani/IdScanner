@@ -72,6 +72,14 @@ namespace SocPass.API.Controllers
                 var UpdatedBlock = await _blockService.UpdateBlockAsync(block);
                 return Ok(UpdatedBlock);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
+            }
             catch (Exception ex)
             {
                 return NotFound(new { message = ex.Message });

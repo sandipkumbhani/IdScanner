@@ -59,6 +59,8 @@ namespace SocPass.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBlock(Block block)
         {
+            bool isAdmin = User.IsInRole("Admin");
+
             try
             {
                 string message;
@@ -66,24 +68,38 @@ namespace SocPass.UI.Controllers
                 if (block.BlockId == 0)
                 {
                     message = await _blockService.AddBlockAsync(block);
+                    ViewBag.Title = "Add";
                 }
                 else
                 {
                     message = await _blockService.UpdateBlockAsync(block);
+                    ViewBag.Title = "Edit";
                 }
+
                 if (message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
                 {
                     ViewBag.ErrorMessage = message;
+                    var societies = await _societyService.GetSocietyAsync();
+                    ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
+                    ViewBag.IsSocietyReadonly = !isAdmin;
+
                     return View(block);
                 }
+
                 return RedirectToAction("BlockList");
             }
             catch (Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
+                var societies = await _societyService.GetSocietyAsync();
+                ViewBag.SocietyList = new SelectList(societies, "SocietyId", "Name", block.SocietyId);
+                ViewBag.IsSocietyReadonly = !isAdmin;
+                ViewBag.Title = block.BlockId == 0 ? "Add" : "Edit";
+
                 return View(block);
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> DeleteBlock(int blockid)
         {

@@ -25,12 +25,23 @@ namespace SocPass.API.Controllers
         [HttpPost("Menu-Master")]
         public async Task<IActionResult> CreateMenuMaster([FromBody] MenuMaster modelMenuMaster)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var menuMaster = await _menuMasterService.CreateMenuMasterAsync(modelMenuMaster);
+                return Ok(menuMaster);
             }
-            var menuMaster = await _menuMasterService.CreateMenuMasterAsync(modelMenuMaster);
-            return Ok(menuMaster);
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
+            }
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("Delete-Menu-Master")]
@@ -74,19 +85,5 @@ namespace SocPass.API.Controllers
             }
 
         }
-        //[HttpGet("GetMenusByUserId")]
-        //public async Task<IActionResult> GetMenusByUserId(int userId)
-        //{
-        //    try
-        //    {
-        //        var menumaster = await _menuMasterService.GetMenusByUserIdAsync(userId);
-        //        return Ok(menumaster);
-        //    }
-        //    catch (KeyNotFoundException ex)
-        //    {
-        //        return NotFound(ex.Message);
-        //    }
-
-        //}
     }
 }

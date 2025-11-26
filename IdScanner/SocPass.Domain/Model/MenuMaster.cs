@@ -9,7 +9,7 @@ namespace SocPass.Domain.Model
 {
     public class MenuMaster :BaseModel
     {
-        [Key]
+        [Key]   
         public int MenuId { get; set; }
         [StringLength(200)]
         public string? Name { get; set; }
@@ -19,5 +19,6 @@ namespace SocPass.Domain.Model
         public string? Icon { get; set; }
         public string? Url { get; set; }
         public bool IsDefault { get; set; }
+        public int MenuOrder { get; set; }
     }
 }

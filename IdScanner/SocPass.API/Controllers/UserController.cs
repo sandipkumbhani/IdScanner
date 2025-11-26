@@ -65,14 +65,23 @@ namespace SocPass.API.Controllers
         {
             try
             {
-                var updatedUser = await _userService.UpdateUserAsync(user, flatId);
-                return Ok(updatedUser);
+                var updated = await _userService.UpdateUserAsync(user, flatId);
+                return Ok(new { Success = true, Data = updated });
             }
-            catch (Exception ex)
+            catch (EmailAlreadyExistsException ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return Conflict(new { Success = false, Message = ex.Message });
+            }
+            catch (FlatAlreadyExistsException ex)
+            {
+                return Conflict(new { Success = false, Message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Success = false, Message = ex.Message });
             }
         }
+
         [HttpGet("GetById")]
         public async Task<IActionResult> UserGetById(int userid)
         {

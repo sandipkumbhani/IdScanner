@@ -20,19 +20,12 @@ namespace SocPass.Application.Services
         }
         public async Task<Subscription> addsubscriptionAsync(Subscription subscription)
         {
-            //var existingSubscription = await _subscriptionRepository.GetById(subscription.SocietyId);
-            //if (existingSubscription != null)
-            //{
-            //    return null; 
-            //}
+           
             var newSubscription = new Subscription
             {
                 SocietyId = subscription.SocietyId,
                 StartFrom = subscription.StartFrom,
                 EndTo = subscription.EndTo,
-                //AllowNoOfName = subscription.AllowNoOfName,
-                //AllowNoOfContact = subscription.AllowNoOfContact,
-                //AllowNoOfEmail = subscription.AllowNoOfEmail,
                 IsActive = true,
                 InsertDate = DateTime.Now,
                 InsertBy = 0,

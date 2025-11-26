@@ -19,24 +19,20 @@ namespace SocPass.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return block;
         }
-
         public async Task<List<Block>> GetBlockAsync()
         {
             return await _context.blocks.Where(x => x.IsActive == true && x.Society.IsActive == true).Include(e => e.Society).OrderBy(e => e.Society.Name).ThenBy(e => e.BlockNumber).ToListAsync();
         }
-
         public async Task<Block> GetBlockByIdAsync(int blockid)
         {
             return await _context.blocks.Include(e => e.Society)
                   .Where(x => x.IsActive == true).FirstAsync(e => e.BlockId == blockid);
         }
-
         public async Task UpdateBlockAsync(Block block)
         {
             _context.blocks.Update(block);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteBlockAsync(int blockid)
         {
             var existingBlock = await _context.blocks.FindAsync(blockid);

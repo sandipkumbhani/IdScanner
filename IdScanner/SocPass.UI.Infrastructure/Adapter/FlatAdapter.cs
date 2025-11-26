@@ -1,19 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SocPass.Domain.DTO;
 using SocPass.Domain.Model;
-using SocPass.UI.Domain.Comman;
 using SocPass.UI.Domain.Helper;
 using SocPass.UI.Domain.Interfaces;
 using SocPass.UI.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SocPass.UI.Infrastructure.Provider
 {

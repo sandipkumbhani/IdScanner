@@ -3,11 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "SocPass.UI\\SocPass.UI.csproj",
+        "Path": "SocPass.API\\SocPass.API.csproj",
         "Action": "Start"
       },
       {
-        "Path": "SocPass.API\\SocPass.API.csproj",
+        "Path": "SocPass.UI\\SocPass.UI.csproj",
         "Action": "Start"
       }
     ]
